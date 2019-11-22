@@ -1,8 +1,0 @@
-C:\Users\cherry\source\repos\Stardew-Valley-Mods\Profit Margins\bin\x86\Debug\netstandard2.0\ProfitMargins.deps.json
-C:\Users\cherry\source\repos\Stardew-Valley-Mods\Profit Margins\bin\x86\Debug\netstandard2.0\ProfitMargins.dll
-C:\Users\cherry\source\repos\Stardew-Valley-Mods\Profit Margins\obj\x86\Debug\netstandard2.0\ProfitMargins.AssemblyInfoInputs.cache
-C:\Users\cherry\source\repos\Stardew-Valley-Mods\Profit Margins\obj\x86\Debug\netstandard2.0\ProfitMargins.AssemblyInfo.cs
-C:\Users\cherry\source\repos\Stardew-Valley-Mods\Profit Margins\bin\x86\Debug\netstandard2.0\ProfitMargins.pdb
-C:\Users\cherry\source\repos\Stardew-Valley-Mods\Profit Margins\obj\x86\Debug\netstandard2.0\ProfitMargins.csprojAssemblyReference.cache
-C:\Users\cherry\source\repos\Stardew-Valley-Mods\Profit Margins\obj\x86\Debug\netstandard2.0\ProfitMargins.dll
-C:\Users\cherry\source\repos\Stardew-Valley-Mods\Profit Margins\obj\x86\Debug\netstandard2.0\ProfitMargins.pdb
