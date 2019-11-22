@@ -1,0 +1,10 @@
+﻿{
+  "Name": "Profit margins",
+  "Author": "Cherry",
+  "Version": "1.0.0",
+  "Description": "Change your profit margin with a config file",
+  "UniqueID": "Cherry.ProfitMargins",
+  "EntryDll": "ProfitMargins.dll",
+  "MinimumApiVersion": "2.11.0",
+  "UpdateKeys": []
+}
