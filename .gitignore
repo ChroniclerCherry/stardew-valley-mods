@@ -3,5 +3,4 @@ packages
 bin
 obj
 properties
-*.csproj
 *.sln

@@ -1,0 +1,10 @@
+﻿{
+  "Name": "Platonic Relationships",
+  "Author": "Cherry",
+  "Version": "1.0.0",
+  "Description": "One or two sentences about the mod.",
+  "UniqueID": "Cherry.PlatonicRelationships",
+  "EntryDll": "PlatonicRelationships.dll",
+  "MinimumApiVersion": "2.11.0",
+  "UpdateKeys": []
+}
