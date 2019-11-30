@@ -8,17 +8,23 @@ namespace CustomizeAnywhere
     public class ModEntry : Mod
     {
         private ModConfig Config;
+        private IModHelper helper;
 
         public override void Entry(IModHelper helper)
         {
+            this.helper = helper;
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
         }
 
 
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
+            if ((Game1.activeClickableMenu is CharacterCustomization) && (e.Button == SButton.Escape))
+            {
+                Game1.exitActiveMenu();
+            }
 
-            // ignore if player hasn't loaded a save yet
+            // ignore if player isn't free to move
             if (!Context.CanPlayerMove)
                 return;
 
@@ -27,11 +33,15 @@ namespace CustomizeAnywhere
             if (input.IsDown(this.Config.ActivateButton)) {
                 if (input.IsDown(this.Config.customizeButton))
                 {
-                    Game1.activeClickableMenu = new CharacterCustomization(CharacterCustomization.Source.Wizard); ;
+                    Game1.activeClickableMenu = new CustomizeAnywhereMenu(); ;
                 } 
-                else if (input.IsDown(this.Config.changeButton))
+                else if (input.IsDown(this.Config.dyeButton))
                 {
-                    Game1.activeClickableMenu = new CharacterCustomization(CharacterCustomization.Source.Dresser);
+                    Game1.activeClickableMenu = new DyeMenu();
+                }
+                else if (input.IsDown(this.Config.tailoringMenu))
+                {
+                    Game1.activeClickableMenu = new TailoringMenu();
                 }
 
             }
@@ -45,13 +55,15 @@ namespace CustomizeAnywhere
     {
         public SButton ActivateButton { get; set; }
         public SButton customizeButton { get; set; }
-        public SButton changeButton { get; set; }
+        public SButton dyeButton { get; set; }
+        public SButton tailoringMenu { get; set; }
 
         public ModConfig()
         {
             ActivateButton = SButton.LeftShift;
             customizeButton = SButton.D1;
-            changeButton = SButton.D2;
+            dyeButton = SButton.D2;
+            tailoringMenu = SButton.D3;
         }
     }
     
