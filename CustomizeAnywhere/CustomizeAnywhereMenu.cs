@@ -43,7 +43,7 @@ namespace CustomizeAnywhere
 
         public CustomizeAnywhereMenu() : base(Source.NewGame)
         {
-            //
+            this.setUpPositions();
         }
 
         public override void draw(SpriteBatch b)
@@ -116,7 +116,8 @@ namespace CustomizeAnywhere
                 if (this.eyeColorPicker != null)
                     this.eyeColorPicker.draw(b);
 
-                this.randomButton.draw(b);
+                this.okButton.draw(b, Color.White, 0.75f, 0);
+            this.randomButton.draw(b);
                 b.End();
                 b.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, (DepthStencilState)null, (RasterizerState)null);
                 this._displayFarmer.FarmerRenderer.draw(b, this._displayFarmer.FarmerSprite.CurrentAnimationFrame, this._displayFarmer.FarmerSprite.CurrentFrame, this._displayFarmer.FarmerSprite.SourceRect, new Vector2((float)(this.portraitBox.Center.X - 32), (float)(this.portraitBox.Bottom - 160)), Vector2.Zero, 0.8f, Color.White, 0.0f, 1f, this._displayFarmer);
@@ -129,8 +130,6 @@ namespace CustomizeAnywhere
 
         private void setUpPositions()
         {
-            int offsetX = 200;
-
             if (this.source == CharacterCustomization.Source.ClothesDye && this._itemToDye == null)
                 return;
             bool flag1 = true;
@@ -216,14 +215,13 @@ namespace CustomizeAnywhere
             textureComponent2.rightNeighborID = -99998;
             textureComponent2.downNeighborID = -99998;
             this.randomButton = textureComponent2;
-            if (this.source == CharacterCustomization.Source.DyePots || this.source == CharacterCustomization.Source.ClothesDye)
-                this.randomButton.visible = false;
+
             this.portraitBox = new Rectangle(this.xPositionOnScreen + 64 + 42 - 2, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder - 16, 128, 192);
-            if (this._isDyeMenu || this.source == CharacterCustomization.Source.Wizard)
-            {
+
+                //this centers the portraits
                 this.portraitBox.X = this.xPositionOnScreen + (this.width - this.portraitBox.Width) / 2;
                 this.randomButton.bounds.X = this.portraitBox.X - 56;
-            }
+
             int num4 = 128;
             List<ClickableComponent> selectionButtons1 = this.leftSelectionButtons;
             ClickableTextureComponent textureComponent3 = new ClickableTextureComponent("Direction", new Rectangle(this.portraitBox.X - 32, this.portraitBox.Y + 144, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
@@ -252,8 +250,9 @@ namespace CustomizeAnywhere
             {
                 if (this.source != CharacterCustomization.Source.Wizard)
                 {
+                    int genderButtonOffsetX = 50;
                     List<ClickableComponent> genderButtons1 = this.genderButtons;
-                    ClickableTextureComponent textureComponent5 = new ClickableTextureComponent("Male", new Rectangle(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 32 + 8, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + 192, 64, 64), (string)null, "Male", Game1.mouseCursors, new Rectangle(128, 192, 16, 16), 4f, false);
+                    ClickableTextureComponent textureComponent5 = new ClickableTextureComponent("Male", new Rectangle(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 32 + 8  + (this.portraitBox.Width+ genderButtonOffsetX), this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + 192, 64, 64), (string)null, "Male", Game1.mouseCursors, new Rectangle(128, 192, 16, 16), 4f, false);
                     textureComponent5.myID = 508;
                     textureComponent5.upNeighborID = -99998;
                     textureComponent5.leftNeighborID = -99998;
@@ -261,7 +260,7 @@ namespace CustomizeAnywhere
                     textureComponent5.downNeighborID = -99998;
                     genderButtons1.Add((ClickableComponent)textureComponent5);
                     List<ClickableComponent> genderButtons2 = this.genderButtons;
-                    ClickableTextureComponent textureComponent6 = new ClickableTextureComponent("Female", new Rectangle(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 32 + 64 + 24, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + 192, 64, 64), (string)null, "Female", Game1.mouseCursors, new Rectangle(144, 192, 16, 16), 4f, false);
+                    ClickableTextureComponent textureComponent6 = new ClickableTextureComponent("Female", new Rectangle(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 32 + 64 + 24 + (this.portraitBox.Width+ genderButtonOffsetX), this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + 192, 64, 64), (string)null, "Female", Game1.mouseCursors, new Rectangle(144, 192, 16, 16), 4f, false);
                     textureComponent6.myID = 509;
                     textureComponent6.upNeighborID = -99998;
                     textureComponent6.leftNeighborID = -99998;
@@ -660,39 +659,6 @@ namespace CustomizeAnywhere
                     leftNeighborImmutable = true
                 });
             }
-            else if (this.source == CharacterCustomization.Source.ClothesDye)
-            {
-                num4 += 60;
-                point1 = new Point(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + 320 + 48 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4);
-                point1.X = this.xPositionOnScreen + this.width - IClickableMenu.spaceToClearSideBorder - IClickableMenu.borderWidth - 160;
-                this.labels.Add(new ClickableComponent(new Rectangle(x1, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4 + 16, 1, 1), Game1.content.LoadString("Strings\\UI:Character_DyeColor")));
-                this.pantsColorPicker = new ColorPicker("Pants", point1.X, point1.Y);
-                this.pantsColorPicker.setColor((Color)((NetFieldBase<Color, NetColor>)this._itemToDye.clothesColor));
-                this.colorPickerCCs.Add(new ClickableComponent(new Rectangle(point1.X, point1.Y, 128, 20), "")
-                {
-                    myID = 528,
-                    downNeighborID = -99998,
-                    upNeighborID = -99998,
-                    rightNeighborImmutable = true,
-                    leftNeighborImmutable = true
-                });
-                this.colorPickerCCs.Add(new ClickableComponent(new Rectangle(point1.X, point1.Y + 20, 128, 20), "")
-                {
-                    myID = 529,
-                    downNeighborID = -99998,
-                    upNeighborID = -99998,
-                    rightNeighborImmutable = true,
-                    leftNeighborImmutable = true
-                });
-                this.colorPickerCCs.Add(new ClickableComponent(new Rectangle(point1.X, point1.Y + 40, 128, 20), "")
-                {
-                    myID = 530,
-                    downNeighborID = -99998,
-                    upNeighborID = -99998,
-                    rightNeighborImmutable = true,
-                    leftNeighborImmutable = true
-                });
-            }
             ClickableTextureComponent textureComponent17 = new ClickableTextureComponent("Skip Intro", new Rectangle(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + 320 - 48 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4 + 80, 36, 36), (string)null, Game1.content.LoadString("Strings\\UI:Character_SkipIntro"), Game1.mouseCursors, new Rectangle(227, 425, 9, 9), 4f, false);
             textureComponent17.myID = 506;
             textureComponent17.upNeighborID = 530;
@@ -807,6 +773,11 @@ namespace CustomizeAnywhere
                 return;
             this.populateClickableComponentList();
             this.snapToDefaultClickableComponent();
+        }
+
+        public new bool canLeaveMenu()
+        {
+            return true;
         }
 
     }

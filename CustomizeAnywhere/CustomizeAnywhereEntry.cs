@@ -34,12 +34,18 @@ namespace CustomizeAnywhere
                 if (input.IsDown(this.Config.customizeButton))
                 {
                     Game1.activeClickableMenu = new CustomizeAnywhereMenu(); ;
-                } 
-                else if (input.IsDown(this.Config.dyeButton))
+                }
+                
+                if (!Game1.player.eventsSeen.Contains(992559) && !this.Config.canTailorWithoutEvent)
+                {
+                    return;
+                }
+
+                if (input.IsDown(this.Config.dyeButton))
                 {
                     Game1.activeClickableMenu = new DyeMenu();
                 }
-                else if (input.IsDown(this.Config.tailoringMenu))
+                else if (input.IsDown(this.Config.tailoringButton))
                 {
                     Game1.activeClickableMenu = new TailoringMenu();
                 }
@@ -56,14 +62,16 @@ namespace CustomizeAnywhere
         public SButton ActivateButton { get; set; }
         public SButton customizeButton { get; set; }
         public SButton dyeButton { get; set; }
-        public SButton tailoringMenu { get; set; }
+        public SButton tailoringButton { get; set; }
+        public bool canTailorWithoutEvent { get; set; }
 
         public ModConfig()
         {
             ActivateButton = SButton.LeftShift;
             customizeButton = SButton.D1;
             dyeButton = SButton.D2;
-            tailoringMenu = SButton.D3;
+            tailoringButton = SButton.D3;
+            canTailorWithoutEvent = false;
         }
     }
     
