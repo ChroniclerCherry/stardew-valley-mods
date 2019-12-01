@@ -241,11 +241,7 @@ namespace CustomizeAnywhere
             selectionButtons2.Add((ClickableComponent)textureComponent4);
             int num5 = LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ru || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.es || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.pt ? -20 : 0;
             this.isModifyingExistingPet = false;
-            if (this.source == CharacterCustomization.Source.NewGame || this.source == CharacterCustomization.Source.HostNewFarm)
-            {
-                this.petPortraitBox = new Rectangle?(new Rectangle(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 448 - 16 + (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ru ? 60 : 0), this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + 192 - 16, 64, 64));
-                this.labels.Add(new ClickableComponent(new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 192 + 8 + num1, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder - 8 + 192, 1, 1), Game1.content.LoadString("Strings\\UI:Character_Animal")));
-            }
+
             if (this.source == CharacterCustomization.Source.NewGame || this.source == CharacterCustomization.Source.HostNewFarm || (this.source == CharacterCustomization.Source.NewFarmhand || this.source == CharacterCustomization.Source.Wizard))
             {
                 if (this.source != CharacterCustomization.Source.Wizard)
@@ -708,67 +704,9 @@ namespace CustomizeAnywhere
                 textureComponent6.downNeighborID = -99998;
                 selectionButtons4.Add((ClickableComponent)textureComponent6);
             }
-            if (Game1.gameMode == (byte)3 && Game1.locations != null && this.source == CharacterCustomization.Source.Wizard)
-            {
-                Pet characterFromName = Game1.getCharacterFromName<Pet>(Game1.player.getPetName(), false);
-                if (characterFromName != null)
-                {
-                    Game1.player.whichPetBreed = (int)((NetFieldBase<int, NetInt>)characterFromName.whichBreed);
-                    Game1.player.catPerson = characterFromName is Cat;
-                    this.isModifyingExistingPet = true;
-                    int num6 = num8 + 60;
-                    this.labels.Add(new ClickableComponent(new Rectangle((int)((double)(this.xPositionOnScreen + this.width / 2) - (double)Game1.smallFont.MeasureString((string)((NetFieldBase<string, NetString>)characterFromName.name)).X / 2.0), this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num6 + 16, 1, 1), characterFromName.Name));
-                    point1 = new Point(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + 320 + 48 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num6);
-                    point1.X = this.xPositionOnScreen + this.width - IClickableMenu.spaceToClearSideBorder - IClickableMenu.borderWidth - 128;
-                    int num7 = num6 + 42;
-                    point1 = new Point(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + 320 + 48 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num7);
-                    point1.X = this.xPositionOnScreen + this.width - IClickableMenu.spaceToClearSideBorder - IClickableMenu.borderWidth - 128;
-                    this.petPortraitBox = new Rectangle?(new Rectangle(this.xPositionOnScreen + this.width / 2 - 32, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num7, 64, 64));
-                }
-            }
-            if (this.petPortraitBox.HasValue)
-            {
-                List<ClickableComponent> selectionButtons3 = this.leftSelectionButtons;
-                Rectangle rectangle = this.petPortraitBox.Value;
-                int x2 = rectangle.Left - 64;
-                rectangle = this.petPortraitBox.Value;
-                int top1 = rectangle.Top;
-                ClickableTextureComponent textureComponent5 = new ClickableTextureComponent("Pet", new Rectangle(x2, top1, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
-                textureComponent5.myID = 511;
-                textureComponent5.upNeighborID = -99998;
-                textureComponent5.leftNeighborID = -99998;
-                textureComponent5.rightNeighborID = -99998;
-                textureComponent5.downNeighborID = -99998;
-                selectionButtons3.Add((ClickableComponent)textureComponent5);
-                List<ClickableComponent> selectionButtons4 = this.rightSelectionButtons;
-                rectangle = this.petPortraitBox.Value;
-                int x3 = rectangle.Left + 64;
-                rectangle = this.petPortraitBox.Value;
-                int top2 = rectangle.Top;
-                ClickableTextureComponent textureComponent6 = new ClickableTextureComponent("Pet", new Rectangle(x3, top2, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 33, -1, -1), 1f, false);
-                textureComponent6.myID = 510;
-                textureComponent6.upNeighborID = -99998;
-                textureComponent6.leftNeighborID = -99998;
-                textureComponent6.rightNeighborID = -99998;
-                textureComponent6.downNeighborID = -99998;
-                selectionButtons4.Add((ClickableComponent)textureComponent6);
-            }
-            this._shouldShowBackButton = true;
-            if (this.source == CharacterCustomization.Source.Dresser || this.source == CharacterCustomization.Source.Wizard || this.source == CharacterCustomization.Source.ClothesDye)
-                this._shouldShowBackButton = false;
-            if (this.source == CharacterCustomization.Source.Dresser || this.source == CharacterCustomization.Source.Wizard || this._isDyeMenu)
-            {
-                this.nameBoxCC.visible = false;
-                this.farmnameBoxCC.visible = false;
-                this.favThingBoxCC.visible = false;
-                this.farmLabel.visible = false;
-                this.nameLabel.visible = false;
-                this.favoriteLabel.visible = false;
-            }
-            if (this.source == CharacterCustomization.Source.NewGame || this.source == CharacterCustomization.Source.HostNewFarm)
-                this.skipIntroButton.visible = true;
-            else
-                this.skipIntroButton.visible = false;
+
+            this._shouldShowBackButton = false;
+
             if (!Game1.options.snappyMenus || !Game1.options.gamepadControls)
                 return;
             this.populateClickableComponentList();
