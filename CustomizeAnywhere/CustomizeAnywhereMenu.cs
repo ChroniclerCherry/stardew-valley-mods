@@ -15,31 +15,14 @@ namespace CustomizeAnywhere
 {
     class CustomizeAnywhereMenu : CharacterCustomization
     {
-        private TextBox nameBox;
-        private TextBox farmnameBox;
-        private TextBox favThingBox;
-        private ClickableComponent nameLabel;
-        private ClickableComponent farmLabel;
-        private ClickableComponent favoriteLabel;
         private ClickableComponent shirtLabel;
         private ClickableComponent skinLabel;
         private ClickableComponent hairLabel;
         private ClickableComponent accLabel;
         private ClickableComponent pantsStyleLabel;
-        private ClickableComponent startingCabinsLabel;
-        private ClickableComponent cabinLayoutLabel;
-        private ClickableComponent separateWalletLabel;
-        private ClickableComponent difficultyModifierLabel;
         private string hoverText;
         private string hoverTitle;
-        private string coopHelpString;
-        private string noneString;
-        private string normalDiffString;
-        private string toughDiffString;
-        private string hardDiffString;
-        private string superDiffString;
-        private string sharedWalletString;
-        private string separateWalletString;
+
 
         public CustomizeAnywhereMenu() : base(Source.NewGame)
         {
@@ -152,62 +135,7 @@ namespace CustomizeAnywhere
             textureComponent1.rightNeighborID = -99998;
             textureComponent1.downNeighborID = -99998;
             this.okButton = textureComponent1;
-            this.backButton = new ClickableComponent(new Rectangle(Game1.viewport.Width - 198 - 48, Game1.viewport.Height - 81 - 24, 198, 81), "")
-            {
-                myID = 81114,
-                upNeighborID = -99998,
-                leftNeighborID = -99998,
-                rightNeighborID = -99998,
-                downNeighborID = -99998
-            };
-            this.nameBox = new TextBox(Game1.content.Load<Texture2D>("LooseSprites\\textBox"), (Texture2D)null, Game1.smallFont, Game1.textColor)
-            {
-                X = this.xPositionOnScreen + 64 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 256,
-                Y = this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder - 16,
-                Text = Game1.player.Name
-            };
-            this.nameBoxCC = new ClickableComponent(new Rectangle(this.xPositionOnScreen + 64 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 256, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder - 16, 192, 48), "")
-            {
-                myID = 536,
-                upNeighborID = -99998,
-                leftNeighborID = -99998,
-                rightNeighborID = -99998,
-                downNeighborID = -99998
-            };
-            int num1 = LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ru || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.es || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.pt ? -4 : 0;
-            this.labels.Add(this.nameLabel = new ClickableComponent(new Rectangle(this.xPositionOnScreen + num1 + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 192 + 4, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder - 8, 1, 1), Game1.content.LoadString("Strings\\UI:Character_Name")));
-            this.farmnameBox = new TextBox(Game1.content.Load<Texture2D>("LooseSprites\\textBox"), (Texture2D)null, Game1.smallFont, Game1.textColor)
-            {
-                X = this.xPositionOnScreen + 64 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 256,
-                Y = this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder - 16 + 64,
-                Text = (string)((NetFieldBase<string, NetString>)Game1.MasterPlayer.farmName)
-            };
-            this.farmnameBoxCC = new ClickableComponent(new Rectangle(this.xPositionOnScreen + 64 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 256, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder - 16 + 64, 192, 48), "")
-            {
-                myID = 537,
-                upNeighborID = -99998,
-                leftNeighborID = -99998,
-                rightNeighborID = -99998,
-                downNeighborID = -99998
-            };
-            int num2 = LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ko ? -16 : 0;
-            this.labels.Add(this.farmLabel = new ClickableComponent(new Rectangle(this.xPositionOnScreen + num1 * 3 + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 192 + 4 + num2, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder - 16 + 64, 1, 1), Game1.content.LoadString("Strings\\UI:Character_Farm")));
-            int num3 = LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ko ? 48 : 0;
-            this.favThingBox = new TextBox(Game1.content.Load<Texture2D>("LooseSprites\\textBox"), (Texture2D)null, Game1.smallFont, Game1.textColor)
-            {
-                X = this.xPositionOnScreen + 64 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 256 + num3,
-                Y = this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder - 16 + 128,
-                Text = (string)((NetFieldBase<string, NetString>)Game1.player.favoriteThing)
-            };
-            this.favThingBoxCC = new ClickableComponent(new Rectangle(this.xPositionOnScreen + 64 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 256, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder - 16 + 128, 192, 48), "")
-            {
-                myID = 538,
-                upNeighborID = -99998,
-                leftNeighborID = -99998,
-                rightNeighborID = -99998,
-                downNeighborID = -99998
-            };
-            this.labels.Add(this.favoriteLabel = new ClickableComponent(new Rectangle(this.xPositionOnScreen + num1 + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 192 + 4, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder - 16 + 128, 1, 1), Game1.content.LoadString("Strings\\UI:Character_FavoriteThing")));
+
             ClickableTextureComponent textureComponent2 = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + 48, this.yPositionOnScreen + 64 + 56, 40, 40), Game1.mouseCursors, new Rectangle(381, 361, 10, 10), 4f, false);
             textureComponent2.myID = 507;
             textureComponent2.upNeighborID = -99998;
@@ -285,171 +213,6 @@ namespace CustomizeAnywhere
                 textureComponent8.rightNeighborID = -99998;
                 textureComponent8.downNeighborID = -99998;
                 selectionButtons4.Add((ClickableComponent)textureComponent8);
-            }
-            if (this.source == CharacterCustomization.Source.NewGame || this.source == CharacterCustomization.Source.HostNewFarm)
-            {
-                Game1.startingCabins = 0;
-                if (this.source == CharacterCustomization.Source.HostNewFarm)
-                    Game1.startingCabins = 1;
-                Game1.player.difficultyModifier = 1f;
-                Game1.player.team.useSeparateWallets.Value = false;
-                Point point = new Point(this.xPositionOnScreen + this.width + 4 + 8, this.yPositionOnScreen + IClickableMenu.borderWidth);
-                List<ClickableTextureComponent> farmTypeButtons1 = this.farmTypeButtons;
-                ClickableTextureComponent textureComponent5 = new ClickableTextureComponent("Standard", new Rectangle(point.X, point.Y + 88, 88, 80), (string)null, Game1.content.LoadString("Strings\\UI:Character_FarmStandard"), Game1.mouseCursors, new Rectangle(0, 324, 22, 20), 4f, false);
-                textureComponent5.myID = 531;
-                textureComponent5.downNeighborID = 532;
-                textureComponent5.leftNeighborID = 537;
-                farmTypeButtons1.Add(textureComponent5);
-                List<ClickableTextureComponent> farmTypeButtons2 = this.farmTypeButtons;
-                ClickableTextureComponent textureComponent6 = new ClickableTextureComponent("Riverland", new Rectangle(point.X, point.Y + 176, 88, 80), (string)null, Game1.content.LoadString("Strings\\UI:Character_FarmFishing"), Game1.mouseCursors, new Rectangle(22, 324, 22, 20), 4f, false);
-                textureComponent6.myID = 532;
-                textureComponent6.upNeighborID = -99998;
-                textureComponent6.leftNeighborID = -99998;
-                textureComponent6.rightNeighborID = -99998;
-                textureComponent6.downNeighborID = -99998;
-                farmTypeButtons2.Add(textureComponent6);
-                List<ClickableTextureComponent> farmTypeButtons3 = this.farmTypeButtons;
-                ClickableTextureComponent textureComponent7 = new ClickableTextureComponent("Forest", new Rectangle(point.X, point.Y + 264, 88, 80), (string)null, Game1.content.LoadString("Strings\\UI:Character_FarmForaging"), Game1.mouseCursors, new Rectangle(44, 324, 22, 20), 4f, false);
-                textureComponent7.myID = 533;
-                textureComponent7.upNeighborID = -99998;
-                textureComponent7.leftNeighborID = -99998;
-                textureComponent7.rightNeighborID = -99998;
-                textureComponent7.downNeighborID = -99998;
-                farmTypeButtons3.Add(textureComponent7);
-                List<ClickableTextureComponent> farmTypeButtons4 = this.farmTypeButtons;
-                ClickableTextureComponent textureComponent8 = new ClickableTextureComponent("Hills", new Rectangle(point.X, point.Y + 352, 88, 80), (string)null, Game1.content.LoadString("Strings\\UI:Character_FarmMining"), Game1.mouseCursors, new Rectangle(66, 324, 22, 20), 4f, false);
-                textureComponent8.myID = 534;
-                textureComponent8.upNeighborID = -99998;
-                textureComponent8.leftNeighborID = -99998;
-                textureComponent8.rightNeighborID = -99998;
-                textureComponent8.downNeighborID = -99998;
-                farmTypeButtons4.Add(textureComponent8);
-                List<ClickableTextureComponent> farmTypeButtons5 = this.farmTypeButtons;
-                ClickableTextureComponent textureComponent9 = new ClickableTextureComponent("Wilderness", new Rectangle(point.X, point.Y + 440, 88, 80), (string)null, Game1.content.LoadString("Strings\\UI:Character_FarmCombat"), Game1.mouseCursors, new Rectangle(88, 324, 22, 20), 4f, false);
-                textureComponent9.myID = 535;
-                textureComponent9.upNeighborID = -99998;
-                textureComponent9.leftNeighborID = -99998;
-                textureComponent9.rightNeighborID = -99998;
-                textureComponent9.downNeighborID = -99998;
-                farmTypeButtons5.Add(textureComponent9);
-                List<ClickableTextureComponent> farmTypeButtons6 = this.farmTypeButtons;
-                ClickableTextureComponent textureComponent10 = new ClickableTextureComponent("Four Corners", new Rectangle(point.X, point.Y + 528, 88, 80), (string)null, Game1.content.LoadString("Strings\\UI:Character_FarmFourCorners"), Game1.mouseCursors, new Rectangle(0, 345, 22, 20), 4f, false);
-                textureComponent10.myID = 545;
-                textureComponent10.upNeighborID = -99998;
-                textureComponent10.leftNeighborID = -99998;
-                textureComponent10.rightNeighborID = -99998;
-                textureComponent10.downNeighborID = -99998;
-                farmTypeButtons6.Add(textureComponent10);
-            }
-            if (this.source == CharacterCustomization.Source.HostNewFarm)
-            {
-                this.labels.Add(this.startingCabinsLabel = new ClickableComponent(new Rectangle(this.xPositionOnScreen - 21 - 128, this.yPositionOnScreen + IClickableMenu.borderWidth * 2 + 84, 1, 1), Game1.content.LoadString("Strings\\UI:Character_StartingCabins")));
-                List<ClickableComponent> selectionButtons3 = this.leftSelectionButtons;
-                ClickableTextureComponent textureComponent5 = new ClickableTextureComponent("Cabins", new Rectangle(this.xPositionOnScreen - 256 + IClickableMenu.borderWidth / 2 + 8, this.yPositionOnScreen + IClickableMenu.borderWidth * 2 + 108, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
-                textureComponent5.myID = 621;
-                textureComponent5.upNeighborID = -99998;
-                textureComponent5.leftNeighborID = -99998;
-                textureComponent5.rightNeighborID = -99998;
-                textureComponent5.downNeighborID = -99998;
-                selectionButtons3.Add((ClickableComponent)textureComponent5);
-                List<ClickableComponent> selectionButtons4 = this.rightSelectionButtons;
-                ClickableTextureComponent textureComponent6 = new ClickableTextureComponent("Cabins", new Rectangle(this.xPositionOnScreen - 256 + IClickableMenu.borderWidth + 128 + 8, this.yPositionOnScreen + IClickableMenu.borderWidth * 2 + 108, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 33, -1, -1), 1f, false);
-                textureComponent6.myID = 622;
-                textureComponent6.upNeighborID = -99998;
-                textureComponent6.leftNeighborID = -99998;
-                textureComponent6.rightNeighborID = -99998;
-                textureComponent6.downNeighborID = -99998;
-                selectionButtons4.Add((ClickableComponent)textureComponent6);
-                this.labels.Add(this.cabinLayoutLabel = new ClickableComponent(new Rectangle(this.xPositionOnScreen - 128 - (int)((double)Game1.smallFont.MeasureString(Game1.content.LoadString("Strings\\UI:Character_CabinLayout")).X / 2.0), this.yPositionOnScreen + IClickableMenu.borderWidth * 2 + 120 + 64, 1, 1), Game1.content.LoadString("Strings\\UI:Character_CabinLayout")));
-                List<ClickableTextureComponent> cabinLayoutButtons1 = this.cabinLayoutButtons;
-                ClickableTextureComponent textureComponent7 = new ClickableTextureComponent("Close", new Rectangle(this.xPositionOnScreen - 256 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth * 2 + 160 + 64, 64, 64), (string)null, Game1.content.LoadString("Strings\\UI:Character_Close"), Game1.mouseCursors, new Rectangle(208, 192, 16, 16), 4f, false);
-                textureComponent7.myID = 623;
-                textureComponent7.upNeighborID = -99998;
-                textureComponent7.leftNeighborID = -99998;
-                textureComponent7.rightNeighborID = -99998;
-                textureComponent7.downNeighborID = -99998;
-                cabinLayoutButtons1.Add(textureComponent7);
-                List<ClickableTextureComponent> cabinLayoutButtons2 = this.cabinLayoutButtons;
-                ClickableTextureComponent textureComponent8 = new ClickableTextureComponent("Separate", new Rectangle(this.xPositionOnScreen - 256 + IClickableMenu.borderWidth + 128 - 8, this.yPositionOnScreen + IClickableMenu.borderWidth * 2 + 160 + 64, 64, 64), (string)null, Game1.content.LoadString("Strings\\UI:Character_Separate"), Game1.mouseCursors, new Rectangle(224, 192, 16, 16), 4f, false);
-                textureComponent8.myID = 624;
-                textureComponent8.upNeighborID = -99998;
-                textureComponent8.leftNeighborID = -99998;
-                textureComponent8.rightNeighborID = -99998;
-                textureComponent8.downNeighborID = -99998;
-                cabinLayoutButtons2.Add(textureComponent8);
-                this.labels.Add(this.difficultyModifierLabel = new ClickableComponent(new Rectangle(this.xPositionOnScreen - 21 - 128, this.yPositionOnScreen + IClickableMenu.borderWidth * 2 + 256 + 56, 1, 1), Game1.content.LoadString("Strings\\UI:Character_Difficulty")));
-                List<ClickableComponent> selectionButtons5 = this.leftSelectionButtons;
-                ClickableTextureComponent textureComponent9 = new ClickableTextureComponent("Difficulty", new Rectangle(this.xPositionOnScreen - 256 + IClickableMenu.borderWidth / 2 - 4, this.yPositionOnScreen + IClickableMenu.borderWidth * 2 + 256 + 80, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
-                textureComponent9.myID = 627;
-                textureComponent9.upNeighborID = -99998;
-                textureComponent9.leftNeighborID = -99998;
-                textureComponent9.rightNeighborID = -99998;
-                textureComponent9.downNeighborID = -99998;
-                selectionButtons5.Add((ClickableComponent)textureComponent9);
-                List<ClickableComponent> selectionButtons6 = this.rightSelectionButtons;
-                ClickableTextureComponent textureComponent10 = new ClickableTextureComponent("Difficulty", new Rectangle(this.xPositionOnScreen - 256 + IClickableMenu.borderWidth + 128 + 12, this.yPositionOnScreen + IClickableMenu.borderWidth * 2 + 256 + 80, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 33, -1, -1), 1f, false);
-                textureComponent10.myID = 628;
-                textureComponent10.upNeighborID = -99998;
-                textureComponent10.leftNeighborID = -99998;
-                textureComponent10.rightNeighborID = -99998;
-                textureComponent10.downNeighborID = -99998;
-                selectionButtons6.Add((ClickableComponent)textureComponent10);
-                int y = this.yPositionOnScreen + IClickableMenu.borderWidth * 2 + 320 + 100;
-                this.labels.Add(this.separateWalletLabel = new ClickableComponent(new Rectangle(this.xPositionOnScreen - 21 - 128, y - 24, 1, 1), Game1.content.LoadString("Strings\\UI:Character_Wallets")));
-                List<ClickableComponent> selectionButtons7 = this.leftSelectionButtons;
-                ClickableTextureComponent textureComponent11 = new ClickableTextureComponent("Wallets", new Rectangle(this.xPositionOnScreen - 256 + IClickableMenu.borderWidth / 2 - 4, y, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
-                textureComponent11.myID = 631;
-                textureComponent11.upNeighborID = -99998;
-                textureComponent11.leftNeighborID = -99998;
-                textureComponent11.rightNeighborID = -99998;
-                textureComponent11.downNeighborID = -99998;
-                selectionButtons7.Add((ClickableComponent)textureComponent11);
-                List<ClickableComponent> selectionButtons8 = this.rightSelectionButtons;
-                ClickableTextureComponent textureComponent12 = new ClickableTextureComponent("Wallets", new Rectangle(this.xPositionOnScreen - 256 + IClickableMenu.borderWidth + 128 + 12, y, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 33, -1, -1), 1f, false);
-                textureComponent12.myID = 632;
-                textureComponent12.upNeighborID = -99998;
-                textureComponent12.leftNeighborID = -99998;
-                textureComponent12.rightNeighborID = -99998;
-                textureComponent12.downNeighborID = -99998;
-                selectionButtons8.Add((ClickableComponent)textureComponent12);
-                ClickableTextureComponent textureComponent13 = new ClickableTextureComponent("CoopHelp", new Rectangle(this.xPositionOnScreen - 256 + IClickableMenu.borderWidth + 128 - 8, this.yPositionOnScreen + IClickableMenu.borderWidth * 2 + 448 + 40, 64, 64), (string)null, Game1.content.LoadString("Strings\\UI:Character_CoopHelp"), Game1.mouseCursors, new Rectangle(240, 192, 16, 16), 4f, false);
-                textureComponent13.myID = 625;
-                textureComponent13.upNeighborID = -99998;
-                textureComponent13.leftNeighborID = -99998;
-                textureComponent13.rightNeighborID = -99998;
-                textureComponent13.downNeighborID = -99998;
-                this.coopHelpButton = textureComponent13;
-                ClickableTextureComponent textureComponent14 = new ClickableTextureComponent("CoopHelpOK", new Rectangle(this.xPositionOnScreen - 256 - 12, this.yPositionOnScreen + this.height - 64, 64, 64), (string)null, (string)null, Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 46, -1, -1), 1f, false);
-                textureComponent14.myID = 626;
-                textureComponent14.region = 635;
-                textureComponent14.upNeighborID = -99998;
-                textureComponent14.leftNeighborID = -99998;
-                textureComponent14.rightNeighborID = -99998;
-                textureComponent14.downNeighborID = -99998;
-                this.coopHelpOkButton = textureComponent14;
-                this.noneString = Game1.content.LoadString("Strings\\UI:Character_none");
-                this.normalDiffString = Game1.content.LoadString("Strings\\UI:Character_Normal");
-                this.toughDiffString = Game1.content.LoadString("Strings\\UI:Character_Tough");
-                this.hardDiffString = Game1.content.LoadString("Strings\\UI:Character_Hard");
-                this.superDiffString = Game1.content.LoadString("Strings\\UI:Character_Super");
-                this.separateWalletString = Game1.content.LoadString("Strings\\UI:Character_SeparateWallet");
-                this.sharedWalletString = Game1.content.LoadString("Strings\\UI:Character_SharedWallet");
-                ClickableTextureComponent textureComponent15 = new ClickableTextureComponent("CoopHelpRight", new Rectangle(this.xPositionOnScreen + this.width, this.yPositionOnScreen + this.height, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 33, -1, -1), 1f, false);
-                textureComponent15.myID = 633;
-                textureComponent15.region = 635;
-                textureComponent15.upNeighborID = -99998;
-                textureComponent15.leftNeighborID = -99998;
-                textureComponent15.rightNeighborID = -99998;
-                textureComponent15.downNeighborID = -99998;
-                this.coopHelpRightButton = textureComponent15;
-                ClickableTextureComponent textureComponent16 = new ClickableTextureComponent("CoopHelpLeft", new Rectangle(this.xPositionOnScreen, this.yPositionOnScreen + this.height, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
-                textureComponent16.myID = 634;
-                textureComponent16.region = 635;
-                textureComponent16.upNeighborID = -99998;
-                textureComponent16.leftNeighborID = -99998;
-                textureComponent16.rightNeighborID = -99998;
-                textureComponent16.downNeighborID = -99998;
-                this.coopHelpLeftButton = textureComponent16;
             }
             Point point1 = new Point(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + 320 + 48 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4);
             int x1 = this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 192 + 8;
@@ -575,8 +338,9 @@ namespace CustomizeAnywhere
                     point1 = new Point(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + 320 + 48 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4);
                     point1.X = this.xPositionOnScreen + this.width - IClickableMenu.spaceToClearSideBorder - IClickableMenu.borderWidth - 160;
                     int num6 = LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.tr ? -16 : 0;
+
                     this.labels.Add(new ClickableComponent(new Rectangle(x1, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4 + 16 + num6, 1, 1), Game1.content.LoadString("Strings\\UI:Character_PantsColor")));
-                    this.pantsColorPicker = new ColorPicker("Pants", point1.X, point1.Y);
+                    this.pantsColorPicker = new ColorPicker("Pants", point1.X,point1.Y);
                     this.pantsColorPicker.setColor(Game1.player.GetPantsColor());
                     this.colorPickerCCs.Add(new ClickableComponent(new Rectangle(point1.X, point1.Y, 128, 20), "")
                     {
@@ -655,12 +419,7 @@ namespace CustomizeAnywhere
                     leftNeighborImmutable = true
                 });
             }
-            ClickableTextureComponent textureComponent17 = new ClickableTextureComponent("Skip Intro", new Rectangle(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + 320 - 48 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4 + 80, 36, 36), (string)null, Game1.content.LoadString("Strings\\UI:Character_SkipIntro"), Game1.mouseCursors, new Rectangle(227, 425, 9, 9), 4f, false);
-            textureComponent17.myID = 506;
-            textureComponent17.upNeighborID = 530;
-            textureComponent17.leftNeighborID = 517;
-            textureComponent17.rightNeighborID = 505;
-            this.skipIntroButton = textureComponent17;
+
             if (flag2)
             {
                 num4 += 68;
