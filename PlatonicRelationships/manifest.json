@@ -6,5 +6,5 @@
   "UniqueID": "Cherry.PlatonicRelationships",
   "EntryDll": "PlatonicRelationships.dll",
   "MinimumApiVersion": "2.11.0",
-  "UpdateKeys": []
+  "UpdateKeys": ["Nexus:4668"]
 }

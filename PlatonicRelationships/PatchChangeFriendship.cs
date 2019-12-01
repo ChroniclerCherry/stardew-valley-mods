@@ -11,7 +11,6 @@ namespace PlatonicRelationships
     {
         internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            ModEntry.monitor.Log("Patching Farmer.changeFriendship",StardewModdingAPI.LogLevel.Debug);
             List<CodeInstruction> instructionList = instructions.ToList();
             for (int i = 0; i < instructionList.Count; i++)
             {
@@ -24,6 +23,7 @@ namespace PlatonicRelationships
                     }
                     else if (instructionList[i].operand.ToString() == "2498")
                     {
+
                         //changes the hard cap for non-dating from 2498 to 10 hearts
                         instructionList[i].operand = 2500;
                         break;

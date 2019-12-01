@@ -11,7 +11,6 @@ namespace PlatonicRelationships
     {
         internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            ModEntry.monitor.Log("Patching SocialPage.drawNPCSlot", StardewModdingAPI.LogLevel.Debug);
             List<CodeInstruction> instructionList = instructions.ToList();
             int datingInstance = 1; //look for calls to the isDating() method
             for (int i = 0; i < instructionList.Count && datingInstance < 3; i++)
