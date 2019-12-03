@@ -24,8 +24,10 @@ namespace CustomizeAnywhere
         private string hoverTitle;
 
 
-        public CustomizeAnywhereMenu() : base(Source.NewGame)
+        public CustomizeAnywhereMenu() : base(Source.Wizard)
         {
+            this.height = 648 + IClickableMenu.borderWidth * 2 + 64;
+            this.yPositionOnScreen = (Game1.viewport.Height / 2 - (648 + IClickableMenu.borderWidth * 2) / 2 - 64);
             this.setUpPositions();
         }
 
@@ -113,14 +115,7 @@ namespace CustomizeAnywhere
 
         private void setUpPositions()
         {
-            if (this.source == CharacterCustomization.Source.ClothesDye && this._itemToDye == null)
-                return;
-            bool flag1 = true;
-            bool flag2 = true;
-            if (this.source == CharacterCustomization.Source.Wizard || this.source == CharacterCustomization.Source.ClothesDye || this.source == CharacterCustomization.Source.DyePots)
-                flag2 = false;
-            if (this.source == CharacterCustomization.Source.ClothesDye || this.source == CharacterCustomization.Source.DyePots)
-                flag1 = false;
+
             this.labels.Clear();
             this.petButtons.Clear();
             this.genderButtons.Clear();
@@ -170,10 +165,8 @@ namespace CustomizeAnywhere
             int num5 = LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ru || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.es || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.pt ? -20 : 0;
             this.isModifyingExistingPet = false;
 
-            if (this.source == CharacterCustomization.Source.NewGame || this.source == CharacterCustomization.Source.HostNewFarm || (this.source == CharacterCustomization.Source.NewFarmhand || this.source == CharacterCustomization.Source.Wizard))
-            {
-                if (this.source != CharacterCustomization.Source.Wizard)
-                {
+
+
                     int genderButtonOffsetX = 50;
                     List<ClickableComponent> genderButtons1 = this.genderButtons;
                     ClickableTextureComponent textureComponent5 = new ClickableTextureComponent("Male", new Rectangle(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 32 + 8  + (this.portraitBox.Width+ genderButtonOffsetX), this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + 192, 64, 64), (string)null, "Male", Game1.mouseCursors, new Rectangle(128, 192, 16, 16), 4f, false);
@@ -191,10 +184,9 @@ namespace CustomizeAnywhere
                     textureComponent6.rightNeighborID = -99998;
                     textureComponent6.downNeighborID = -99998;
                     genderButtons2.Add((ClickableComponent)textureComponent6);
-                }
+
                 num4 = 256;
-                if (this.source == CharacterCustomization.Source.Wizard)
-                    num4 = 192;
+
                 num5 = LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ru || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.es || (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.pt || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.fr) ? -20 : 0;
                 List<ClickableComponent> selectionButtons3 = this.leftSelectionButtons;
                 ClickableTextureComponent textureComponent7 = new ClickableTextureComponent("Skin", new Rectangle(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 16 + num5, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
@@ -213,13 +205,10 @@ namespace CustomizeAnywhere
                 textureComponent8.rightNeighborID = -99998;
                 textureComponent8.downNeighborID = -99998;
                 selectionButtons4.Add((ClickableComponent)textureComponent8);
-            }
+
             Point point1 = new Point(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + 320 + 48 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4);
             int x1 = this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 192 + 8;
-            if (this._isDyeMenu)
-                x1 = this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth;
-            if (this.source == CharacterCustomization.Source.NewGame || this.source == CharacterCustomization.Source.HostNewFarm || (this.source == CharacterCustomization.Source.NewFarmhand || this.source == CharacterCustomization.Source.Wizard))
-            {
+
                 this.labels.Add(new ClickableComponent(new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 192 + 8, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4 + 16, 1, 1), Game1.content.LoadString("Strings\\UI:Character_EyeColor")));
                 this.eyeColorPicker = new ColorPicker("Eyes", point1.X, point1.Y);
                 this.eyeColorPicker.setColor((Color)((NetFieldBase<Color, NetColor>)Game1.player.newEyeColor));
@@ -248,8 +237,8 @@ namespace CustomizeAnywhere
                     rightNeighborImmutable = true
                 });
                 num4 += 68;
-                List<ClickableComponent> selectionButtons3 = this.leftSelectionButtons;
-                ClickableTextureComponent textureComponent5 = new ClickableTextureComponent("Hair", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.borderWidth + IClickableMenu.spaceToClearSideBorder + num5, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
+                selectionButtons3 = this.leftSelectionButtons;
+                textureComponent5 = new ClickableTextureComponent("Hair", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.borderWidth + IClickableMenu.spaceToClearSideBorder + num5, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
                 textureComponent5.myID = 514;
                 textureComponent5.upNeighborID = -99998;
                 textureComponent5.leftNeighborID = -99998;
@@ -257,18 +246,17 @@ namespace CustomizeAnywhere
                 textureComponent5.downNeighborID = -99998;
                 selectionButtons3.Add((ClickableComponent)textureComponent5);
                 this.labels.Add(this.hairLabel = new ClickableComponent(new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 64 + 8 + num5 / 2, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4 + 16, 1, 1), Game1.content.LoadString("Strings\\UI:Character_Hair")));
-                List<ClickableComponent> selectionButtons4 = this.rightSelectionButtons;
-                ClickableTextureComponent textureComponent6 = new ClickableTextureComponent("Hair", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + 128 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 33, -1, -1), 1f, false);
+                selectionButtons4 = this.rightSelectionButtons;
+                textureComponent6 = new ClickableTextureComponent("Hair", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + 128 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 33, -1, -1), 1f, false);
                 textureComponent6.myID = 515;
                 textureComponent6.upNeighborID = -99998;
                 textureComponent6.leftNeighborID = -99998;
                 textureComponent6.rightNeighborID = -99998;
                 textureComponent6.downNeighborID = -99998;
                 selectionButtons4.Add((ClickableComponent)textureComponent6);
-            }
             point1 = new Point(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + 320 + 48 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4);
-            if (this.source == CharacterCustomization.Source.NewGame || this.source == CharacterCustomization.Source.HostNewFarm || (this.source == CharacterCustomization.Source.NewFarmhand || this.source == CharacterCustomization.Source.Wizard))
-            {
+
+
                 this.labels.Add(new ClickableComponent(new Rectangle(x1, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4 + 16, 1, 1), Game1.content.LoadString("Strings\\UI:Character_HairColor")));
                 this.hairColorPicker = new ColorPicker("Hair", point1.X, point1.Y);
                 this.hairColorPicker.setColor((Color)((NetFieldBase<Color, NetColor>)Game1.player.hairstyleColor));
@@ -296,84 +284,12 @@ namespace CustomizeAnywhere
                     leftNeighborImmutable = true,
                     rightNeighborImmutable = true
                 });
-            }
-            if (this.source == CharacterCustomization.Source.DyePots)
-            {
-                num4 += 68;
-                if (Game1.player.shirtItem.Value != null && Game1.player.shirtItem.Value.dyeable.Value)
-                {
-                    point1 = new Point(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + 320 + 48 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4);
-                    point1.X = this.xPositionOnScreen + this.width - IClickableMenu.spaceToClearSideBorder - IClickableMenu.borderWidth - 160;
-                    this.labels.Add(new ClickableComponent(new Rectangle(x1, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4 + 16, 1, 1), Game1.content.LoadString("Strings\\UI:Character_ShirtColor")));
-                    this.hairColorPicker = new ColorPicker("Hair", point1.X, point1.Y);
-                    this.hairColorPicker.setColor(Game1.player.GetShirtColor());
-                    this.colorPickerCCs.Add(new ClickableComponent(new Rectangle(point1.X, point1.Y, 128, 20), "")
-                    {
-                        myID = 525,
-                        downNeighborID = -99998,
-                        upNeighborID = -99998,
-                        leftNeighborImmutable = true,
-                        rightNeighborImmutable = true
-                    });
-                    this.colorPickerCCs.Add(new ClickableComponent(new Rectangle(point1.X, point1.Y + 20, 128, 20), "")
-                    {
-                        myID = 526,
-                        upNeighborID = -99998,
-                        downNeighborID = -99998,
-                        leftNeighborImmutable = true,
-                        rightNeighborImmutable = true
-                    });
-                    this.colorPickerCCs.Add(new ClickableComponent(new Rectangle(point1.X, point1.Y + 40, 128, 20), "")
-                    {
-                        myID = 527,
-                        upNeighborID = -99998,
-                        downNeighborID = -99998,
-                        leftNeighborImmutable = true,
-                        rightNeighborImmutable = true
-                    });
-                    num4 += 64;
-                }
-                if (Game1.player.pantsItem.Value != null && Game1.player.pantsItem.Value.dyeable.Value)
-                {
-                    point1 = new Point(this.xPositionOnScreen + IClickableMenu.spaceToClearSideBorder + 320 + 48 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4);
-                    point1.X = this.xPositionOnScreen + this.width - IClickableMenu.spaceToClearSideBorder - IClickableMenu.borderWidth - 160;
-                    int num6 = LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.tr ? -16 : 0;
 
-                    this.labels.Add(new ClickableComponent(new Rectangle(x1, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4 + 16 + num6, 1, 1), Game1.content.LoadString("Strings\\UI:Character_PantsColor")));
-                    this.pantsColorPicker = new ColorPicker("Pants", point1.X,point1.Y);
-                    this.pantsColorPicker.setColor(Game1.player.GetPantsColor());
-                    this.colorPickerCCs.Add(new ClickableComponent(new Rectangle(point1.X, point1.Y, 128, 20), "")
-                    {
-                        myID = 528,
-                        downNeighborID = -99998,
-                        upNeighborID = -99998,
-                        rightNeighborImmutable = true,
-                        leftNeighborImmutable = true
-                    });
-                    this.colorPickerCCs.Add(new ClickableComponent(new Rectangle(point1.X, point1.Y + 20, 128, 20), "")
-                    {
-                        myID = 529,
-                        downNeighborID = -99998,
-                        upNeighborID = -99998,
-                        rightNeighborImmutable = true,
-                        leftNeighborImmutable = true
-                    });
-                    this.colorPickerCCs.Add(new ClickableComponent(new Rectangle(point1.X, point1.Y + 40, 128, 20), "")
-                    {
-                        myID = 530,
-                        downNeighborID = -99998,
-                        upNeighborID = -99998,
-                        rightNeighborImmutable = true,
-                        leftNeighborImmutable = true
-                    });
-                }
-            }
-            else if (flag2)
-            {
+
                 num4 += 68;
                 int num6 = LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.tr ? 8 : 0;
-                List<ClickableComponent> selectionButtons3 = this.leftSelectionButtons;
-                ClickableTextureComponent textureComponent5 = new ClickableTextureComponent("Shirt", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + num5 - num6, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
+                selectionButtons3 = this.leftSelectionButtons;
+                textureComponent5 = new ClickableTextureComponent("Shirt", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + num5 - num6, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
                 textureComponent5.myID = 512;
                 textureComponent5.upNeighborID = -99998;
                 textureComponent5.leftNeighborID = -99998;
@@ -381,8 +297,8 @@ namespace CustomizeAnywhere
                 textureComponent5.downNeighborID = -99998;
                 selectionButtons3.Add((ClickableComponent)textureComponent5);
                 this.labels.Add(this.shirtLabel = new ClickableComponent(new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 64 + 8 + num5 / 2, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4 + 16, 1, 1), Game1.content.LoadString("Strings\\UI:Character_Shirt")));
-                List<ClickableComponent> selectionButtons4 = this.rightSelectionButtons;
-                ClickableTextureComponent textureComponent6 = new ClickableTextureComponent("Shirt", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + 128 + IClickableMenu.borderWidth + num6, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 33, -1, -1), 1f, false);
+                selectionButtons4 = this.rightSelectionButtons;
+                textureComponent6 = new ClickableTextureComponent("Shirt", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + 128 + IClickableMenu.borderWidth + num6, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 33, -1, -1), 1f, false);
                 textureComponent6.myID = 513;
                 textureComponent6.upNeighborID = -99998;
                 textureComponent6.leftNeighborID = -99998;
@@ -418,13 +334,11 @@ namespace CustomizeAnywhere
                     rightNeighborImmutable = true,
                     leftNeighborImmutable = true
                 });
-            }
 
-            if (flag2)
-            {
+
                 num4 += 68;
-                List<ClickableComponent> selectionButtons3 = this.leftSelectionButtons;
-                ClickableTextureComponent textureComponent5 = new ClickableTextureComponent("Pants Style", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + num5, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
+                selectionButtons3 = this.leftSelectionButtons;
+                textureComponent5 = new ClickableTextureComponent("Pants Style", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + num5, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
                 textureComponent5.myID = 629;
                 textureComponent5.upNeighborID = -99998;
                 textureComponent5.leftNeighborID = -99998;
@@ -432,21 +346,20 @@ namespace CustomizeAnywhere
                 textureComponent5.downNeighborID = -99998;
                 selectionButtons3.Add((ClickableComponent)textureComponent5);
                 this.labels.Add(this.pantsStyleLabel = new ClickableComponent(new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 64 + 8 + num5 / 2, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4 + 16, 1, 1), Game1.content.LoadString("Strings\\UI:Character_Pants")));
-                List<ClickableComponent> selectionButtons4 = this.rightSelectionButtons;
-                ClickableTextureComponent textureComponent6 = new ClickableTextureComponent("Pants Style", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + 128 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 33, -1, -1), 1f, false);
+                selectionButtons4 = this.rightSelectionButtons;
+                textureComponent6 = new ClickableTextureComponent("Pants Style", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + 128 + IClickableMenu.borderWidth, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num4, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 33, -1, -1), 1f, false);
                 textureComponent6.myID = 517;
                 textureComponent6.upNeighborID = -99998;
                 textureComponent6.leftNeighborID = -99998;
                 textureComponent6.rightNeighborID = -99998;
                 textureComponent6.downNeighborID = -99998;
                 selectionButtons4.Add((ClickableComponent)textureComponent6);
-            }
+
             int num8 = num4 + 68;
-            if (flag1)
-            {
-                int num6 = LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ko || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.tr ? 32 : 0;
-                List<ClickableComponent> selectionButtons3 = this.leftSelectionButtons;
-                ClickableTextureComponent textureComponent5 = new ClickableTextureComponent("Acc", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + num5 - num6, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num8, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
+
+                num6 = LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ko || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.tr ? 32 : 0;
+                selectionButtons3 = this.leftSelectionButtons;
+                textureComponent5 = new ClickableTextureComponent("Acc", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + num5 - num6, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num8, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44, -1, -1), 1f, false);
                 textureComponent5.myID = 516;
                 textureComponent5.upNeighborID = -99998;
                 textureComponent5.leftNeighborID = -99998;
@@ -454,15 +367,15 @@ namespace CustomizeAnywhere
                 textureComponent5.downNeighborID = -99998;
                 selectionButtons3.Add((ClickableComponent)textureComponent5);
                 this.labels.Add(this.accLabel = new ClickableComponent(new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + IClickableMenu.borderWidth + 64 + 8 + num5 / 2, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num8 + 16, 1, 1), Game1.content.LoadString("Strings\\UI:Character_Accessory")));
-                List<ClickableComponent> selectionButtons4 = this.rightSelectionButtons;
-                ClickableTextureComponent textureComponent6 = new ClickableTextureComponent("Acc", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + 128 + IClickableMenu.borderWidth + num6, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num8, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 33, -1, -1), 1f, false);
+                selectionButtons4 = this.rightSelectionButtons;
+                textureComponent6 = new ClickableTextureComponent("Acc", new Rectangle(this.xPositionOnScreen + 16 + IClickableMenu.spaceToClearSideBorder + 128 + IClickableMenu.borderWidth + num6, this.yPositionOnScreen + IClickableMenu.borderWidth + IClickableMenu.spaceToClearTopBorder + num8, 64, 64), (string)null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 33, -1, -1), 1f, false);
                 textureComponent6.myID = 517;
                 textureComponent6.upNeighborID = -99998;
                 textureComponent6.leftNeighborID = -99998;
                 textureComponent6.rightNeighborID = -99998;
                 textureComponent6.downNeighborID = -99998;
                 selectionButtons4.Add((ClickableComponent)textureComponent6);
-            }
+
 
             this._shouldShowBackButton = false;
 
