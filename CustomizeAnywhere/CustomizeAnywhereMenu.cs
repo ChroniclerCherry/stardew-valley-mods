@@ -52,7 +52,7 @@ namespace CustomizeAnywhere
         public CustomizeAnywhereMenu()
             : base(Game1.viewport.Width / 2 - (632 + IClickableMenu.borderWidth * 2) / 2, Game1.viewport.Height / 2 - (648 + IClickableMenu.borderWidth * 2) / 2 - 64, 632 + IClickableMenu.borderWidth * 2, 648 + IClickableMenu.borderWidth * 2 + 64, false)
         {
-
+            ModEntry.saveCurrentAppearance();
             this.setUpPositions();
             this._recolorEyesAction = (Action)(() => Game1.player.changeEyeColor(this.eyeColorPicker.getSelectedColor()));
             this._recolorPantsAction = (Action)(() => Game1.player.changePants(this.pantsColorPicker.getSelectedColor()));
