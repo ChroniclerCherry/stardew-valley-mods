@@ -1,13 +1,18 @@
-﻿using StardewModdingAPI;
+﻿using Microsoft.Xna.Framework;
+using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
+using StardewValley.Objects;
+using System;
+using System.Collections.Generic;
 
 namespace CustomizeAnywhere
 {
     public class ModEntry : Mod
     {
         private ModConfig Config;
+        internal static IMonitor monitor;
         private IModHelper helper;
 
         public override void Entry(IModHelper helper)
@@ -19,7 +24,7 @@ namespace CustomizeAnywhere
 
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-            if ((Game1.activeClickableMenu is CharacterCustomization) && (e.Button == SButton.Escape))
+            if ((Game1.activeClickableMenu is CustomizeAnywhereMenu) && (e.Button == SButton.Escape))
             {
                 Game1.exitActiveMenu();
             }
@@ -34,9 +39,12 @@ namespace CustomizeAnywhere
                 if (input.IsDown(this.Config.customizeButton))
                 {
                     Game1.activeClickableMenu = new CustomizeAnywhereMenu(); ;
+                } else if (input.IsDown(this.Config.dresserButton))
+                {
+                    Game1.activeClickableMenu = (IClickableMenu)new DresserMenu();
                 }
-                
-                if (!Game1.player.eventsSeen.Contains(992559) && !this.Config.canTailorWithoutEvent)
+
+                    if (!Game1.player.eventsSeen.Contains(992559) && !this.Config.canTailorWithoutEvent)
                 {
                     return;
                 }
@@ -63,6 +71,7 @@ namespace CustomizeAnywhere
         public SButton customizeButton { get; set; }
         public SButton dyeButton { get; set; }
         public SButton tailoringButton { get; set; }
+        public SButton dresserButton { get; set; }
         public bool canTailorWithoutEvent { get; set; }
 
         public ModConfig()
@@ -71,6 +80,7 @@ namespace CustomizeAnywhere
             customizeButton = SButton.D1;
             dyeButton = SButton.D2;
             tailoringButton = SButton.D3;
+            dresserButton = SButton.D4;
             canTailorWithoutEvent = false;
         }
     }
