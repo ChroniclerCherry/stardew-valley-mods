@@ -1,0 +1,10 @@
+{
+  "Name": "Catalogues Anywhere",
+  "Author": "Cherry",
+  "Version": "1.0.0",
+  "Description": "Access Furniture and Wallpaper Catalogues anytime, anywhere",
+  "UniqueID": "Cherry.CataloguesAnywhere",
+  "EntryDll": "CataloguesAnywhere.dll",
+  "MinimumApiVersion": "3.0.0",
+  "UpdateKeys": []
+}

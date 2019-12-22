@@ -18,7 +18,14 @@ namespace CustomizeAnywhere
         {
             helper = h;
             monitor = Monitor;
-            new DresserAndMirror(helper);
+            if (helper.ModRegistry.IsLoaded("spacechase0.JsonAssets"))
+            {
+                new DresserAndMirror(helper);
+            } else
+            {
+                monitor.Log("JSon Assets is not installed. Customization Mirror and Clothing Catalogue will not be added.",LogLevel.Info);
+            }
+            
             this.Config = this.Helper.ReadConfig<ModConfig>();
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
         }

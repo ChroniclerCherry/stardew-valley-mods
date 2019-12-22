@@ -45,7 +45,7 @@ namespace PlatonicRelationships
             {
                 if (data.ContainsKey("15/f Haley 2500/p Haley"))
                 {
-                    data.Add("15/f Haley 2500/D Haley/p Haley", data["901756/f Abigail 2500/t 1700 2400/o Abigail"]);
+                    data.Add("15/f Haley 2500/D Haley/p Haley", data["15/f Haley 2500/p Haley"]);
                     data.Remove("15/f Haley 2500/p Haley");
                 }
             }
@@ -59,7 +59,7 @@ namespace PlatonicRelationships
             }
             else if (asset.AssetNameEquals("Data/Events/ScienceHouse"))
             {
-                if (data.ContainsKey("10/f Maru 2500 /t 900 1600"))
+                if (data.ContainsKey("10/f Maru 2500/t 900 1600"))
                 {
                     data.Add("10/f Maru 2500/D Maru/t 900 1600", data["10/f Maru 2500/t 900 1600"]);
                     data.Remove("10/f Maru 2500/t 900 1600");
