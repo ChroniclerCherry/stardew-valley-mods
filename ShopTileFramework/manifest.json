@@ -1,10 +1,10 @@
 {
-  "Name": "Custom Shop Action Framework",
+  "Name": "Shop Tile Framework",
   "Author": "Cherry",
   "Version": "1.0.0",
   "Description": "Define new shops as custom tile properties",
-  "UniqueID": "Cherry.CustomShopActionFramework",
-  "EntryDll": "CustomShopActionFramework.dll",
+  "UniqueID": "Cherry.ShopTileFramework",
+  "EntryDll": "ShopTileFramework.dll",
   "MinimumApiVersion": "3.0.0",
   "UpdateKeys": []
 }
