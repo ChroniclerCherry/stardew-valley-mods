@@ -1,10 +1,25 @@
-﻿# Shop Tile Framework
+#Shop Tile Framework
+
+## Navigation
+- [Intro](#intro)
+- [Install](#install)
+- [Create a Content Pack](#create-a-content-pack)
+- [Adding store to the game] (#adding-store-to-the-game)
+
+## Intro
+
+**This page is a resource for modders. If you're a player, check out this link instead**
 
 Shop Tile Framework is a tool for Modders to define stores and attach them to tile properties which can be loaded anywhere into the game with another method. Content packs need a shops.json to define their shops
 
 Stores can be opened with a custom tile property of "Shop" and a value of the ShopName defined in shops.json
 
-## shops.json Fields
+## Install
+//TODO
+
+## Create a content pack
+//TODO
+
 
 Field | Optional | Description
 ------------ | ------------- | -------------
@@ -48,7 +63,7 @@ ItemType | Source
 "Weapon" | `data/weapons.json`
 "Fish" | `data/Fish.json`
 
-### Example
+## Example
 Example shops.json with all available options:
 ```json
 {
@@ -86,10 +101,12 @@ Example shops.json with all available options:
 }
 ```
 
+## Adding store to the game
+
 The store defined in the above json can be opened by clicking on a tile with the following properties on the **Buildings** layer:
 
 ![Example tile properties](https://media.discordapp.net/attachments/305520470114172928/659874803498614795/unknown.png)
 
 The empty `Action` Property is optional; it just changes the appearance of the game cursor when hovering over a shop to make it clear that it is interactable
 
-These tile properties can be loaded into the game with any other method usually used to load in maps. CP, TMXL, or SMAPI mods can all add the property along with the shop itself
+These tile properties can be loaded into the game with any other method usually used to load in maps. Content Patcher, TMXL, or SMAPI mods can all add the property along with the shop itself. More info about modding maps can be found [here](https://stardewvalleywiki.com/Modding:Maps)
