@@ -13,9 +13,11 @@ namespace ShopTileFramework
         private Dictionary<string, Shop> Shops { get; set; }
         public override void Entry(IModHelper h)
         {
+            //make helper and monitor static so they can be accessed in other classes
             helper = h;
             monitor = Monitor;
             Shops = new Dictionary<string, Shop>();
+
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
             helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
             LoadContentPacks();
@@ -23,6 +25,7 @@ namespace ShopTileFramework
 
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
         {
+            //refresh the stock of each store every day
             foreach (Shop Store in Shops.Values)
             {
                 Monitor.Log($"Updating stock for {Store.ShopName}");
@@ -32,38 +35,39 @@ namespace ShopTileFramework
 
         private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
         {
+            //context and button check
             if (!Context.CanPlayerMove || e.Button.IsActionButton() || e.Button == SButton.MouseRight)
                 return;
 
+            //check if clicked tile is near the player
             var clickedTile = Helper.Input.GetCursorPosition().Tile;
-
             if (!IsClickWithinReach(clickedTile))
                 return;
 
+            //check if there is a tile property on Buildings layer
             var tileProperty = GetTileProperty(Game1.currentLocation, "Buildings" ,clickedTile);
-
             if (tileProperty == null)
                 return;
 
+            //check if there is a Shop property on clicked tile
             tileProperty.TryGetValue("Shop", out PropertyValue shopProperty);
-
             if (shopProperty == null)
                 return;
 
+            //Extract the tile property value
             string ShopName = shopProperty.ToString();
-
             if (Shops.ContainsKey(ShopName))
             {
+                helper.Input.Suppress(e.Button);
                 Shops[ShopName].DisplayStore();
             } else
             {
-                Monitor.Log($"A shop by the name {ShopName} was not found.",LogLevel.Debug);
+                Monitor.Log($"A shop tile was clicked, but a shop by the name \"{ShopName}\" was not found.",LogLevel.Debug);
             }
 
         }
         private IPropertyCollection GetTileProperty(GameLocation map, string layer, Vector2 tile)
         {
-
             if (map == null)
                 return null;
 

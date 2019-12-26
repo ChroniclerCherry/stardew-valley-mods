@@ -7,7 +7,6 @@ using StardewValley.Objects;
 using StardewValley.Tools;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace ShopTileFramework
 {
@@ -26,7 +25,7 @@ namespace ShopTileFramework
             ItemStocks = pack.ItemStocks;
             Quote = pack.Quote;
 
-            
+            //try and load in the portrait
             if (pack.PortraitPath != null)
             {
                 try
@@ -46,8 +45,17 @@ namespace ShopTileFramework
             ModEntry.monitor.Log($"Generating stock for {ShopName}",LogLevel.Debug);
             ItemPriceAndStock = new Dictionary<ISalable, int[]>();
 
+            //TODO: add in pricing/stock/and maximum number randomization
+
             foreach (ItemStock Inventory in ItemStocks)
             {
+
+                int Price = Inventory.StockPrice;
+                if (Price == -1)
+                {
+                    Price = ShopPrice;
+                }
+
                 if (Inventory.ItemIDs != null)
                 {
                     foreach (var ItemID in Inventory.ItemIDs)
@@ -55,7 +63,7 @@ namespace ShopTileFramework
                         var i = GetItem(Inventory.ItemType, ItemID);
                         if (i != null)
                         {
-                            ItemPriceAndStock.Add(i, new int[] { 500, int.MaxValue });
+                            ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
                         } else
                         {
                             ModEntry.monitor.Log($"{Inventory.ItemType} of ID {ItemID} could not be added to {ShopName}", LogLevel.Warn);
@@ -71,7 +79,7 @@ namespace ShopTileFramework
                         var i = GetItem(Inventory.ItemType, ItemName);
                         if (i != null)
                         {
-                            ItemPriceAndStock.Add(i, new int[] { 500, int.MaxValue });
+                            ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
                         } else
                         {
                             ModEntry.monitor.Log($"{Inventory.ItemType} named \"{ItemName}\" could not be added to {ShopName}", LogLevel.Warn);
@@ -83,7 +91,7 @@ namespace ShopTileFramework
                 {
                     foreach (var Item in Inventory.JAPacks)
                     {
-                        ModEntry.monitor.Log($"JA Packs are not yet supported, {Item} not added.", LogLevel.Warn);
+                        ModEntry.monitor.Log($"JA Packs are not yet supported, \"{Item}\" not added.", LogLevel.Warn);
                     }
                 }
 
