@@ -2,11 +2,13 @@
 
 Shop Tile Framework is a tool for Modders to define stores and attach them to tile properties which can be loaded anywhere into the game with another method. Content packs need a shops.json to define their shops
 
+Stores can be opened with a custom tile property of "Shop" and a value of the ShopName defined in shops.json
+
 ## shops.json Fields
 
 Field | Optional | Description
 ------------ | ------------- | -------------
-Shops | N | You can add as many shops as you want
+Shops | N | You can add as many shops as you want, as long as they have unique `ShopName` 
 
 Each Shop contains:
 
@@ -83,3 +85,8 @@ Example shops.json with all available options:
   ]
 }
 ```
+
+The store defined in the above json can be opened by clicking on a tile with the following properties on the **Buildings** layer:
+![Example tile properties](https://media.discordapp.net/attachments/305520470114172928/659874803498614795/unknown.png)
+
+These tile properties can be loaded into the game with any other method usually used to load in maps. CP, TMXL, or SMAPI mods can all add the property along with the shop itself
