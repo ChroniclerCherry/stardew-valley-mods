@@ -1,10 +1,10 @@
-#Shop Tile Framework
+# Shop Tile Framework
 
 ## Navigation
 - [Intro](#intro)
 - [Install](#install)
 - [Create a Content Pack](#create-a-content-pack)
-- [Adding store to the game] (#adding-store-to-the-game)
+- [Adding store to the game](#adding-store-to-the-game)
 
 ## Intro
 
