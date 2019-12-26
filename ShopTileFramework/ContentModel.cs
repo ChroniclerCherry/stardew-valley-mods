@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StardewValley;
-
-namespace ShopTileFramework
+﻿namespace ShopTileFramework
 {
     class ContentModel
     {

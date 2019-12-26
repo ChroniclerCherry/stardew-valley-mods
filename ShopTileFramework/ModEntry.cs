@@ -13,11 +13,12 @@ namespace ShopTileFramework
         private Dictionary<string, Shop> Shops { get; set; }
         public override void Entry(IModHelper h)
         {
-            LoadContentPacks();
             helper = h;
             monitor = Monitor;
+            Shops = new Dictionary<string, Shop>();
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
             helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
+            LoadContentPacks();
         }
 
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
@@ -31,15 +32,19 @@ namespace ShopTileFramework
 
         private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
         {
-            if (!Context.CanPlayerMove || e.Button != SButton.MouseRight)
+            if (!Context.CanPlayerMove || e.Button.IsActionButton() || e.Button == SButton.MouseRight)
                 return;
 
-            var grab = Helper.Input.GetCursorPosition().Tile;
+            var clickedTile = Helper.Input.GetCursorPosition().Tile;
 
-            if (!IsClickWithinReach(grab))
+            if (!IsClickWithinReach(clickedTile))
                 return;
 
-            var tileProperty = GetTileProperty(Game1.currentLocation, "Buildings" ,grab);
+            var tileProperty = GetTileProperty(Game1.currentLocation, "Buildings" ,clickedTile);
+
+            if (tileProperty == null)
+                return;
+
             tileProperty.TryGetValue("Shop", out PropertyValue shopProperty);
 
             if (shopProperty == null)
@@ -72,24 +77,27 @@ namespace ShopTileFramework
 
         private void LoadContentPacks()
         {
+            monitor.Log("Adding Content Packs...", LogLevel.Info);
             foreach (IContentPack contentPack in Helper.ContentPacks.GetOwned())
             {
                 if (!contentPack.HasFile("shops.json"))
                 {
-                    Monitor.Log($"No shops.json found for {contentPack.Manifest.UniqueID}. No shop will be added.", LogLevel.Warn);
-                    ContentModel data = new ContentModel();
-                    data.Shops = new ShopPack[] { 
-                        new ShopPack() { ShopName = "test1"}
-                        , new ShopPack() { ShopName = "test2"} 
-                    };
-                    contentPack.WriteJsonFile("shops.json", data);
+                    Monitor.Log($"No shops.json found from the mod {contentPack.Manifest.UniqueID}. Skipping pack.", LogLevel.Warn);
                 }
                 else
                 {
                     ContentModel data = contentPack.ReadJsonFile<ContentModel>("shops.json");
+                    Monitor.Log($"{contentPack.Manifest.Name} | {contentPack.Manifest.Description}", LogLevel.Info);
                     foreach (ShopPack s in data.Shops)
                     {
-                        Shops.Add(s.ShopName, new Shop(s, contentPack));
+                        if (Shops.ContainsKey(s.ShopName))
+                        {
+                            Monitor.Log($"The shop \"{s.ShopName}\" has already been added. Ignoring {contentPack.Manifest.UniqueID}", LogLevel.Warn);
+
+                        } else
+                        {
+                            Shops.Add(s.ShopName, new Shop(s, contentPack));
+                        }
                     }
                 }
 
