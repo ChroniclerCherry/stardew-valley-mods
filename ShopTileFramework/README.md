@@ -90,4 +90,6 @@ The store defined in the above json can be opened by clicking on a tile with the
 
 ![Example tile properties](https://media.discordapp.net/attachments/305520470114172928/659874803498614795/unknown.png)
 
+The empty `Action` Property is optional; it just changes the appearance of the game cursor when hovering over a shop to make it clear that it is interactable
+
 These tile properties can be loaded into the game with any other method usually used to load in maps. CP, TMXL, or SMAPI mods can all add the property along with the shop itself
