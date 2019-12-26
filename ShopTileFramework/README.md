@@ -2,24 +2,21 @@
 
 ## Navigation
 - [Intro](#intro)
-- [Install](#install)
 - [Create a Content Pack](#create-a-content-pack)
 - [Adding store to the game](#adding-store-to-the-game)
 
 ## Intro
 
-**This page is a resource for modders. If you're a player, check out this link instead**
+**This page is a resource for modders. If you're a player, check out [this link](https://www.nexusmods.com/stardewvalley/mods/5005) instead**
 
 Shop Tile Framework is a tool for Modders to define stores and attach them to tile properties which can be loaded anywhere into the game with another method. Content packs need a shops.json to define their shops
 
 Stores can be opened with a custom tile property of "Shop" and a value of the ShopName defined in shops.json
 
-## Install
-//TODO
-
 ## Create a content pack
-//TODO
+To make a content pack for Shop Tile Framework, add `Cherry.ShopTileFramework` to the `ContentPackFor` section of your [manifest file](https://stardewvalleywiki.com/Modding:Modder_Guide/APIs/Manifest).
 
+Then from there, you need to make a `shops.json` file. You can find an example [here](#adding-store-to-the-game), and each field is described below:
 
 Field | Optional | Description
 ------------ | ------------- | -------------
