@@ -61,7 +61,6 @@ ItemType | Source
 "Boots" | `data/Boots.json`
 "Furniture" | `data/Furniture.json`
 "Weapon" | `data/weapons.json`
-"Fish" | `data/Fish.json`
 
 ## Example
 Example shops.json with all available options:
