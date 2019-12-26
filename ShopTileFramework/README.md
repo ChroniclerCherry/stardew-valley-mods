@@ -40,7 +40,7 @@ Possible `ItemType` determine which game file the item data is obtained from.
 ItemType | Source
 ------------ | -------------
 "Object" | `data/ObjectInformation.json`
-"BigCraftable" | `data/ObjectInformation.json`
+"BigCraftable" | `data/BigCraftablesInformation.json`
 "Clothing" | `data/ClothingInformation.json`
 "Hat" | `data/hats.json`
 "Boots" | `data/Boots.json`
