@@ -3,6 +3,7 @@
 ## Navigation
 - [Intro](#intro)
 - [Create a Content Pack](#create-a-content-pack)
+- [Example](#example)
 - [Adding store to the game](#adding-store-to-the-game)
 
 ## Intro
@@ -16,7 +17,7 @@ Stores can be opened with a custom tile property of "Shop" and a value of the Sh
 ## Create a content pack
 To make a content pack for Shop Tile Framework, add `Cherry.ShopTileFramework` to the `ContentPackFor` section of your [manifest file](https://stardewvalleywiki.com/Modding:Modder_Guide/APIs/Manifest).
 
-Then from there, you need to make a `shops.json` file. You can find an example [here](#adding-store-to-the-game), and each field is described below:
+Then from there, you need to make a `shops.json` file to define the properties of your shops. You can find an example [here](#adding-store-to-the-game), and each field is described below:
 
 Field | Optional | Description
 ------------ | ------------- | -------------
@@ -42,7 +43,7 @@ ItemType | N |  A String that determines what kind of Object this ItemStock cont
 StockPrice | Y | Sets the price for all items in this ItemStock. Overrides ShopPrice. If neither price fields are given, default item sell prices are used
 ItemIDs | Y/N | A list of items by their IDS. One of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
 ItemNames | Y/N | A list of items by their internal names. One of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
-JAPacks | Y/N | A list of items by the JA pack they came from. One of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item. **This is not yet implemented**
+JAPacks | Y/N | A list of items by the JA pack they came from. One of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
 Stock | Y | How many of each item is available to buy per day. If not set, the stock is unlimited
 MaxNumItemsSoldInItemStock | Y | The number of different items available from this ItemStock. If there are more items in this ItemStock than `MaxNumItemsSoldInItemStock` a random set will be picked per day.
 When | Y | A condition for the items in this ItemStock to appear. Currently takes [valid event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions)
@@ -94,6 +95,22 @@ Example shops.json with all available options:
       ]
     },
   ]
+}
+```
+
+And the manifest:
+```json
+{
+  "Name": "A store mod",
+  "Author": "your name",
+  "Version": "1.0.0",
+  "Description": "One or two sentences about the mod.",
+  "UniqueID": "YourName.YourProjectName",
+  "MinimumApiVersion": "3.0.0",
+  "UpdateKeys": [],
+  "ContentPackFor": {
+    "UniqueID": "Cherry.ShopTileFramework"
+  }
 }
 ```
 
