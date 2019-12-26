@@ -87,6 +87,7 @@ Example shops.json with all available options:
 ```
 
 The store defined in the above json can be opened by clicking on a tile with the following properties on the **Buildings** layer:
+
 ![Example tile properties](https://media.discordapp.net/attachments/305520470114172928/659874803498614795/unknown.png)
 
 These tile properties can be loaded into the game with any other method usually used to load in maps. CP, TMXL, or SMAPI mods can all add the property along with the shop itself
