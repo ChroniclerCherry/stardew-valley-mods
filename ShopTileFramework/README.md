@@ -60,8 +60,8 @@ ItemType | Source | Notes
 "Boots" | `data/Boots.json` |
 "Furniture" | [`data/Furniture.json`](https://stardewvalleywiki.com/Modding:Furniture_data) |
 "Weapon" | [`data/weapons.json`](https://stardewvalleywiki.com/Modding:Weapon_data) |
-"Wallpaper" | | Wallpapers have no name and thus have to be specified by `ItemIDs`
-"Floors" | | Floors have no name and thus have to be specified by `ItemIDs`
+"Wallpaper" | Maps/walls_and_floors.png | Wallpapers have no name and thus have to be specified by `ItemIDs`
+"Floors" | Maps/walls_and_floors.png | Floors have no name and thus have to be specified by `ItemIDs`
 
 ## Example
 Example shops.json with all available options:
