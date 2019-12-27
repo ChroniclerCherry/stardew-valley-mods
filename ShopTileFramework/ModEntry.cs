@@ -24,6 +24,10 @@ namespace ShopTileFramework
             helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
             helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
 
+            helper.ConsoleCommands.Add("display_shop", "Opens up a custom shop's menu. \n\nUsage: display_shop <ShopName>\n-ShopName: the name of the shop to open", this.DisplayShopMenus);
+            helper.ConsoleCommands.Add("reset_shop_stock", "Resets the stock of specified shop. Rechecks conditions and randomizations\n\nUsage: reset_shop_stock <ShopName>\n-ShopName: the name of the shop to reset", this.ResetShopStock);
+            helper.ConsoleCommands.Add("list_shops", "Lists all shops registered with Shop Tile Framework", this.ListAllShops);
+
             LoadContentPacks();
         }
 
@@ -74,7 +78,7 @@ namespace ShopTileFramework
             if (Shops.ContainsKey(ShopName))
             {
                 helper.Input.Suppress(e.Button);
-                Shops[ShopName].DisplayStore();
+                Shops[ShopName].DisplayShop();
             } else
             {
                 Monitor.Log($"A Shop tile was clicked, but a shop by the name \"{ShopName}\" " +
@@ -140,6 +144,63 @@ namespace ShopTileFramework
                 return false;
 
             return true;
+        }
+
+        private void DisplayShopMenus(string command, string[] args)
+        {
+            if (args.Length == 0)
+            {
+                Monitor.Log($"A shop name must is required");
+                return;
+            }
+
+            if (!Context.IsPlayerFree)
+            {
+                Monitor.Log($"Can't display a menu right now");
+                return;
+            }
+
+            Shops.TryGetValue(args[0], out Shop value);
+            if (value == null)
+            {
+                Monitor.Log($"No shop with a name of {args[0]} was found.");
+            } else
+            {
+                value.DisplayShop();
+            }
+        }
+
+        private void ResetShopStock(string command, string[] args)
+        {
+            if (args.Length == 0)
+            {
+                Monitor.Log($"A shop name must is required");
+                return;
+            }
+
+            Shops.TryGetValue(args[0], out Shop value);
+            if (value == null)
+            {
+                Monitor.Log($"No shop with a name of {args[0]} was found.");
+            }
+            else
+            {
+                value.UpdateItemPriceAndStock();
+            }
+        }
+
+        private void ListAllShops(string command, string[] args)
+        {
+            if (Shops.Count == 0)
+            {
+                Monitor.Log($"No shops were found");
+            } else
+            {
+                foreach (string k in Shops.Keys)
+                {
+                    Monitor.Log(k);
+                }
+            }
         }
     }
 

@@ -50,6 +50,10 @@ namespace ShopTileFramework
 
             foreach (ItemStock Inventory in ItemStocks)
             {
+                if (!CheckConditions(Inventory.When))
+                    continue;
+
+
                 Dictionary<ISalable, int[]> ItemStockInventory = new Dictionary<ISalable, int[]>();
                 //StockPrice overrides ShopPrice
                 int Price = Inventory.StockPrice;
@@ -184,6 +188,11 @@ namespace ShopTileFramework
             randomizeStock(ItemPriceAndStock, MaxNumItemsSoldInStore);
         }
 
+        private bool CheckConditions(string[] conditions)
+        {
+            return true;
+        }
+
         private void AddToItemPriceAndStock(Dictionary<ISalable, int[]> dict)
         {
             foreach (var stuff in dict)
@@ -195,7 +204,7 @@ namespace ShopTileFramework
         {
             while (inventory.Count > MaxNum)
             {
-                inventory.Remove(inventory.Keys.ElementAt(random.Next(inventory.Count - 1)));
+                inventory.Remove(inventory.Keys.ElementAt(random.Next(inventory.Count)));
             }
             
         }
@@ -340,7 +349,7 @@ namespace ShopTileFramework
             return -1;
         }
 
-        public void DisplayStore()
+        public void DisplayShop()
         {
             Game1.activeClickableMenu = new ShopMenu(ItemPriceAndStock);
         }
