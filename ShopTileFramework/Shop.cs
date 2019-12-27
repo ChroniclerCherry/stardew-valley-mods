@@ -7,23 +7,26 @@ using StardewValley.Objects;
 using StardewValley.Tools;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ShopTileFramework
 {
     class Shop
     {
         public string ShopName { get; set; }
+        private static Random random = new Random();
         private Texture2D Portrait = null;
         private string Quote { get; set; }
         private int ShopPrice { get; set; }
         private ItemStock[] ItemStocks { get; set; }
-        private int MaxNumItemsSoldInStore { get; set; } = int.MaxValue;
+        private int MaxNumItemsSoldInStore { get; set; }
         public Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
         public Shop(ShopPack pack, IContentPack contentPack)
         {
             ShopName = pack.ShopName;
             ItemStocks = pack.ItemStocks;
             Quote = pack.Quote;
+            MaxNumItemsSoldInStore = pack.MaxNumItemsSoldInStore;
 
             //try and load in the portrait
             if (pack.PortraitPath != null)
@@ -31,208 +34,201 @@ namespace ShopTileFramework
                 try
                 {
                     Portrait = contentPack.LoadAsset<Texture2D>(pack.PortraitPath);
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     ModEntry.monitor.Log(ex.Message, LogLevel.Warn);
                 }
-                
             }
-
         }
 
         public void UpdateItemPriceAndStock()
         {
-            ModEntry.monitor.Log($"Generating stock for {ShopName}",LogLevel.Debug);
+            ModEntry.monitor.Log($"Generating stock for {ShopName}", LogLevel.Trace);
+            //list of all items from this ItemStock
             ItemPriceAndStock = new Dictionary<ISalable, int[]>();
-
-            //TODO: add in pricing/stock/and maximum number randomization
 
             foreach (ItemStock Inventory in ItemStocks)
             {
-
+                Dictionary<ISalable, int[]> ItemStockInventory = new Dictionary<ISalable, int[]>();
+                //StockPrice overrides ShopPrice
                 int Price = Inventory.StockPrice;
                 if (Price == -1)
                 {
                     Price = ShopPrice;
                 }
 
+                //add in all items specified by index
                 if (Inventory.ItemIDs != null)
                 {
                     foreach (var ItemID in Inventory.ItemIDs)
                     {
-                        var i = GetItem(Inventory.ItemType, ItemID);
-                        if (i != null)
-                        {
-                            ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
-                        } else
-                        {
-                            ModEntry.monitor.Log($"{Inventory.ItemType} of ID {ItemID} could not be added to {ShopName}", LogLevel.Warn);
-                        }
-                            
+                        AddItem(Inventory.ItemType, ItemID, Price, Inventory.Stock, ItemStockInventory);
                     }
                 }
 
+                //add in all items specified by name
                 if (Inventory.ItemNames != null)
                 {
                     foreach (var ItemName in Inventory.ItemNames)
                     {
-                        var i = GetItem(Inventory.ItemType, ItemName);
-                        if (i != null)
-                        {
-                            ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
-                        } else
-                        {
-                            ModEntry.monitor.Log($"{Inventory.ItemType} named \"{ItemName}\" could not be added to {ShopName}", LogLevel.Warn);
-                        }    
+                        AddItem(Inventory.ItemType, ItemName, Price, Inventory.Stock, ItemStockInventory);
                     }
                 }
 
-                if (Inventory.JAPacks != null)
+                //add in all items from specified JA packs
+                if (Inventory.JAPacks != null && ModEntry.JsonAssets != null)
                 {
-                    if(ModEntry.JsonAssets != null)
+                    foreach (var JAPack in Inventory.JAPacks)
                     {
-                        foreach (var JAPack in Inventory.JAPacks)
+                        ModEntry.monitor.Log($"Adding objects from JA pack {JAPack}", LogLevel.Trace);
+
+                        if (Inventory.ItemType == "Object")
                         {
-
-                            ModEntry.monitor.Log($"Adding objects from JA pack {JAPack}", LogLevel.Debug);
-
-                            if (Inventory.ItemType == "Object")
+                            var ObjectData = Game1.objectInformation;
+                            var CropData = ModEntry.helper.Content.Load<Dictionary<int,
+                                string>>(@"Data/Crops", ContentSource.GameContent);
+                            var attemptToGetPack = ModEntry.JsonAssets.GetAllCropsFromContentPack(JAPack);
+                            if (attemptToGetPack != null)
                             {
-
-                                var ObjectData = Game1.objectInformation;
-                                var CropData = ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/Crops", ContentSource.GameContent);
-                                var attemptToGetPack = ModEntry.JsonAssets.GetAllCropsFromContentPack(JAPack);
-                                if (attemptToGetPack != null)
+                                foreach (string ItemName in attemptToGetPack)
                                 {
-                                    foreach (string ItemName in attemptToGetPack)
+                                    var CropID = ModEntry.JsonAssets.GetCropId(ItemName);
+                                    foreach (KeyValuePair<int, string> kvp in CropData)
                                     {
-                                        var CropID = ModEntry.JsonAssets.GetCropId(ItemName);
-                                        foreach (KeyValuePair<int, string> kvp in CropData)
+                                        //find the crop id in crop information to get seed id
+                                        Int32.TryParse(kvp.Value.Split('/')[2], out int id);
+                                        if (CropID == id)
                                         {
-                                            Int32.TryParse(kvp.Value.Split('/')[2], out int id);
-                                            if (CropID == id)
-                                            {
-                                                var i = GetItem(Inventory.ItemType, kvp.Key);
-                                                if (i != null)
-                                                {
-                                                    ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
-                                                }
-                                                else
-                                                {
-                                                    ModEntry.monitor.Log($"Crop of {CropID} named could not be added to {ShopName}", LogLevel.Warn);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                attemptToGetPack = ModEntry.JsonAssets.GetAllFruitTreesFromContentPack(JAPack);
-                                if (attemptToGetPack != null)
-                                {
-                                    foreach (string ItemName in attemptToGetPack)
-                                    {
-                                        var TreeID = ModEntry.JsonAssets.GetFruitTreeId(ItemName);
-
-                                        foreach (KeyValuePair<int, string> kvp in CropData)
-                                        {
-                                            Int32.TryParse(kvp.Value.Split('/')[1], out int id);
-                                            if (TreeID == id)
-                                            {
-                                                var i = GetItem(Inventory.ItemType, kvp.Key);
-                                                if (i != null)
-                                                {
-                                                    ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
-                                                }
-                                                else
-                                                {
-                                                    ModEntry.monitor.Log($"Crop of {TreeID} named could not be added to {ShopName}", LogLevel.Warn);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                            } else if (Inventory.ItemType == "BigCraftable")
-                            {
-                                var attemptToGetPack = ModEntry.JsonAssets.GetAllBigCraftablesFromContentPack(JAPack);
-                                if (attemptToGetPack != null)
-                                {
-                                    foreach (string CraftableName in attemptToGetPack)
-                                    {
-                                        var i = GetItem(Inventory.ItemType, CraftableName);
-                                        if (i != null)
-                                        {
-                                            ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
-                                        }
-                                        else
-                                        {
-                                            ModEntry.monitor.Log($"{Inventory.ItemType} named \"{CraftableName}\" could not be added to {ShopName}", LogLevel.Warn);
+                                            AddItem(Inventory.ItemType, kvp.Key, Price, Inventory.Stock, ItemStockInventory);
                                         }
                                     }
                                 }
                             }
-                            else if (Inventory.ItemType == "Hat")
+                            var FruitTreeData = ModEntry.helper.Content.Load<Dictionary<int,
+                                string>>(@"Data/fruitTrees", ContentSource.GameContent);
+                            attemptToGetPack = ModEntry.JsonAssets.GetAllFruitTreesFromContentPack(JAPack);
+                            if (attemptToGetPack != null)
                             {
-                                var attemptToGetPack = ModEntry.JsonAssets.GetAllHatsFromContentPack(JAPack);
-                                if (attemptToGetPack != null)
+                                foreach (string ItemName in attemptToGetPack)
                                 {
-                                    foreach (string HatName in attemptToGetPack)
+                                    var TreeID = ModEntry.JsonAssets.GetFruitTreeId(ItemName);
+
+                                    foreach (KeyValuePair<int, string> kvp in FruitTreeData)
                                     {
-                                        var i = GetItem(Inventory.ItemType, HatName);
-                                        if (i != null)
+                                        //find the tree id in fruitTrees information to get sapling id
+                                        Int32.TryParse(kvp.Value.Split('/')[1], out int id);
+                                        if (TreeID == id)
                                         {
-                                            ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
-                                        }
-                                        else
-                                        {
-                                            ModEntry.monitor.Log($"{Inventory.ItemType} named \"{HatName}\" could not be added to {ShopName}", LogLevel.Warn);
+                                            AddItem(Inventory.ItemType, kvp.Key, Price, Inventory.Stock, ItemStockInventory);
                                         }
                                     }
                                 }
                             }
-                            else if (Inventory.ItemType == "Weapon")
+
+                        }
+                        else if (Inventory.ItemType == "BigCraftable")
+                        {
+                            var attemptToGetPack = ModEntry.JsonAssets.GetAllBigCraftablesFromContentPack(JAPack);
+                            if (attemptToGetPack != null)
                             {
-                                var attemptToGetPack = ModEntry.JsonAssets.GetAllWeaponsFromContentPack(JAPack);
-                                if (attemptToGetPack != null)
+                                foreach (string CraftableName in attemptToGetPack)
                                 {
-                                    foreach (string WeaponName in attemptToGetPack)
-                                    {
-                                        var i = GetItem(Inventory.ItemType, WeaponName);
-                                        if (i != null)
-                                        {
-                                            ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
-                                        }
-                                        else
-                                        {
-                                            ModEntry.monitor.Log($"{Inventory.ItemType} named \"{WeaponName}\" could not be added to {ShopName}", LogLevel.Warn);
-                                        }
-                                    }
+                                    AddItem(Inventory.ItemType, CraftableName, Price, Inventory.Stock, ItemStockInventory);
                                 }
-                            }
-                            else if (Inventory.ItemType == "Clothing")
-                            {
-                                var attemptToGetPack = ModEntry.JsonAssets.GetAllClothingFromContentPack(JAPack);
-                                if (attemptToGetPack != null)
-                                {
-                                    foreach (string ClothingName in ModEntry.JsonAssets.GetAllClothingFromContentPack(JAPack))
-                                    {
-                                        var i = GetItem(Inventory.ItemType, ClothingName);
-                                        if (i != null)
-                                        {
-                                            ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
-                                        }
-                                        else
-                                        {
-                                            ModEntry.monitor.Log($"{Inventory.ItemType} named \"{ClothingName}\" could not be added to {ShopName}", LogLevel.Warn);
-                                        }
-                                    }
-                                }
-                                
                             }
                         }
+                        else if (Inventory.ItemType == "Hat")
+                        {
+                            var attemptToGetPack = ModEntry.JsonAssets.GetAllHatsFromContentPack(JAPack);
+                            if (attemptToGetPack != null)
+                            {
+                                foreach (string HatName in attemptToGetPack)
+                                {
+                                    AddItem(Inventory.ItemType, HatName, Price, Inventory.Stock, ItemStockInventory);
+                                }
+                            }
+                        }
+                        else if (Inventory.ItemType == "Weapon")
+                        {
+                            var attemptToGetPack = ModEntry.JsonAssets.GetAllWeaponsFromContentPack(JAPack);
+                            if (attemptToGetPack != null)
+                            {
+                                foreach (string WeaponName in attemptToGetPack)
+                                {
+                                    AddItem(Inventory.ItemType, WeaponName, Price, Inventory.Stock, ItemStockInventory);
+                                }
+                            }
+                        }
+                        else if (Inventory.ItemType == "Clothing")
+                        {
+                            var attemptToGetPack = ModEntry.JsonAssets.GetAllClothingFromContentPack(JAPack);
+                            if (attemptToGetPack != null)
+                            {
+                                foreach (string ClothingName in ModEntry.JsonAssets.GetAllClothingFromContentPack(JAPack))
+                                {
+                                    AddItem(Inventory.ItemType, ClothingName, Price, Inventory.Stock, ItemStockInventory);
+                                }
+                            }
 
+                        }
                     }
                 }
+                ModEntry.monitor.Log($"Randomizing {Inventory.ItemType}s and max stock is {Inventory.MaxNumItemsSoldInItemStock}", LogLevel.Debug);
+                randomizeStock(ItemStockInventory, Inventory.MaxNumItemsSoldInItemStock);
+                AddToItemPriceAndStock(ItemStockInventory);
 
+            }
+            ModEntry.monitor.Log($"Randomizing {ShopName} and max stock is {MaxNumItemsSoldInStore}", LogLevel.Debug);
+            //randomly reduce store's entire inventory to the specified MaxNumItemsSoldInStore
+            randomizeStock(ItemPriceAndStock, MaxNumItemsSoldInStore);
+        }
+
+        private void AddToItemPriceAndStock(Dictionary<ISalable, int[]> dict)
+        {
+            foreach (var stuff in dict)
+            {
+                ItemPriceAndStock.Add(stuff.Key,stuff.Value);
+            }
+        }
+        private void randomizeStock (Dictionary<ISalable, int[]> inventory, int MaxNum)
+        {
+            while (inventory.Count > MaxNum)
+            {
+                inventory.Remove(inventory.Keys.ElementAt(random.Next(inventory.Count - 1)));
+            }
+            
+        }
+
+        private void AddItem(String ItemType,int itemID,int Price, int Stock, Dictionary<ISalable, int[]> itemStockInventory)
+        {
+            var i = GetItem(ItemType, itemID);
+            if (i != null)
+            {
+                itemStockInventory.Add(i, new int[] { (Price == -1)
+                                                    ? i.salePrice() : Price, Stock });
+            }
+            else
+            {
+                ModEntry.monitor.Log($"Crop of {itemID} " +
+                    $"named could not be added to {ShopName}",
+                    LogLevel.Warn);
+            }
+        }
+
+        private void AddItem(String ItemType, String ItemName, int Price, int Stock, Dictionary<ISalable, int[]> itemStockInventory)
+        {
+            var i = GetItem(ItemType, ItemName);
+            if (i != null)
+            {
+                itemStockInventory.Add(i, new int[] { (Price == -1)
+                                                    ? i.salePrice() : Price, Stock });
+            }
+            else
+            {
+                ModEntry.monitor.Log($"{ItemType} named "  +
+                    $"\"{ItemName}\" could not be added to {ShopName}",
+                    LogLevel.Warn);
             }
         }
 
@@ -269,30 +265,11 @@ namespace ShopTileFramework
                 if (index != -1)
                     item = new Boots(index);
             }
-            else if (objectType == "TV")
-            {
-                if (index != -1)
-                    item = new TV(index, Vector2.Zero);
-            }
-            else if (objectType == "IndoorPot")
-                item = new IndoorPot(Vector2.Zero);
-            else if (objectType == "CrabPot")
-                item = new CrabPot(Vector2.Zero);
-            else if (objectType == "Chest")
-                item = new Chest(true);
-            else if (objectType == "Cask")
-                item = new Cask(Vector2.Zero);
             else if (objectType == "Furniture")
             {
                 if (index != -1)
                     item = new Furniture(index, Vector2.Zero);
             }
-            else if (objectType == "Sign")
-                item = new Sign(Vector2.Zero, index);
-            else if (objectType == "Wallpaper")
-                item = new Wallpaper(Math.Abs(index), false);
-            else if (objectType == "Floors")
-                item = new Wallpaper(Math.Abs(index), true);
             else if (objectType == "Weapon")
             {
                 if (index != -1)
@@ -311,8 +288,11 @@ namespace ShopTileFramework
             {
                 if (objectType == "Object")
                 {
-                    //includes rings
                     index = GetIndexByName(name, Game1.objectInformation);
+                }
+                else if (objectType == "Ring")
+                {
+                    index = GetIndexByName(name, Game1.bigCraftablesInformation);
                 }
                 else if (objectType == "BigCraftable")
                 {
@@ -324,59 +304,45 @@ namespace ShopTileFramework
                 }
                 else if (objectType == "Hat")
                 {
-                    index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/hats", ContentSource.GameContent));
+                    index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>
+                        (@"Data/hats", ContentSource.GameContent));
                 }
                 else if (objectType == "Boots")
                 {
-                    index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/Boots", ContentSource.GameContent));
+                    index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>
+                        (@"Data/Boots", ContentSource.GameContent));
 
                 }
-                else if (objectType == "TV")
-                {
-                    index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/Furniture", ContentSource.GameContent));
-                }
-                else if (objectType == "IndoorPot")
-                    return new StardewValley.Objects.IndoorPot(Vector2.Zero);
-                else if (objectType == "CrabPot")
-                    return  new StardewValley.Objects.CrabPot(Vector2.Zero);
-                else if (objectType == "Chest")
-                    return new StardewValley.Objects.Chest(true);
-                else if (objectType == "Cask")
-                    return new StardewValley.Objects.Cask(Vector2.Zero);
                 else if (objectType == "Furniture")
                 {
-                    index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/Furniture", ContentSource.GameContent));
+                    index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>
+                        (@"Data/Furniture", ContentSource.GameContent));
                 }
                 else if (objectType == "Weapon")
                 {
-                    index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/weapons", ContentSource.GameContent));
+                    index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>
+                        (@"Data/weapons", ContentSource.GameContent));
                 }
-
                 return GetItem(objectType, index);
             }
-
             return item;
         }
 
-        private int GetIndexByName (string name, IDictionary<int,string> ObjectInfo)
+        private int GetIndexByName(string name, IDictionary<int, string> ObjectInfo)
         {
-            foreach(KeyValuePair<int,string> kvp in ObjectInfo)
+            foreach (KeyValuePair<int, string> kvp in ObjectInfo)
             {
                 if (kvp.Value.StartsWith(name))
                 {
                     return kvp.Key;
                 }
             }
-
             return -1;
         }
 
         public void DisplayStore()
         {
             Game1.activeClickableMenu = new ShopMenu(ItemPriceAndStock);
-            
         }
-
-
     }
 }

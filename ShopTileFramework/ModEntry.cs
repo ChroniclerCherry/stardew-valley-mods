@@ -33,16 +33,17 @@ namespace ShopTileFramework
 
             if (JsonAssets == null)
             {
-                Monitor.Log("Json Assets API not detected. Custom JA items will not be added to shops.", LogLevel.Info);
+                Monitor.Log("Json Assets API not detected. Custom JA items will not be added to shops.",
+                    LogLevel.Info);
             }
         }
 
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
         {
             //refresh the stock of each store every day
+            Monitor.Log($"Refreshing stock for all custom shops...", LogLevel.Debug);
             foreach (Shop Store in Shops.Values)
             {
-                Monitor.Log($"Updating stock for {Store.ShopName}");
                 Store.UpdateItemPriceAndStock();
             }
         }
@@ -76,11 +77,12 @@ namespace ShopTileFramework
                 Shops[ShopName].DisplayStore();
             } else
             {
-                Monitor.Log($"A shop tile was clicked, but a shop by the name \"{ShopName}\" was not found.",LogLevel.Debug);
+                Monitor.Log($"A Shop tile was clicked, but a shop by the name \"{ShopName}\" " +
+                    $"was not found.",LogLevel.Debug);
             }
 
         }
-        private IPropertyCollection GetTileProperty(GameLocation map, string layer, Vector2 tile)
+        private static IPropertyCollection GetTileProperty(GameLocation map, string layer, Vector2 tile)
         {
             if (map == null)
                 return null;
@@ -96,21 +98,25 @@ namespace ShopTileFramework
         private void LoadContentPacks()
         {
             monitor.Log("Adding Content Packs...", LogLevel.Info);
-            foreach (IContentPack contentPack in Helper.ContentPacks.GetOwned())
+            foreach (IContentPack contentPack in helper.ContentPacks.GetOwned())
             {
                 if (!contentPack.HasFile("shops.json"))
                 {
-                    Monitor.Log($"No shops.json found from the mod {contentPack.Manifest.UniqueID}. Skipping pack.", LogLevel.Warn);
+                    monitor.Log($"No shops.json found from the mod {contentPack.Manifest.UniqueID}. " +
+                        $"Skipping pack.", LogLevel.Warn);
                 }
                 else
                 {
                     ContentModel data = contentPack.ReadJsonFile<ContentModel>("shops.json");
-                    Monitor.Log($"{contentPack.Manifest.Name} | {contentPack.Manifest.Description}", LogLevel.Info);
+                    Monitor.Log($"{contentPack.Manifest.Name} by {contentPack.Manifest.Author}| " +
+                        $"{contentPack.Manifest.Version} | {contentPack.Manifest.Description}", LogLevel.Info);
                     foreach (ShopPack s in data.Shops)
                     {
                         if (Shops.ContainsKey(s.ShopName))
                         {
-                            Monitor.Log($"The shop \"{s.ShopName}\" has already been added. Ignoring {contentPack.Manifest.UniqueID}", LogLevel.Warn);
+                            monitor.Log($"{contentPack.Manifest.UniqueID} is trying to add the shop " +
+                                $"\"{s.ShopName}\", but a shop of this name has already been added. " +
+                                $"It will not be added.", LogLevel.Warn);
 
                         } else
                         {
