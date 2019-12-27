@@ -62,18 +62,6 @@ ItemType | Source | Notes
 "Weapon" | [`data/weapons.json`](https://stardewvalleywiki.com/Modding:Weapon_data) |
 "Wallpaper" | | Wallpapers have no name and thus have to be specified by `ItemIDs`
 "Floors" | | Floors have no name and thus have to be specified by `ItemIDs`
-"Other" | | Items that require special constructors can only be specified by `ItemNames`.
-
-Possible `ItemNames` for the "Other" `ItemType` | Notes
------------- | -------------
-`IndoorPot` | A [garden pot](https://stardewvalleywiki.com/Garden_Pot)
-`CrabPot` | A [crab pot](https://stardewvalleywiki.com/Crab_Pot)
-`Chest` | A [chest] https://stardewvalleywiki.com/Chest
-`WoodSign` | A [Wood Sign](https://stardewvalleywiki.com/Wood_Sign)
-`StoneSign` | A [Stone Sign](https://stardewvalleywiki.com/Stone_Sign)
-`MiniJukebox` | A [Mini-Jukebox](https://stardewvalleywiki.com/Mini-Jukebox)
-`WoodChipper`| A [Wood Chipper](https://stardewvalleywiki.com/Wood_Chipper)
-`Workbench` | A [Workbench](https://stardewvalleywiki.com/Workbench)
 
 ## Example
 Example shops.json with all available options:
