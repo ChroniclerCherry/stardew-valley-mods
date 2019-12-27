@@ -10,17 +10,31 @@ namespace ShopTileFramework
     {
         public static IModHelper helper;
         public static IMonitor monitor;
+        public static IJsonAssetsApi JsonAssets;
         private Dictionary<string, Shop> Shops { get; set; }
         public override void Entry(IModHelper h)
         {
             //make helper and monitor static so they can be accessed in other classes
             helper = h;
             monitor = Monitor;
+
             Shops = new Dictionary<string, Shop>();
 
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
             helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
+            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
+
             LoadContentPacks();
+        }
+
+        private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+        {
+            JsonAssets = helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
+
+            if (JsonAssets == null)
+            {
+                Monitor.Log("Json Assets API not detected. Custom JA items will not be added to shops.", LogLevel.Info);
+            }
         }
 
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
@@ -121,5 +135,23 @@ namespace ShopTileFramework
 
             return true;
         }
+    }
+
+    public interface IJsonAssetsApi
+    {
+        List<string> GetAllCropsFromContentPack(string cp);
+        List<string> GetAllFruitTreesFromContentPack(string cp);
+        List<string> GetAllBigCraftablesFromContentPack(string cp);
+        List<string> GetAllHatsFromContentPack(string cp);
+        List<string> GetAllWeaponsFromContentPack(string cp);
+        List<string> GetAllClothingFromContentPack(string cp);
+
+        int GetObjectId(string name);
+        int GetCropId(string name);
+        int GetFruitTreeId(string name);
+        int GetBigCraftableId(string name);
+        int GetHatId(string name);
+        int GetWeaponId(string name);
+        int GetClothingId(string name);
     }
 }

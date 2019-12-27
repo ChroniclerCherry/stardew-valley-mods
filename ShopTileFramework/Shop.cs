@@ -89,9 +89,147 @@ namespace ShopTileFramework
 
                 if (Inventory.JAPacks != null)
                 {
-                    foreach (var Item in Inventory.JAPacks)
+                    if(ModEntry.JsonAssets != null)
                     {
-                        ModEntry.monitor.Log($"JA Packs are not yet supported, \"{Item}\" not added.", LogLevel.Warn);
+                        foreach (var JAPack in Inventory.JAPacks)
+                        {
+
+                            ModEntry.monitor.Log($"Adding objects from JA pack {JAPack}", LogLevel.Debug);
+
+                            if (Inventory.ItemType == "Object")
+                            {
+
+                                var ObjectData = Game1.objectInformation;
+                                var CropData = ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/Crops", ContentSource.GameContent);
+                                var attemptToGetPack = ModEntry.JsonAssets.GetAllCropsFromContentPack(JAPack);
+                                if (attemptToGetPack != null)
+                                {
+                                    foreach (string ItemName in attemptToGetPack)
+                                    {
+                                        var CropID = ModEntry.JsonAssets.GetCropId(ItemName);
+                                        foreach (KeyValuePair<int, string> kvp in CropData)
+                                        {
+                                            Int32.TryParse(kvp.Value.Split('/')[2], out int id);
+                                            if (CropID == id)
+                                            {
+                                                var i = GetItem(Inventory.ItemType, kvp.Key);
+                                                if (i != null)
+                                                {
+                                                    ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
+                                                }
+                                                else
+                                                {
+                                                    ModEntry.monitor.Log($"Crop of {CropID} named could not be added to {ShopName}", LogLevel.Warn);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                attemptToGetPack = ModEntry.JsonAssets.GetAllFruitTreesFromContentPack(JAPack);
+                                if (attemptToGetPack != null)
+                                {
+                                    foreach (string ItemName in attemptToGetPack)
+                                    {
+                                        var TreeID = ModEntry.JsonAssets.GetFruitTreeId(ItemName);
+
+                                        foreach (KeyValuePair<int, string> kvp in CropData)
+                                        {
+                                            Int32.TryParse(kvp.Value.Split('/')[1], out int id);
+                                            if (TreeID == id)
+                                            {
+                                                var i = GetItem(Inventory.ItemType, kvp.Key);
+                                                if (i != null)
+                                                {
+                                                    ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
+                                                }
+                                                else
+                                                {
+                                                    ModEntry.monitor.Log($"Crop of {TreeID} named could not be added to {ShopName}", LogLevel.Warn);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                            } else if (Inventory.ItemType == "BigCraftable")
+                            {
+                                var attemptToGetPack = ModEntry.JsonAssets.GetAllBigCraftablesFromContentPack(JAPack);
+                                if (attemptToGetPack != null)
+                                {
+                                    foreach (string CraftableName in attemptToGetPack)
+                                    {
+                                        var i = GetItem(Inventory.ItemType, CraftableName);
+                                        if (i != null)
+                                        {
+                                            ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
+                                        }
+                                        else
+                                        {
+                                            ModEntry.monitor.Log($"{Inventory.ItemType} named \"{CraftableName}\" could not be added to {ShopName}", LogLevel.Warn);
+                                        }
+                                    }
+                                }
+                            }
+                            else if (Inventory.ItemType == "Hat")
+                            {
+                                var attemptToGetPack = ModEntry.JsonAssets.GetAllHatsFromContentPack(JAPack);
+                                if (attemptToGetPack != null)
+                                {
+                                    foreach (string HatName in attemptToGetPack)
+                                    {
+                                        var i = GetItem(Inventory.ItemType, HatName);
+                                        if (i != null)
+                                        {
+                                            ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
+                                        }
+                                        else
+                                        {
+                                            ModEntry.monitor.Log($"{Inventory.ItemType} named \"{HatName}\" could not be added to {ShopName}", LogLevel.Warn);
+                                        }
+                                    }
+                                }
+                            }
+                            else if (Inventory.ItemType == "Weapon")
+                            {
+                                var attemptToGetPack = ModEntry.JsonAssets.GetAllWeaponsFromContentPack(JAPack);
+                                if (attemptToGetPack != null)
+                                {
+                                    foreach (string WeaponName in attemptToGetPack)
+                                    {
+                                        var i = GetItem(Inventory.ItemType, WeaponName);
+                                        if (i != null)
+                                        {
+                                            ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
+                                        }
+                                        else
+                                        {
+                                            ModEntry.monitor.Log($"{Inventory.ItemType} named \"{WeaponName}\" could not be added to {ShopName}", LogLevel.Warn);
+                                        }
+                                    }
+                                }
+                            }
+                            else if (Inventory.ItemType == "Clothing")
+                            {
+                                var attemptToGetPack = ModEntry.JsonAssets.GetAllClothingFromContentPack(JAPack);
+                                if (attemptToGetPack != null)
+                                {
+                                    foreach (string ClothingName in ModEntry.JsonAssets.GetAllClothingFromContentPack(JAPack))
+                                    {
+                                        var i = GetItem(Inventory.ItemType, ClothingName);
+                                        if (i != null)
+                                        {
+                                            ItemPriceAndStock.Add(i, new int[] { (Price == -1) ? i.salePrice() : Price, Inventory.Stock });
+                                        }
+                                        else
+                                        {
+                                            ModEntry.monitor.Log($"{Inventory.ItemType} named \"{ClothingName}\" could not be added to {ShopName}", LogLevel.Warn);
+                                        }
+                                    }
+                                }
+                                
+                            }
+                        }
+
                     }
                 }
 
