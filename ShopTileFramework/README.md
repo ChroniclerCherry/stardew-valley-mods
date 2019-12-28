@@ -61,7 +61,7 @@ ItemType | Source | Notes
 "BigCraftable" | [`data/BigCraftablesInformation.json`](https://stardewvalleywiki.com/Modding:Big_Craftables_data) | 
 "Clothing" | `data/ClothingInformation.json` |
 "Hat" | [`data/hats.json`](https://stardewvalleywiki.com/Modding:Hat_data) |
-"Boots" | `data/Boots.json` |
+"Boot" | `data/Boots.json` |
 "Furniture" | [`data/Furniture.json`](https://stardewvalleywiki.com/Modding:Furniture_data) |
 "Weapon" | [`data/weapons.json`](https://stardewvalleywiki.com/Modding:Weapon_data) |
 "Wallpaper" | Maps/walls_and_floors.png | Wallpapers have no name and thus have to be specified by `ItemIDs`

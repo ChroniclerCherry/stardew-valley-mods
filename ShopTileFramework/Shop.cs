@@ -13,16 +13,17 @@ namespace ShopTileFramework
 {
     class Shop
     {
-        public string ShopName { get; set; }
+        public string ShopName;
         private static Random random = new Random();
         private Texture2D Portrait = null;
-        private string Quote { get; set; }
-        private int ShopPrice { get; set; }
-        private ItemStock[] ItemStocks { get; set; }
-        private int MaxNumItemsSoldInStore { get; set; }
-        public Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
-        private string StoreCurrency { get; set; }
+        private string Quote;
+        private int ShopPrice;
+        private ItemStock[] ItemStocks;
+        private int MaxNumItemsSoldInStore;
+        public Dictionary<ISalable, int[]> ItemPriceAndStock;
+        private string StoreCurrency;
 
+        private static Dictionary<string, IDictionary<int, string>> ObjectInfoSource;
         public Shop(ShopPack pack, IContentPack contentPack)
         {
             ShopName = pack.ShopName;
@@ -58,6 +59,12 @@ namespace ShopTileFramework
                 if (!CheckConditions(Inventory.When))
                     continue;
 
+                if (!ObjectInfoSource.ContainsKey(Inventory.ItemType))
+                {
+                    ModEntry.monitor.Log($"\"{Inventory.ItemType}\" is not a valid ItemType. Some items will not be added.",LogLevel.Warn);
+                    continue;
+                }
+
                 int CurrencyItemID = GetIndexByName(Inventory.StockItemCurrency,Game1.objectInformation);
 
                 int CurrencyItemStack = Inventory.StockCurrencyStack;
@@ -69,8 +76,6 @@ namespace ShopTileFramework
                 {
                     Price = ShopPrice;
                 }
-
-                ModEntry.monitor.Log($"Inventory price is {Price} and ShopPrice is {ShopPrice}", LogLevel.Debug);
 
                 //add in all items specified by index
                 if (Inventory.ItemIDs != null)
@@ -131,7 +136,7 @@ namespace ShopTileFramework
                                     foreach (KeyValuePair<int, string> kvp in FruitTreeData)
                                     {
                                         //find the tree id in fruitTrees information to get sapling id
-                                        Int32.TryParse(kvp.Value.Split('/')[1], out int id);
+                                        Int32.TryParse(kvp.Value.Split('/')[0], out int id);
                                         if (TreeID == id)
                                         {
                                             AddItem(Inventory.ItemType, kvp.Key, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
@@ -303,7 +308,7 @@ namespace ShopTileFramework
                 case "Hat":
                         item = new Hat(index);
                     break;
-                case "Boots":
+                case "Boot":
                         item = new Boots(index);
                     break;
                 case "Furniture":
@@ -318,46 +323,52 @@ namespace ShopTileFramework
 
         private static Item GetItem(string objectType, string name)
         {
-            int index = -1;
 
             if (name == null)
             {
                 return null;
             }
-
-            switch (objectType)
+            
+            ObjectInfoSource.TryGetValue(objectType, out var InfoSource);
+            if (InfoSource != null)
             {
-
-                case "Object":
-                    index = GetIndexByName(name, Game1.objectInformation);
-                    break;
-                case "BigCraftable":
-                    index = GetIndexByName(name, Game1.bigCraftablesInformation);
-                    break;
-                case "Clothing":
-                    index = GetIndexByName(name, Game1.clothingInformation);
-                    break;
-                case "Ring":
-                    index = GetIndexByName(name, Game1.objectInformation);
-                    break;
-                case "Hat":
-                    index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>
-                        (@"Data/hats", ContentSource.GameContent));
-                    break;
-                case "Boots":
-                        index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>
-                            (@"Data/Boots", ContentSource.GameContent));
-                    break;
-                case "Furniture":
-                    index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>
-                            (@"Data/Furniture", ContentSource.GameContent));
-                    break;
-                case "Weapon":
-                    index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>
-                            (@"Data/weapons", ContentSource.GameContent));
-                    break;
+                return GetItem(objectType, GetIndexByName(name, InfoSource));
+            } else
+            {
+                return null;
             }
-            return GetItem(objectType, index);
+            
+        }
+
+        public static void GetObjectInfoSource()
+        {
+            ObjectInfoSource = new Dictionary<string, IDictionary<int, string>>
+            {
+                { "Object", Game1.objectInformation },
+                { "BigCraftable", Game1.bigCraftablesInformation },
+                { "Clothing", Game1.clothingInformation },
+                { "Ring", Game1.objectInformation },
+                {
+                    "Hat",
+                    ModEntry.helper.Content.Load<Dictionary<int, string>>
+                        (@"Data/hats", ContentSource.GameContent)
+                },
+                {
+                    "Boot",
+                    ModEntry.helper.Content.Load<Dictionary<int, string>>
+                            (@"Data/Boots", ContentSource.GameContent)
+                },
+                {
+                    "Furniture",
+                    ModEntry.helper.Content.Load<Dictionary<int, string>>
+                            (@"Data/Furniture", ContentSource.GameContent)
+                },
+                {
+                    "Weapon",
+                    ModEntry.helper.Content.Load<Dictionary<int, string>>
+                            (@"Data/weapons", ContentSource.GameContent)
+                }
+            };
         }
 
         private static int GetIndexByName(string name, IDictionary<int, string> ObjectInfo)
