@@ -47,7 +47,7 @@ StockItemCurrency | Y | string | You can specify an Object by name as the curren
 StockCurrencyStack | Y | int | The number of the `StockItemCurrency` it costs for each item. Defaults to 1
 ItemIDs | Y/N | Array of ints | Adds a list of items by their IDS. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
 ItemNames | Y/N | Array of strings | Adds a list of items by their internal names. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
-JAPacks | Y/N | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and trees will sell their seeds/saplings. If you want to sell the produce themselves, they should be specified in the `ItemNames` section instead. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
+JAPacks | Y/N | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and trees will sell their seeds/saplings. If you want to sell the produce themselves, they should be specified in the `ItemNames` section instead. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item. Note that crops and trees added in this manner will sell the seeds rather than the produce. If you weant to sell the produce directly, specify them by ItemNames
 Stock | Y | int | How many of each item is available to buy per day. If not set, the stock is unlimited
 MaxNumItemsSoldInItemStock | Y | int | The number of different items available from this ItemStock. If there are more items in this ItemStock than `MaxNumItemsSoldInItemStock` a random set will be picked per day.
 When | Y | Array of strings | A condition for the items in this ItemStock to appear. Currently takes [valid event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions)
@@ -74,30 +74,53 @@ Example shops.json with all available options:
   "Shops": [
     {
       "ShopName": "MyShop",
+      "StoreCurrency": "festivalScore",
       "PortraitPath": "assets/Portrait.png",
       "Quote": "This is a store!",
-      "ShopPrice": 1000,
-      "MaxNumItemsSoldInStore": 20,
+      "ShopPrice": 80,
+      "MaxNumItemsSoldInStore": 30,
       "ItemStocks": [
-		{
-          "ItemType": "Object",
-          "StockPrice": 100,
+        {
+          "ItemType": "Clothing",
+          "StockItemCurrency":"Parsnip",
+          "StockPrice": 0,
+          "StockCurrencyStack": 5,
+          "JAPacks": [
+		"missy.shirtsja",
+          ],
+          "Stock": 4,
+          "MaxNumItemsSoldInItemStock": 5,
+        },
+        {
+          "ItemType": "Clothing",
+          "StockItemCurrency":"Prismatic Shard",
+          "StockPrice": 0,
+          "StockCurrencyStack": 1,
           "ItemIDs": [
-            60,74,90
+		5,10,1015
           ],
           "ItemNames": [
-			"Earth Crystal",
-			"Pizza",
+		"Prismatic Shirt",
+		"Prismatic Pants"
           ],
-		  "JAPacks": [
-			"ppja.ancientcrops",
-			"ppja.fruitsandveggies"
+          "Stock": 4,
+          "MaxNumItemsSoldInItemStock": 5,
+        },
+        {
+          "ItemType": "Object",
+          "ItemIDs": [
+		60,74,90
+          ],
+          "ItemNames": [
+		"Earth Crystal",
+		"Pizza",
+          ],
+          "JAPacks": [
+		"ppja.fruitsandveggies",
+		"ppja.moretrees"
           ],
           "Stock": 10,
-          "MaxNumItemsSoldInItemStock": 50,
-          "When": [
-          	"u 20"
-          ]
+          "MaxNumItemsSoldInItemStock": 20,
         },
       ]
     },
