@@ -30,7 +30,6 @@ namespace ShopTileFramework
             StoreCurrency = pack.StoreCurrency;
             ItemStocks = pack.ItemStocks;
             Quote = pack.Quote;
-
             MaxNumItemsSoldInStore = pack.MaxNumItemsSoldInStore;
 
             //try and load in the portrait
@@ -60,6 +59,7 @@ namespace ShopTileFramework
                     continue;
 
                 int CurrencyItemID = GetIndexByName(Inventory.StockItemCurrency,Game1.objectInformation);
+
                 int CurrencyItemStack = Inventory.StockCurrencyStack;
 
                 Dictionary<ISalable, int[]> ItemStockInventory = new Dictionary<ISalable, int[]>();
@@ -70,7 +70,7 @@ namespace ShopTileFramework
                     Price = ShopPrice;
                 }
 
-                ModEntry.monitor.Log($"Inventory price is {Price} and ShopPrice is {ShopPrice}",LogLevel.Debug);
+                ModEntry.monitor.Log($"Inventory price is {Price} and ShopPrice is {ShopPrice}", LogLevel.Debug);
 
                 //add in all items specified by index
                 if (Inventory.ItemIDs != null)
@@ -232,7 +232,6 @@ namespace ShopTileFramework
                     
                 } else if (ItemCurrencyStack == -1)
                 {
-                    ModEntry.monitor.Log($"I am passing in a currency item with ID of {ItemCurrencyID}", LogLevel.Warn);
                     PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID };
                 } else
                 {
@@ -244,8 +243,8 @@ namespace ShopTileFramework
             }
             else
             {
-                ModEntry.monitor.Log($"Crop of {itemID} " +
-                    $"named could not be added to {ShopName}",
+                ModEntry.monitor.Log($"Crop of ID {itemID} " +
+                    $"could not be added to {ShopName}",
                     LogLevel.Warn);
             }
         }

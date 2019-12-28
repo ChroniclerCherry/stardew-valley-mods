@@ -5,6 +5,7 @@
 - [Create a Content Pack](#create-a-content-pack)
 - [Example](#example)
 - [Adding store to the game](#adding-store-to-the-game)
+- [Console Commands](#console-commands)
 
 ## Intro
 
@@ -129,3 +130,13 @@ The store defined in the above json can be opened by clicking on a tile with the
 The empty `Action` Property is optional; it just changes the appearance of the game cursor when hovering over a shop to make it clear that it is interactable
 
 These tile properties can be loaded into the game with any other method usually used to load in maps. Content Patcher, TMXL, or SMAPI mods can all add the property along with the shop itself. More info about modding maps can be found [here](https://stardewvalleywiki.com/Modding:Maps)
+
+## Console Commands
+
+A few console commands are added to SMAPI in order to help with debugging. Type `help` in the console to get a full list of available commands
+
+Command | Description
+------------ | -------------
+ display_shop <ShopName> | Will open up the shop with the specified ShopName. Useful for testing without adding in a tile property / needing to go to the shop location
+ reset_shop_stock <ShopName> | Will reset the stock of the specified ShopName, which usually happens at the start of each day. Useful for checking that your conditions are applying / stock is randomizing as you'd like'
+ list_shops | Lists all of the `ShopName`s registered with Shop Tile Framework
