@@ -8,6 +8,7 @@
     class ShopPack
     {
         public string ShopName { get; set; }
+        public string StoreCurrency { get; set; } = "Money";
         public string PortraitPath { get; set; } = null;
         public string Quote { get; set; } = null;
         public int ShopPrice { get; set; } = -1;
@@ -19,6 +20,8 @@
     {
         public string ItemType { get; set; }
         public int StockPrice { get; set; } = -1;
+        public string StockItemCurrency { get; set; } = "Money";
+        public int StockCurrencyStack { get; set; } = -1;
         public int[] ItemIDs { get; set; } = null;
         public string[] JAPacks { get; set; } = null;
         public string[] ItemNames { get; set; } = null;

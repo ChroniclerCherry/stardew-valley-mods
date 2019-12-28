@@ -28,6 +28,7 @@ Each Shop contains:
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
 ShopName | N | string | The name of the shop is the value of the tile property used to open this shop in-game. It must be unique among all downloaded mods.
+StoreCurrency | Y | string | The currency this store uses. Defaults to `"Money"` if not specified, but can also be `"festivalScore"` or `"clubCoins"`
 PortraitPath | Y | string | The relative path to the image used as the portrait for this shop from the content pack's folder. If not provided, no portrait will be drawn
 Quote | Y | string | A quote displayed on the shop menu screen. If not provided, no quote will appear
 ShopPrice | Y | int | Sets the price of every item in the store to this if set.
@@ -41,6 +42,8 @@ Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
 ItemType | N | string |  Determines what kind of Object this ItemStock contains, necessary to find the right unique items.
 StockPrice | Y | int | Sets the price for all items in this ItemStock. Overrides ShopPrice. If neither price fields are given, default item sell prices are used
+StockItemCurrency | Y | string | You can specify an Object by name as the currency instead. This will charge both the specified item as well as the `StoreCurrency` unless the price is set to 0.
+StockCurrencyStack | Y | int | The number of the `StockItemCurrency` it costs for each item. Defaults to 1
 ItemIDs | Y/N | Array of ints | Adds a list of items by their IDS. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
 ItemNames | Y/N | Array of strings | Adds a list of items by their internal names. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
 JAPacks | Y/N | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and trees will sell their seeds/saplings. If you want to sell the produce themselves, they should be specified in the `ItemNames` section instead. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.

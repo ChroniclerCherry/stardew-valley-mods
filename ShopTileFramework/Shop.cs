@@ -21,11 +21,16 @@ namespace ShopTileFramework
         private ItemStock[] ItemStocks { get; set; }
         private int MaxNumItemsSoldInStore { get; set; }
         public Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
+        private string StoreCurrency { get; set; }
+
         public Shop(ShopPack pack, IContentPack contentPack)
         {
             ShopName = pack.ShopName;
+            ShopPrice = pack.ShopPrice;
+            StoreCurrency = pack.StoreCurrency;
             ItemStocks = pack.ItemStocks;
             Quote = pack.Quote;
+
             MaxNumItemsSoldInStore = pack.MaxNumItemsSoldInStore;
 
             //try and load in the portrait
@@ -50,9 +55,12 @@ namespace ShopTileFramework
 
             foreach (ItemStock Inventory in ItemStocks)
             {
+
                 if (!CheckConditions(Inventory.When))
                     continue;
 
+                int CurrencyItemID = GetIndexByName(Inventory.StockItemCurrency,Game1.objectInformation);
+                int CurrencyItemStack = Inventory.StockCurrencyStack;
 
                 Dictionary<ISalable, int[]> ItemStockInventory = new Dictionary<ISalable, int[]>();
                 //StockPrice overrides ShopPrice
@@ -62,12 +70,14 @@ namespace ShopTileFramework
                     Price = ShopPrice;
                 }
 
+                ModEntry.monitor.Log($"Inventory price is {Price} and ShopPrice is {ShopPrice}",LogLevel.Debug);
+
                 //add in all items specified by index
                 if (Inventory.ItemIDs != null)
                 {
                     foreach (var ItemID in Inventory.ItemIDs)
                     {
-                        AddItem(Inventory.ItemType, ItemID, Price, Inventory.Stock, ItemStockInventory);
+                        AddItem(Inventory.ItemType, ItemID, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                     }
                 }
 
@@ -76,7 +86,7 @@ namespace ShopTileFramework
                 {
                     foreach (var ItemName in Inventory.ItemNames)
                     {
-                        AddItem(Inventory.ItemType, ItemName, Price, Inventory.Stock, ItemStockInventory);
+                        AddItem(Inventory.ItemType, ItemName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                     }
                 }
 
@@ -104,7 +114,7 @@ namespace ShopTileFramework
                                         Int32.TryParse(kvp.Value.Split('/')[2], out int id);
                                         if (CropID == id)
                                         {
-                                            AddItem(Inventory.ItemType, kvp.Key, Price, Inventory.Stock, ItemStockInventory);
+                                            AddItem(Inventory.ItemType, kvp.Key, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                         }
                                     }
                                 }
@@ -124,7 +134,7 @@ namespace ShopTileFramework
                                         Int32.TryParse(kvp.Value.Split('/')[1], out int id);
                                         if (TreeID == id)
                                         {
-                                            AddItem(Inventory.ItemType, kvp.Key, Price, Inventory.Stock, ItemStockInventory);
+                                            AddItem(Inventory.ItemType, kvp.Key, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                         }
                                     }
                                 }
@@ -138,7 +148,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string CraftableName in attemptToGetPack)
                                 {
-                                    AddItem(Inventory.ItemType, CraftableName, Price, Inventory.Stock, ItemStockInventory);
+                                    AddItem(Inventory.ItemType, CraftableName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                         }
@@ -149,7 +159,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string HatName in attemptToGetPack)
                                 {
-                                    AddItem(Inventory.ItemType, HatName, Price, Inventory.Stock, ItemStockInventory);
+                                    AddItem(Inventory.ItemType, HatName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                         }
@@ -160,7 +170,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string WeaponName in attemptToGetPack)
                                 {
-                                    AddItem(Inventory.ItemType, WeaponName, Price, Inventory.Stock, ItemStockInventory);
+                                    AddItem(Inventory.ItemType, WeaponName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                         }
@@ -171,51 +181,66 @@ namespace ShopTileFramework
                             {
                                 foreach (string ClothingName in ModEntry.JsonAssets.GetAllClothingFromContentPack(JAPack))
                                 {
-                                    AddItem(Inventory.ItemType, ClothingName, Price, Inventory.Stock, ItemStockInventory);
+                                    AddItem(Inventory.ItemType, ClothingName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
 
                         }
                     }
                 }
-                ModEntry.monitor.Log($"Randomizing {Inventory.ItemType}s and max stock is {Inventory.MaxNumItemsSoldInItemStock}", LogLevel.Debug);
-                randomizeStock(ItemStockInventory, Inventory.MaxNumItemsSoldInItemStock);
+                //randomly reduce the ItemStock's inventory to the specified MaxNumItemsSoldInItemStock
+                RandomizeStock(ItemStockInventory, Inventory.MaxNumItemsSoldInItemStock);
                 AddToItemPriceAndStock(ItemStockInventory);
 
             }
-            ModEntry.monitor.Log($"Randomizing {ShopName} and max stock is {MaxNumItemsSoldInStore}", LogLevel.Debug);
             //randomly reduce store's entire inventory to the specified MaxNumItemsSoldInStore
-            randomizeStock(ItemPriceAndStock, MaxNumItemsSoldInStore);
+            RandomizeStock(ItemPriceAndStock, MaxNumItemsSoldInStore);
         }
 
         private bool CheckConditions(string[] conditions)
         {
+            //TODO write this entire thing pls
             return true;
         }
 
         private void AddToItemPriceAndStock(Dictionary<ISalable, int[]> dict)
         {
-            foreach (var stuff in dict)
+            foreach (var kvp in dict)
             {
-                ItemPriceAndStock.Add(stuff.Key,stuff.Value);
+                ItemPriceAndStock.Add(kvp.Key, kvp.Value);
             }
         }
-        private void randomizeStock (Dictionary<ISalable, int[]> inventory, int MaxNum)
+        private static void RandomizeStock(Dictionary<ISalable, int[]> inventory, int MaxNum)
         {
             while (inventory.Count > MaxNum)
             {
                 inventory.Remove(inventory.Keys.ElementAt(random.Next(inventory.Count)));
             }
-            
+
         }
 
-        private void AddItem(String ItemType,int itemID,int Price, int Stock, Dictionary<ISalable, int[]> itemStockInventory)
+        private void AddItem(String ItemType, int itemID, int Price, int Stock, Dictionary<ISalable, int[]> itemStockInventory, int ItemCurrencyID = -1, int ItemCurrencyStack = -1)
         {
             var i = GetItem(ItemType, itemID);
             if (i != null)
             {
-                itemStockInventory.Add(i, new int[] { (Price == -1)
-                                                    ? i.salePrice() : Price, Stock });
+                int[] PriceStockCurrency;
+                var price = (Price == -1)? i.salePrice() : Price;
+                if (ItemCurrencyID == -1)
+                {
+                    PriceStockCurrency = new int[] { price, Stock };
+                    
+                } else if (ItemCurrencyStack == -1)
+                {
+                    ModEntry.monitor.Log($"I am passing in a currency item with ID of {ItemCurrencyID}", LogLevel.Warn);
+                    PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID };
+                } else
+                {
+                    PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID, ItemCurrencyStack };
+                }
+
+                itemStockInventory.Add(i, PriceStockCurrency);
+
             }
             else
             {
@@ -225,119 +250,118 @@ namespace ShopTileFramework
             }
         }
 
-        private void AddItem(String ItemType, String ItemName, int Price, int Stock, Dictionary<ISalable, int[]> itemStockInventory)
+        private void AddItem(String ItemType, String ItemName, int Price, int Stock, Dictionary<ISalable, int[]> itemStockInventory, int ItemCurrencyID = -1, int ItemCurrencyStack = -1)
         {
             var i = GetItem(ItemType, ItemName);
             if (i != null)
             {
-                itemStockInventory.Add(i, new int[] { (Price == -1)
-                                                    ? i.salePrice() : Price, Stock });
+                int[] PriceStockCurrency;
+                var price = (Price == -1) ? i.salePrice() : Price;
+                if (ItemCurrencyID == -1)
+                {
+                    PriceStockCurrency = new int[] { price, Stock };
+                }
+                else if (ItemCurrencyStack == -1)
+                {
+                    PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID };
+                }
+                else
+                {
+                    PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID, ItemCurrencyStack };
+                }
+                itemStockInventory.Add(i, PriceStockCurrency);
             }
             else
             {
-                ModEntry.monitor.Log($"{ItemType} named "  +
+                ModEntry.monitor.Log($"{ItemType} named " +
                     $"\"{ItemName}\" could not be added to {ShopName}",
                     LogLevel.Warn);
             }
         }
 
-        private Item GetItem(string objectType, int index)
+        private static Item GetItem(string objectType, int index)
         {
             Item item = null;
-            if (objectType == "Object")
+            if (index == -1)
             {
-                if (index != -1)
-                    item = new StardewValley.Object(index, 1);
+                return null;
             }
-            else if (objectType == "BigCraftable")
+            switch (objectType)
             {
-                if (index != -1)
-                    item = new StardewValley.Object(Vector2.Zero, index);
-            }
-            else if (objectType == "Clothing")
-            {
-                if (index != -1)
-                    item = new Clothing(index);
-            }
-            else if (objectType == "Ring")
-            {
-                if (index != -1)
-                    item = new Ring(index);
-            }
-            else if (objectType == "Hat")
-            {
-                if (index != -1)
-                    item = new Hat(index);
-            }
-            else if (objectType == "Boots")
-            {
-                if (index != -1)
-                    item = new Boots(index);
-            }
-            else if (objectType == "Furniture")
-            {
-                if (index != -1)
-                    item = new Furniture(index, Vector2.Zero);
-            }
-            else if (objectType == "Weapon")
-            {
-                if (index != -1)
-                    item = new MeleeWeapon(index);
-            }
 
+                case "Object":
+                        item = new StardewValley.Object(index, 1);
+                    break;
+                case "BigCraftable":
+                        item = new StardewValley.Object(Vector2.Zero, index);
+                    break;
+                case "Clothing":
+                        item = new Clothing(index);
+                    break;
+                case "Ring":
+                        item = new Ring(index);
+                    break;
+                case "Hat":
+                        item = new Hat(index);
+                    break;
+                case "Boots":
+                        item = new Boots(index);
+                    break;
+                case "Furniture":
+                        item = new Furniture(index, Vector2.Zero);
+                    break;
+                case "Weapon":
+                        item = new MeleeWeapon(index);
+                    break;
+            }
             return item;
         }
 
-        private Item GetItem(string objectType, string name)
+        private static Item GetItem(string objectType, string name)
         {
-            Item item = null;
             int index = -1;
 
-            if (name != null)
+            if (name == null)
             {
-                if (objectType == "Object")
-                {
+                return null;
+            }
+
+            switch (objectType)
+            {
+
+                case "Object":
                     index = GetIndexByName(name, Game1.objectInformation);
-                }
-                else if (objectType == "Ring")
-                {
+                    break;
+                case "BigCraftable":
                     index = GetIndexByName(name, Game1.bigCraftablesInformation);
-                }
-                else if (objectType == "BigCraftable")
-                {
-                    index = GetIndexByName(name, Game1.bigCraftablesInformation);
-                }
-                else if (objectType == "Clothing")
-                {
+                    break;
+                case "Clothing":
                     index = GetIndexByName(name, Game1.clothingInformation);
-                }
-                else if (objectType == "Hat")
-                {
+                    break;
+                case "Ring":
+                    index = GetIndexByName(name, Game1.objectInformation);
+                    break;
+                case "Hat":
                     index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>
                         (@"Data/hats", ContentSource.GameContent));
-                }
-                else if (objectType == "Boots")
-                {
+                    break;
+                case "Boots":
+                        index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>
+                            (@"Data/Boots", ContentSource.GameContent));
+                    break;
+                case "Furniture":
                     index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>
-                        (@"Data/Boots", ContentSource.GameContent));
-
-                }
-                else if (objectType == "Furniture")
-                {
+                            (@"Data/Furniture", ContentSource.GameContent));
+                    break;
+                case "Weapon":
                     index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>
-                        (@"Data/Furniture", ContentSource.GameContent));
-                }
-                else if (objectType == "Weapon")
-                {
-                    index = GetIndexByName(name, ModEntry.helper.Content.Load<Dictionary<int, string>>
-                        (@"Data/weapons", ContentSource.GameContent));
-                }
-                return GetItem(objectType, index);
+                            (@"Data/weapons", ContentSource.GameContent));
+                    break;
             }
-            return item;
+            return GetItem(objectType, index);
         }
 
-        private int GetIndexByName(string name, IDictionary<int, string> ObjectInfo)
+        private static int GetIndexByName(string name, IDictionary<int, string> ObjectInfo)
         {
             foreach (KeyValuePair<int, string> kvp in ObjectInfo)
             {
@@ -351,7 +375,24 @@ namespace ShopTileFramework
 
         public void DisplayShop()
         {
-            Game1.activeClickableMenu = new ShopMenu(ItemPriceAndStock);
+            int currency = 0;
+            switch(StoreCurrency){
+                case "festivalScore":
+                    currency = 1;
+                    break;
+                case "clubCoins":
+                    currency = 2;
+                    break;
+            }
+
+            var ShopMenu = new ShopMenu(ItemPriceAndStock,
+                currency: currency);
+            ShopMenu.portraitPerson = new NPC
+            {
+                Portrait = Portrait
+            };
+            ShopMenu.potraitPersonDialogue = Game1.parseText(Quote, Game1.dialogueFont, 304);
+            Game1.activeClickableMenu = ShopMenu;
         }
     }
 }

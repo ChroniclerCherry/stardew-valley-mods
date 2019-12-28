@@ -150,20 +150,20 @@ namespace ShopTileFramework
         {
             if (args.Length == 0)
             {
-                Monitor.Log($"A shop name must is required");
+                Monitor.Log($"A shop name must is required",LogLevel.Debug);
                 return;
             }
 
             if (!Context.IsPlayerFree)
             {
-                Monitor.Log($"Can't display a menu right now");
+                Monitor.Log($"Can't display a menu right now", LogLevel.Debug);
                 return;
             }
 
             Shops.TryGetValue(args[0], out Shop value);
             if (value == null)
             {
-                Monitor.Log($"No shop with a name of {args[0]} was found.");
+                Monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
             } else
             {
                 value.DisplayShop();
@@ -174,7 +174,7 @@ namespace ShopTileFramework
         {
             if (args.Length == 0)
             {
-                Monitor.Log($"A shop name must is required");
+                Monitor.Log($"A shop name must is required", LogLevel.Debug);
                 return;
             }
 
