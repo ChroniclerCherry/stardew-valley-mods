@@ -2,7 +2,7 @@
 
 ## Navigation
 - [Intro](#intro)
-- [Intro](#requirements)
+- [Requirements](#requirements)
 - [Create a Content Pack](#create-a-content-pack)
 - [Example](#example)
 - [Adding store to the game](#adding-store-to-the-game)
@@ -12,11 +12,11 @@
 
 **This page is a resource for modders to create a custom shop. If you're a player, check out [this link](https://www.nexusmods.com/stardewvalley/mods/5005) instead**
 
-Shop Tile Framework (STF) is a tool for Modders of the game Stardew Valley, which allows you to define shops via a shops.json file. These shops are attached to tile properties which can be loaded anywhere into the game with another method. Content packs need a `shops.json` to define their shops
+Shop Tile Framework (STF) is a tool for Modders of the game Stardew Valley, which allows you to define shops via a shops.json file. These shops are attached to tile properties which can be loaded anywhere into the game with another method. Content packs need a `shops.json` to define their shops.
+
+STF lets you fully customize what items are sold and how many, under what conditions etc, as well the currency used in the store: money, casino coins, festival score, and even items just like the vanilla desert trader.
 
 Shops can be opened with a custom tile property of "Shop" and a value of the ShopName defined in `shops.json`
-
-STF lets you fully customize what items are sold and how many, 
 
 ## Requirements
 STF is a standalone SMAPI mod with no prerequesites other than the newest version of SMAPI. However there is optional support for items added in with [Json Assets](https://www.nexusmods.com/stardewvalley/mods/1720). Custom JA items can be added to shops by item name or by content pack.
