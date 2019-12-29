@@ -57,7 +57,7 @@ StockItemCurrency | Y | string | You can specify an Object by name as the curren
 StockCurrencyStack | Y | int | The number of the `StockItemCurrency` it costs for each item. Defaults to 1
 ItemIDs | Y/N | Array of ints | Adds a list of items by their IDS. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
 ItemNames | Y/N | Array of strings | Adds a list of items by their internal names. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
-JAPacks | Y/N | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and Trees added through `JAPacks` specified with `ItemType` will sell the products, while `Seed` will sell the seeds/saplings.
+JAPacks | Y/N | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and Trees added through `JAPacks` specified with `Object` will sell the products, while `Seed` will sell the seeds/saplings.
 Stock | Y | int | How many of each item is available to buy per day. If not set, the stock is unlimited
 MaxNumItemsSoldInItemStock | Y | int | The number of different items available from this ItemStock. If there are more items in this ItemStock than `MaxNumItemsSoldInItemStock` a random set will be picked per day.
 When | Y | Array of strings | A condition for the items in this ItemStock to appear. Currently takes all valid vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions). **Warning:** Avoid checks like `t` and `a` as they only check conditions at the start of the day, not when the user opens the shop menu
@@ -172,7 +172,7 @@ The store defined in the above json can be opened by clicking on a tile with the
 
 The empty `Action` Property is optional; it just changes the appearance of the game cursor when hovering over a shop to make it clear that it is interactable. These tile properties can be loaded into the game with any other method usually used to load in maps. Content Patcher, TMXL, or SMAPI mods can all add the property along with the shop itself. More info about modding maps can be found [here](https://stardewvalleywiki.com/Modding:Maps)
 
-Shops can also be added into the game via a SMAPI mod. TSF provides an API that lets you register new shops, and programatically open them in-game, reset their stock, or directly change their stock.
+Shops can also be added into the game via a SMAPI mod. TSF provides an API that lets you register new shops, and programatically open them in-game, reset their stock, or directly change their stock. **Not yet functional**
 
 ## Console Commands
 

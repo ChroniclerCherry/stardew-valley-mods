@@ -19,7 +19,7 @@ namespace ShopTileFramework
         private readonly int ShopPrice;
         internal ItemStock[] ItemStocks { get; set; }
         private readonly int MaxNumItemsSoldInStore;
-        internal Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
+        public Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
         private readonly string StoreCurrency;
         private List<int> CategoriesToSellHere;
 

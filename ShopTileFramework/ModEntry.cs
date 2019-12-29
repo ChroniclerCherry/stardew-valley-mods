@@ -11,7 +11,7 @@ namespace ShopTileFramework
         public static IModHelper helper;
         public static IMonitor monitor;
         public static IJsonAssetsApi JsonAssets;
-        internal static Dictionary<string, Shop> Shops;
+        public static Dictionary<string, Shop> Shops;
         public override void Entry(IModHelper h)
         {
             //make helper and monitor static so they can be accessed in other classes
@@ -34,7 +34,7 @@ namespace ShopTileFramework
 
         public override object GetApi()
         {
-            return new API();
+            return new Api();
         }
 
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)

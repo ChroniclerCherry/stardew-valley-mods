@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace ShopTileFramework
 {
-    public interface IAPI
+    public interface IApi
     {
         bool RegisterShops(string dir);
         bool OpenShop(string ShopName);
         bool ResetShop(string ShopName);
         Dictionary<ISalable, int[]> GetItemPriceAndStock(string ShopName);
     }
-    class API : IAPI
+    class Api : IApi
     {
 
         public bool RegisterShops(string dir)
