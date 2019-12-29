@@ -14,14 +14,14 @@ namespace ShopTileFramework
     class Shop
     {
         public string ShopName;
-        private static Random random = new Random();
-        private Texture2D Portrait = null;
-        private string Quote;
-        private int ShopPrice;
-        private ItemStock[] ItemStocks;
-        private int MaxNumItemsSoldInStore;
+        private static readonly Random random = new Random();
+        private readonly Texture2D Portrait = null;
+        private readonly string Quote;
+        private readonly int ShopPrice;
+        private readonly ItemStock[] ItemStocks;
+        private readonly int MaxNumItemsSoldInStore;
         public Dictionary<ISalable, int[]> ItemPriceAndStock;
-        private string StoreCurrency;
+        private readonly string StoreCurrency;
 
         private static Dictionary<string, IDictionary<int, string>> ObjectInfoSource;
         public Shop(ShopPack pack, IContentPack contentPack)
@@ -49,14 +49,14 @@ namespace ShopTileFramework
 
         public void UpdateItemPriceAndStock()
         {
-            ModEntry.monitor.Log($"Generating stock for {ShopName}", LogLevel.Trace);
+            ModEntry.monitor.Log($"Generating stock for {ShopName}", LogLevel.Debug);
             //list of all items from this ItemStock
             ItemPriceAndStock = new Dictionary<ISalable, int[]>();
 
             foreach (ItemStock Inventory in ItemStocks)
             {
 
-                if (!CheckConditions(Inventory.When))
+                if (Inventory.When != null && !CheckConditions(Inventory.When))
                     continue;
 
                 if (!ObjectInfoSource.ContainsKey(Inventory.ItemType))
@@ -204,7 +204,17 @@ namespace ShopTileFramework
 
         private bool CheckConditions(string[] conditions)
         {
-            //TODO write this entire thing pls
+            string Preconditions = "-1/";
+            foreach (string con in conditions)
+            {
+                Preconditions += con + '/';
+            }
+
+            int checkedCondition = ModEntry.helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition").Invoke<int>(Preconditions);
+
+            if (checkedCondition == -1)
+                return false;
+
             return true;
         }
 
@@ -342,6 +352,7 @@ namespace ShopTileFramework
 
         public static void GetObjectInfoSource()
         {
+            //load up all the object information into a static dictionary
             ObjectInfoSource = new Dictionary<string, IDictionary<int, string>>
             {
                 { "Object", Game1.objectInformation },
@@ -397,11 +408,19 @@ namespace ShopTileFramework
 
             var ShopMenu = new ShopMenu(ItemPriceAndStock,
                 currency: currency);
-            ShopMenu.portraitPerson = new NPC
+            if (Portrait != null)
             {
-                Portrait = Portrait
-            };
-            ShopMenu.potraitPersonDialogue = Game1.parseText(Quote, Game1.dialogueFont, 304);
+                ShopMenu.portraitPerson = new NPC
+                {
+                    Portrait = Portrait
+                };
+            }
+
+            if (Quote != null)
+            {
+                ShopMenu.potraitPersonDialogue = Game1.parseText(Quote, Game1.dialogueFont, 304);
+            }
+            
             Game1.activeClickableMenu = ShopMenu;
         }
     }

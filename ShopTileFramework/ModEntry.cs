@@ -25,8 +25,8 @@ namespace ShopTileFramework
             helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
             helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
 
-            helper.ConsoleCommands.Add("display_shop", "Opens up a custom shop's menu. \n\nUsage: display_shop <ShopName>\n-ShopName: the name of the shop to open", this.DisplayShopMenus);
-            helper.ConsoleCommands.Add("reset_shop_stock", "Resets the stock of specified shop. Rechecks conditions and randomizations\n\nUsage: reset_shop_stock <ShopName>\n-ShopName: the name of the shop to reset", this.ResetShopStock);
+            helper.ConsoleCommands.Add("open_shop", "Opens up a custom shop's menu. \n\nUsage: display_shop <ShopName>\n-ShopName: the name of the shop to open", this.DisplayShopMenus);
+            helper.ConsoleCommands.Add("reset_shop", "Resets the stock of specified shop. Rechecks conditions and randomizations\n\nUsage: reset_shop_stock <ShopName>\n-ShopName: the name of the shop to reset", this.ResetShopStock);
             helper.ConsoleCommands.Add("list_shops", "Lists all shops registered with Shop Tile Framework", this.ListAllShops);
 
             LoadContentPacks();
@@ -160,18 +160,18 @@ namespace ShopTileFramework
                 return;
             }
 
-            if (!Context.IsPlayerFree)
-            {
-                Monitor.Log($"Can't display a menu right now", LogLevel.Debug);
-                return;
-            }
-
             Shops.TryGetValue(args[0], out Shop value);
             if (value == null)
             {
                 Monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
             } else
             {
+                if (!Context.IsPlayerFree)
+                {
+                    Monitor.Log($"Can't display a menu right now", LogLevel.Debug);
+                    return;
+                }
+
                 value.DisplayShop();
             }
         }
@@ -187,10 +187,15 @@ namespace ShopTileFramework
             Shops.TryGetValue(args[0], out Shop value);
             if (value == null)
             {
-                Monitor.Log($"No shop with a name of {args[0]} was found.");
+                Monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
             }
             else
             {
+                if (!Context.IsPlayerFree)
+                {
+                    Monitor.Log($"Shop stock can't be updated at this time", LogLevel.Debug);
+                    return;
+                }
                 value.UpdateItemPriceAndStock();
             }
         }
@@ -199,12 +204,12 @@ namespace ShopTileFramework
         {
             if (Shops.Count == 0)
             {
-                Monitor.Log($"No shops were found");
+                Monitor.Log($"No shops were found", LogLevel.Debug);
             } else
             {
                 foreach (string k in Shops.Keys)
                 {
-                    Monitor.Log(k);
+                    Monitor.Log(k, LogLevel.Debug);
                 }
             }
         }

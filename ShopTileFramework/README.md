@@ -50,7 +50,7 @@ ItemNames | Y/N | Array of strings | Adds a list of items by their internal name
 JAPacks | Y/N | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and trees will sell their seeds/saplings. If you want to sell the produce themselves, they should be specified in the `ItemNames` section instead. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
 Stock | Y | int | How many of each item is available to buy per day. If not set, the stock is unlimited
 MaxNumItemsSoldInItemStock | Y | int | The number of different items available from this ItemStock. If there are more items in this ItemStock than `MaxNumItemsSoldInItemStock` a random set will be picked per day.
-When | Y | Array of strings | A condition for the items in this ItemStock to appear. Currently takes [valid event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions)
+When | Y | Array of strings | A condition for the items in this ItemStock to appear. Currently takes all valid vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions). **Warning:** Avoid checks like `t` and `a` as they only check conditions at the start of the day, not when the user opens the shop menu
 
 Possible `ItemType` determine which file from the game's `Contents` folder the item data is obtained from.
 
@@ -82,14 +82,18 @@ Example shops.json with all available options:
       "ItemStocks": [
         {
           "ItemType": "Clothing",
-          "StockItemCurrency":"Parsnip",
+		  "StockItemCurrency":"Parsnip",
           "StockPrice": 0,
-          "StockCurrencyStack": 5,
-          "JAPacks": [
-		"missy.shirtsja",
+		  "StockCurrencyStack": 5,
+		  "JAPacks": [
+			"missy.shirtsja",
           ],
           "Stock": 4,
           "MaxNumItemsSoldInItemStock": 5,
+		  "When":[
+		  "f Haley 1500",
+		  "z winter",
+		  ]
         },
         {
           "ItemType": "Clothing",
@@ -160,6 +164,6 @@ A few console commands are added to SMAPI in order to help with debugging. Type 
 
 Command | Description
 ------------ | -------------
- `display_shop <ShopName>` | Will open up the shop with the specified `ShopName`. Useful for testing without adding in a tile property / needing to go to the shop location
- `reset_shop_stock <ShopName>` | Will reset the stock of the specified `ShopName`, which usually happens at the start of each day. Useful for checking that your conditions are applying / stock is randomizing as you'd like'
+ `open_shop<ShopName>` | Will open up the shop with the specified `ShopName`. Useful for testing without adding in a tile property / needing to go to the shop location
+ `reset_shop <ShopName>` | Will reset the stock of the specified `ShopName`, which usually happens at the start of each day. Useful for checking that your conditions are applying / stock is randomizing as you'd like'
  `list_shops` | Lists all of the `ShopName`s registered with Shop Tile Framework
