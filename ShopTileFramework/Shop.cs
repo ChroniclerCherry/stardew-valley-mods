@@ -123,6 +123,9 @@ namespace ShopTileFramework
                                         }
                                     }
                                 }
+                            } else
+                            {
+                                ModEntry.monitor.Log($"No Crops from {JAPack} could not be found. No seeds are added.", LogLevel.Trace);
                             }
                             var FruitTreeData = ModEntry.helper.Content.Load<Dictionary<int,
                                 string>>(@"Data/fruitTrees", ContentSource.GameContent);
@@ -144,6 +147,10 @@ namespace ShopTileFramework
                                     }
                                 }
                             }
+                            else
+                            {
+                                ModEntry.monitor.Log($"No Trees from {JAPack} could not be found. No saplings are added.", LogLevel.Trace);
+                            }
 
                         }
                         else if (Inventory.ItemType == "BigCraftable")
@@ -156,6 +163,10 @@ namespace ShopTileFramework
                                     AddItem(Inventory.ItemType, CraftableName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
+                            else
+                            {
+                                ModEntry.monitor.Log($"No BigCraftable from {JAPack} could not be found. No items are added.", LogLevel.Trace);
+                            }
                         }
                         else if (Inventory.ItemType == "Hat")
                         {
@@ -166,6 +177,10 @@ namespace ShopTileFramework
                                 {
                                     AddItem(Inventory.ItemType, HatName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
+                            }
+                            else
+                            {
+                                ModEntry.monitor.Log($"No Hats from {JAPack} could not be found. No items are added.", LogLevel.Trace);
                             }
                         }
                         else if (Inventory.ItemType == "Weapon")
@@ -178,6 +193,10 @@ namespace ShopTileFramework
                                     AddItem(Inventory.ItemType, WeaponName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
+                            else
+                            {
+                                ModEntry.monitor.Log($"No Weapons from {JAPack} could not be found. No items are added.", LogLevel.Trace);
+                            }
                         }
                         else if (Inventory.ItemType == "Clothing")
                         {
@@ -188,6 +207,10 @@ namespace ShopTileFramework
                                 {
                                     AddItem(Inventory.ItemType, ClothingName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
+                            }
+                            else
+                            {
+                                ModEntry.monitor.Log($"No Clothing from {JAPack} could not be found. No items are added.", LogLevel.Trace);
                             }
 
                         }
@@ -236,7 +259,7 @@ namespace ShopTileFramework
 
         private void AddItem(String ItemType, int itemID, int Price, int Stock, Dictionary<ISalable, int[]> itemStockInventory, int ItemCurrencyID = -1, int ItemCurrencyStack = -1)
         {
-            var i = GetItem(ItemType, itemID);
+            var i = GetItem(ItemType, itemID, Stock);
             if (i != null)
             {
                 int[] PriceStockCurrency;
@@ -266,7 +289,7 @@ namespace ShopTileFramework
 
         private void AddItem(String ItemType, String ItemName, int Price, int Stock, Dictionary<ISalable, int[]> itemStockInventory, int ItemCurrencyID = -1, int ItemCurrencyStack = -1)
         {
-            var i = GetItem(ItemType, ItemName);
+            var i = GetItem(ItemType, ItemName, Stock);
             if (i != null)
             {
                 int[] PriceStockCurrency;
@@ -293,7 +316,7 @@ namespace ShopTileFramework
             }
         }
 
-        private static Item GetItem(string objectType, int index)
+        private static Item GetItem(string objectType, int index, int stock)
         {
             Item item = null;
             if (index == -1)
@@ -304,10 +327,10 @@ namespace ShopTileFramework
             {
 
                 case "Object":
-                        item = new StardewValley.Object(index, 1);
+                        item = new StardewValley.Object(index, stock);
                     break;
                 case "BigCraftable":
-                        item = new StardewValley.Object(Vector2.Zero, index);
+                        item = new StardewValley.Object(Vector2.Zero, index, stock);
                     break;
                 case "Clothing":
                         item = new Clothing(index);
@@ -331,7 +354,7 @@ namespace ShopTileFramework
             return item;
         }
 
-        private static Item GetItem(string objectType, string name)
+        private static Item GetItem(string objectType, string name, int stock)
         {
 
             if (name == null)
@@ -342,7 +365,7 @@ namespace ShopTileFramework
             ObjectInfoSource.TryGetValue(objectType, out var InfoSource);
             if (InfoSource != null)
             {
-                return GetItem(objectType, GetIndexByName(name, InfoSource));
+                return GetItem(objectType, GetIndexByName(name, InfoSource), stock);
             } else
             {
                 return null;

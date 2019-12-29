@@ -25,8 +25,8 @@ namespace ShopTileFramework
             helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
             helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
 
-            helper.ConsoleCommands.Add("open_shop", "Opens up a custom shop's menu. \n\nUsage: display_shop <ShopName>\n-ShopName: the name of the shop to open", this.DisplayShopMenus);
-            helper.ConsoleCommands.Add("reset_shop", "Resets the stock of specified shop. Rechecks conditions and randomizations\n\nUsage: reset_shop_stock <ShopName>\n-ShopName: the name of the shop to reset", this.ResetShopStock);
+            helper.ConsoleCommands.Add("open_shop", "Opens up a custom shop's menu. \n\nUsage: open_shop <ShopName>\n-ShopName: the name of the shop to open", this.DisplayShopMenus);
+            helper.ConsoleCommands.Add("reset_shop", "Resets the stock of specified shop. Rechecks conditions and randomizations\n\nUsage: reset_shop <ShopName>\n-ShopName: the name of the shop to reset", this.ResetShopStock);
             helper.ConsoleCommands.Add("list_shops", "Lists all shops registered with Shop Tile Framework", this.ListAllShops);
 
             LoadContentPacks();
