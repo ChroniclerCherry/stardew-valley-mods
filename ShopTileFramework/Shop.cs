@@ -18,9 +18,9 @@ namespace ShopTileFramework
         private readonly Texture2D Portrait = null;
         private readonly string Quote;
         private readonly int ShopPrice;
-        private readonly ItemStock[] ItemStocks;
+        internal ItemStock[] ItemStocks { get; set; }
         private readonly int MaxNumItemsSoldInStore;
-        private Dictionary<ISalable, int[]> ItemPriceAndStock;
+        internal Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
         private readonly string StoreCurrency;
         private List<int> CategoriesToSellHere;
 

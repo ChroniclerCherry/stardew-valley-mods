@@ -11,7 +11,7 @@ namespace ShopTileFramework
         public static IModHelper helper;
         public static IMonitor monitor;
         public static IJsonAssetsApi JsonAssets;
-        private Dictionary<string, Shop> Shops { get; set; }
+        internal static Dictionary<string, Shop> Shops;
         public override void Entry(IModHelper h)
         {
             //make helper and monitor static so they can be accessed in other classes
@@ -30,6 +30,11 @@ namespace ShopTileFramework
             helper.ConsoleCommands.Add("list_shops", "Lists all shops registered with Shop Tile Framework", this.ListAllShops);
 
             LoadContentPacks();
+        }
+
+        public override object GetApi()
+        {
+            return new API();
         }
 
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
@@ -103,6 +108,24 @@ namespace ShopTileFramework
                 return null;
 
             return checkTile.Properties;
+        }
+
+        public static void RegisterShops(ContentModel data, IContentPack contentPack)
+        {
+            foreach (ShopPack s in data.Shops)
+            {
+                if (Shops.ContainsKey(s.ShopName))
+                {
+                    monitor.Log($"A mod is trying to add a Shop \"{s.ShopName}\"," +
+                        $" but a shop of this name has already been added. " +
+                        $"It will not be added.", LogLevel.Warn);
+                }
+                else
+                {
+                    var shop = new Shop(s, contentPack);
+                    Shops.Add(s.ShopName, shop);
+                }
+            }
         }
 
         private void LoadContentPacks()

@@ -167,9 +167,9 @@ The store defined in the above json can be opened by clicking on a tile with the
 
 ![Example tile properties](https://media.discordapp.net/attachments/305520470114172928/659874803498614795/unknown.png)
 
-The empty `Action` Property is optional; it just changes the appearance of the game cursor when hovering over a shop to make it clear that it is interactable
+The empty `Action` Property is optional; it just changes the appearance of the game cursor when hovering over a shop to make it clear that it is interactable. These tile properties can be loaded into the game with any other method usually used to load in maps. Content Patcher, TMXL, or SMAPI mods can all add the property along with the shop itself. More info about modding maps can be found [here](https://stardewvalleywiki.com/Modding:Maps)
 
-These tile properties can be loaded into the game with any other method usually used to load in maps. Content Patcher, TMXL, or SMAPI mods can all add the property along with the shop itself. More info about modding maps can be found [here](https://stardewvalleywiki.com/Modding:Maps)
+Shops can also be added into the game via a SMAPI mod. TSF provides an API that lets you register new shops, and programatically open them in-game, reset their stock, or directly change their stock.
 
 ## Console Commands
 
