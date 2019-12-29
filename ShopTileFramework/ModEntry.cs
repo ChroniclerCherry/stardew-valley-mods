@@ -118,7 +118,7 @@ namespace ShopTileFramework
                 else
                 {
                     ContentModel data = contentPack.ReadJsonFile<ContentModel>("shops.json");
-                    Monitor.Log($"{contentPack.Manifest.Name} by {contentPack.Manifest.Author}| " +
+                    Monitor.Log($"{contentPack.Manifest.Name} by {contentPack.Manifest.Author} | " +
                         $"{contentPack.Manifest.Version} | {contentPack.Manifest.Description}", LogLevel.Info);
                     foreach (ShopPack s in data.Shops)
                     {
@@ -217,6 +217,7 @@ namespace ShopTileFramework
 
     public interface IJsonAssetsApi
     {
+        List<string> GetAllObjectsFromContentPack(string cp);
         List<string> GetAllCropsFromContentPack(string cp);
         List<string> GetAllFruitTreesFromContentPack(string cp);
         List<string> GetAllBigCraftablesFromContentPack(string cp);

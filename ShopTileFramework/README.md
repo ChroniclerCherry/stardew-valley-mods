@@ -38,6 +38,7 @@ Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
 ShopName | N | string | The name of the shop is the value of the tile property used to open this shop in-game. It must be unique among all downloaded mods.
 StoreCurrency | Y | string | The currency this store uses. Defaults to `"Money"` if not specified, but can also be `"festivalScore"` or `"clubCoins"`
+CategoriesToSellHere | Y | List of ints | The negative numbers for [categories](https://stardewvalleywiki.com/Modding:Object_data#Categories) of items the player can sell at this shop
 PortraitPath | Y | string | The relative path to the image used as the portrait for this shop from the content pack's folder. If not provided, no portrait will be drawn
 Quote | Y | string | A quote displayed on the shop menu screen. If not provided, no quote will appear
 ShopPrice | Y | int | Sets the price of every item in the store to this if set.
@@ -83,6 +84,10 @@ Example shops.json with all available options:
     {
       "ShopName": "MyShop",
       "StoreCurrency": "festivalScore",
+      "CategoriesToSellHere":[
+                        -81,
+                        -75,
+                        ],
       "PortraitPath": "assets/Portrait.png",
       "Quote": "This is a store!",
       "ShopPrice": 80,

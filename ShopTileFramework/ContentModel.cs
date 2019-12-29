@@ -1,4 +1,6 @@
-﻿namespace ShopTileFramework
+﻿using System.Collections.Generic;
+
+namespace ShopTileFramework
 {
     class ContentModel
     {
@@ -9,6 +11,7 @@
     {
         public string ShopName { get; set; }
         public string StoreCurrency { get; set; } = "Money";
+        public List<int> CategoriesToSellHere { get; set; } = null;
         public string PortraitPath { get; set; } = null;
         public string Quote { get; set; } = null;
         public int ShopPrice { get; set; } = -1;

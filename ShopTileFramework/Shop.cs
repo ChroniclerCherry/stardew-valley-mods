@@ -20,8 +20,9 @@ namespace ShopTileFramework
         private readonly int ShopPrice;
         private readonly ItemStock[] ItemStocks;
         private readonly int MaxNumItemsSoldInStore;
-        public Dictionary<ISalable, int[]> ItemPriceAndStock;
+        private Dictionary<ISalable, int[]> ItemPriceAndStock;
         private readonly string StoreCurrency;
+        private List<int> CategoriesToSellHere;
 
         private static Dictionary<string, IDictionary<int, string>> ObjectInfoSource;
         public Shop(ShopPack pack, IContentPack contentPack)
@@ -29,6 +30,7 @@ namespace ShopTileFramework
             ShopName = pack.ShopName;
             ShopPrice = pack.ShopPrice;
             StoreCurrency = pack.StoreCurrency;
+            CategoriesToSellHere = pack.CategoriesToSellHere;
             ItemStocks = pack.ItemStocks;
             Quote = pack.Quote;
             MaxNumItemsSoldInStore = pack.MaxNumItemsSoldInStore;
@@ -65,6 +67,7 @@ namespace ShopTileFramework
                     continue;
                 }
 
+
                 int CurrencyItemID = GetIndexByName(Inventory.StockItemCurrency,Game1.objectInformation);
 
                 int CurrencyItemStack = Inventory.StockCurrencyStack;
@@ -94,10 +97,9 @@ namespace ShopTileFramework
                         AddItem(Inventory.ItemType, ItemName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                     }
                 }
-
-                //add in all items from specified JA packs
+                
                 if (Inventory.JAPacks != null && ModEntry.JsonAssets != null)
-                {
+                {   //add in all items from specified JA packs
                     foreach (var JAPack in Inventory.JAPacks)
                     {
                         ModEntry.monitor.Log($"Adding objects from JA pack {JAPack}", LogLevel.Trace);
@@ -152,6 +154,19 @@ namespace ShopTileFramework
                                 ModEntry.monitor.Log($"No Trees from {JAPack} could not be found. No saplings are added.", LogLevel.Trace);
                             }
 
+                            //add all other objects from the JA pack
+                            attemptToGetPack = ModEntry.JsonAssets.GetAllObjectsFromContentPack(JAPack);
+                            if (attemptToGetPack != null)
+                            {
+                                foreach (string ItemName in attemptToGetPack)
+                                {
+                                    AddItem(Inventory.ItemType, ItemName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                }
+                            }
+                            else
+                            {
+                                ModEntry.monitor.Log($"No Objects from {JAPack} could be found. No items are added.", LogLevel.Trace);
+                            }
                         }
                         else if (Inventory.ItemType == "BigCraftable")
                         {
@@ -431,6 +446,7 @@ namespace ShopTileFramework
 
             var ShopMenu = new ShopMenu(ItemPriceAndStock,
                 currency: currency);
+            ShopMenu.categoriesToSellHere = CategoriesToSellHere;
             if (Portrait != null)
             {
                 ShopMenu.portraitPerson = new NPC
