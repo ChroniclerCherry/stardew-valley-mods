@@ -4,6 +4,7 @@
 - [Intro](#intro)
 - [Requirements](#requirements)
 - [Create a Content Pack](#create-a-content-pack)
+    -[Item Types](#itemtypes)
 - [Example](#example)
 - [Adding store to the game](#adding-store-to-the-game)
 - [Console Commands](#console-commands)
@@ -56,11 +57,12 @@ StockItemCurrency | Y | string | You can specify an Object by name as the curren
 StockCurrencyStack | Y | int | The number of the `StockItemCurrency` it costs for each item. Defaults to 1
 ItemIDs | Y/N | Array of ints | Adds a list of items by their IDS. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
 ItemNames | Y/N | Array of strings | Adds a list of items by their internal names. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
-JAPacks | Y/N | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and trees will sell their seeds/saplings. If you want to sell the produce themselves, they should be specified in the `ItemNames` section instead. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
+JAPacks | Y/N | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and Trees added through `JAPacks` specified with `ItemType` will sell the products, while `Seed` will sell the seeds/saplings.
 Stock | Y | int | How many of each item is available to buy per day. If not set, the stock is unlimited
 MaxNumItemsSoldInItemStock | Y | int | The number of different items available from this ItemStock. If there are more items in this ItemStock than `MaxNumItemsSoldInItemStock` a random set will be picked per day.
 When | Y | Array of strings | A condition for the items in this ItemStock to appear. Currently takes all valid vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions). **Warning:** Avoid checks like `t` and `a` as they only check conditions at the start of the day, not when the user opens the shop menu
 
+### ItemTypes
 Possible `ItemType` determine which file from the game's `Contents` folder the item data is obtained from.
 
 ItemType | Source | Notes
@@ -75,6 +77,7 @@ ItemType | Source | Notes
 "Weapon" | [`data/weapons.json`](https://stardewvalleywiki.com/Modding:Weapon_data) |
 "Wallpaper" | Maps/walls_and_floors.png | Wallpapers have no name and thus have to be specified by `ItemIDs`
 "Floors" | Maps/walls_and_floors.png | Floors have no name and thus have to be specified by `ItemIDs`
+"Seed" | JA Packs Only | Use this ItemType if adding custom crops through `JAPacks` and you want the seeds/saplings instead of the produce
 
 ## Example
 Example shops.json with all available options:

@@ -83,6 +83,7 @@ namespace ShopTileFramework
             string ShopName = shopProperty.ToString();
             if (Shops.ContainsKey(ShopName))
             {
+
                 helper.Input.Suppress(e.Button);
                 Shops[ShopName].DisplayShop();
             } else

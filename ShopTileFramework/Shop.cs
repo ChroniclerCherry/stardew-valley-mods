@@ -14,7 +14,6 @@ namespace ShopTileFramework
     class Shop
     {
         public string ShopName;
-        private static readonly Random random = new Random();
         private readonly Texture2D Portrait = null;
         private readonly string Quote;
         private readonly int ShopPrice;
@@ -61,7 +60,7 @@ namespace ShopTileFramework
                 if (Inventory.When != null && !CheckConditions(Inventory.When))
                     continue;
 
-                if (!ObjectInfoSource.ContainsKey(Inventory.ItemType))
+                if (Inventory.ItemType != "Seed" && !ObjectInfoSource.ContainsKey(Inventory.ItemType))
                 {
                     ModEntry.monitor.Log($"\"{Inventory.ItemType}\" is not a valid ItemType. Some items will not be added.",LogLevel.Warn);
                     continue;
@@ -104,8 +103,9 @@ namespace ShopTileFramework
                     {
                         ModEntry.monitor.Log($"Adding objects from JA pack {JAPack}", LogLevel.Trace);
 
-                        if (Inventory.ItemType == "Object")
+                        if (Inventory.ItemType == "Seed")
                         {
+                            //add seeds
                             var ObjectData = Game1.objectInformation;
                             var CropData = ModEntry.helper.Content.Load<Dictionary<int,
                                 string>>(@"Data/Crops", ContentSource.GameContent);
@@ -121,14 +121,17 @@ namespace ShopTileFramework
                                         Int32.TryParse(kvp.Value.Split('/')[2], out int id);
                                         if (CropID == id)
                                         {
-                                            AddItem(Inventory.ItemType, kvp.Key, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                            AddItem("Object", kvp.Key, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                         }
                                     }
                                 }
-                            } else
+                            }
+                            else
                             {
                                 ModEntry.monitor.Log($"No Crops from {JAPack} could not be found. No seeds are added.", LogLevel.Trace);
                             }
+
+                            //add tree saplings
                             var FruitTreeData = ModEntry.helper.Content.Load<Dictionary<int,
                                 string>>(@"Data/fruitTrees", ContentSource.GameContent);
                             attemptToGetPack = ModEntry.JsonAssets.GetAllFruitTreesFromContentPack(JAPack);
@@ -144,7 +147,7 @@ namespace ShopTileFramework
                                         Int32.TryParse(kvp.Value.Split('/')[0], out int id);
                                         if (TreeID == id)
                                         {
-                                            AddItem(Inventory.ItemType, kvp.Key, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                            AddItem("Object", kvp.Key, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                         }
                                     }
                                 }
@@ -153,9 +156,13 @@ namespace ShopTileFramework
                             {
                                 ModEntry.monitor.Log($"No Trees from {JAPack} could not be found. No saplings are added.", LogLevel.Trace);
                             }
+                        }
+                        else if (Inventory.ItemType == "Object")
+                        {
+                            
 
                             //add all other objects from the JA pack
-                            attemptToGetPack = ModEntry.JsonAssets.GetAllObjectsFromContentPack(JAPack);
+                            var attemptToGetPack = ModEntry.JsonAssets.GetAllObjectsFromContentPack(JAPack);
                             if (attemptToGetPack != null)
                             {
                                 foreach (string ItemName in attemptToGetPack)
@@ -242,10 +249,10 @@ namespace ShopTileFramework
 
         private bool CheckConditions(string[] conditions)
         {
-            string Preconditions = "-1/";
+            string Preconditions = "-1";
             foreach (string con in conditions)
             {
-                Preconditions += con + '/';
+                Preconditions += '/' + con;
             }
 
             int checkedCondition = ModEntry.helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition").Invoke<int>(Preconditions);
@@ -267,7 +274,7 @@ namespace ShopTileFramework
         {
             while (inventory.Count > MaxNum)
             {
-                inventory.Remove(inventory.Keys.ElementAt(random.Next(inventory.Count)));
+                inventory.Remove(inventory.Keys.ElementAt(Game1.random.Next(inventory.Count)));
             }
 
         }
@@ -446,7 +453,8 @@ namespace ShopTileFramework
 
             var ShopMenu = new ShopMenu(ItemPriceAndStock,
                 currency: currency);
-            ShopMenu.categoriesToSellHere = CategoriesToSellHere;
+            if (CategoriesToSellHere != null)
+                ShopMenu.categoriesToSellHere = CategoriesToSellHere;
             if (Portrait != null)
             {
                 ShopMenu.portraitPerson = new NPC
