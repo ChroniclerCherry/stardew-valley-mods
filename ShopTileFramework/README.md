@@ -2,6 +2,7 @@
 
 ## Navigation
 - [Intro](#intro)
+- [Intro](#requirements)
 - [Create a Content Pack](#create-a-content-pack)
 - [Example](#example)
 - [Adding store to the game](#adding-store-to-the-game)
@@ -11,9 +12,16 @@
 
 **This page is a resource for modders to create a custom shop. If you're a player, check out [this link](https://www.nexusmods.com/stardewvalley/mods/5005) instead**
 
-Shop Tile Framework is a tool for Modders of the game Stardew Valley, which allows you to define stores via a shops.json file. These stores are attached to tile properties which can be loaded anywhere into the game with another method. Content packs need a `shops.json` to define their shops
+Shop Tile Framework (STF) is a tool for Modders of the game Stardew Valley, which allows you to define shops via a shops.json file. These shops are attached to tile properties which can be loaded anywhere into the game with another method. Content packs need a `shops.json` to define their shops
 
-Stores can be opened with a custom tile property of "Shop" and a value of the ShopName defined in `shops.json`
+Shops can be opened with a custom tile property of "Shop" and a value of the ShopName defined in `shops.json`
+
+STF lets you fully customize what items are sold and how many, 
+
+## Requirements
+STF is a standalone SMAPI mod with no prerequesites other than the newest version of SMAPI. However there is optional support for items added in with [Json Assets](https://www.nexusmods.com/stardewvalley/mods/1720). Custom JA items can be added to shops by item name or by content pack.
+
+You do not need to make having the JA packs mandatory; if STF does not detect the item in the game, it will simple not add them.
 
 ## Create a content pack
 To make a content pack for Shop Tile Framework, add `Cherry.ShopTileFramework` to the `ContentPackFor` section of your mod's [manifest file](https://stardewvalleywiki.com/Modding:Modder_Guide/APIs/Manifest).
@@ -43,7 +51,7 @@ Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
 ItemType | N | string |  Determines what kind of Object this ItemStock contains, necessary to find the right unique items.
 StockPrice | Y | int | Sets the price for all items in this ItemStock. Overrides ShopPrice. If neither price fields are given, default item sell prices are used
-StockItemCurrency | Y | string | You can specify an Object by name as the currency instead. This will charge both the specified item as well as the `StoreCurrency` unless the price is set to 0.
+StockItemCurrency | Y | string | You can specify an Object by name as the currency instead. This will charge both the specified item as well as the `StoreCurrency` unless the price is set to 0. These can include JA Objects.
 StockCurrencyStack | Y | int | The number of the `StockItemCurrency` it costs for each item. Defaults to 1
 ItemIDs | Y/N | Array of ints | Adds a list of items by their IDS. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
 ItemNames | Y/N | Array of strings | Adds a list of items by their internal names. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
