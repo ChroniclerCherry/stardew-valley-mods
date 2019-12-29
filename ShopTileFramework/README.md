@@ -4,7 +4,7 @@
 - [Intro](#intro)
 - [Requirements](#requirements)
 - [Create a Content Pack](#create-a-content-pack)
-    -[Item Types](#itemtypes)
+	* [Item Types](#itemtypes)
 - [Example](#example)
 - [Adding store to the game](#adding-store-to-the-game)
 - [Console Commands](#console-commands)
