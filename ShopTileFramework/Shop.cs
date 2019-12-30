@@ -62,7 +62,7 @@ namespace ShopTileFramework
 
                 if (Inventory.ItemType != "Seed" && !ObjectInfoSource.ContainsKey(Inventory.ItemType))
                 {
-                    ModEntry.monitor.Log($"\"{Inventory.ItemType}\" is not a valid ItemType. Some items will not be added.",LogLevel.Warn);
+                    ModEntry.monitor.Log($"\"{Inventory.ItemType}\" is not a valid ItemType. Some items will not be added.",LogLevel.Debug);
                     continue;
                 }
 
@@ -122,13 +122,14 @@ namespace ShopTileFramework
                                         if (CropID == id)
                                         {
                                             AddItem("Object", kvp.Key, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                            break;
                                         }
                                     }
                                 }
                             }
                             else
                             {
-                                ModEntry.monitor.Log($"No Crops from {JAPack} could not be found. No seeds are added.", LogLevel.Trace);
+                                ModEntry.monitor.Log($"No Crops from {JAPack} could be found. No seeds are added.", LogLevel.Trace);
                             }
 
                             //add tree saplings
@@ -148,13 +149,14 @@ namespace ShopTileFramework
                                         if (TreeID == id)
                                         {
                                             AddItem("Object", kvp.Key, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                            break;
                                         }
                                     }
                                 }
                             }
                             else
                             {
-                                ModEntry.monitor.Log($"No Trees from {JAPack} could not be found. No saplings are added.", LogLevel.Trace);
+                                ModEntry.monitor.Log($"No Trees from {JAPack} could be found. No saplings are added.", LogLevel.Trace);
                             }
                         }
                         else if (Inventory.ItemType == "Object")
@@ -305,7 +307,7 @@ namespace ShopTileFramework
             {
                 ModEntry.monitor.Log($"Crop of ID {itemID} " +
                     $"could not be added to {ShopName}",
-                    LogLevel.Warn);
+                    LogLevel.Debug);
             }
         }
 
@@ -334,7 +336,7 @@ namespace ShopTileFramework
             {
                 ModEntry.monitor.Log($"{ItemType} named " +
                     $"\"{ItemName}\" could not be added to {ShopName}",
-                    LogLevel.Warn);
+                    LogLevel.Debug);
             }
         }
 
@@ -378,7 +380,6 @@ namespace ShopTileFramework
 
         private static Item GetItem(string objectType, string name, int stock)
         {
-
             if (name == null)
             {
                 return null;
@@ -456,17 +457,13 @@ namespace ShopTileFramework
             if (CategoriesToSellHere != null)
                 ShopMenu.categoriesToSellHere = CategoriesToSellHere;
             if (Portrait != null)
-            {
                 ShopMenu.portraitPerson = new NPC
                 {
                     Portrait = Portrait
                 };
-            }
 
             if (Quote != null)
-            {
                 ShopMenu.potraitPersonDialogue = Game1.parseText(Quote, Game1.dialogueFont, 304);
-            }
             
             Game1.activeClickableMenu = ShopMenu;
         }
