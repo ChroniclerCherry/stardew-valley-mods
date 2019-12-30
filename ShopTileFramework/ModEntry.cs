@@ -66,11 +66,11 @@ namespace ShopTileFramework
         private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
         {
             //context and button check
-            if (!Context.CanPlayerMove || e.Button != SButton.MouseRight)
+            if (!Context.CanPlayerMove || e.Button.IsActionButton() || e.Button == SButton.MouseRight)
                 return;
 
             //check if clicked tile is near the player
-            var clickedTile = Helper.Input.GetCursorPosition().AbsolutePixels;
+            var clickedTile = Helper.Input.GetCursorPosition().Tile;
             if (!IsClickWithinReach(clickedTile))
                 return;
 
@@ -103,7 +103,7 @@ namespace ShopTileFramework
             if (map == null)
                 return null;
 
-            var checkTile = map.Map.GetLayer(layer).Tiles[(int)tile.X/64, (int)tile.Y/64];
+            var checkTile = map.Map.GetLayer(layer).Tiles[(int)tile.X, (int)tile.Y];
 
             if (checkTile == null)
                 return null;
@@ -136,19 +136,19 @@ namespace ShopTileFramework
             {
                 if (!contentPack.HasFile("shops.json"))
                 {
-                    monitor.Log($"  No shops.json found from the mod {contentPack.Manifest.UniqueID}. " +
+                    monitor.Log($"No shops.json found from the mod {contentPack.Manifest.UniqueID}. " +
                         $"Skipping pack.", LogLevel.Warn);
                 }
                 else
                 {
                     ContentModel data = contentPack.ReadJsonFile<ContentModel>("shops.json");
-                    Monitor.Log($"  {contentPack.Manifest.Name} by {contentPack.Manifest.Author} | " +
+                    Monitor.Log($"{contentPack.Manifest.Name} by {contentPack.Manifest.Author} | " +
                         $"{contentPack.Manifest.Version} | {contentPack.Manifest.Description}", LogLevel.Info);
                     foreach (ShopPack s in data.Shops)
                     {
                         if (Shops.ContainsKey(s.ShopName))
                         {
-                            monitor.Log($"      {contentPack.Manifest.UniqueID} is trying to add the shop " +
+                            monitor.Log($"{contentPack.Manifest.UniqueID} is trying to add the shop " +
                                 $"\"{s.ShopName}\", but a shop of this name has already been added. " +
                                 $"It will not be added.", LogLevel.Warn);
 
@@ -164,22 +164,16 @@ namespace ShopTileFramework
 
         private bool IsClickWithinReach(Vector2 tile)
         {
-            var TileBoundingBox = new Rectangle((int)tile.X - 64, (int)tile.Y - 64, 192, 192);
+            var playerPosition = Game1.player.Position;
+            var playerTile = new Vector2(playerPosition.X / 64, playerPosition.Y / 64);
 
-            var temp = Game1.player.GetBoundingBox().Intersects(TileBoundingBox);
-
-            return (Game1.player.GetBoundingBox().Intersects(TileBoundingBox));
-
-            /*
-            var playerTile = new Vector2(playerPosition.X, playerPosition.Y);
-
-            if (tile.X*64 < playerTile.X-64 || tile.X*64 > playerTile.X+64+64)
+            if (tile.X < (playerTile.X - 1.5) || tile.X > (playerTile.X + 1.5))
                 return false;
 
-            if (tile.Y*64 < playerTile.Y-64 || tile.Y*64 > playerTile.Y+64+64)
+            if (tile.Y < (playerTile.Y - 1.5) || tile.Y > (playerTile.Y + 1.5))
                 return false;
-                */
 
+            return true;
         }
 
         private void DisplayShopMenus(string command, string[] args)

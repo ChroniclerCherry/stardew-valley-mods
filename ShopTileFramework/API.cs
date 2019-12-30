@@ -10,7 +10,7 @@ namespace ShopTileFramework
         bool ResetShop(string ShopName);
         Dictionary<ISalable, int[]> GetItemPriceAndStock(string ShopName);
     }
-    public class Api : IApi
+    class Api : IApi
     {
 
         public bool RegisterShops(string dir)
