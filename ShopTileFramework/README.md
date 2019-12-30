@@ -8,6 +8,7 @@
 - [Example](#example)
 - [Adding store to the game](#adding-store-to-the-game)
 - [Console Commands](#console-commands)
+- [Contact the dev](#contact-the-dev)
 
 ## Intro
 
@@ -53,7 +54,7 @@ Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
 ItemType | N | string |  Determines what kind of Object this ItemStock contains, necessary to find the right unique items.
 StockPrice | Y | int | Sets the price for all items in this ItemStock. Overrides ShopPrice. If neither price fields are given, default item sell prices are used
-StockItemCurrency | Y | string | You can specify an Object by name as the currency instead. This will charge both the specified item as well as the `StoreCurrency` unless the price is set to 0. These can include JA Objects.
+StockItemCurrency | Y | string | You can specify an `Object` by name as trading currency. Note: this will charge both the specified item as well as the `StoreCurrency` unless the price is set to 0. These can include JA Objects.
 StockCurrencyStack | Y | int | The number of the `StockItemCurrency` it costs for each item. Defaults to 1
 ItemIDs | Y/N | Array of ints | Adds a list of items by their IDS. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
 ItemNames | Y/N | Array of strings | Adds a list of items by their internal names. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
@@ -183,3 +184,9 @@ Command | Description
  `open_shop <ShopName>` | Will open up the shop with the specified `ShopName`. Useful for testing without adding in a tile property / needing to go to the shop location
  `reset_shop <ShopName>` | Will reset the stock of the specified `ShopName`, which usually happens at the start of each day. Useful for checking that your conditions are applying / stock is randomizing as you'd like'
  `list_shops` | Lists all of the `ShopName`s registered with Shop Tile Framework
+ 
+ ## Contact The Dev
+If you need to find me, the following methods are your best bets:
+- Bug reports can be made by submitting an issue on this repositiory, or use the [bugs tab](https://www.nexusmods.com/stardewvalley/mods/5005?tab=bugs) on the Nexus page. Please provide a [log](https://smapi.io/log/) with all bug reports and as much information about the circumstances of the bug as possible.
+- Suggestions should be submitted through an issue on this repository
+- If you have questions that aren't answered here, you can DM me on discord at `Chronicler#9318`
