@@ -179,30 +179,31 @@ Shops can also be added into the game via a SMAPI mod. TSF provides an API that 
 ## Placing Vanilla Shops
 
 Vanilla shops can be called the same way as custom Shops: With a `Shop` tile propertie and the corresponding `ShopName`.
-Note that these shop tiles do not check for conditions, and override any custom shops that use the same `Shopname` ( so please don't prefix your modded shops with Vanilla! )
+Note that these shop tiles do not check for conditions and will always bring up the menu when clicked, and override any custom shops that use the same `Shopname` ( so please don't prefix your modded shops with Vanilla! )
 
 ShopName | Description
 ------------ | -------------
-Vanilla!PierreShop | //
-Vanilla!JojaShop | //
-Vanilla!RobinShop | //
-Vanilla!RobinBuildingsShop | //
-Vanilla!ClintShop | //
-Vanilla!ClintGeodes | //
-Vanilla!ClintToolUpgrades | //
-Vanilla!MarlonShop | //
-Vanilla!MarnieShop | //
-Vanilla!MarnieAnimalShop | //
-Vanilla!HarveyShop | //
-Vanilla!SandyShop | //
-Vanilla!DesertTrader | //
-Vanilla!KrobusShop | //
-Vanilla!DwarfShop | //
-Vanilla!AdventureRecovery | //
-Vanilla!GusShop | //
-Vanilla!WillyShop | //
-Vanilla!QiShop | //
-Vanilla!IceCreamStand | //
+Vanilla!PierreShop | Pierre's store
+Vanilla!JojaShop | The Joja store
+Vanilla!RobinShop | Robin's supplies store
+Vanilla!RobinBuildingsShop | The carpenter building menu
+Vanilla!ClintShop | Clint's supplies store
+Vanilla!ClintToolUpgrades | Clint's tool upgrades store
+Vanilla!MarlonShop | The Adventurer's Guild store
+Vanilla!AdventureRecovery | The Adventurer's Guild's store for recovering lost items
+Vanilla!MarnieShop | Marnie's supplies store
+Vanilla!HarveyShop | The hospital store
+Vanilla!SandyShop | Sandy's store
+Vanilla!DesertTrader | The desert trader's store
+Vanilla!KrobusShop | The sewer's store
+Vanilla!DwarfShop | The dwarf's store
+Vanilla!GusShop | The Saloon's store
+Vanilla!WillyShop | The fish store
+Vanilla!QiShop | The casino store
+Vanilla!IceCreamStand | The icecream stand
+Vanilla!WizardBuildings | The Wizard's buildings menu
+Vanilla!MarnieAnimalShop | The animal purchase menu
+Vanilla!ClintGeodes | Opening Geodes menu
 
 
 ## Console Commands

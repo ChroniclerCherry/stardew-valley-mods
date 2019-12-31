@@ -16,6 +16,7 @@ namespace ShopTileFramework
         public static IMonitor monitor;
         public static IJsonAssetsApi JsonAssets;
         internal static Dictionary<string, Shop> Shops;
+        private GameLocation SourceLocation = null;
         public override void Entry(IModHelper h)
         {
             //make helper and monitor static so they can be accessed in other classes
@@ -28,12 +29,22 @@ namespace ShopTileFramework
             helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
             helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
+            helper.Events.Player.Warped += Player_Warped;
+
 
             helper.ConsoleCommands.Add("open_shop", "Opens up a custom shop's menu. \n\nUsage: open_shop <ShopName>\n-ShopName: the name of the shop to open", this.DisplayShopMenus);
             helper.ConsoleCommands.Add("reset_shop", "Resets the stock of specified shop. Rechecks conditions and randomizations\n\nUsage: reset_shop <ShopName>\n-ShopName: the name of the shop to reset", this.ResetShopStock);
             helper.ConsoleCommands.Add("list_shops", "Lists all shops registered with Shop Tile Framework", this.ListAllShops);
 
             LoadContentPacks();
+        }
+
+        private void Player_Warped(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
+        {
+            if (SourceLocation != null && Game1.currentLocation != SourceLocation)
+            {
+                Game1.warpFarmer(SourceLocation.Name, Game1.player.getTileX(), Game1.player.getTileY(), (int)Game1.player.facingDirection);
+            }
         }
 
         public override object GetApi()
@@ -70,7 +81,12 @@ namespace ShopTileFramework
         private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
         {
             //context and button check
-            if (!Context.CanPlayerMove || e.Button.IsActionButton() || e.Button == SButton.MouseRight)
+            if (!Context.CanPlayerMove)
+                return;
+
+            SourceLocation = null;
+
+            if (e.Button != SButton.MouseRight)
                 return;
 
             //check if clicked tile is near the player
@@ -90,69 +106,78 @@ namespace ShopTileFramework
                 return;
             } else if (shopProperty == "Vanilla!PierreShop")
             {
+                helper.Input.Suppress(e.Button);
                 var seedShop = new SeedShop();
                 Game1.activeClickableMenu = new ShopMenu(seedShop.shopStock(), 0, "Pierre", null, null, null);
 
             }
             else if (shopProperty == "Vanilla!JojaShop")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new ShopMenu(Utility.getJojaStock(), 0, (string)null, null, null, null);
-
             }
             else if (shopProperty == "Vanilla!RobinShop")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new ShopMenu(Utility.getCarpenterStock(), 0,
                     "Robin", null, null, null);
             }
             else if (shopProperty == "Vanilla!RobinBuildingsShop")
             {
+                helper.Input.Suppress(e.Button);
+                SourceLocation = Game1.currentLocation;
                 Game1.activeClickableMenu = new CarpenterMenu(false);
             }
             else if (shopProperty == "Vanilla!ClintShop")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new ShopMenu(Utility.getBlacksmithStock(), 0,
                     "Clint", null, null, null);
             }
             else if (shopProperty == "Vanilla!ClintGeodes")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new GeodeMenu();
             }
             else if (shopProperty == "Vanilla!ClintToolUpgrades")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new ShopMenu(Utility.getBlacksmithUpgradeStock(Game1.player),
                     0, "ClintUpgrade", null, null, null);
-
             }
             else if (shopProperty == "Vanilla!MarlonShop")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new ShopMenu(Utility.getAdventureShopStock(),
                     0, "Marlon", null, null, null);
-
             }
             else if (shopProperty == "Vanilla!MarnieShop")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new ShopMenu(Utility.getAnimalShopStock(),
                     0, "Marnie", null, null, null);
             }
             else if (shopProperty == "Vanilla!MarnieAnimalShop")
             {
+                helper.Input.Suppress(e.Button);
+                SourceLocation = Game1.currentLocation;
                 Game1.activeClickableMenu = new PurchaseAnimalsMenu(Utility.getPurchaseAnimalStock());
             }
             else if (shopProperty == "Vanilla!TravellingMerchant")
             {
-                Game1.activeClickableMenu = new ShopMenu(Utility.getTravelingMerchantStock((int)((long)Game1.uniqueIDForThisGame 
-                    + Game1.stats.DaysPlayed)), 0, "TravelerNightMarket",
-                    new Func<ISalable, Farmer, int, bool>(Utility.onTravelingMerchantShopPurchase),
-                    null, null);
-
+                helper.Input.Suppress(e.Button);
+                Game1.activeClickableMenu = new ShopMenu(Utility.getTravelingMerchantStock((int)((long)Game1.uniqueIDForThisGame + (long)Game1.stats.DaysPlayed)),
+                    0, "Traveler", new Func<ISalable, Farmer, int, bool>(Utility.onTravelingMerchantShopPurchase), null, null);
             }
             else if (shopProperty == "Vanilla!HarveyShop")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new ShopMenu(Utility.getHospitalStock(),
                     0, null, null, null, null);
             }
             else if (shopProperty == "Vanilla!SandyShop")
             {
+                helper.Input.Suppress(e.Button);
                 var SandyStock = helper.Reflection.GetMethod(Game1.currentLocation, "sandyShopStock").Invoke<Dictionary<ISalable, int[]>>();
                 Game1.activeClickableMenu = new ShopMenu(SandyStock, 0, "Sandy", new Func<ISalable,
                     Farmer, int, bool>(onSandyShopPurchase), null, null);
@@ -160,6 +185,7 @@ namespace ShopTileFramework
             }
             else if (shopProperty == "Vanilla!DesertTrader")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new ShopMenu(Desert.getDesertMerchantTradeStock(Game1.player),
                     0, "DesertTrade", new Func<ISalable, Farmer, int, bool>(boughtTraderItem),
                     null, null);
@@ -167,6 +193,7 @@ namespace ShopTileFramework
             }
             else if (shopProperty == "Vanilla!KrobusShop")
             {
+                helper.Input.Suppress(e.Button);
                 var sewer = new Sewer();
                 Game1.activeClickableMenu = new ShopMenu(sewer.getShadowShopStock(),
                     0, "Krobus", new Func<ISalable, Farmer, int, bool>(sewer.onShopPurchase),
@@ -175,18 +202,21 @@ namespace ShopTileFramework
             }
             else if (shopProperty == "Vanilla!DwarfShop")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new ShopMenu(Utility.getDwarfShopStock(), 0,
                     "Dwarf", null, null, null);
 
             }
             else if (shopProperty == "Vanilla!AdventureRecovery")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new ShopMenu(Utility.getAdventureRecoveryStock(),
                     0, "Marlon_Recovery", null, null, null);
 
             }
             else if (shopProperty == "Vanilla!GusShop")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new ShopMenu(Utility.getSaloonStock(), 0, "Gus", (item, farmer, amount) =>
                 {
                     Game1.player.team.synchronizedShopStock.OnItemPurchased(SynchronizedShopStock.SynchedShop.Saloon, item, amount);
@@ -195,19 +225,24 @@ namespace ShopTileFramework
             }
             else if (shopProperty == "Vanilla!WillyShop")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new ShopMenu(Utility.getFishShopStock(Game1.player), 0,
                     "Willy", null, null, null);
             }
             else if (shopProperty == "Vanilla!WizardBuildings")
             {
+                helper.Input.Suppress(e.Button);
+                SourceLocation = Game1.currentLocation;
                 Game1.activeClickableMenu = new CarpenterMenu(true);
             }
             else if (shopProperty == "Vanilla!QiShop")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new ShopMenu(Utility.getQiShopStock(), 2, null, null, null, null);
             }
             else if (shopProperty == "Vanilla!IceCreamStand")
             {
+                helper.Input.Suppress(e.Button);
                 Game1.activeClickableMenu = new ShopMenu(new Dictionary<ISalable, int[]>()
                                 {
                                     {
