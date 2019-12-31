@@ -13,20 +13,23 @@ namespace ShopTileFramework
 {
     class Shop
     {
-        public string ShopName;
+        private readonly string shopName;
         private readonly Texture2D Portrait = null;
         private readonly string Quote;
         private readonly int ShopPrice;
         internal ItemStock[] ItemStocks { get; set; }
         private readonly int MaxNumItemsSoldInStore;
-        public Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
+        internal Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
+
+        public string ShopName => shopName;
+
         private readonly string StoreCurrency;
         private List<int> CategoriesToSellHere;
 
         private static Dictionary<string, IDictionary<int, string>> ObjectInfoSource;
         public Shop(ShopPack pack, IContentPack contentPack)
         {
-            ShopName = pack.ShopName;
+            shopName = pack.ShopName;
             ShopPrice = pack.ShopPrice;
             StoreCurrency = pack.StoreCurrency;
             CategoriesToSellHere = pack.CategoriesToSellHere;
@@ -62,7 +65,7 @@ namespace ShopTileFramework
 
                 if (Inventory.ItemType != "Seed" && !ObjectInfoSource.ContainsKey(Inventory.ItemType))
                 {
-                    ModEntry.monitor.Log($"\"{Inventory.ItemType}\" is not a valid ItemType. Some items will not be added.",LogLevel.Warn);
+                    ModEntry.monitor.Log($" \"{Inventory.ItemType}\" is not a valid ItemType. Some items will not be added.",LogLevel.Warn);
                     continue;
                 }
 
@@ -128,7 +131,7 @@ namespace ShopTileFramework
                             }
                             else
                             {
-                                ModEntry.monitor.Log($"No Crops from {JAPack} could not be found. No seeds are added.", LogLevel.Trace);
+                                ModEntry.monitor.Log($"No Crops from {JAPack} could be found. No seeds are added.", LogLevel.Trace);
                             }
 
                             //add tree saplings
@@ -187,7 +190,7 @@ namespace ShopTileFramework
                             }
                             else
                             {
-                                ModEntry.monitor.Log($"No BigCraftable from {JAPack} could not be found. No items are added.", LogLevel.Trace);
+                                ModEntry.monitor.Log($"No BigCraftable from {JAPack} could be found. No items are added.", LogLevel.Trace);
                             }
                         }
                         else if (Inventory.ItemType == "Hat")
@@ -202,7 +205,7 @@ namespace ShopTileFramework
                             }
                             else
                             {
-                                ModEntry.monitor.Log($"No Hats from {JAPack} could not be found. No items are added.", LogLevel.Trace);
+                                ModEntry.monitor.Log($"No Hats from {JAPack} could be found. No items are added.", LogLevel.Trace);
                             }
                         }
                         else if (Inventory.ItemType == "Weapon")
@@ -217,7 +220,7 @@ namespace ShopTileFramework
                             }
                             else
                             {
-                                ModEntry.monitor.Log($"No Weapons from {JAPack} could not be found. No items are added.", LogLevel.Trace);
+                                ModEntry.monitor.Log($"No Weapons from {JAPack} could be found. No items are added.", LogLevel.Trace);
                             }
                         }
                         else if (Inventory.ItemType == "Clothing")
@@ -232,7 +235,7 @@ namespace ShopTileFramework
                             }
                             else
                             {
-                                ModEntry.monitor.Log($"No Clothing from {JAPack} could not be found. No items are added.", LogLevel.Trace);
+                                ModEntry.monitor.Log($"No Clothing from {JAPack} could be found. No items are added.", LogLevel.Trace);
                             }
 
                         }
@@ -249,7 +252,8 @@ namespace ShopTileFramework
 
         private bool CheckConditions(string[] conditions)
         {
-            string Preconditions = "-1";
+            //giving this a random event id 
+            string Preconditions = "-5005";
             foreach (string con in conditions)
             {
                 Preconditions += '/' + con;
@@ -258,7 +262,12 @@ namespace ShopTileFramework
             int checkedCondition = ModEntry.helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition").Invoke<int>(Preconditions);
 
             if (checkedCondition == -1)
+            {
+                ModEntry.monitor.Log("Player did not meet the event preconditions:\n" +
+                    Preconditions);
                 return false;
+            }
+                
 
             return true;
         }
@@ -305,7 +314,7 @@ namespace ShopTileFramework
             {
                 ModEntry.monitor.Log($"Crop of ID {itemID} " +
                     $"could not be added to {ShopName}",
-                    LogLevel.Warn);
+                    LogLevel.Debug);
             }
         }
 
@@ -334,7 +343,7 @@ namespace ShopTileFramework
             {
                 ModEntry.monitor.Log($"{ItemType} named " +
                     $"\"{ItemName}\" could not be added to {ShopName}",
-                    LogLevel.Warn);
+                    LogLevel.Debug);
             }
         }
 
