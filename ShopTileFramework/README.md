@@ -205,10 +205,13 @@ Vanilla!WizardBuildings | The Wizard's buildings menu
 Vanilla!MarnieAnimalShop | The animal purchase menu
 Vanilla!ClintGeodes | Opening Geodes menu
 
+Example:
+
+![This will open the animal purchasing menu](https://media.discordapp.net/attachments/431102536926101504/661644734569381898/unknown.png)
 
 ## Console Commands
 
-A few console commands are added to SMAPI in order to help with debugging. Type `help` in the console to get a full list of available commands
+A few console commands are added to SMAPI in order to help with debugging. Type `help` in the console to get a full list of available commands. None of these work for the vanilla shops
 
 Command | Description
 ------------ | -------------
