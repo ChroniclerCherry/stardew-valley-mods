@@ -6,7 +6,8 @@
 - [Create a Content Pack](#create-a-content-pack)
 	* [Item Types](#itemtypes)
 - [Example](#example)
-- [Adding store to the game](#adding-store-to-the-game)
+- [Adding shops to the game](#adding-shops-to-the-game)
+- [Placing Vanilla Shops](#placing-vanilla-shops)
 - [Console Commands](#console-commands)
 - [Contact the dev](#contact-the-dev)
 
@@ -165,7 +166,7 @@ And the manifest:
 }
 ```
 
-## Adding store to the game
+## Adding shops to the game
 
 The store defined in the above json can be opened by clicking on a tile with the following properties on the **Buildings** layer:
 
@@ -174,6 +175,35 @@ The store defined in the above json can be opened by clicking on a tile with the
 The empty `Action` Property is optional; it just changes the appearance of the game cursor when hovering over a shop to make it clear that it is interactable. These tile properties can be loaded into the game with any other method usually used to load in maps. Content Patcher, TMXL, or SMAPI mods can all add the property along with the shop itself. More info about modding maps can be found [here](https://stardewvalleywiki.com/Modding:Maps)
 
 Shops can also be added into the game via a SMAPI mod. TSF provides an API that lets you register new shops, and programatically open them in-game, reset their stock, or directly change their stock.
+
+## Placing Vanilla Shops
+
+Vanilla shops can be called the same way as custom Shops: With a `Shop` tile propertie and the corresponding `ShopName`.
+Note that these shop tiles do not check for conditions, and override any custom shops that use the same `Shopname` ( so please don't prefix your modded shops with Vanilla! )
+
+ShopName | Description
+------------ | -------------
+Vanilla!PierreShop | //
+Vanilla!JojaShop | //
+Vanilla!RobinShop | //
+Vanilla!RobinBuildingsShop | //
+Vanilla!ClintShop | //
+Vanilla!ClintGeodes | //
+Vanilla!ClintToolUpgrades | //
+Vanilla!MarlonShop | //
+Vanilla!MarnieShop | //
+Vanilla!MarnieAnimalShop | //
+Vanilla!HarveyShop | //
+Vanilla!SandyShop | //
+Vanilla!DesertTrader | //
+Vanilla!KrobusShop | //
+Vanilla!DwarfShop | //
+Vanilla!AdventureRecovery | //
+Vanilla!GusShop | //
+Vanilla!WillyShop | //
+Vanilla!QiShop | //
+Vanilla!IceCreamStand | //
+
 
 ## Console Commands
 
