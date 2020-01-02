@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimalShop.cs" />
     <Compile Include="Api.cs" />
     <Compile Include="ContentModel.cs" />
     <Compile Include="ModEntry.cs" />

@@ -5,6 +5,13 @@ namespace ShopTileFramework
     class ContentModel
     {
         public ShopPack[] Shops { get; set; }
+        public AnimalShopPack[] AnimalShops { get; set; }
+    }
+
+    public class AnimalShopPack
+    {
+        public string ShopName { get; set; }
+        public string[] AnimalStock { get; set; }
     }
 
     class ShopPack

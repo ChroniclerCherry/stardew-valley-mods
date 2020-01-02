@@ -14,9 +14,12 @@ namespace ShopTileFramework
     {
         public static IModHelper helper;
         public static IMonitor monitor;
+
         public static IJsonAssetsApi JsonAssets;
+        public static BFAVApi BFAV;
+
         internal static Dictionary<string, Shop> Shops;
-        private GameLocation SourceLocation = null;
+        internal static GameLocation SourceLocation = null;
         public override void Entry(IModHelper h)
         {
             //make helper and monitor static so they can be accessed in other classes
@@ -64,6 +67,18 @@ namespace ShopTileFramework
             if (JsonAssets == null)
             {
                 Monitor.Log("Json Assets API not detected. Custom JA items will not be added to shops.",
+                    LogLevel.Info);
+            }
+
+            BFAV = helper.ModRegistry.GetApi<BFAVApi>("Paritee.BetterFarmAnimalVariety");
+
+            if (BFAV == null)
+            {
+                Monitor.Log("BFAV API not detected. Custom animals will not be added to animal shops.",
+                    LogLevel.Info);
+            } else if (!BFAV.IsEnabled())
+            {
+                Monitor.Log("BFAV is installed but not enabled. Custom animals will not be added to animal shops.",
                     LogLevel.Info);
             }
         }
