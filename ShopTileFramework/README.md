@@ -21,7 +21,7 @@ Shop Tile Framework (STF) is a tool for Modders of the game Stardew Valley, whic
 
 STF lets you fully customize what items are sold and how many, under what conditions etc, as well the currency used in the store: money, casino coins, festival score, and even items just like the vanilla desert trader.
 
-STF also allows you to create customized animal shops, wuth support for custom animals added through BFAV 
+STF also allows you to create customized animal shops, with support for custom animals added through BFAV 
 
 Shops can be opened with a custom tile property of "Shop" or "AnimalShop" and a value of the ShopName defined in `shops.json`
 
@@ -30,7 +30,7 @@ STF is a standalone SMAPI mod with no prerequesites other than the newest versio
 
 You do not need to make having the JA packs mandatory; if STF does not detect the item in the game, it will simple not add them.
 
-The same with BFAV animals-- if the specific animals ( BFAV ) are not installed, they are simply not added
+The same with BFAV animals-- if the specific animals ( or the BFAV mod ) are not installed, they are simply not added
 
 ## Create a content pack
 To make a content pack for Shop Tile Framework, add `Cherry.ShopTileFramework` to the `ContentPackFor` section of your mod's [manifest file](https://stardewvalleywiki.com/Modding:Modder_Guide/APIs/Manifest).
@@ -56,8 +56,10 @@ ShopPrice | Y | int | Sets the price of every item in the store to this if set.
 MaxNumItemsSoldInStore | Y | int | The number of different items available. If there is more items within all the `ItemStocks` than this number, they will be randomly picked at the beginning of each day so that the total number of items match this. This is how to randomize the stock of the entire store.
 ItemStocks | N | An array of `ItemStocks` | The items sold at this store. Each `ItemStocks` can contain one or more item of a single type
 
-An ItemStock is used to define a group of properties --things like price, conditions, the number sold-- that is applied to one or more items of a single ItemType. There are three ways to specify items ( ID, Name, or JA Pack) and all three can be used at once in a single item stock. You can have as many ItemStocks as you need
+
+An `ItemStock` is used to define a group of properties --things like price, conditions, the number sold-- that is applied to one or more items of a single ItemType. There are three ways to specify items ( ID, Name, or JA Pack) and all three can be used at once in a single item stock. You can have as many ItemStocks as you need
 Each ItemStock contains:
+
 
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
@@ -95,7 +97,7 @@ Note: The current animal purchasing menu is hardcoded to warp you to Marnie's. T
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
 ShopName | N | string | The name of the shop is the value of the tile property used to open this shop in-game. It must be unique among all downloaded mods.
-AnimalStock | N | array of strings | A list of animals by name that are sold at this shop. For customize BFAv animals, this is what you would find under the animal's "category"
+AnimalStock | N | array of strings | A list of animals by name that are sold at this shop. For customize BFAV animals, this is what you would find under the animal's "category"
 
 ## Example
 Example shops.json with all available options:
@@ -166,7 +168,7 @@ Example shops.json with all available options:
   "AnimalShops":[
 		{
 	"ShopName":"MyAnimalShop",
-	"AnimalStock":[""Chicken","Fennec Fox","Phoenix","Raccoon", "Quail", "Warthog"]
+	"AnimalStock":["Chicken","Fennec Fox","Phoenix","Raccoon", "Quail", "Warthog"]
 	},
 }
 ```
