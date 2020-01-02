@@ -4,14 +4,14 @@ namespace ShopTileFramework
 {
     class ContentModel
     {
-        public ShopPack[] Shops { get; set; }
-        public AnimalShopPack[] AnimalShops { get; set; }
+        public ShopPack[] Shops { get; set; } = null;
+        public AnimalShopPack[] AnimalShops { get; set; } = null;
     }
 
-    public class AnimalShopPack
+    class AnimalShopPack
     {
         public string ShopName { get; set; }
-        public string[] AnimalStock { get; set; }
+        public List<string> AnimalStock { get; set; }
     }
 
     class ShopPack
