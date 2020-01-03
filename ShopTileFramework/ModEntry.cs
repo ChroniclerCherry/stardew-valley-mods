@@ -65,11 +65,13 @@ namespace ShopTileFramework
         {
             if (e.OldMenu is PurchaseAnimalsMenu && e.NewMenu is DialogueBox && SourceLocation != null)
             {
+                var AnimalPurchaseMessage = ((DialogueBox)e.NewMenu).getCurrentString();
+
                 //go away marnie we don't want you
                 Game1.exitActiveMenu();
-                //display a generic message
-                //TODO: make this localizable
-                Game1.activeClickableMenu = new DialogueBox("Your new animal has been sent home.");
+
+                //display the animal purchase message without Marnie's face
+                Game1.activeClickableMenu = new DialogueBox(AnimalPurchaseMessage);
             }
         }
 
@@ -103,7 +105,7 @@ namespace ShopTileFramework
             else if (!BFAV.IsEnabled())
             {
                 BFAV = null;
-                Monitor.Log("BFAV is installed but not enabled. Custom farm animals will not be added to ANIMAL shops.",
+                Monitor.Log("BFAV is installed but not enabled. Custom farm animals will not be added to animal shops.",
                     LogLevel.Info);
             }
         }
@@ -387,7 +389,7 @@ namespace ShopTileFramework
                 }
                 else
                 {
-                    var animalShop = new AnimalShop(animalShopPack.AnimalStock, animalShopPack.ShopName);
+                    var animalShop = new AnimalShop(animalShopPack, animalShopPack.ShopName);
                     AnimalShops.Add(animalShopPack.ShopName, animalShop);
                 }
             }
@@ -418,7 +420,6 @@ namespace ShopTileFramework
                                 monitor.Log($"      {contentPack.Manifest.UniqueID} is trying to add the shop " +
                                     $"\"{s.ShopName}\", but a shop of this name has already been added. " +
                                     $"It will not be added.", LogLevel.Warn);
-
                             }
                             else
                             {
@@ -439,7 +440,7 @@ namespace ShopTileFramework
                             }
                             else
                             {
-                                var animalShop = new AnimalShop(animalShopPack.AnimalStock, animalShopPack.ShopName);
+                                var animalShop = new AnimalShop(animalShopPack, animalShopPack.ShopName);
                                 AnimalShops.Add(animalShopPack.ShopName, animalShop);
                             }
                         }

@@ -1,9 +1,5 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
-using System;
 using System.Collections.Generic;
 
 namespace ShopTileFramework
@@ -11,17 +7,18 @@ namespace ShopTileFramework
     class AnimalShop
     {
         private List<StardewValley.Object> ShopAnimalStock;
-        private List<string> AnimalNames;
-        private string ShopName;
-        public AnimalShop(List<string> AnimalNames, string ShopName)
+        private List<StardewValley.Object> AllAnimalsStock;
+        private AnimalShopPack ShopPack;
+        public AnimalShop(AnimalShopPack ShopPack, string ShopName)
         {
-            this.AnimalNames = AnimalNames;
+            this.ShopPack = ShopPack;
         }
 
         private void UpdateShopAnimalStock()
         {
-            List<StardewValley.Object> AllAnimalsStock = new List<StardewValley.Object>();
-            if (ModEntry.BFAV == null)
+            AllAnimalsStock = new List<StardewValley.Object>();
+
+            if (ModEntry.BFAV == null || !ModEntry.BFAV.IsEnabled())
             {
                 AllAnimalsStock = Utility.getPurchaseAnimalStock();
             }
@@ -33,7 +30,7 @@ namespace ShopTileFramework
             ShopAnimalStock = new List<StardewValley.Object>();
             foreach (var animal in AllAnimalsStock)
             {
-                if (AnimalNames.Contains(animal.Name))
+                if (ShopPack.AnimalStock.Contains(animal.Name))
                 {
                     ShopAnimalStock.Add(animal);
                 }
@@ -52,7 +49,8 @@ namespace ShopTileFramework
     public interface BFAVApi
     {
         bool IsEnabled();
-        List<StardewValley.Object> GetAnimalShopStock(StardewValley.Farm farm);
+        List<StardewValley.Object> GetAnimalShopStock(Farm farm);
+        Dictionary<string, List<string>> GetFarmAnimalCategories();
 
     }
 }

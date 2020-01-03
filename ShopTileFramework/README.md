@@ -58,8 +58,8 @@ ItemStocks | N | An array of `ItemStocks` | The items sold at this store. Each `
 
 
 An `ItemStock` is used to define a group of properties --things like price, conditions, the number sold-- that is applied to one or more items of a single ItemType. There are three ways to specify items ( ID, Name, or JA Pack) and all three can be used at once in a single item stock. You can have as many ItemStocks as you need
-Each ItemStock contains:
 
+Each ItemStock contains:
 
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
@@ -97,7 +97,7 @@ Note: The current animal purchasing menu is hardcoded to warp you to Marnie's. T
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
 ShopName | N | string | The name of the shop is the value of the tile property used to open this shop in-game. It must be unique among all downloaded mods.
-AnimalStock | N | array of strings | A list of animals by name that are sold at this shop. For customize BFAV animals, this is what you would find under the animal's "category"
+AnimalStock | N | array of strings | A list of animals by name that are sold at this shop. For customize BFAV animals, this is what you would find under the animal's "category". Currently only supports BFAV added to Marnie's store
 
 ## Example
 Example shops.json with all available options:
