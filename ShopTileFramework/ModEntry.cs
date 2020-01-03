@@ -37,7 +37,7 @@ namespace ShopTileFramework
             helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
             helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
-            helper.Events.Player.Warped += Player_Warped;
+            helper.Events.GameLoop.UpdateTicking += GameLoop_UpdateTicking;
 
 
             helper.ConsoleCommands.Add("open_shop", "Opens up a custom shop's menu. \n\nUsage: open_shop <ShopName>\n-ShopName: the name of the shop to open", this.DisplayShopMenu);
@@ -48,20 +48,28 @@ namespace ShopTileFramework
             LoadContentPacks();
         }
 
+        private void GameLoop_UpdateTicking(object sender, StardewModdingAPI.Events.UpdateTickingEventArgs e)
+        {
+            //Fixes the game warping the player to places we don't want them to warp
+            //if buildings/animal purchase menus are brought up from a custom tile
+            if (SourceLocation != null && (
+                Game1.locationRequest?.Name == "AnimalShop" || 
+                Game1.locationRequest?.Name == "WizardHouse" ||
+                Game1.locationRequest?.Name == "ScienceHouse"))
+            {
+                Game1.locationRequest.Location = SourceLocation;
+                Game1.locationRequest.IsStructure = SourceLocation.isStructure;
+            }
+        }
         private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
         {
             if (e.OldMenu is PurchaseAnimalsMenu && e.NewMenu is DialogueBox && SourceLocation != null)
             {
-                //go away marnie we don't care
+                //go away marnie we don't want you
                 Game1.exitActiveMenu();
-            }
-        }
-
-        private void Player_Warped(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
-        {
-            if (SourceLocation != null && Game1.currentLocation != SourceLocation)
-            {
-                Game1.warpFarmer(SourceLocation.Name, Game1.player.getTileX(), Game1.player.getTileY(), (int)Game1.player.facingDirection);
+                //display a generic message
+                //TODO: make this localizable
+                Game1.activeClickableMenu = new DialogueBox("Your new animal has been sent home.");
             }
         }
 
@@ -118,7 +126,7 @@ namespace ShopTileFramework
 
             SourceLocation = null;
 
-            if (e.Button != SButton.MouseRight)
+            if (!e.Button.IsActionButton())
                 return;
 
             //check if clicked tile is near the player

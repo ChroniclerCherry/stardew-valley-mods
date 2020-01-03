@@ -5,7 +5,7 @@
 - [Requirements](#requirements)
 - [Create a Content Pack](#create-a-content-pack)
     * [Regular shops](#regular-shops)
-	* [Item Types](#itemtypes)
+      * [Item Types](#itemtypes)
     * [Animal Shops](#animal-shops)
 - [Example](#example)
 - [Adding shops to the game](#adding-shops-to-the-game)
