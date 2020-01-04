@@ -92,7 +92,6 @@ ItemType | Source | Notes
 "Seed" | JA Packs Only | Use this ItemType if adding custom crops through `JAPacks` and you want the seeds/saplings instead of the produce
 
 ### Animal Shops
-Note: The current animal purchasing menu is hardcoded to warp you to Marnie's. To work around that, STF will then proceed to warp you back to your original map. However you'll see Marnie's map appear for a brief moment.
 
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
