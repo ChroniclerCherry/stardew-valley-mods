@@ -29,6 +29,7 @@ namespace ShopTileFramework
     class ItemStock
     {
         public string ItemType { get; set; }
+        public bool IsRecipe { get; set; } = false;
         public int StockPrice { get; set; } = -1;
         public string StockItemCurrency { get; set; } = "Money";
         public int StockCurrencyStack { get; set; } = 1;
