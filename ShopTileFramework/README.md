@@ -39,22 +39,22 @@ Then from there, you need to make a `shops.json` file to define the properties o
 
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
-Shops | Y | An array of Shops | You can add as many shops as you want, as long as they have unique `ShopName`
-AnimalShops | Y | An array of AnimalShops | You can add as many animal shops as you want, as long as they have unique `ShopName`
+Shops | Optional | An array of Shops | You can add as many shops as you want, as long as they have unique `ShopName`among Shops.
+AnimalShops | Optional | An array of AnimalShops | You can add as many animal shops as you want, as long as they have unique `ShopName` among AnimalShops.
 
 ### Regular Shops
 Each Shop contains:
 
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
-ShopName | N | string | The name of the shop is the value of the tile property used to open this shop in-game. It must be unique among all downloaded mods.
-StoreCurrency | Y | string | The currency this store uses. Defaults to `"Money"` if not specified, but can also be `"festivalScore"` or `"clubCoins"`
-CategoriesToSellHere | Y | Array of ints | The negative numbers for [categories](https://stardewvalleywiki.com/Modding:Object_data#Categories) of items the player can sell at this shop. If not provided, the player can not sell anything at this store
-PortraitPath | Y | string | The relative path to the image used as the portrait for this shop from the content pack's folder. If not provided, no portrait will be drawn
-Quote | Y | string | A quote displayed on the shop menu screen. If not provided, no quote will appear
-ShopPrice | Y | int | Sets the price of every item in the store to this if set.
-MaxNumItemsSoldInStore | Y | int | The number of different items available. If there is more items within all the `ItemStocks` than this number, they will be randomly picked at the beginning of each day so that the total number of items match this. This is how to randomize the stock of the entire store.
-ItemStocks | N | An array of `ItemStocks` | The items sold at this store. Each `ItemStocks` can contain one or more item of a single type
+ShopName | Mandatory | string | The name of the shop is the value of the tile property used to open this shop in-game. It must be unique among all downloaded mods.
+StoreCurrency | Optional | string | The currency this store uses. Defaults to `"Money"` if not specified, but can also be `"festivalScore"` or `"clubCoins"`
+CategoriesToSellHere | Optional | Array of ints | The negative numbers for [categories](https://stardewvalleywiki.com/Modding:Object_data#Categories) of items the player can sell at this shop. If not provided, the player can not sell anything at this store
+PortraitPath | YOptional | string | The relative path to the image used as the portrait for this shop from the content pack's folder. If not provided, no portrait will be drawn
+Quote | Optional | string | A quote displayed on the shop menu screen. If not provided, no quote will appear
+ShopPrice | Optional | int | Sets the price of every item in the store to this if set.
+MaxNumItemsSoldInStore | Optional | int | The number of different items available. If there is more items within all the `ItemStocks` than this number, they will be randomly picked at the beginning of each day so that the total number of items match this. This is how to randomize the stock of the entire store.
+ItemStocks | Mandatory | An array of `ItemStocks` | The items sold at this store. Each `ItemStocks` can contain one or more item of a single type
 
 
 An `ItemStock` is used to define a group of properties --things like price, conditions, the number sold-- that is applied to one or more items of a single ItemType. There are three ways to specify items ( ID, Name, or JA Pack) and all three can be used at once in a single item stock. You can have as many ItemStocks as you need
@@ -63,16 +63,17 @@ Each ItemStock contains:
 
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
-ItemType | N | string |  Determines what kind of Object this ItemStock contains, necessary to find the right unique items.
-StockPrice | Y | int | Sets the price for all items in this ItemStock. Overrides ShopPrice. If neither price fields are given, default item sell prices are used
-StockItemCurrency | Y | string | You can specify an `Object` by name as trading currency. Note: this will charge both the specified item as well as the `StoreCurrency` unless the price is set to 0. These can include JA Objects.
-StockCurrencyStack | Y | int | The number of the `StockItemCurrency` it costs for each item. Defaults to 1
-ItemIDs | Y/N | Array of ints | Adds a list of items by their IDS. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
-ItemNames | Y/N | Array of strings | Adds a list of items by their internal names. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
-JAPacks | Y/N | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and Trees added through `JAPacks` specified with `Object` will sell the products, while `Seed` will sell the seeds/saplings.
-Stock | Y | int | How many of each item is available to buy per day. If not set, the stock is unlimited
-MaxNumItemsSoldInItemStock | Y | int | The number of different items available from this ItemStock. If there are more items in this ItemStock than `MaxNumItemsSoldInItemStock` a random set will be picked per day. This is used to randomize the items listed in this `ItemStock`
-When | Y | Array of strings | A condition for the items in this ItemStock to appear. Currently takes all valid vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions). **Warning:** Avoid checks like `t` and `a` as STF will only check conditions at the start of the day, not when the user opens the shop menu. Only use these if you are planning to manually refresh the shop stock through a SMAPI mod
+ItemType | Mandatory | string |  Determines what kind of Object this ItemStock contains, necessary to find the right unique items.
+IsRecipe | Optional | boolean | Only works for Objects and BigCraftables. If set to true, will sell the recipes instead of the object. Defaults to false. **Warning:** If you specify items that do not have a recipe, they will be sold in the store but the player won't learn the recipe because...well, it doesn't exist.
+StockPrice | Optional | int | Sets the price for all items in this ItemStock. Overrides ShopPrice. If neither price fields are given, default item sell prices are used
+StockItemCurrency | Optional | string | You can specify an `Object` by name as trading currency. Note: this will charge both the specified item as well as the `StoreCurrency` unless the price is set to 0. These can include JA Objects.
+StockCurrencyStack | Optional | int | The number of the `StockItemCurrency` it costs for each item. Defaults to 1
+ItemIDs | Optional | Array of ints | Adds a list of items by their IDS. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
+ItemNames | Optional | Array of strings | Adds a list of items by their internal names. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
+JAPacks | Optional | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and Trees added through `JAPacks` specified with `Object` will sell the products, while `Seed` will sell the seeds/saplings.
+Stock | Optional | int | How many of each item is available to buy per day. If not set, the stock is unlimited
+MaxNumItemsSoldInItemStock | Optional | int | The number of different items available from this ItemStock. If there are more items in this ItemStock than `MaxNumItemsSoldInItemStock` a random set will be picked per day. This is used to randomize the items listed in this `ItemStock`
+When | Optional | Array of strings | A condition for the items in this ItemStock to appear. Currently takes all valid vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions). **Warning:** Avoid checks like `t` and `a` as STF will only check conditions at the start of the day, not when the user opens the shop menu. Only use these if you are planning to manually refresh the shop stock through a SMAPI mod
 
 ### ItemTypes
 Possible `ItemType` determine which file from the game's `Contents` folder the item data is obtained from.
@@ -96,11 +97,11 @@ Note: The current animal purchasing menu is hardcoded to warp you to Marnie's. T
 
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
-ShopName | N | string | The name of the shop is the value of the tile property used to open this shop in-game. It must be unique among all downloaded mods.
-AnimalStock | N | array of strings | A list of animals by name that are sold at this shop. For customize BFAV animals, this is what you would find under the animal's "category". Currently only supports BFAV added to Marnie's store
+ShopName | Mandatory | string | The name of the shop is the value of the tile property used to open this shop in-game. It must be unique among all downloaded mods.
+AnimalStock | Mandatory | array of strings | A list of animals by name that are sold at this shop. For customize BFAV animals, this is what you would find under the animal's "category". Currently only supports BFAV added to Marnie's store
 
 ## Example
-Example shops.json with all available options:
+Example shops.json:
 ```json
 {
   "Shops": [
