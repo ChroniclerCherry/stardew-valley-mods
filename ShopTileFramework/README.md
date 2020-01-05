@@ -104,7 +104,7 @@ ClosedMessage | Optional | string | The message that displays if a user interact
 
 ## Example
 Example shops.json:
-```json
+```js
 {
   "Shops": [
     {
@@ -122,7 +122,7 @@ Example shops.json:
         {
           "ItemType": "Clothing",
           "StockItemCurrency": "Parsnip", //This Itemstock charges Parsnips
-          ="StockCurrencyStack": 5, //and it takes 5 parsnips each time
+          "StockCurrencyStack": 5, //and it takes 5 parsnips each time
           "StockPrice": 0, //This ItemStock doesn't charge any currency (festival score for this shop)
           "JAPacks": [
             "missy.shirtsja"
