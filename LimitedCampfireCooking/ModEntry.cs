@@ -40,16 +40,19 @@ namespace LimitedCampfireCooking
                 e.Button.IsUseToolButton())
             {
                 GameLocation loc = Game1.currentLocation;
-                Vector2 tile = e.Cursor.Tile;
-                loc.Objects.TryGetValue(tile, out StardewValley.Object obj);
+                var clickedTile = Helper.Input.GetCursorPosition().Tile;
 
-                if (!IsClickWithinReach(tile))
+                if (!IsClickWithinReach(clickedTile))
                 {
                     return;
                 }
 
+                Vector2 tile = e.Cursor.Tile;
+                loc.Objects.TryGetValue(tile, out StardewValley.Object obj);
+
                 if (obj != null && obj.Name == "Campfire" && obj.IsOn)
                 {
+                    Helper.Input.Suppress(e.Button);
                     Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, 0, 0);
                     Game1.activeClickableMenu = new CookingMenu((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2);
                 }

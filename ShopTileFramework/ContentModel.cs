@@ -12,6 +12,8 @@ namespace ShopTileFramework
     {
         public string ShopName { get; set; }
         public List<string> AnimalStock { get; set; }
+        public string[] When { get; set; } = null;
+        public string ClosedMessage { get; set; } = null;
     }
 
     class ShopPack
@@ -24,6 +26,8 @@ namespace ShopTileFramework
         public int ShopPrice { get; set; } = -1;
         public int MaxNumItemsSoldInStore { get; set; } = int.MaxValue;
         public ItemStock[] ItemStocks { get; set; }
+        public string[] When { get; set; } = null;
+        public string ClosedMessage { get; set; } = null;
     }
 
     class ItemStock

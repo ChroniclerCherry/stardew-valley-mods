@@ -55,7 +55,8 @@ Quote | Optional | string | A quote displayed on the shop menu screen. If not pr
 ShopPrice | Optional | int | Sets the price of every item in the store to this if set.
 MaxNumItemsSoldInStore | Optional | int | The number of different items available. If there is more items within all the `ItemStocks` than this number, they will be randomly picked at the beginning of each day so that the total number of items match this. This is how to randomize the stock of the entire store.
 ItemStocks | Mandatory | An array of `ItemStocks` | The items sold at this store. Each `ItemStocks` can contain one or more item of a single type
-
+When | Optional | Array of strings | The conditions for this store to open, checked each time a player interacts with it. Currently takes all valid vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions).
+ClosedMessage | Optional | string | The message that displays if a user interacts with the store when conditions are not met. If not set, no message will be displayed.
 
 An `ItemStock` is used to define a group of properties --things like price, conditions, the number sold-- that is applied to one or more items of a single ItemType. There are three ways to specify items ( ID, Name, or JA Pack) and all three can be used at once in a single item stock. You can have as many ItemStocks as you need
 
@@ -98,6 +99,8 @@ Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
 ShopName | Mandatory | string | The name of the shop is the value of the tile property used to open this shop in-game. It must be unique among all downloaded mods.
 AnimalStock | Mandatory | array of strings | A list of animals by name that are sold at this shop. For customize BFAV animals, this is what you would find under the animal's "category". Currently only supports BFAV added to Marnie's store
+When | Optional | Array of strings | The conditions for this store to open, checked each time a player interacts with it. Currently takes all valid vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions).
+ClosedMessage | Optional | string | The message that displays if a user interacts with the store when conditions are not met. If not set, no message will be displayed.
 
 ## Example
 Example shops.json:
@@ -106,70 +109,66 @@ Example shops.json:
   "Shops": [
     {
       "ShopName": "MyShop",
-      "StoreCurrency": "festivalScore",
-      "CategoriesToSellHere":[
-                        -81,
-                        -75,
-                        ],
+      "StoreCurrency": "festivalScore", //uses festival score as the currency for the whole shop
+      "CategoriesToSellHere": [ //player can sell Forage and Vegetables to this store
+        -81, 
+        -75
+      ],
       "PortraitPath": "assets/Portrait.png",
-      "Quote": "This is a store!",
+      "Quote": "This is a store!", 
       "ShopPrice": 80,
-      "MaxNumItemsSoldInStore": 30,
+      "MaxNumItemsSoldInStore": 30, //if all items total over 30, a random 30 will be picked each day
       "ItemStocks": [
         {
           "ItemType": "Clothing",
-		  "StockItemCurrency":"Parsnip",
-          "StockPrice": 0,
-		  "StockCurrencyStack": 5,
-		  "JAPacks": [
-			"missy.shirtsja",
+          "StockItemCurrency": "Parsnip", //This Itemstock charges Parsnips
+          ="StockCurrencyStack": 5, //and it takes 5 parsnips each time
+          "StockPrice": 0, //This ItemStock doesn't charge any currency (festival score for this shop)
+          "JAPacks": [
+            "missy.shirtsja"
           ],
           "Stock": 4,
-          "MaxNumItemsSoldInItemStock": 5,
-		  "When":[
-		  "f Haley 1500",
-		  "z winter",
-		  ]
+          "MaxNumItemsSoldInItemStock": 5, //if there's more than 5 items total in this Item stock, a random 5 will be picked each day
+          "When": [ //only sell this ItemStock if the player has 1500 friendship points/6 hearts and it's not winter
+            "f Haley 1500",
+            "z winter"
+          ]
         },
         {
           "ItemType": "Clothing",
-          "StockItemCurrency":"Prismatic Shard",
-          "StockPrice": 0,
-          "StockCurrencyStack": 1,
+          "StockPrice": 500,
           "ItemIDs": [
-		5,10,1015
+            5,
+            10,
+            1015
           ],
           "ItemNames": [
-		"Prismatic Shirt",
-		"Prismatic Pants"
+            "Prismatic Shirt",
+            "Prismatic Pants"
           ],
           "Stock": 4,
-          "MaxNumItemsSoldInItemStock": 5,
-        },
-        {
-          "ItemType": "Object",
-          "ItemIDs": [
-		60,74,90
-          ],
-          "ItemNames": [
-		"Earth Crystal",
-		"Pizza",
-          ],
-          "JAPacks": [
-		"ppja.fruitsandveggies",
-		"ppja.moretrees"
-          ],
-          "Stock": 10,
-          "MaxNumItemsSoldInItemStock": 20,
-        },
-      ]
-    },
+          "MaxNumItemsSoldInItemStock": 5
+        }
+      ],
+      "When": [ //only open the store from 8AM to 6PM
+        "t 800 1800"
+      ],
+      "ClosedMessage": "This store is open daily from 8AM to 6PM" //the message displayed if the store is closed
+    }
   ],
-  "AnimalShops":[
-		{
-	"ShopName":"MyAnimalShop",
-	"AnimalStock":["Chicken","Fennec Fox","Phoenix","Raccoon", "Quail", "Warthog"]
-	},
+  "AnimalShops": [
+    {
+      "ShopName": "MyAnimalShop",
+      "AnimalStock": [
+        "Chicken",
+        "Fennec Fox",
+        "Phoenix",
+        "Raccoon",
+        "Quail",
+        "Warthog"
+      ]
+    }
+  ]
 }
 ```
 

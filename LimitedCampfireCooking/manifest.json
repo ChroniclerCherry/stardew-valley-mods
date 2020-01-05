@@ -1,7 +1,7 @@
 {
   "Name": "Limited Campfire Cooking",
   "Author": "Cherry",
-  "Version": "1.0.0",
+  "Version": "1.0.1",
   "Description": "Cook certain recipes from campfires",
   "UniqueID": "Cherry.LimitedCampfireCooking",
   "EntryDll": "LimitedCampfireCooking.dll",
