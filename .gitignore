@@ -1,8 +1,4 @@
 .vs
 packages
-bin
 obj
 properties
-*.sln
-/CustomizeAnywhere/CustomizeAnywhereMenuOld.cs
-/CustomizeAnywhere/CustomizeAnywhere.csproj.user

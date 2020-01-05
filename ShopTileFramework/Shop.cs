@@ -13,7 +13,6 @@ namespace ShopTileFramework
 {
     class Shop
     {
-        private readonly string shopName;
         private readonly Texture2D Portrait = null;
         private readonly string Quote;
         private readonly int ShopPrice;
@@ -21,15 +20,18 @@ namespace ShopTileFramework
         private readonly int MaxNumItemsSoldInStore;
         internal Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
 
-        public string ShopName => shopName;
-
+        public string ShopName;
+        private string[] OpenConditions;
+        private string ClosedMessage;
         private readonly string StoreCurrency;
         private List<int> CategoriesToSellHere;
 
         private static Dictionary<string, IDictionary<int, string>> ObjectInfoSource;
         public Shop(ShopPack pack, IContentPack contentPack)
         {
-            shopName = pack.ShopName;
+            ShopName = pack.ShopName;
+            OpenConditions = pack.When;
+            ClosedMessage = pack.ClosedMessage;
             ShopPrice = pack.ShopPrice;
             StoreCurrency = pack.StoreCurrency;
             CategoriesToSellHere = pack.CategoriesToSellHere;
@@ -60,17 +62,17 @@ namespace ShopTileFramework
             foreach (ItemStock Inventory in ItemStocks)
             {
 
-                if (Inventory.When != null && !CheckConditions(Inventory.When))
+                if (Inventory.When != null && !ModEntry.CheckConditions(Inventory.When))
                     continue;
 
                 if (Inventory.ItemType != "Seed" && !ObjectInfoSource.ContainsKey(Inventory.ItemType))
                 {
-                    ModEntry.monitor.Log($" \"{Inventory.ItemType}\" is not a valid ItemType. Some items will not be added.",LogLevel.Warn);
+                    ModEntry.monitor.Log($" \"{Inventory.ItemType}\" is not a valid ItemType. Some items will not be added.", LogLevel.Warn);
                     continue;
                 }
 
 
-                int CurrencyItemID = GetIndexByName(Inventory.StockItemCurrency,Game1.objectInformation);
+                int CurrencyItemID = GetIndexByName(Inventory.StockItemCurrency, Game1.objectInformation);
 
                 int CurrencyItemStack = Inventory.StockCurrencyStack;
 
@@ -87,7 +89,7 @@ namespace ShopTileFramework
                 {
                     foreach (var ItemID in Inventory.ItemIDs)
                     {
-                        AddItem( Inventory.ItemType, Inventory.IsRecipe, ItemID, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                        AddItem(Inventory.ItemType, Inventory.IsRecipe, ItemID, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                     }
                 }
 
@@ -96,10 +98,10 @@ namespace ShopTileFramework
                 {
                     foreach (var ItemName in Inventory.ItemNames)
                     {
-                        AddItem( Inventory.ItemType, Inventory.IsRecipe, ItemName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                        AddItem(Inventory.ItemType, Inventory.IsRecipe, ItemName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                     }
                 }
-                
+
                 if (Inventory.JAPacks != null && ModEntry.JsonAssets != null)
                 {   //add in all items from specified JA packs
                     foreach (var JAPack in Inventory.JAPacks)
@@ -162,7 +164,7 @@ namespace ShopTileFramework
                         }
                         else if (Inventory.ItemType == "Object")
                         {
-                            
+
 
                             //add all other objects from the JA pack
                             var attemptToGetPack = ModEntry.JsonAssets.GetAllObjectsFromContentPack(JAPack);
@@ -250,28 +252,6 @@ namespace ShopTileFramework
             RandomizeStock(ItemPriceAndStock, MaxNumItemsSoldInStore);
         }
 
-        private bool CheckConditions(string[] conditions)
-        {
-            //giving this a random event id 
-            string Preconditions = "-5005";
-            foreach (string con in conditions)
-            {
-                Preconditions += '/' + con;
-            }
-
-            int checkedCondition = ModEntry.helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition").Invoke<int>(Preconditions);
-
-            if (checkedCondition == -1)
-            {
-                ModEntry.monitor.Log("Player did not meet the event preconditions:\n" +
-                    Preconditions);
-                return false;
-            }
-                
-
-            return true;
-        }
-
         private void AddToItemPriceAndStock(Dictionary<ISalable, int[]> dict)
         {
             foreach (var kvp in dict)
@@ -288,7 +268,7 @@ namespace ShopTileFramework
 
         }
 
-        private void AddItem(String ItemType,bool isRecipe, int itemID, int Price, int Stock, Dictionary<ISalable, int[]> itemStockInventory, int ItemCurrencyID = -1, int ItemCurrencyStack = -1)
+        private void AddItem(String ItemType, bool isRecipe, int itemID, int Price, int Stock, Dictionary<ISalable, int[]> itemStockInventory, int ItemCurrencyID = -1, int ItemCurrencyStack = -1)
         {
             var i = GetItem(ItemType, itemID, Stock, isRecipe);
             if (isRecipe)
@@ -297,15 +277,17 @@ namespace ShopTileFramework
             if (i != null)
             {
                 int[] PriceStockCurrency;
-                var price = (Price == -1)? i.salePrice() : Price;
+                var price = (Price == -1) ? i.salePrice() : Price;
                 if (ItemCurrencyID == -1)
                 {
                     PriceStockCurrency = new int[] { price, Stock };
-                    
-                } else if (ItemCurrencyStack == -1)
+
+                }
+                else if (ItemCurrencyStack == -1)
                 {
                     PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID };
-                } else
+                }
+                else
                 {
                     PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID, ItemCurrencyStack };
                 }
@@ -363,28 +345,28 @@ namespace ShopTileFramework
             switch (objectType)
             {
                 case "Object":
-                        item = new StardewValley.Object(index, stock, isRecipe);
+                    item = new StardewValley.Object(index, stock, isRecipe);
                     break;
                 case "BigCraftable":
                     item = new StardewValley.Object(Vector2.Zero, index) { Stack = stock, IsRecipe = isRecipe };
                     break;
                 case "Clothing":
-                        item = new Clothing(index);
+                    item = new Clothing(index);
                     break;
                 case "Ring":
-                        item = new Ring(index);
+                    item = new Ring(index);
                     break;
                 case "Hat":
-                        item = new Hat(index);
+                    item = new Hat(index);
                     break;
                 case "Boot":
-                        item = new Boots(index);
+                    item = new Boots(index);
                     break;
                 case "Furniture":
-                        item = new Furniture(index, Vector2.Zero);
+                    item = new Furniture(index, Vector2.Zero);
                     break;
                 case "Weapon":
-                        item = new MeleeWeapon(index);
+                    item = new MeleeWeapon(index);
                     break;
             }
             return item;
@@ -397,16 +379,17 @@ namespace ShopTileFramework
             {
                 return null;
             }
-            
+
             ObjectInfoSource.TryGetValue(objectType, out var InfoSource);
             if (InfoSource != null)
             {
                 return GetItem(objectType, GetIndexByName(name, InfoSource), stock, isRecipe);
-            } else
+            }
+            else
             {
                 return null;
             }
-            
+
         }
 
         public static void GetObjectInfoSource()
@@ -455,34 +438,42 @@ namespace ShopTileFramework
 
         public void DisplayShop()
         {
-            int currency = 0;
-            switch(StoreCurrency){
-                case "festivalScore":
-                    currency = 1;
-                    break;
-                case "clubCoins":
-                    currency = 2;
-                    break;
-            }
-
-            var ShopMenu = new ShopMenu(ItemPriceAndStock,
-                currency: currency);
-            if (CategoriesToSellHere != null)
-                ShopMenu.categoriesToSellHere = CategoriesToSellHere;
-            if (Portrait != null)
+            if (ModEntry.CheckConditions(OpenConditions))
             {
-                ShopMenu.portraitPerson = new NPC
+                int currency = 0;
+                switch (StoreCurrency)
                 {
-                    Portrait = Portrait
-                };
-            }
+                    case "festivalScore":
+                        currency = 1;
+                        break;
+                    case "clubCoins":
+                        currency = 2;
+                        break;
+                }
 
-            if (Quote != null)
+                var ShopMenu = new ShopMenu(ItemPriceAndStock,
+                    currency: currency);
+                if (CategoriesToSellHere != null)
+                    ShopMenu.categoriesToSellHere = CategoriesToSellHere;
+                if (Portrait != null)
+                {
+                    ShopMenu.portraitPerson = new NPC
+                    {
+                        Portrait = Portrait
+                    };
+                }
+
+                if (Quote != null)
+                {
+                    ShopMenu.potraitPersonDialogue = Game1.parseText(Quote, Game1.dialogueFont, 304);
+                }
+
+                Game1.activeClickableMenu = ShopMenu;
+            } else if (ClosedMessage != null)
             {
-                ShopMenu.potraitPersonDialogue = Game1.parseText(Quote, Game1.dialogueFont, 304);
+                Game1.activeClickableMenu = new DialogueBox(ClosedMessage);
             }
             
-            Game1.activeClickableMenu = ShopMenu;
         }
     }
 }

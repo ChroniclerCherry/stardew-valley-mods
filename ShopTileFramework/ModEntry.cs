@@ -47,7 +47,6 @@ namespace ShopTileFramework
 
             LoadContentPacks();
         }
-
         private void GameLoop_UpdateTicking(object sender, StardewModdingAPI.Events.UpdateTickingEventArgs e)
         {
             //Fixes the game warping the player to places we don't want them to warp
@@ -74,12 +73,10 @@ namespace ShopTileFramework
                 Game1.activeClickableMenu = new DialogueBox(AnimalPurchaseMessage);
             }
         }
-
         public override object GetApi()
         {
             return new Api();
         }
-
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
             //refreshes the object information files on each save loaded in case of ids changing
@@ -343,7 +340,6 @@ namespace ShopTileFramework
                 Desert.boughtMagicRockCandy = true;
             return false;
         }
-
         private bool onSandyShopPurchase(ISalable item, Farmer who, int amount)
         {
             Game1.player.team.synchronizedShopStock.OnItemPurchased(SynchronizedShopStock.SynchedShop.Sandy, item, amount);
@@ -465,6 +461,30 @@ namespace ShopTileFramework
             return true;
         }
 
+        internal static bool CheckConditions(string[] conditions)
+        {
+            if (conditions == null)
+                return true;
+            //giving this a random event id 
+            string Preconditions = "-5005";
+            foreach (string con in conditions)
+            {
+                Preconditions += '/' + con;
+            }
+
+            int checkedCondition = ModEntry.helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition").Invoke<int>(Preconditions);
+
+            if (checkedCondition == -1)
+            {
+                ModEntry.monitor.Log("Player did not meet the event preconditions:\n" +
+                    Preconditions);
+                return false;
+            }
+
+
+            return true;
+        }
+
         private void DisplayShopMenu(string command, string[] args)
         {
             if (args.Length == 0)
@@ -538,7 +558,6 @@ namespace ShopTileFramework
                 value.UpdateItemPriceAndStock();
             }
         }
-
         private void ListAllShops(string command, string[] args)
         {
             if (Shops.Count == 0)

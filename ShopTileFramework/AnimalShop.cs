@@ -39,10 +39,17 @@ namespace ShopTileFramework
 
         internal void DisplayShop()
         {
-            //get animal stock each time to refresh requirement checks
-            UpdateShopAnimalStock();
-            ModEntry.SourceLocation = Game1.currentLocation;
-            Game1.activeClickableMenu = new PurchaseAnimalsMenu(ShopAnimalStock);
+            if (ModEntry.CheckConditions(ShopPack.When))
+            {
+                //get animal stock each time to refresh requirement checks
+                UpdateShopAnimalStock();
+                ModEntry.SourceLocation = Game1.currentLocation;
+                Game1.activeClickableMenu = new PurchaseAnimalsMenu(ShopAnimalStock);
+            } else if (ShopPack.ClosedMessage != null)
+            {
+                Game1.activeClickableMenu = new DialogueBox(ShopPack.ClosedMessage);
+            }
+
         }
     }
 
