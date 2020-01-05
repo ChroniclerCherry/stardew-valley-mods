@@ -50,7 +50,7 @@ Field | Optional | Format | Description
 ShopName | Mandatory | string | The name of the shop is the value of the tile property used to open this shop in-game. It must be unique among all downloaded mods.
 StoreCurrency | Optional | string | The currency this store uses. Defaults to `"Money"` if not specified, but can also be `"festivalScore"` or `"clubCoins"`
 CategoriesToSellHere | Optional | Array of ints | The negative numbers for [categories](https://stardewvalleywiki.com/Modding:Object_data#Categories) of items the player can sell at this shop. If not provided, the player can not sell anything at this store
-PortraitPath | YOptional | string | The relative path to the image used as the portrait for this shop from the content pack's folder. If not provided, no portrait will be drawn
+PortraitPath | Optional | string | The relative path to the image used as the portrait for this shop from the content pack's folder. If not provided, no portrait will be drawn
 Quote | Optional | string | A quote displayed on the shop menu screen. If not provided, no quote will appear
 ShopPrice | Optional | int | Sets the price of every item in the store to this if set.
 MaxNumItemsSoldInStore | Optional | int | The number of different items available. If there is more items within all the `ItemStocks` than this number, they will be randomly picked at the beginning of each day so that the total number of items match this. This is how to randomize the stock of the entire store.
@@ -84,7 +84,7 @@ ItemType | Source | Notes
 "Object" | [`data/ObjectInformation.json`](https://stardewvalleywiki.com/Modding:Object_data) | Contains most objects in the game not covered by the other categories
 "Ring" | [`data/ObjectInformation.json`](https://stardewvalleywiki.com/Modding:Object_data) | While sharing the same data file as most objects, it requires a unique constructor and thus is seperate
 "BigCraftable" | [`data/BigCraftablesInformation.json`](https://stardewvalleywiki.com/Modding:Big_Craftables_data) | 
-"Clothing" | `data/ClothingInformation.json` |
+"Clothing" | `data/ClothingInformation.json` | This contains all shirts and pants
 "Hat" | [`data/hats.json`](https://stardewvalleywiki.com/Modding:Hat_data) |
 "Boot" | `data/Boots.json` |
 "Furniture" | [`data/Furniture.json`](https://stardewvalleywiki.com/Modding:Furniture_data) |
@@ -98,13 +98,13 @@ ItemType | Source | Notes
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
 ShopName | Mandatory | string | The name of the shop is the value of the tile property used to open this shop in-game. It must be unique among all downloaded mods.
-AnimalStock | Mandatory | array of strings | A list of animals by name that are sold at this shop. For customize BFAV animals, this is what you would find under the animal's "category". Currently only supports BFAV added to Marnie's store
+AnimalStock | Mandatory | array of strings | A list of animals by name that are sold at this shop. For custom BFAV animals, this is what you would find under the animal's "category". Currently only supports BFAV animals added to Marnie's store
 When | Optional | Array of strings | The conditions for this store to open, checked each time a player interacts with it. Currently takes all valid vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions).
 ClosedMessage | Optional | string | The message that displays if a user interacts with the store when conditions are not met. If not set, no message will be displayed.
 
 ## Example
 Example shops.json:
-```json
+```js
 {
   "Shops": [
     {
@@ -122,7 +122,7 @@ Example shops.json:
         {
           "ItemType": "Clothing",
           "StockItemCurrency": "Parsnip", //This Itemstock charges Parsnips
-          ="StockCurrencyStack": 5, //and it takes 5 parsnips each time
+          "StockCurrencyStack": 5, //and it takes 5 parsnips each time
           "StockPrice": 0, //This ItemStock doesn't charge any currency (festival score for this shop)
           "JAPacks": [
             "missy.shirtsja"
@@ -200,8 +200,6 @@ Animal shops are similar, just with an AnimalShop property:
 
 The empty `Action` Property is optional; it just changes the appearance of the game cursor when hovering over a shop to make it clear that it is interactable. These tile properties can be loaded into the game with any other method usually used to load in maps. Content Patcher, TMXL, or SMAPI mods can all add the property along with the shop itself. More info about modding maps can be found [here](https://stardewvalleywiki.com/Modding:Maps)
 
-Shops can also be added into the game via a SMAPI mod. TSF provides an API that lets you register new shops, and programatically open them in-game, reset their stock, or directly change their stock.
-
 ## Placing Vanilla Shops
 
 Vanilla shops can be called the same way as custom Shops: With a `Shop` tile propertie and the corresponding `ShopName`.
@@ -248,6 +246,6 @@ Command | Description
  
  ## Contact The Dev
 If you need to find me, the following methods are your best bets:
-- Bug reports can be made by submitting an issue on this repositiory, or use the [bugs tab](https://www.nexusmods.com/stardewvalley/mods/5005?tab=bugs) on the Nexus page. Please provide a [log](https://smapi.io/log/) with all bug reports and as much information about the circumstances of the bug as possible.
+- Bug reports can be made by submitting an issue on this repositiory, or use the [bugs tab](https://www.nexusmods.com/stardewvalley/mods/5005?tab=bugs) on the Nexus mod page. Please provide a [log](https://smapi.io/log/) with all bug reports and as much information about the circumstances of the bug as possible.
 - Suggestions should be submitted through an issue on this repository
-- If you have questions that aren't answered here, you can DM me on discord at `Chronicler#9318`
+- If you have questions that aren't answered here or requires clarification, you can DM me on discord at `Chronicler#9318`
