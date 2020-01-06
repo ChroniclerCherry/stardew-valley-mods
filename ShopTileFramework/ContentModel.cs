@@ -12,8 +12,10 @@ namespace ShopTileFramework
     {
         public string ShopName { get; set; }
         public List<string> AnimalStock { get; set; }
+        public string[] ExcludeFromMarnies { get; set; } = null;
         public string[] When { get; set; } = null;
         public string ClosedMessage { get; set; } = null;
+
     }
 
     class ShopPack

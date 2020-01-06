@@ -18,6 +18,9 @@ namespace ShopTileFramework
         internal static IJsonAssetsApi JsonAssets;
         internal static BFAVApi BFAV;
 
+        private List<string> ExcludeFromMarnie = new List<string>();
+        private bool ChangedMarnieStock = false;
+
 
         internal static Dictionary<string, Shop> Shops;
         internal static Dictionary<string, AnimalShop> AnimalShops;
@@ -72,6 +75,23 @@ namespace ShopTileFramework
                 //display the animal purchase message without Marnie's face
                 Game1.activeClickableMenu = new DialogueBox(AnimalPurchaseMessage);
             }
+
+            //this is the vanilla Marnie menu
+            if (e.NewMenu is PurchaseAnimalsMenu && SourceLocation == null && !ChangedMarnieStock)
+            {
+                Game1.exitActiveMenu();
+                var AllAnimalsStock = Utility.getPurchaseAnimalStock();
+                var newAnimalStock = new List<StardewValley.Object>();
+                foreach (var animal in AllAnimalsStock)
+                {
+                    if (!ExcludeFromMarnie.Contains(animal.Name))
+                    {
+                        newAnimalStock.Add(animal);
+                    }
+                }
+                ChangedMarnieStock = true;
+                Game1.activeClickableMenu = new PurchaseAnimalsMenu(newAnimalStock);
+            }
         }
         public override object GetApi()
         {
@@ -82,7 +102,6 @@ namespace ShopTileFramework
             //refreshes the object information files on each save loaded in case of ids changing
             Shop.GetObjectInfoSource();
         }
-
         private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
             JsonAssets = helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
@@ -124,6 +143,7 @@ namespace ShopTileFramework
                 return;
 
             SourceLocation = null;
+            ChangedMarnieStock = false;
 
             if (!e.Button.IsActionButton())
                 return;
@@ -436,14 +456,17 @@ namespace ShopTileFramework
                             }
                             else
                             {
+                                if (animalShopPack.ExcludeFromMarnies != null)
+                                {
+                                    ExcludeFromMarnie.AddRange(animalShopPack.ExcludeFromMarnies);
+                                }
+
                                 var animalShop = new AnimalShop(animalShopPack, animalShopPack.ShopName);
                                 AnimalShops.Add(animalShopPack.ShopName, animalShop);
                             }
                         }
                     }
-
                 }
-
             }
         }
 

@@ -49,7 +49,6 @@ namespace ShopTileFramework
             {
                 Game1.activeClickableMenu = new DialogueBox(ShopPack.ClosedMessage);
             }
-
         }
     }
 

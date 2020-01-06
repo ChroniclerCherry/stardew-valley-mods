@@ -99,6 +99,7 @@ Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
 ShopName | Mandatory | string | The name of the shop is the value of the tile property used to open this shop in-game. It must be unique among all downloaded mods.
 AnimalStock | Mandatory | array of strings | A list of animals by name that are sold at this shop. For custom BFAV animals, this is what you would find under the animal's "category". Currently only supports BFAV animals added to Marnie's store
+ExcludeFromMarnies | Optional | array of strings | A list of animals to remove from Marnie's shop. This is a way to have the animal exclusively sold by your custom shop
 When | Optional | Array of strings | The conditions for this store to open, checked each time a player interacts with it. Currently takes all valid vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions).
 ClosedMessage | Optional | string | The message that displays if a user interacts with the store when conditions are not met. If not set, no message will be displayed.
 
