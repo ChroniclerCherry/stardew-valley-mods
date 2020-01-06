@@ -157,19 +157,13 @@ Example shops.json:
       "ClosedMessage": "This store is open daily from 8AM to 6PM" //the message displayed if the store is closed
     }
   ],
-  "AnimalShops": [
-    {
-      "ShopName": "MyAnimalShop",
-      "AnimalStock": [
-        "Chicken",
-        "Fennec Fox",
-        "Phoenix",
-        "Raccoon",
-        "Quail",
-        "Warthog"
-      ]
-    }
-  ]
+"AnimalShops":[
+{
+	"ShopName":"MyAnimalShop",
+	"AnimalStock":["Chicken","Fennec Fox","Phoenix","Raccoon", "Quail", "Warthog"],
+	"ExcludeFromMarnies":["Chicken","Fennec Fox","Phoenix","Raccoon", "Quail", "Warthog"] //don't sell these animals at marnie's anymore
+	},
+  ],
 }
 ```
 

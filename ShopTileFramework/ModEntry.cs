@@ -21,19 +21,20 @@ namespace ShopTileFramework
         private List<string> ExcludeFromMarnie = new List<string>();
         private bool ChangedMarnieStock = false;
 
-
-        internal static Dictionary<string, Shop> Shops;
-        internal static Dictionary<string, AnimalShop> AnimalShops;
+        internal static Dictionary<string, Shop> Shops = new Dictionary<string, Shop>();
+        internal static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
 
         internal static GameLocation SourceLocation = null;
+
+        /// <summary>
+        /// the Mod entry point called by SMAPI
+        /// </summary>
+        /// <param name="h">the helper provided by SMAPI</param>
         public override void Entry(IModHelper h)
         {
             //make helper and monitor static so they can be accessed in other classes
             helper = h;
             monitor = Monitor;
-
-            Shops = new Dictionary<string, Shop>();
-            AnimalShops = new Dictionary<string, AnimalShop>();
 
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
             helper.Events.Display.MenuChanged += Display_MenuChanged;
@@ -42,12 +43,13 @@ namespace ShopTileFramework
             helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
             helper.Events.GameLoop.UpdateTicking += GameLoop_UpdateTicking;
 
-
+            //add console commands
             helper.ConsoleCommands.Add("open_shop", "Opens up a custom shop's menu. \n\nUsage: open_shop <ShopName>\n-ShopName: the name of the shop to open", this.DisplayShopMenu);
             helper.ConsoleCommands.Add("open_animal_shop", "Opens up a custom animal shop's menu. \n\nUsage: open_shop <open_animal_shop>\n-ShopName: the name of the animal shop to open", this.DisplayAnimalShopMenus);
             helper.ConsoleCommands.Add("reset_shop", "Resets the stock of specified shop. Rechecks conditions and randomizations\n\nUsage: reset_shop <ShopName>\n-ShopName: the name of the shop to reset", this.ResetShopStock);
             helper.ConsoleCommands.Add("list_shops", "Lists all shops registered with Shop Tile Framework", this.ListAllShops);
 
+            //get all the info from content packs
             LoadContentPacks();
         }
         private void GameLoop_UpdateTicking(object sender, StardewModdingAPI.Events.UpdateTickingEventArgs e)
@@ -77,7 +79,7 @@ namespace ShopTileFramework
             }
 
             //this is the vanilla Marnie menu
-            if (e.NewMenu is PurchaseAnimalsMenu && SourceLocation == null && !ChangedMarnieStock)
+            if (e.NewMenu is PurchaseAnimalsMenu && SourceLocation == null && !ChangedMarnieStock && ExcludeFromMarnie.Count > 0)
             {
                 Game1.exitActiveMenu();
                 var AllAnimalsStock = Utility.getPurchaseAnimalStock();
@@ -411,6 +413,9 @@ namespace ShopTileFramework
             }
         }
 
+        /// <summary>
+        /// Reads content packs and loads the relevent information to create the shops
+        /// </summary>
         private void LoadContentPacks()
         {
             monitor.Log("Adding Content Packs...", LogLevel.Info);
@@ -423,7 +428,17 @@ namespace ShopTileFramework
                 }
                 else
                 {
-                    ContentModel data = contentPack.ReadJsonFile<ContentModel>("shops.json");
+                    ContentModel data = null;
+                    try
+                    {
+                        data = contentPack.ReadJsonFile<ContentModel>("shops.json");
+                    }
+                    catch (Exception ex)
+                    {
+                        Monitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}, its shops will not be loaded", LogLevel.Warn);
+                        continue;
+                    }
+                    
                     Monitor.Log($"      {contentPack.Manifest.Name} by {contentPack.Manifest.Author} | " +
                         $"{contentPack.Manifest.Version} | {contentPack.Manifest.Description}", LogLevel.Info);
 
