@@ -1,6 +1,6 @@
 {
 	"Name": "Farm Rearranger",
 	"Price": 1,
-	"Description": "Move your buildings around",
+	"Description": "Lets you move your farm buildings around.",
 	"ProvidesLight": false,
 }
