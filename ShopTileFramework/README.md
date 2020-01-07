@@ -105,7 +105,7 @@ When | Optional | Array of strings | The conditions for this store to open, chec
 ClosedMessage | Optional | string | The message that displays if a user interacts with the store when conditions are not met. If not set, no message will be displayed.
 
 ### Condition Checking
-All `When` fields used for various condition checking uses vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions). When takes an array of strings. Each String can be a full list of conditions that must ALL be met seperated by `/` values just like vanilla event conditions.
+All `When` fields used for various condition checking uses vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions). `When` takes an array of strings. Each String can be a full list of conditions that must ALL be met seperated by `/` values just like vanilla event conditions.
 
 Example:
 `z spring/z summer/z fall` means "not in spring,summer,or fall" which would result in the condition returnign true only if it's winter
@@ -125,11 +125,11 @@ When multiple fields are provided, the condition will work if _any_ of the strin
         }
       ],
       "When": [
-        "z summer/z fall/z winter/t 600 1000",
-        "z fall/z winter/z spring/t 1000 1400",
-        "z winter/z spring/z summer/t 1400 1800",
-        "z spring/z summer/z winter/t 1800 20000",
-        "f Linus 2500"
+        "z summer/z fall/z winter/t 600 1000", //in spring, only opens between 6am and 10am
+        "z fall/z winter/z spring/t 1000 1400", //in summer only opens from 10am to 2pm
+        "z winter/z spring/z summer/t 1400 1800", //in fall only open from 2pm to 6pm
+        "z spring/z summer/z winter/t 1800 20000", //in winter only open from 6pm to 10pm
+        "f Linus 2500" //is always open if player has 2500 friendship points / 10 hearts with linus
       ],
       "ClosedMessage": "This shop is closed."
     }
