@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Harmony;
+using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
@@ -18,8 +19,7 @@ namespace ShopTileFramework
         internal static IJsonAssetsApi JsonAssets;
         internal static BFAVApi BFAV;
 
-        private List<string> ExcludeFromMarnie = new List<string>();
-        private bool ChangedMarnieStock = false;
+        internal static List<string> ExcludeFromMarnie = new List<string>();
 
         internal static Dictionary<string, Shop> Shops = new Dictionary<string, Shop>();
         internal static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
@@ -51,6 +51,13 @@ namespace ShopTileFramework
 
             //get all the info from content packs
             LoadContentPacks();
+
+            //harmony black magic
+            var harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
+            harmony.Patch(
+                original: AccessTools.Method(typeof(StardewValley.Utility), "getPurchaseAnimalStock"),
+                prefix: new HarmonyMethod(typeof(PatchGetPurchaseAnimalStock), nameof(PatchGetPurchaseAnimalStock.Prefix))
+                );
         }
         /// <summary>
         /// Checks for warps from the buildings/animals menu 
@@ -68,12 +75,11 @@ namespace ShopTileFramework
                 Game1.locationRequest?.Name == "ScienceHouse"))
             {
                 Game1.locationRequest.Location = SourceLocation;
-                Game1.locationRequest.IsStructure = SourceLocation.isStructure;
+                Game1.locationRequest.IsStructure = SourceLocation.isStructure.Value;
             }
         }
         /// <summary>
         /// Stops Marnie's portrait from appearing in non-Marnie animal shops after animal purchasing
-        /// And removes specified animals from Marnie's store
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -89,24 +95,6 @@ namespace ShopTileFramework
 
                 //display the animal purchase message without Marnie's face
                 Game1.activeClickableMenu = new DialogueBox(AnimalPurchaseMessage);
-            }
-
-            //this is the vanilla Marnie menu for us to exclude animals from
-            if (e.NewMenu is PurchaseAnimalsMenu && SourceLocation == null && !ChangedMarnieStock && ExcludeFromMarnie.Count > 0)
-            {
-                //close the current menu to open our own
-                Game1.exitActiveMenu();
-                var AllAnimalsStock = Utility.getPurchaseAnimalStock();
-                var newAnimalStock = new List<StardewValley.Object>();
-                foreach (var animal in AllAnimalsStock)
-                {
-                    if (!ExcludeFromMarnie.Contains(animal.Name))
-                    {
-                        newAnimalStock.Add(animal);
-                    }
-                }
-                ChangedMarnieStock = true;
-                Game1.activeClickableMenu = new PurchaseAnimalsMenu(newAnimalStock);
             }
         }
         /// <summary>
@@ -181,10 +169,9 @@ namespace ShopTileFramework
             if (!Context.CanPlayerMove)
                 return;
 
-            //there's probably a better way to do this but for now
-            //this is how i set my context variables to default
+            //Resets the boolean I use to check if a menu used to move the player around came from my mod
+            //and lets me return them to their original location
             SourceLocation = null;
-            ChangedMarnieStock = false;
 
             if (!e.Button.IsActionButton())
                 return;
@@ -487,7 +474,7 @@ namespace ShopTileFramework
                     {
                         data = contentPack.ReadJsonFile<ContentModel>("shops.json");
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         Monitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}. Skipping pack.", LogLevel.Warn);
                         continue;
