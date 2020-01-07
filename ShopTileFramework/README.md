@@ -56,7 +56,7 @@ Quote | Optional | string | A quote displayed on the shop menu screen. If not pr
 ShopPrice | Optional | int | Sets the price of every item in the store to this if set.
 MaxNumItemsSoldInStore | Optional | int | The number of different items available. If there is more items within all the `ItemStocks` than this number, they will be randomly picked at the beginning of each day so that the total number of items match this. This is how to randomize the stock of the entire store.
 ItemStocks | Mandatory | An array of `ItemStocks` | The items sold at this store. Each `ItemStocks` can contain one or more item of a single type
-When | Optional | Array of strings | The conditions for this store to open, checked each time a player interacts with it. Currently takes all valid vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions).
+When | Optional | Array of strings | The conditions for this store to open, checked each time a player interacts with it. More info can be found under [Condition Checking](#condition-checking)
 ClosedMessage | Optional | string | The message that displays if a user interacts with the store when conditions are not met. If not set, no message will be displayed.
 
 An `ItemStock` is used to define a group of properties --things like price, conditions, the number sold-- that is applied to one or more items of a single ItemType. There are three ways to specify items ( ID, Name, or JA Pack) and all three can be used at once in a single item stock. You can have as many ItemStocks as you need
@@ -75,7 +75,7 @@ ItemNames | Optional | Array of strings | Adds a list of items by their internal
 JAPacks | Optional | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and Trees added through `JAPacks` specified with `Object` will sell the products, while `Seed` will sell the seeds/saplings.
 Stock | Optional | int | How many of each item is available to buy per day. If not set, the stock is unlimited
 MaxNumItemsSoldInItemStock | Optional | int | The number of different items available from this ItemStock. If there are more items in this ItemStock than `MaxNumItemsSoldInItemStock` a random set will be picked per day. This is used to randomize the items listed in this `ItemStock`
-When | Optional | Array of strings | A condition for the items in this ItemStock to appear. **Warning:** Avoid checks like `t` and `a` as STF will only check conditions at the start of the day, not when the user opens the shop menu. Only use these if you are planning to manually refresh the shop stock through a SMAPI mod
+When | Optional | Array of strings | A condition for the items in this ItemStock to appear. More info can be found under [Condition Checking](#condition-checking) **Warning:** Avoid checks like `t` and `a` as STF will only check conditions at the start of the day, not when the user opens the shop menu. Only use these if you are planning to manually refresh the shop stock through a SMAPI mod
 
 ### ItemTypes
 Possible `ItemType` determine which file from the game's `Contents` folder the item data is obtained from.
@@ -101,7 +101,7 @@ Field | Optional | Format | Description
 ShopName | Mandatory | string | The name of the shop is the value of the tile property used to open this shop in-game. It must be unique among all downloaded mods.
 AnimalStock | Mandatory | array of strings | A list of animals by name that are sold at this shop. For custom BFAV animals, this is what you would find under the animal's "category". Currently only supports BFAV animals added to Marnie's store
 ExcludeFromMarnies | Optional | array of strings | A list of animals to remove from Marnie's shop. This is a way to have the animal exclusively sold by your custom shop
-When | Optional | Array of strings | The conditions for this store to open, checked each time a player interacts with it. Currently takes all valid vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions).
+When | Optional | Array of strings | The conditions for this store to open, checked each time a player interacts with it. More info can be found under [Condition Checking](#condition-checking)
 ClosedMessage | Optional | string | The message that displays if a user interacts with the store when conditions are not met. If not set, no message will be displayed.
 
 ### Condition Checking
@@ -115,26 +115,28 @@ When multiple fields are provided, the condition will work if _any_ of the strin
 {
   "Shops": [
     {
-      "ShopName": "SeasonalShop",
+      "ShopName": "MyShop",
       "ItemStocks": [
         {
           "ItemType": "Object",
           "ItemNames": [
             "Parsnip"
-          ],
-          "When": [
-            "z summer/z fall/z winter/t 600 1000", //during spring only opens from 6am to 10am
-            "z fall/z winter/z spring/t 1000 1400", //during summer only opens from 10am to 2pm
-			"z winter/z spring/z summer/t 1400 1800", //during fall only opens from 2pm to 6pm
-			"z spring/z summer/z winter/t 1800 20000", //during winter only opens from 6pm to 10pm
-			"f Linus 2500" //if player has 10 hearts with Linus, store is always open
           ]
         }
-      ]
+      ],
+      "When": [
+        "z summer/z fall/z winter/t 600 1000",
+        "z fall/z winter/z spring/t 1000 1400",
+        "z winter/z spring/z summer/t 1400 1800",
+        "z spring/z summer/z winter/t 1800 20000",
+        "f Linus 2500"
+      ],
+      "ClosedMessage": "This shop is closed."
     }
   ]
 }
 ```
+**WARNING:** Do not use the `x` condition. STF uses a fake event ID (-5005 ) in order to use the vanilla `checkEventPrecondition` method. Using x will mark this fake event ID in the player's save and return false for all future condition checks
 
 ## Example
 Example shops.json:
