@@ -52,6 +52,12 @@ namespace ShopTileFramework
             //get all the info from content packs
             LoadContentPacks();
         }
+        /// <summary>
+        /// Checks for warps from the buildings/animals menu 
+        /// and ensures the player is returned to their original location
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GameLoop_UpdateTicking(object sender, StardewModdingAPI.Events.UpdateTickingEventArgs e)
         {
             //Fixes the game warping the player to places we don't want them to warp
@@ -65,8 +71,15 @@ namespace ShopTileFramework
                 Game1.locationRequest.IsStructure = SourceLocation.isStructure;
             }
         }
+        /// <summary>
+        /// Stops Marnie's portrait from appearing in non-Marnie animal shops after animal purchasing
+        /// And removes specified animals from Marnie's store
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
         {
+            //this block fixes marnie's portrait popping up after purchasing an animal
             if (e.OldMenu is PurchaseAnimalsMenu && e.NewMenu is DialogueBox && SourceLocation != null)
             {
                 var AnimalPurchaseMessage = ((DialogueBox)e.NewMenu).getCurrentString();
@@ -78,9 +91,10 @@ namespace ShopTileFramework
                 Game1.activeClickableMenu = new DialogueBox(AnimalPurchaseMessage);
             }
 
-            //this is the vanilla Marnie menu
+            //this is the vanilla Marnie menu for us to exclude animals from
             if (e.NewMenu is PurchaseAnimalsMenu && SourceLocation == null && !ChangedMarnieStock && ExcludeFromMarnie.Count > 0)
             {
+                //close the current menu to open our own
                 Game1.exitActiveMenu();
                 var AllAnimalsStock = Utility.getPurchaseAnimalStock();
                 var newAnimalStock = new List<StardewValley.Object>();
@@ -95,15 +109,29 @@ namespace ShopTileFramework
                 Game1.activeClickableMenu = new PurchaseAnimalsMenu(newAnimalStock);
             }
         }
+        /// <summary>
+        /// Returns an instance of this mod's api
+        /// </summary>
+        /// <returns></returns>
         public override object GetApi()
         {
             return new Api();
         }
+        /// <summary>
+        /// refreshes the object information files on each save loaded in case of ids changing due to JA
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
-            //refreshes the object information files on each save loaded in case of ids changing
             Shop.GetObjectInfoSource();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
             JsonAssets = helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
@@ -128,9 +156,13 @@ namespace ShopTileFramework
             }
         }
 
+        /// <summary>
+        /// Refresh the stock of every store at the start of each day
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
         {
-            //refresh the stock of each store every day
             Monitor.Log($"Refreshing stock for all custom shops...", LogLevel.Debug);
             foreach (Shop Store in Shops.Values)
             {
@@ -138,12 +170,19 @@ namespace ShopTileFramework
             }
         }
 
+        /// <summary>
+        /// When input is received, check for shop tiles to open them as necessary
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
         {
             //context and button check
             if (!Context.CanPlayerMove)
                 return;
 
+            //there's probably a better way to do this but for now
+            //this is how i set my context variables to default
             SourceLocation = null;
             ChangedMarnieStock = false;
 
@@ -356,12 +395,27 @@ namespace ShopTileFramework
 
         }
 
+        /// <summary>
+        /// Copied over method to make the desert trader work without reflection bs
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="f"></param>
+        /// <param name="i"></param>
+        /// <returns></returns>
         public bool boughtTraderItem(ISalable s, Farmer f, int i)
         {
             if (s.Name == "Magic Rock Candy")
                 Desert.boughtMagicRockCandy = true;
             return false;
         }
+
+        /// <summary>
+        /// Copied over method to make Sandy's shop work without reflection bs
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="who"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
         private bool onSandyShopPurchase(ISalable item, Farmer who, int amount)
         {
             Game1.player.team.synchronizedShopStock.OnItemPurchased(SynchronizedShopStock.SynchedShop.Sandy, item, amount);
@@ -435,13 +489,14 @@ namespace ShopTileFramework
                     }
                     catch (Exception ex)
                     {
-                        Monitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}, its shops will not be loaded", LogLevel.Warn);
+                        Monitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}. Skipping pack.", LogLevel.Warn);
                         continue;
                     }
                     
                     Monitor.Log($"      {contentPack.Manifest.Name} by {contentPack.Manifest.Author} | " +
                         $"{contentPack.Manifest.Version} | {contentPack.Manifest.Description}", LogLevel.Info);
 
+                    //adds shops
                     if (data.Shops != null)
                     {
                         foreach (ShopPack s in data.Shops)
@@ -459,6 +514,7 @@ namespace ShopTileFramework
                         }
                     }
 
+                    //adds animal shops
                     if (data.AnimalShops != null)
                     {
                         foreach (AnimalShopPack animalShopPack in data.AnimalShops)
@@ -485,6 +541,11 @@ namespace ShopTileFramework
             }
         }
 
+        /// <summary>
+        /// Checks if tile is adjacent to player
+        /// </summary>
+        /// <param name="tile"></param>
+        /// <returns>True if tile is adjacent to player, false if not</returns>
         private bool IsClickWithinReach(Vector2 tile)
         {
             var playerPosition = Game1.player.Position;
@@ -499,27 +560,42 @@ namespace ShopTileFramework
             return true;
         }
 
+        /// <summary>
+        /// Reflects into the game's event preconditions method to do condition checking
+        /// </summary>
+        /// <param name="conditions"></param>
+        /// <returns>true if all conditions matches, otherwise false</returns>
         internal static bool CheckConditions(string[] conditions)
         {
+            //if no conditions are supplied, then conditions are always met
             if (conditions == null)
                 return true;
-            //giving this a random event id 
-            string Preconditions = "-5005";
-            foreach (string con in conditions)
+
+            //if any of the conditions are met, return true
+            foreach (var con in conditions)
             {
-                Preconditions += '/' + con;
+                if (CheckIndividualConditions(con))
+                    return true;
             }
 
-            int checkedCondition = ModEntry.helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition").Invoke<int>(Preconditions);
+            //if no conditions are met, return false
+            return false;
+        }
+
+        internal static bool CheckIndividualConditions(string conditions)
+        {
+            //giving this a random event id cause the vanilla method is for events and needs one ¯\_(ツ)_/¯
+            //so it's the negative mod id
+            conditions = "-5005/" + conditions;
+
+            int checkedCondition = ModEntry.helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition").Invoke<int>(conditions);
 
             if (checkedCondition == -1)
             {
                 ModEntry.monitor.Log("Player did not meet the event preconditions:\n" +
-                    Preconditions);
+                    conditions);
                 return false;
             }
-
-
             return true;
         }
 

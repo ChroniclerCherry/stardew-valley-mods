@@ -16,16 +16,8 @@ namespace ShopTileFramework
 
         private void UpdateShopAnimalStock()
         {
-            AllAnimalsStock = new List<StardewValley.Object>();
-
-            if (ModEntry.BFAV == null || !ModEntry.BFAV.IsEnabled())
-            {
-                AllAnimalsStock = Utility.getPurchaseAnimalStock();
-            }
-            else
-            {
-                AllAnimalsStock = ModEntry.BFAV.GetAnimalShopStock(Game1.getFarm());
-            }
+            //BFAV patches this method so it'll include custom animals if BFAV is installed
+            AllAnimalsStock = Utility.getPurchaseAnimalStock();
 
             ShopAnimalStock = new List<StardewValley.Object>();
             foreach (var animal in AllAnimalsStock)

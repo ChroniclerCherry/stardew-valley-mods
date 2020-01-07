@@ -7,6 +7,7 @@
     * [Regular shops](#regular-shops)
       * [Item Types](#itemtypes)
     * [Animal Shops](#animal-shops)
+    * [Condition Checking](#condition-checking)
 - [Example](#example)
 - [Adding shops to the game](#adding-shops-to-the-game)
 - [Placing Vanilla Shops](#placing-vanilla-shops)
@@ -74,7 +75,7 @@ ItemNames | Optional | Array of strings | Adds a list of items by their internal
 JAPacks | Optional | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and Trees added through `JAPacks` specified with `Object` will sell the products, while `Seed` will sell the seeds/saplings.
 Stock | Optional | int | How many of each item is available to buy per day. If not set, the stock is unlimited
 MaxNumItemsSoldInItemStock | Optional | int | The number of different items available from this ItemStock. If there are more items in this ItemStock than `MaxNumItemsSoldInItemStock` a random set will be picked per day. This is used to randomize the items listed in this `ItemStock`
-When | Optional | Array of strings | A condition for the items in this ItemStock to appear. Currently takes all valid vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions). **Warning:** Avoid checks like `t` and `a` as STF will only check conditions at the start of the day, not when the user opens the shop menu. Only use these if you are planning to manually refresh the shop stock through a SMAPI mod
+When | Optional | Array of strings | A condition for the items in this ItemStock to appear. **Warning:** Avoid checks like `t` and `a` as STF will only check conditions at the start of the day, not when the user opens the shop menu. Only use these if you are planning to manually refresh the shop stock through a SMAPI mod
 
 ### ItemTypes
 Possible `ItemType` determine which file from the game's `Contents` folder the item data is obtained from.
@@ -103,6 +104,38 @@ ExcludeFromMarnies | Optional | array of strings | A list of animals to remove f
 When | Optional | Array of strings | The conditions for this store to open, checked each time a player interacts with it. Currently takes all valid vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions).
 ClosedMessage | Optional | string | The message that displays if a user interacts with the store when conditions are not met. If not set, no message will be displayed.
 
+### Condition Checking
+All `When` fields used for various condition checking uses vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions). When takes an array of strings. Each String can be a full list of conditions that must ALL be met seperated by `/` values just like vanilla event conditions.
+
+Example:
+`z spring/z summer/z fall` means "not in spring,summer,or fall" which would result in the condition returnign true only if it's winter
+
+When multiple fields are provided, the condition will work if _any_ of the strings return a true. Here's an example of a shop that has different opening hours based on season:
+```js
+{
+  "Shops": [
+    {
+      "ShopName": "SeasonalShop",
+      "ItemStocks": [
+        {
+          "ItemType": "Object",
+          "ItemNames": [
+            "Parsnip"
+          ],
+          "When": [
+            "z summer/z fall/z winter/t 600 1000", //during spring only opens from 6am to 10am
+            "z fall/z winter/z spring/t 1000 1400", //during summer only opens from 10am to 2pm
+			"z winter/z spring/z summer/t 1400 1800", //during fall only opens from 2pm to 6pm
+			"z spring/z summer/z winter/t 1800 20000", //during winter only opens from 6pm to 10pm
+			"f Linus 2500" //if player has 10 hearts with Linus, store is always open
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
 ## Example
 Example shops.json:
 ```js
@@ -130,9 +163,9 @@ Example shops.json:
           ],
           "Stock": 4,
           "MaxNumItemsSoldInItemStock": 5, //if there's more than 5 items total in this Item stock, a random 5 will be picked each day
-          "When": [ //only sell this ItemStock if the player has 1500 friendship points/6 hearts and it's not winter
-            "f Haley 1500",
-            "z winter"
+          "When": [ 
+            "f Haley 1500/z winter", //only sell this ItemStock if the player has 1500 friendship points/6 hearts and it's not winter
+            "f Emily 1500/z spring/z summer/z fall", //or if you have 1500 friendship points with Emily during the winter
           ]
         },
         {

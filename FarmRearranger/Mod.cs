@@ -47,7 +47,7 @@ namespace FarmRearranger
             var shop = (ShopMenu)e.NewMenu;
 
             //we don't care if it's not robin's store
-            if (!(shop.portraitPerson.Name == "Robin"))
+            if (shop.portraitPerson == null || !(shop.portraitPerson.Name == "Robin"))
                 return;
 
             //ignore if player hasn't seen the mail yet
