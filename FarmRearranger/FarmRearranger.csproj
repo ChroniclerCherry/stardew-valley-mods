@@ -12,11 +12,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="assets\BigCraftables\FarmRearranger\**" />
+    <EmbeddedResource Remove="assets\BigCraftables\FarmRearranger\**" />
+    <None Remove="assets\BigCraftables\FarmRearranger\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="assets\BigCraftables\FarmRearranger\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 

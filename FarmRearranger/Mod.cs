@@ -4,13 +4,16 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
 using System.IO;
+using xTile.Dimensions;
 
 namespace FarmRearranger
 {
     class ModEntry : Mod, IAssetEditor
     {
         private bool isArranging = false;
+
         private GameLocation loc = null;
+
         private IJsonAssetsApi JsonAssets;
         private ModConfig Config;
         private int FarmRearrangerID;
@@ -122,7 +125,7 @@ namespace FarmRearranger
             {
                 if (obj.ParentSheetIndex.Equals(FarmRearrangerID))
                 {
-                    if (Game1.currentLocation.Name == "Farm" && !Config.CanArrangeOutsideFarm)
+                    if (Game1.currentLocation.Name == "Farm" || Config.CanArrangeOutsideFarm)
                     {
                         RearrangeFarm();
                     }
@@ -201,6 +204,15 @@ namespace FarmRearranger
 
             //remember the location, which should be Farm, but could be anywhere depending on configs
             loc = Game1.currentLocation;
+
+            //for some reason the player gets watrped one tile to the left when using this menu on the farm
+            //so i move them a tile to the right to prevent them getting warped into a solid tile
+            if (loc.Name == "Farm")
+            {
+                var pos = Game1.player.Position;
+                Game1.player.Position = new Vector2(pos.X + 64, pos.Y);
+            }
+            
 
             //open the carpenter menu then do everything that is normally done
             //when the move buildings option is clicked
