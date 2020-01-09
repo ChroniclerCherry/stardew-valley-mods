@@ -1,7 +1,7 @@
 ﻿{
   "Name": "Customize Anywhere",
   "Author": "Cherry",
-  "Version": "1.1.6",
+  "Version": "1.1.7",
   "Description": "Open the customization menu from anywhere",
   "UniqueID": "Cherry.CustomizeAnywhere",
   "EntryDll": "CustomizeAnywhere.dll",

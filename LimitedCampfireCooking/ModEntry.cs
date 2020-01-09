@@ -18,20 +18,6 @@ namespace LimitedCampfireCooking
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
         }
 
-        private bool IsClickWithinReach(Vector2 tile)
-        {
-            var playerPosition = Game1.player.Position;
-            var playerTile = new Vector2(playerPosition.X / 64, playerPosition.Y / 64);
-
-            if (tile.X < (playerTile.X - 1.5) || tile.X > (playerTile.X + 1.5))
-                return false;
-
-            if (tile.Y < (playerTile.Y - 1.5) || tile.Y > (playerTile.Y + 1.5))
-                return false;
-
-            return true;
-        }
-
         private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
         {
             if (Context.IsWorldReady &&
@@ -40,14 +26,8 @@ namespace LimitedCampfireCooking
                 e.Button.IsUseToolButton())
             {
                 GameLocation loc = Game1.currentLocation;
-                var clickedTile = Helper.Input.GetCursorPosition().Tile;
 
-                if (!IsClickWithinReach(clickedTile))
-                {
-                    return;
-                }
-
-                Vector2 tile = e.Cursor.Tile;
+                Vector2 tile = Helper.Input.GetCursorPosition().GrabTile;
                 loc.Objects.TryGetValue(tile, out StardewValley.Object obj);
 
                 if (obj != null && obj.Name == "Campfire" && obj.IsOn)

@@ -71,14 +71,8 @@ namespace HayBalesSilo
             //action button works for right click on mouse and action button for controllers
             if (!e.Button.IsActionButton() && !e.Button.IsUseToolButton())
                 return;
-
-            //checks if the clicked tile is actually adjacent to the player
-            var clickedTile = Helper.Input.GetCursorPosition().Tile;
-            if (!IsClickWithinReach(clickedTile))
-                return;
-
             //check if the clicked tile contains a Farm Renderer
-            Vector2 tile = e.Cursor.Tile;
+            Vector2 tile = Helper.Input.GetCursorPosition().GrabTile;
             Game1.currentLocation.Objects.TryGetValue(tile, out StardewValley.Object obj);
             if (obj != null && obj.bigCraftable.Value)
             {
@@ -120,19 +114,6 @@ namespace HayBalesSilo
 
             }
         }
-
-        private bool IsClickWithinReach(Vector2 tile)
-        {
-            var playerPosition = Game1.player.Position;
-            var playerTile = new Vector2(playerPosition.X / 64, playerPosition.Y / 64);
-
-            if (tile.X < (playerTile.X - 1.5) || tile.X > (playerTile.X + 1.5) ||
-                tile.Y < (playerTile.Y - 1.5) || tile.Y > (playerTile.Y + 1.5))
-                return false;
-
-            return true;
-        }
-
         internal static int NumHayBales()
         {
             int numHayBales = 0;
