@@ -176,10 +176,9 @@ namespace ShopTileFramework
             if (!e.Button.IsActionButton())
                 return;
 
-            //check if clicked tile is near the player
-            var clickedTile = Helper.Input.GetCursorPosition().Tile;
-            if (!IsClickWithinReach(clickedTile))
-                return;
+            Vector2 clickedTile = Vector2.Zero;
+
+            clickedTile = Helper.Input.GetCursorPosition().GrabTile;
 
             //check if there is a tile property on Buildings layer
             var tileProperty = GetTileProperty(Game1.currentLocation, "Buildings", clickedTile);
@@ -528,23 +527,23 @@ namespace ShopTileFramework
             }
         }
 
-        /// <summary>
-        /// Checks if tile is adjacent to player
-        /// </summary>
-        /// <param name="tile"></param>
-        /// <returns>True if tile is adjacent to player, false if not</returns>
-        private bool IsClickWithinReach(Vector2 tile)
+        private Vector2 GetFacingTile()
         {
-            var playerPosition = Game1.player.Position;
-            var playerTile = new Vector2(playerPosition.X / 64, playerPosition.Y / 64);
+            var playerPos = Game1.player.getTileLocation();
 
-            if (tile.X < (playerTile.X - 1.5) || tile.X > (playerTile.X + 1.5))
-                return false;
+            switch (Game1.player.FacingDirection)
+            {
+                case 0: //facing up
+                    return new Vector2(playerPos.X, playerPos.Y-1);
+                case 1: //facing right
+                    return new Vector2(playerPos.X+1, playerPos.Y);
+                case 2: //facing down
+                    return new Vector2(playerPos.X, playerPos.Y+1);
+                case 3: //facing left
+                    return new Vector2(playerPos.X-1, playerPos.Y);
+            }
 
-            if (tile.Y < (playerTile.Y - 1.5) || tile.Y > (playerTile.Y + 1.5))
-                return false;
-
-            return true;
+            return playerPos;
         }
 
         /// <summary>

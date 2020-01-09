@@ -53,6 +53,11 @@ namespace HayBalesSilo
             shop.setItemPriceAndStock(itemStock);
         }
 
+        private void GetTileInFrontOfPlayer()
+        {
+
+        }
+
         private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
         {
             //ignore input if the player isnt free to move aka world not loaded,
