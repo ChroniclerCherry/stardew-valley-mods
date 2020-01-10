@@ -1,7 +1,7 @@
 # Stardew Valley Mods
-A collection of my mods for the game Stardew Valley.
+A collection of mods for the game Stardew Valley.
 
-Simple mods have descriptions on their respective Mod pages all of which can be found [on my Nexus account](https://www.nexusmods.com/stardewvalley/users/3590100?tab=user+files)
+All my Mods can be found [on my Nexus account](https://www.nexusmods.com/stardewvalley/users/3590100?tab=user+files)
 
 **Featured mods:**
 
