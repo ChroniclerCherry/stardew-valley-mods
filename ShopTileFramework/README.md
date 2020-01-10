@@ -22,12 +22,12 @@ Shop Tile Framework (STF) is a tool for Modders of the game Stardew Valley, whic
 
 STF lets you fully customize what items are sold and how many, under what conditions etc, as well the currency used in the store: money, casino coins, festival score, and even items just like the vanilla desert trader.
 
-STF also allows you to create customized animal shops, with support for custom animals added through BFAV 
+STF also allows you to create customized animal shops, with support for custom animals added through Better Farm Animal Varioety (BFAV) 
 
 Shops can be opened with a custom tile property of "Shop" or "AnimalShop" and a value of the ShopName defined in `shops.json`
 
 ## Requirements
-STF is a standalone SMAPI mod with no prerequesites other than the newest version of SMAPI. However there is optional support for items added in with [Json Assets](https://www.nexusmods.com/stardewvalley/mods/1720). Custom JA items can be added to shops by item name or by content pack.
+STF is a standalone SMAPI mod with no prerequisites other than the newest version of SMAPI. However there is optional support for items added in with [Json Assets](https://www.nexusmods.com/stardewvalley/mods/1720). Custom JA items can be added to shops by item name or by content pack.
 
 You do not need to make having the JA packs mandatory; if STF does not detect the item in the game, it will simple not add them.
 
@@ -66,7 +66,7 @@ Each ItemStock contains:
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
 ItemType | Mandatory | string |  Determines what kind of Object this ItemStock contains, necessary to find the right unique items.
-IsRecipe | Optional | boolean | Only works for Objects and BigCraftables. If set to true, will sell the recipes instead of the object. Defaults to false. **Warning:** If you specify items that do not have a recipe, they will be sold in the store but the player won't learn the recipe because...well, it doesn't exist.
+IsRecipe | Optional | boolean | Only works for Objects and BigCraftables. If set to true, will sell the recipes instead of the object. Defaults to false. **Warning:** If you specify items that do not have a recipe, the recipe will be sold in the store but the player won't learn the recipe because...well, it doesn't exist.
 StockPrice | Optional | int | Sets the price for all items in this ItemStock. Overrides ShopPrice. If neither price fields are given, default item sell prices are used
 StockItemCurrency | Optional | string | You can specify an `Object` by name as trading currency. Note: this will charge both the specified item as well as the `StoreCurrency` unless the price is set to 0. These can include JA Objects.
 StockCurrencyStack | Optional | int | The number of the `StockItemCurrency` it costs for each item. Defaults to 1
@@ -75,7 +75,7 @@ ItemNames | Optional | Array of strings | Adds a list of items by their internal
 JAPacks | Optional | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and Trees added through `JAPacks` specified with `Object` will sell the products, while `Seed` will sell the seeds/saplings.
 Stock | Optional | int | How many of each item is available to buy per day. If not set, the stock is unlimited
 MaxNumItemsSoldInItemStock | Optional | int | The number of different items available from this ItemStock. If there are more items in this ItemStock than `MaxNumItemsSoldInItemStock` a random set will be picked per day. This is used to randomize the items listed in this `ItemStock`
-When | Optional | Array of strings | A condition for the items in this ItemStock to appear. More info can be found under [Condition Checking](#condition-checking) **Warning:** Avoid checks like `t` and `a` as STF will only check conditions at the start of the day, not when the user opens the shop menu. Only use these if you are planning to manually refresh the shop stock through a SMAPI mod
+When | Optional | Array of strings | A condition for the items in this ItemStock to appear. More info can be found under [Condition Checking](#condition-checking) **Warning:** Avoid checks like `t` and `a` as conditions for ItemStocks are only checked at the start of each day, not when the user opens the shop menu. Only use these if you are planning to manually refresh the shop stock through a SMAPI mod.
 
 ### ItemTypes
 Possible `ItemType` determine which file from the game's `Contents` folder the item data is obtained from.
@@ -83,7 +83,7 @@ Possible `ItemType` determine which file from the game's `Contents` folder the i
 ItemType | Source | Notes
 ------------ | ------------- | -------------
 "Object" | [`data/ObjectInformation.json`](https://stardewvalleywiki.com/Modding:Object_data) | Contains most objects in the game not covered by the other categories
-"Ring" | [`data/ObjectInformation.json`](https://stardewvalleywiki.com/Modding:Object_data) | While sharing the same data file as most objects, it requires a unique constructor and thus is seperate
+"Ring" | [`data/ObjectInformation.json`](https://stardewvalleywiki.com/Modding:Object_data) | While sharing the same data file as most objects, it requires a unique constructor and thus is separate
 "BigCraftable" | [`data/BigCraftablesInformation.json`](https://stardewvalleywiki.com/Modding:Big_Craftables_data) | 
 "Clothing" | `data/ClothingInformation.json` | This contains all shirts and pants
 "Hat" | [`data/hats.json`](https://stardewvalleywiki.com/Modding:Hat_data) |
@@ -105,10 +105,10 @@ When | Optional | Array of strings | The conditions for this store to open, chec
 ClosedMessage | Optional | string | The message that displays if a user interacts with the store when conditions are not met. If not set, no message will be displayed.
 
 ### Condition Checking
-All `When` fields used for various condition checking uses vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions). `When` takes an array of strings. Each String can be a full list of conditions that must ALL be met seperated by `/` values just like vanilla event conditions.
+All `When` fields used for various condition checking uses vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions). `When` takes an array of strings. Each String can be a full list of conditions that must ALL be met separated by `/` values just like vanilla event conditions.
 
 Example:
-`z spring/z summer/z fall` means "not in spring,summer,or fall" which would result in the condition returnign true only if it's winter
+`z spring/z summer/z fall` means "not in spring,summer,or fall" which would result in the condition returning true only if it's winter
 
 When multiple fields are provided, the condition will work if _any_ of the strings return a true. Here's an example of a shop that has different opening hours based on season:
 ```js
@@ -196,7 +196,7 @@ Example shops.json:
 {
 	"ShopName":"MyAnimalShop",
 	"AnimalStock":["Chicken","Fennec Fox","Phoenix","Raccoon", "Quail", "Warthog"],
-	"ExcludeFromMarnies":["Chicken","Fennec Fox","Phoenix","Raccoon", "Quail", "Warthog"] //don't sell these animals at marnie's anymore
+	"ExcludeFromMarnies":["Chicken","Fennec Fox","Phoenix","Raccoon", "Quail", "Warthog"] //don't sell these animals at Marnie's anymore
 	},
   ],
 }
@@ -232,7 +232,7 @@ The empty `Action` Property is optional; it just changes the appearance of the g
 
 ## Placing Vanilla Shops
 
-Vanilla shops can be called the same way as custom Shops: With a `Shop` tile propertie and the corresponding `ShopName`.
+Vanilla shops can be called the same way as custom Shops: With a `Shop` tile property and the corresponding `ShopName`.
 Note that these shop tiles do not check for conditions and will always bring up the menu when clicked, and override any custom shops that use the same `Shopname` ( so please don't prefix your modded shops with Vanilla! )
 
 ShopName | Description
@@ -254,7 +254,7 @@ Vanilla!DwarfShop | The dwarf's store
 Vanilla!GusShop | The Saloon's store
 Vanilla!WillyShop | The fish store
 Vanilla!QiShop | The casino store
-Vanilla!IceCreamStand | The icecream stand
+Vanilla!IceCreamStand | The Ice-cream stand
 Vanilla!WizardBuildings | The Wizard's buildings menu
 Vanilla!MarnieAnimalShop | The animal purchase menu
 Vanilla!ClintGeodes | Opening Geodes menu
