@@ -62,7 +62,7 @@ namespace ShopTileFramework
             foreach (ItemStock Inventory in ItemStocks)
             {
 
-                if (Inventory.When != null && !ModEntry.CheckConditions(Inventory.When))
+                if (Inventory.When != null && !ConditionChecking.CheckEventPreconditions(Inventory.When))
                     continue;
 
                 if (Inventory.ItemType != "Seed" && !ObjectInfoSource.ContainsKey(Inventory.ItemType))
@@ -438,7 +438,7 @@ namespace ShopTileFramework
 
         public void DisplayShop()
         {
-            if (ModEntry.CheckConditions(OpenConditions))
+            if (ConditionChecking.CheckEventPreconditions(OpenConditions))
             {
                 int currency = 0;
                 switch (StoreCurrency)

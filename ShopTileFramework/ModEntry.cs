@@ -1,5 +1,4 @@
-﻿using Harmony;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
@@ -20,6 +19,7 @@ namespace ShopTileFramework
         internal static BFAVApi BFAV;
 
         internal static List<string> ExcludeFromMarnie = new List<string>();
+        private bool ChangedMarnieStock = false;
 
         internal static Dictionary<string, Shop> Shops = new Dictionary<string, Shop>();
         internal static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
@@ -52,12 +52,14 @@ namespace ShopTileFramework
             //get all the info from content packs
             LoadContentPacks();
 
+            /*
             //harmony black magic
             var harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
             harmony.Patch(
                 original: AccessTools.Method(typeof(StardewValley.Utility), "getPurchaseAnimalStock"),
-                prefix: new HarmonyMethod(typeof(PatchGetPurchaseAnimalStock), nameof(PatchGetPurchaseAnimalStock.Prefix))
+                postfix: new HarmonyMethod(typeof(PatchGetPurchaseAnimalStock), nameof(PatchGetPurchaseAnimalStock.PostFix))
                 );
+                */
         }
         /// <summary>
         /// Checks for warps from the buildings/animals menu 
@@ -80,6 +82,7 @@ namespace ShopTileFramework
         }
         /// <summary>
         /// Stops Marnie's portrait from appearing in non-Marnie animal shops after animal purchasing
+        /// And removes specified animals from Marnie's store
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -95,6 +98,25 @@ namespace ShopTileFramework
 
                 //display the animal purchase message without Marnie's face
                 Game1.activeClickableMenu = new DialogueBox(AnimalPurchaseMessage);
+            }
+
+            //this is the vanilla Marnie menu for us to exclude animals from	
+            if (e.NewMenu is PurchaseAnimalsMenu && SourceLocation == null &&
+                !ChangedMarnieStock && ExcludeFromMarnie.Count > 0)
+            {
+                //close the current menu to open our own	
+                Game1.exitActiveMenu();
+                var AllAnimalsStock = Utility.getPurchaseAnimalStock();
+                var newAnimalStock = new List<StardewValley.Object>();
+                foreach (var animal in AllAnimalsStock)
+                {
+                    if (!ExcludeFromMarnie.Contains(animal.Name))
+                    {
+                        newAnimalStock.Add(animal);
+                    }
+                }
+                ChangedMarnieStock = true;
+                Game1.activeClickableMenu = new PurchaseAnimalsMenu(newAnimalStock);
             }
         }
         /// <summary>
@@ -172,6 +194,9 @@ namespace ShopTileFramework
             //Resets the boolean I use to check if a menu used to move the player around came from my mod
             //and lets me return them to their original location
             SourceLocation = null;
+
+            //checks if i've changed marnie's stock already after opening her menu
+            ChangedMarnieStock = false;
 
             if (!e.Button.IsActionButton())
                 return;
@@ -473,9 +498,10 @@ namespace ShopTileFramework
                     {
                         data = contentPack.ReadJsonFile<ContentModel>("shops.json");
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        Monitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}. Skipping pack.", LogLevel.Warn);
+                        Monitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}. Skipping pack.", LogLevel.Error);
+                        Monitor.Log(ex.ToString());
                         continue;
                     }
                     
@@ -544,45 +570,6 @@ namespace ShopTileFramework
             }
 
             return playerPos;
-        }
-
-        /// <summary>
-        /// Reflects into the game's event preconditions method to do condition checking
-        /// </summary>
-        /// <param name="conditions"></param>
-        /// <returns>true if all conditions matches, otherwise false</returns>
-        internal static bool CheckConditions(string[] conditions)
-        {
-            //if no conditions are supplied, then conditions are always met
-            if (conditions == null)
-                return true;
-
-            //if any of the conditions are met, return true
-            foreach (var con in conditions)
-            {
-                if (CheckIndividualConditions(con))
-                    return true;
-            }
-
-            //if no conditions are met, return false
-            return false;
-        }
-
-        internal static bool CheckIndividualConditions(string conditions)
-        {
-            //giving this a random event id cause the vanilla method is for events and needs one ¯\_(ツ)_/¯
-            //so it's the negative mod id
-            conditions = "-5005/" + conditions;
-
-            int checkedCondition = ModEntry.helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition").Invoke<int>(conditions);
-
-            if (checkedCondition == -1)
-            {
-                ModEntry.monitor.Log("Player did not meet the event preconditions:\n" +
-                    conditions);
-                return false;
-            }
-            return true;
         }
 
         private void DisplayShopMenu(string command, string[] args)

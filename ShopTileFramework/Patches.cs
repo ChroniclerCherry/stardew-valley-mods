@@ -1,5 +1,6 @@
 ﻿using Harmony;
 using StardewValley;
+using System;
 using System.Collections.Generic;
 
 namespace ShopTileFramework
@@ -9,25 +10,16 @@ namespace ShopTileFramework
     {
         //we want ours to override BFAV's patch
         [HarmonyPriority(Priority.First)]
-        public static bool Prefix(ref List<StardewValley.Object> __result)
+        public static void PostFix(ref List<StardewValley.Object> __result)
         {
             ModEntry.monitor.Log("Applying prefix patch to Utility.getPurchaseAnimalStock...", StardewModdingAPI.LogLevel.Debug);
             try
             {
                 //if the exclusion list is empty, fall back to original logic
                 if (ModEntry.ExcludeFromMarnie.Count == 0)
-                    return true;
+                    return;
 
-                List<StardewValley.Object> OriginalStock;
-
-                //if BFAV isn't installed/not enabled, grab the vanilla list
-                if (ModEntry.BFAV == null || !ModEntry.BFAV.IsEnabled())
-                {
-                    OriginalStock = __result;
-                } else //otherwise use the BFAV list
-                {
-                    OriginalStock = ModEntry.BFAV.GetAnimalShopStock(Game1.getFarm());
-                }
+                List<StardewValley.Object> OriginalStock = __result;
 
                 //build a new list without the excluded animals
                 var newAnimalStock = new List<StardewValley.Object>();
@@ -44,11 +36,10 @@ namespace ShopTileFramework
 
                 __result = newAnimalStock;
 
-                return false;
-            } catch
+            } catch (Exception ex)
             {
                 ModEntry.monitor.Log("Failed Patching Utility.getPurchaseAnimalStock, falling back to vanilla logic.", StardewModdingAPI.LogLevel.Error);
-                return true;
+                ModEntry.monitor.Log(ex.ToString());
             }
             
         }
