@@ -1,4 +1,5 @@
-﻿using StardewModdingAPI;
+﻿using Microsoft.Xna.Framework;
+using StardewModdingAPI;
 using StardewValley;
 using System;
 
@@ -6,6 +7,7 @@ namespace ShopTileFramework
 {
     internal static class ConditionChecking
     {
+        public static IReflectedMethod VanillaPreconditionsMethod { get; private set; }
 
         /// <summary>
         /// Reflects into the game's event preconditions method to do condition checking
@@ -14,6 +16,7 @@ namespace ShopTileFramework
         /// <returns>true if all conditions matches, otherwise false</returns>
         internal static bool CheckConditions(string[] conditions)
         {
+            VanillaPreconditionsMethod = ModEntry.helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition");
             //if no conditions are supplied, then conditions are always met
             if (conditions == null)
                 return true;
@@ -21,12 +24,7 @@ namespace ShopTileFramework
             //if any of the conditions are met, return true
             foreach (var con in conditions)
             {
-                if (con[0] == '!' && !CheckIndividualConditions(con.Substring(1).Split('/')))
-                {
-                    ModEntry.monitor.Log($"Player met the conditions: \"{con}\"");
-                    return true;
-                }
-                else if (CheckIndividualConditions(con.Split('/')))
+                if (CheckIndividualConditions(con.Split('/')))
                 {
                     ModEntry.monitor.Log($"Player met the conditions: \"{con}\"");
                     return true;
@@ -39,19 +37,18 @@ namespace ShopTileFramework
 
         private static bool CheckIndividualConditions(string[] conditions)
         {
-            var VanillaPreconditionsMethod = ModEntry.helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition");
-
             //if any of the conditions fail, return false
             foreach (var condition in conditions)
             {
-                //check custom conditions first
-                if (!CheckCustomConditions(condition))
-                    if (VanillaPreconditionsMethod.Invoke<int>("-5005/" + condition) == -1) //then check event preconditions if custom conditions failed
-                    {
-                        // Note: "-5005" is a random event id cause the vanilla method is for events and needs one ¯\_(ツ)_/¯
-                        //so it's the negative mod id
+                ModEntry.monitor.Log($"Checking conditions: {condition}");
+                //if condition starts with a ! return false if condition checking is true
+                if (condition[0] == '!')
+                {
+                    if (CheckCustomConditions(condition.Substring(1)))
                         return false;
-                    }
+
+                } else if (!CheckCustomConditions(condition))
+                    return false;
             }
             //passed all conditions
             return true;
@@ -61,7 +58,7 @@ namespace ShopTileFramework
         private static bool CheckCustomConditions(string con)
         {
             string[] ConditionParams = con.Split(' ');
-
+            //the first parameter at 0 is the command of which condition to check
             switch (ConditionParams[0])
             {
                 case "NPCAt":
@@ -70,40 +67,94 @@ namespace ShopTileFramework
                     return CheckHasMod(ConditionParams);
                 case "HasSkill":
                     return CheckHasSkill(ConditionParams);
-                case "OwnsAnimals":
-                    return CheckOwnsAnimals(ConditionParams);
                 case "CommunityCenterComplete":
-                    return CheckJojaMartComplete(ConditionParams);
+                    return Game1.MasterPlayer.mailReceived.Contains("ccIsComplete") || Game1.MasterPlayer.hasCompletedCommunityCenter();
                 case "JojaMartComplete":
-                    return CheckJojaMartComplete(ConditionParams);
+                    return CheckJojaMartComplete();
                 default:
-                    ModEntry.monitor.Log($"\"{con}\" is not a valid custom condition. Checking vanilla preconditions now!");
-                    return false;
+                    // Note: "-5005" is a random event id cause the vanilla method is for events and needs one ¯\_(ツ)_/¯
+                    //so it's the negative mod id
+                    return (VanillaPreconditionsMethod.Invoke<int>("-5005/" + con) != -1);
             }
         }
 
         private static bool CheckNPCAt(string[] conditionParams)
         {
-            throw new NotImplementedException();
+            //the second paramter at index 1 is the name of an npc
+            var npc = Game1.getCharacterFromName(conditionParams[1]);
+
+            //after that the expected paramaters are sets of x y coordinates
+            for (int i = 2; i < conditionParams.Length; i+= 2)
+            {
+                if (npc.currentLocation == Game1.currentLocation && 
+                    npc.getTileLocation() == new Vector2(int.Parse(conditionParams[i]), int.Parse(conditionParams[i + 1])))
+                        return true;
+            }
+
+            return false;
+
         }
 
-        private static bool CheckJojaMartComplete(string[] conditionParams)
+        private static bool CheckJojaMartComplete()
         {
-            throw new NotImplementedException();
-        }
+            //I pretty much c&p'd this straight from CP, thanks Pathos
+            if (!Game1.MasterPlayer.mailReceived.Contains("JojaMember"))
+                return false;
 
-        private static bool CheckOwnsAnimals(string[] conditionParams)
-        {
-            return true;
+            GameLocation town = Game1.getLocationFromName("Town");
+            return ModEntry.helper.Reflection.GetMethod(town, "checkJojaCompletePrerequisite").Invoke<bool>();
         }
 
         private static bool CheckHasMod(string[] conditionParams)
         {
+            //each string is the UniqueID of a mod that is required
+            //if any isn't loaded, returns false
+            for (int i = 1; i < conditionParams.Length; i++)
+            {
+                if (!ModEntry.helper.ModRegistry.IsLoaded(conditionParams[i]))
+                    return false;
+            }
+
             return true;
         }
 
-        private static bool CheckHasSkill(string[] con)
+        private static bool CheckHasSkill(string[] conditionParams)
         {
+            //each paramater is a pair of skill name and its level
+            for (int i = 1; i < conditionParams.Length; i += 2)
+            {
+                switch (conditionParams[i])
+                {
+                    case "combat":
+                        if (Game1.player.CombatLevel < int.Parse(conditionParams[i + 1]))
+                            return false;
+                        break;
+                    case "farming":
+                        if (Game1.player.FarmingLevel < int.Parse(conditionParams[i + 1]))
+                            return false;
+                        break;
+                    case "fishing":
+                        if (Game1.player.FishingLevel < int.Parse(conditionParams[i + 1]))
+                            return false;
+                        break;
+                    case "foraging":
+                        if (Game1.player.ForagingLevel < int.Parse(conditionParams[i + 1]))
+                            return false;
+                        break;
+                    case "luck":
+                        if (Game1.player.LuckLevel < int.Parse(conditionParams[i + 1]))
+                            return false;
+                        break;
+                    case "mining":
+                        if (Game1.player.MiningLevel < int.Parse(conditionParams[i + 1]))
+                            return false;
+                        break;
+                    default:
+                        ModEntry.monitor.Log($"\"{conditionParams[i]}\" is not a valid paramter for HasSkill. Skipping check.");
+                        break;
+                }
+            }
+
             return true;
         }
 
