@@ -31,7 +31,7 @@ namespace ShopTileFramework
 
         internal void DisplayShop()
         {
-            if (ConditionChecking.CheckEventPreconditions(ShopPack.When))
+            if (ConditionChecking.CheckConditions(ShopPack.When))
             {
                 //get animal stock each time to refresh requirement checks
                 UpdateShopAnimalStock();

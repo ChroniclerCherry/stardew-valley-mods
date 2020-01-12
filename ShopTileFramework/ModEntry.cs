@@ -25,6 +25,7 @@ namespace ShopTileFramework
         internal static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
 
         internal static GameLocation SourceLocation = null;
+        internal static Vector2 PlayerPos = Vector2.Zero;
 
         /// <summary>
         /// the Mod entry point called by SMAPI
@@ -118,6 +119,13 @@ namespace ShopTileFramework
                 ChangedMarnieStock = true;
                 Game1.activeClickableMenu = new PurchaseAnimalsMenu(newAnimalStock);
             }
+
+            //idk why some menus have a habit of warping the player a tile to the left ocassionally
+            //so im just gonna warp them back to their original location eh
+            if (e.NewMenu == null && PlayerPos != Vector2.Zero)
+            {
+                Game1.player.position.Set(PlayerPos);
+            }
         }
         /// <summary>
         /// Returns an instance of this mod's api
@@ -194,6 +202,7 @@ namespace ShopTileFramework
             //Resets the boolean I use to check if a menu used to move the player around came from my mod
             //and lets me return them to their original location
             SourceLocation = null;
+            PlayerPos = Vector2.Zero;
 
             //checks if i've changed marnie's stock already after opening her menu
             ChangedMarnieStock = false;
@@ -237,6 +246,7 @@ namespace ShopTileFramework
                 {
                     helper.Input.Suppress(e.Button);
                     SourceLocation = Game1.currentLocation;
+                    PlayerPos = Game1.player.position.Get();
                     Game1.activeClickableMenu = new CarpenterMenu(false);
                 }
                 else if (shopProperty == "Vanilla!ClintShop")
@@ -271,6 +281,7 @@ namespace ShopTileFramework
                 else if (shopProperty == "Vanilla!MarnieAnimalShop")
                 {
                     helper.Input.Suppress(e.Button);
+                    PlayerPos = Game1.player.position.Get();
                     SourceLocation = Game1.currentLocation;
                     Game1.activeClickableMenu = new PurchaseAnimalsMenu(Utility.getPurchaseAnimalStock());
                 }
@@ -344,6 +355,7 @@ namespace ShopTileFramework
                 {
                     helper.Input.Suppress(e.Button);
                     SourceLocation = Game1.currentLocation;
+                    PlayerPos = Game1.player.position.Get();
                     Game1.activeClickableMenu = new CarpenterMenu(true);
                 }
                 else if (shopProperty == "Vanilla!QiShop")
@@ -403,6 +415,7 @@ namespace ShopTileFramework
                 }
 
             }
+            //TODO: add another else check if no tile properties were found for bigcraftables
 
         }
 
@@ -501,7 +514,7 @@ namespace ShopTileFramework
                     catch (Exception ex)
                     {
                         Monitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}. Skipping pack.", LogLevel.Error);
-                        Monitor.Log(ex.ToString());
+                        Monitor.Log(ex.Message + ex.StackTrace);
                         continue;
                     }
                     
@@ -551,25 +564,6 @@ namespace ShopTileFramework
                     }
                 }
             }
-        }
-
-        private Vector2 GetFacingTile()
-        {
-            var playerPos = Game1.player.getTileLocation();
-
-            switch (Game1.player.FacingDirection)
-            {
-                case 0: //facing up
-                    return new Vector2(playerPos.X, playerPos.Y-1);
-                case 1: //facing right
-                    return new Vector2(playerPos.X+1, playerPos.Y);
-                case 2: //facing down
-                    return new Vector2(playerPos.X, playerPos.Y+1);
-                case 3: //facing left
-                    return new Vector2(playerPos.X-1, playerPos.Y);
-            }
-
-            return playerPos;
         }
 
         private void DisplayShopMenu(string command, string[] args)

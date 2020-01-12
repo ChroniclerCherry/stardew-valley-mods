@@ -14,8 +14,6 @@ namespace ShopTileFramework
         public List<string> AnimalStock { get; set; }
         public string[] ExcludeFromMarnies { get; set; } = null;
         public string[] When { get; set; } = null;
-
-        public Dictionary<string,string>[] Conditions { get; set; } = null;
         public string ClosedMessage { get; set; } = null;
 
     }
@@ -31,7 +29,6 @@ namespace ShopTileFramework
         public int MaxNumItemsSoldInStore { get; set; } = int.MaxValue;
         public ItemStock[] ItemStocks { get; set; }
         public string[] When { get; set; } = null;
-        public Dictionary<string, string>[] Conditions { get; set; } = null;
         public string ClosedMessage { get; set; } = null;
     }
 
