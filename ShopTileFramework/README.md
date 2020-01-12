@@ -8,6 +8,7 @@
       * [Item Types](#itemtypes)
     * [Animal Shops](#animal-shops)
     * [Condition Checking](#condition-checking)
+      * [Available Conditions](#available-conditions)
 - [Example](#example)
 - [Adding shops to the game](#adding-shops-to-the-game)
 - [Placing Vanilla Shops](#placing-vanilla-shops)
@@ -105,10 +106,16 @@ When | Optional | Array of strings | The conditions for this store to open, chec
 ClosedMessage | Optional | string | The message that displays if a user interacts with the store when conditions are not met. If not set, no message will be displayed.
 
 ### Condition Checking
-All `When` fields used for various condition checking uses vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions). `When` takes an array of strings. Each String can be a full list of conditions that must ALL be met seperated by `/` values just like vanilla event conditions.
+All `When` fields used for various condition checking uses vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions) as well as several custom ones. `When` conditions can be used to determine conditions for a shop opening ( such as hours, or when an NPC is nearby ) as well as for setting conditions for ItemStocks to be added to stores or not when stocks are refreshed.
+
+`When` takes an array of strings. Each String can be a full list of conditions that must ALL be met seperated by `/` values just like vanilla event conditions.
 
 Example:
-`z spring/z summer/z fall` means "not in spring,summer,or fall" which would result in the condition returnign true only if it's winter
+`z spring/z summer/z fall` means "not in spring,summer,or fall" which would result in the condition returnign true only if it's winter. Alternatively, adding a `!` in front of any condition would return the opposite
+
+`!z spring` would mean "Not not in spring" aka only in spring.
+
+**Note:** For ItemStock condition checks, they are only checked at the beginning of each day! Avoid checks that don't make sense at the beginning of the day, such as store hours or checking for if an NPC is on the map
 
 When multiple fields are provided, the condition will work if _any_ of the strings return a true. Here's an example of a shop that has different opening hours based on season:
 ```js
@@ -125,10 +132,9 @@ When multiple fields are provided, the condition will work if _any_ of the strin
         }
       ],
       "When": [
-        "z summer/z fall/z winter/t 600 1000", //in spring, only opens between 6am and 10am
-        "z fall/z winter/z spring/t 1000 1400", //in summer only opens from 10am to 2pm
-        "z winter/z spring/z summer/t 1400 1800", //in fall only open from 2pm to 6pm
-        "z spring/z summer/z winter/t 1800 20000", //in winter only open from 6pm to 10pm
+        "!z spring/t 600 1000", //in spring, only opens between 6am and 10am
+        "!z summer/t 1000 1400", //in summer only opens from 10am to 2pm
+        "z spring/z summer/t 1800 20000", //in fall and winter, only open from 6pm to 10pm
         "f Linus 2500" //is always open if player has 2500 friendship points / 10 hearts with linus
       ],
       "ClosedMessage": "This shop is closed."
@@ -136,7 +142,19 @@ When multiple fields are provided, the condition will work if _any_ of the strin
   ]
 }
 ```
-**WARNING:** Do not use the `x` condition. STF uses a fake event ID (-5005 ) in order to use the vanilla `checkEventPrecondition` method. Using x will mark this fake event ID in the player's save and return false for all future condition checks
+#### Available Conditions
+
+All [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions) are available, as well as:
+
+Command | Syntax | Description | Example
+------------ | ------------- | -------------
+NPCAt | `NPCAt <s:NPCName> [<i:x> <i:y>]` | This will check if the named NPC is at the given tile coordinates on the current map. Multiple x/y coordinates can be given, and will return true if the NPC is at any of them. | `NPCAt Pierre 5 10 5 11 5 12` will check if Pierre is at (5,10) (5,11) or (5,12)
+HasMod | `HasMod [<s:UniqueID>]` | This will check if the given Unique ID of certain mods is installed. Multiple can be supplied and will return true only if the player has all of them installed. | `HasMod Cherry.CustomizeAnywhere Cherry.PlatonicRelationships` returns true if both Customize Anywhere and Platonic Relationships are installed
+SkillLevel | `SkillLevel [<s:SkillName> <i:SkillLevel>]` | This will check if the player has at least the given skill level for named skills. Multiple skill-level pairs can be provided, and returns true if all of them are matched. Valid skills are: `combat`, `farming`, `fishing`, `foraging`, `luck` (unsued in vanilla), and `mining` | `SkillLevel farming 5 fishing 3` Would return true if the player has at least level 5 farm and level 3 fishing
+CommunityCenterComplete | `CommunityCenterComplete` | Returns true if the Community center is completed on this save file| 
+JojaMartComplete | `JojaMartComplete` | Returns true if the joja mart route was completed on this save file |
+
+I am always taking requests for more conditions as they are needed!
 
 ## Example
 Example shops.json:

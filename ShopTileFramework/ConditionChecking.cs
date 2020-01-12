@@ -21,6 +21,15 @@ namespace ShopTileFramework
             if (conditions == null)
                 return true;
 
+            //if someone somewhow marked this fake ID as seen, 
+            //unmark it so condition checking will actually work
+            if (Game1.player.eventsSeen.Contains(-5005))
+            {
+                ModEntry.monitor.Log("STF uses the fake event ID of -5005 in order to use vanilla preconditions." +
+                    " Somehow your save has marked this ID as seen. STF is freeing it back up.",LogLevel.Warn);
+                Game1.player.eventsSeen.Remove(-5005);
+            }
+
             //if any of the conditions are met, return true
             foreach (var con in conditions)
             {
@@ -65,8 +74,8 @@ namespace ShopTileFramework
                     return CheckNPCAt(ConditionParams);
                 case "HasMod":
                     return CheckHasMod(ConditionParams);
-                case "HasSkill":
-                    return CheckHasSkill(ConditionParams);
+                case "SkillLevel":
+                    return CheckSkillLevel(ConditionParams);
                 case "CommunityCenterComplete":
                     return Game1.MasterPlayer.mailReceived.Contains("ccIsComplete") || Game1.MasterPlayer.hasCompletedCommunityCenter();
                 case "JojaMartComplete":
@@ -90,9 +99,7 @@ namespace ShopTileFramework
                     npc.getTileLocation() == new Vector2(int.Parse(conditionParams[i]), int.Parse(conditionParams[i + 1])))
                         return true;
             }
-
             return false;
-
         }
 
         private static bool CheckJojaMartComplete()
@@ -118,7 +125,7 @@ namespace ShopTileFramework
             return true;
         }
 
-        private static bool CheckHasSkill(string[] conditionParams)
+        private static bool CheckSkillLevel(string[] conditionParams)
         {
             //each paramater is a pair of skill name and its level
             for (int i = 1; i < conditionParams.Length; i += 2)
@@ -150,7 +157,7 @@ namespace ShopTileFramework
                             return false;
                         break;
                     default:
-                        ModEntry.monitor.Log($"\"{conditionParams[i]}\" is not a valid paramter for HasSkill. Skipping check.");
+                        ModEntry.monitor.Log($"\"{conditionParams[i]}\" is not a valid paramater for SkillLevel. Skipping check.");
                         break;
                 }
             }
