@@ -146,13 +146,13 @@ When multiple fields are provided, the condition will work if _any_ of the strin
 
 All [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions) are available, as well as:
 
-Command | Syntax | Description | Example
------------- | ------------- | -------------
-NPCAt | `NPCAt <s:NPCName> [<i:x> <i:y>]` | This will check if the named NPC is at the given tile coordinates on the current map. Multiple x/y coordinates can be given, and will return true if the NPC is at any of them. | `NPCAt Pierre 5 10 5 11 5 12` will check if Pierre is at (5,10) (5,11) or (5,12)
-HasMod | `HasMod [<s:UniqueID>]` | This will check if the given Unique ID of certain mods is installed. Multiple can be supplied and will return true only if the player has all of them installed. | `HasMod Cherry.CustomizeAnywhere Cherry.PlatonicRelationships` returns true if both Customize Anywhere and Platonic Relationships are installed
-SkillLevel | `SkillLevel [<s:SkillName> <i:SkillLevel>]` | This will check if the player has at least the given skill level for named skills. Multiple skill-level pairs can be provided, and returns true if all of them are matched. Valid skills are: `combat`, `farming`, `fishing`, `foraging`, `luck` (unsued in vanilla), and `mining` | `SkillLevel farming 5 fishing 3` Would return true if the player has at least level 5 farm and level 3 fishing
-CommunityCenterComplete | `CommunityCenterComplete` | Returns true if the Community center is completed on this save file| 
-JojaMartComplete | `JojaMartComplete` | Returns true if the joja mart route was completed on this save file |
+Syntax | Description | Example
+------------- | ------------- | -------------
+`NPCAt <s:NPCName> [<i:x> <i:y>]` | This will check if the named NPC is at the given tile coordinates on the current map. Multiple x/y coordinates can be given, and will return true if the NPC is at any of them. | `NPCAt Pierre 5 10 5 11 5 12` will check if Pierre is at (5,10) (5,11) or (5,12)
+`HasMod [<s:UniqueID>]` | This will check if the given Unique ID of certain mods is installed. Multiple can be supplied and will return true only if the player has all of them installed. | `HasMod Cherry.CustomizeAnywhere Cherry.PlatonicRelationships` returns true if both Customize Anywhere and Platonic Relationships are installed
+`SkillLevel [<s:SkillName> <i:SkillLevel>]` | This will check if the player has at least the given skill level for named skills. Multiple skill-level pairs can be provided, and returns true if all of them are matched. Valid skills are: `combat`, `farming`, `fishing`, `foraging`, `luck` (unsued in vanilla), and `mining` | `SkillLevel farming 5 fishing 3` Would return true if the player has at least level 5 farm and level 3 fishing
+`CommunityCenterComplete` | Returns true if the Community center is completed on this save file| 
+`JojaMartComplete` | Returns true if the joja mart route was completed on this save file |
 
 I am always taking requests for more conditions as they are needed!
 
