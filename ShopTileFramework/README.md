@@ -110,10 +110,7 @@ All `When` fields used for various condition checking uses vanilla [event precon
 
 `When` takes an array of strings. Each String can be a full list of conditions that must ALL be met seperated by `/` values just like vanilla event conditions.
 
-Example:
-`z spring/z summer/z fall` means "not in spring,summer,or fall" which would result in the condition returnign true only if it's winter. Alternatively, adding a `!` in front of any condition would return the opposite
-
-`!z spring` would mean "Not not in spring" aka only in spring.
+You can check the opposite of any condition by putting a `!` in front of it. For example `!f Linus 2500` would return true only if the player was NOT at 2500FP/10 hearts with Linus
 
 **Note:** For ItemStock condition checks, they are only checked at the beginning of each day! Avoid checks that don't make sense at the beginning of the day, such as store hours or checking for if an NPC is on the map
 
