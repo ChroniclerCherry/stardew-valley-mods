@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Framework\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 
