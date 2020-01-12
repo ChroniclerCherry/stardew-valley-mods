@@ -151,7 +151,7 @@ Syntax | Description | Example
 `CommunityCenterComplete` | Returns true if the Community center is completed on this save file| 
 `JojaMartComplete` | Returns true if the joja mart route was completed on this save file |
 
-I am always taking requests for more conditions as they are needed!
+I am always taking requests for more conditions as they are needed! Open an issue any time
 
 ## Example
 Example shops.json:
