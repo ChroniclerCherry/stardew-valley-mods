@@ -153,6 +153,21 @@ Syntax | Description | Example
 
 I am always taking requests for more conditions as they are needed! Open an issue any time
 
+##### Some useful vanilla preconditions of note ( taken directly from the Wiki ):
+
+Syntax | Description
+------------- | -------------
+`r <number>` | A random probability check, where `number` is the probability between 0 and 1 (e.g. 0.2 for 20% chance).
+`t <min time> <max time>` | Current time is between between the specified times. Can range from 600 to 2600.
+`d <day of week>` | Today is not one of the specified days (may specify multiple days). Valid values: Mon, Tue, Wed, Thu, Fri, Sat, Sun.
+`y <year>` | If `year` is 1, must be in the first year. Otherwise, year must be at least this value.
+`z <season>` | Current season is not `season`. ( Tip: To specify that it _is_ `season`, use `!z <season>` instead )
+`e <event ID>` | Current player has seen the specified event (may contain multiple event IDs).
+`p <name>` | Specified NPC is in the current player's location. ( useful for having your shop open only when the NPC is near the shop, without specifying every tile )
+`f <name> <number>` | Current player has at least `number` friendship points with the `name` NPC. Can specify multiple name and number pairs, in which case the player must meet all of them.
+
+
+
 ## Example
 Example shops.json:
 ```js
