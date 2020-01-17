@@ -428,7 +428,7 @@ namespace ShopTileFramework
         {
             foreach (KeyValuePair<int, string> kvp in ObjectInfo)
             {
-                if (kvp.Value.StartsWith(name))
+                if (kvp.Value.Split('/')[0] == name)
                 {
                     return kvp.Key;
                 }
