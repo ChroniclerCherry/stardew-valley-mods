@@ -21,7 +21,7 @@ namespace SnackEverything
             {
                 var info = Game1.objectInformation[key].Split('/');
 
-                if (int.Parse(info[2]) < 0 && (info[3] != "Arch" || Config.YummyArtefacts))
+                if (int.Parse(info[2]) < 0 && info[0] != "Crab Pot" && (info[3] != "Arch" || Config.YummyArtefacts))
                         info[2] = Math.Max((int.Parse(info[1])/3),1).ToString();
 
                 Game1.objectInformation[key] = string.Join("/", info);
