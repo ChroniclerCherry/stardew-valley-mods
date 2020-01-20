@@ -172,7 +172,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string ItemName in attemptToGetPack)
                                 {
-                                    AddItem(Inventory.ItemType, false, ItemName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                    AddItem(Inventory.ItemType, Inventory.IsRecipe, ItemName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                             else
@@ -187,7 +187,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string CraftableName in attemptToGetPack)
                                 {
-                                    AddItem(Inventory.ItemType, false, CraftableName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                    AddItem(Inventory.ItemType, Inventory.IsRecipe, CraftableName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                             else

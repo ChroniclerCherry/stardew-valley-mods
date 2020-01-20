@@ -1,7 +1,7 @@
 {
   "Name": "Shop Tile Framework",
   "Author": "Cherry",
-  "Version": "0.11.2",
+  "Version": "0.11.3",
   "Description": "Define new shops as custom tile properties",
   "UniqueID": "Cherry.ShopTileFramework",
   "EntryDll": "ShopTileFramework.dll",

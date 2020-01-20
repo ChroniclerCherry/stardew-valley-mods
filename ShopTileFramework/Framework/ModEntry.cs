@@ -163,7 +163,7 @@ namespace ShopTileFramework
 
             if (BFAV == null)
             {
-                Monitor.Log("BFAV API not detected. Custom farm animals will not be added to ANIMAL shops.",
+                Monitor.Log("BFAV API not detected. Custom farm animals will not be added to animal shops.",
                     LogLevel.Info);
             }
             else if (!BFAV.IsEnabled())
@@ -513,7 +513,7 @@ namespace ShopTileFramework
                     }
                     catch (Exception ex)
                     {
-                        Monitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}. Skipping pack.", LogLevel.Error);
+                        Monitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}. Skipping pack. (More details in Trace)", LogLevel.Error);
                         Monitor.Log(ex.Message + ex.StackTrace);
                         continue;
                     }
