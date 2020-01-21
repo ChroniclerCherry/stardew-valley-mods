@@ -252,11 +252,11 @@ And the manifest:
 
 The regular shop defined in the above json can be opened by clicking on a tile with the following properties on the **Buildings** layer ( With the property being `Shop` and the property value being your ShopName:
 
-![Example tile properties](https://gyazo.com/20d6645d35c72a61977c5d2e900ae182)
+![Example tile properties](https://i.gyazo.com/20d6645d35c72a61977c5d2e900ae182.png)
 
 Animal shops are similar, just with an AnimalShop property:
 
-![Example AnimalShop tile property](https://gyazo.com/9b3b0a69506dbf3a1fb6824cf5c1c382)
+![Example AnimalShop tile property](https://i.gyazo.com/9b3b0a69506dbf3a1fb6824cf5c1c382.png)
 
 The empty `Action` Property is optional; it just changes the appearance of the game cursor when hovering over a shop to make it clear that it is interactable. These tile properties can be loaded into the game with any other method usually used to load in maps. Content Patcher, TMXL, or SMAPI mods can all add the property along with the shop itself. More info about modding maps can be found [here](https://stardewvalleywiki.com/Modding:Maps)
 
@@ -291,7 +291,7 @@ Vanilla!ClintGeodes | Opening Geodes menu
 
 Example:
 
-![This will open the animal purchasing menu](https://gyazo.com/b4fbcdd09772f0f556f41f56de299f57)
+![This will open the animal purchasing menu](https://i.gyazo.com/b4fbcdd09772f0f556f41f56de299f57.png)
 
 ## Console Commands
 
