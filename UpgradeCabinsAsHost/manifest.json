@@ -1,0 +1,10 @@
+﻿{
+    "Name": "Upgrade Cabins as Host",
+    "Author": "Cherry",
+    "Version": "1.0.0",
+    "Description": "Lets you upgrade empty cabins",
+    "UniqueID": "Cherry.UpgradeCabinsAsHost",
+    "EntryDll": "UpgradeCabinsAsHost.dll",
+    "MinimumApiVersion": "3.0.0",
+    "UpdateKeys": [ "" ]
+}
