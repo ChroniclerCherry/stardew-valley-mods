@@ -13,7 +13,6 @@ namespace UpgradeEmptyCabins
     public class CabinQuestionsBox : IClickableMenu
     {
         private List<string> dialogues = new List<string>();
-        private Stack<string> characterDialoguesBrokenUp = new Stack<string>();
         private List<Response> responses = new List<Response>();
         private Rectangle friendshipJewel = Rectangle.Empty;
         private int transitionX = -1;
@@ -154,9 +153,9 @@ namespace UpgradeEmptyCabins
             if (this.transitioning)
                 return;
 
-                if (!Game1.options.SnappyMenus || !this.isQuestion || Game1.options.doesInputListContain(Game1.options.menuButton, key))
-                    return;
-                base.receiveKeyPress(key);
+            if (!Game1.options.SnappyMenus || !this.isQuestion || Game1.options.doesInputListContain(Game1.options.menuButton, key))
+                return;
+            base.receiveKeyPress(key);
         }
 
         public override void receiveLeftClick(int x, int y, bool playSound = true)
@@ -247,7 +246,8 @@ namespace UpgradeEmptyCabins
 
         public bool shouldDrawFriendshipJewel()
         {
-            return false;        }
+            return false;
+        }
 
         private void setUpQuestionIcon()
         {
@@ -299,7 +299,7 @@ namespace UpgradeEmptyCabins
 
         public string getCurrentString()
         {
-            
+
             if (this.dialogues.Count > 0)
                 return this.dialogues[0].Trim().Replace(Environment.NewLine, "");
             return "";
@@ -456,27 +456,18 @@ namespace UpgradeEmptyCabins
             }
             else
             {
-                if (this.isQuestion)
+                this.drawBox(b, this.x, this.y - (this.heightForQuestions - this.height), this.width, this.heightForQuestions);
+                SpriteText.drawString(b, this.getCurrentString(), this.x + 8, this.y + 12 - (this.heightForQuestions - this.height), this.characterIndexInDialogue, this.width - 16, 999999, 1f, 0.88f, false, -1, "", -1, SpriteText.ScrollTextAlignment.Left);
+                if (this.characterIndexInDialogue >= this.getCurrentString().Length - 1)
                 {
-                    this.drawBox(b, this.x, this.y - (this.heightForQuestions - this.height), this.width, this.heightForQuestions);
-                    SpriteText.drawString(b, this.getCurrentString(), this.x + 8, this.y + 12 - (this.heightForQuestions - this.height), this.characterIndexInDialogue, this.width - 16, 999999, 1f, 0.88f, false, -1, "", -1, SpriteText.ScrollTextAlignment.Left);
-                    if (this.characterIndexInDialogue >= this.getCurrentString().Length - 1)
+                    int y = this.y - (this.heightForQuestions - this.height) + SpriteText.getHeightOfString(this.getCurrentString(), this.width - 16) + 48;
+                    for (int index = 0; index < this.responses.Count; ++index)
                     {
-                        int y = this.y - (this.heightForQuestions - this.height) + SpriteText.getHeightOfString(this.getCurrentString(), this.width - 16) + 48;
-                        for (int index = 0; index < this.responses.Count; ++index)
-                        {
-                            if (index == this.selectedResponse)
-                                IClickableMenu.drawTextureBox(b, Game1.mouseCursors, new Rectangle(375, 357, 3, 3), this.x + 4, y - 8, this.width - 8, SpriteText.getHeightOfString(this.responses[index].responseText, this.width) + 16, Color.White, 4f, false);
-                            SpriteText.drawString(b, this.responses[index].responseText, this.x + 8, y, 999999, this.width, 999999, this.selectedResponse == index ? 1f : 0.6f, 0.88f, false, -1, "", -1, SpriteText.ScrollTextAlignment.Left);
-                            y += SpriteText.getHeightOfString(this.responses[index].responseText, this.width) + 16;
-                        }
+                        if (index == this.selectedResponse)
+                            IClickableMenu.drawTextureBox(b, Game1.mouseCursors, new Rectangle(375, 357, 3, 3), this.x + 4, y - 8, this.width - 8, SpriteText.getHeightOfString(this.responses[index].responseText, this.width) + 16, Color.White, 4f, false);
+                        SpriteText.drawString(b, this.responses[index].responseText, this.x + 8, y, 999999, this.width, 999999, this.selectedResponse == index ? 1f : 0.6f, 0.88f, false, -1, "", -1, SpriteText.ScrollTextAlignment.Left);
+                        y += SpriteText.getHeightOfString(this.responses[index].responseText, this.width) + 16;
                     }
-                }
-                else
-                {
-                    this.drawBox(b, this.x, this.y, this.width, this.height);
-                    if (!this.isPortraitBox() && !this.isQuestion)
-                        SpriteText.drawString(b, this.getCurrentString(), this.x + 8, this.y + 8, this.characterIndexInDialogue, this.width, 999999, 1f, 0.88f, false, -1, "", -1, SpriteText.ScrollTextAlignment.Left);
                 }
                 if (this.dialogueIcon != null && this.characterIndexInDialogue >= this.getCurrentString().Length - 1)
                     this.dialogueIcon.draw(b, true, 0, 0, 1f);
