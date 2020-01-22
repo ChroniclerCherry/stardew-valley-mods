@@ -33,3 +33,7 @@ A mod that allows players to access a custom menu that allows them to fully cust
 [[Farm Rearranger](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/FarmRearranger) | [Release](https://www.nexusmods.com/stardewvalley/mods/5142)] Adds an item to the game that allows players to rearrange their farm buildings from the farm
 
 [[Hay Bales as Silos](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/HayBalesSilo) | [Release](https://www.nexusmods.com/stardewvalley/mods/5151)] Makes Ornamental Hay Bales functional silos when placed around the farm
+
+[[Snack Anything](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/SnackEverything) | [Release](https://www.nexusmods.com/stardewvalley/mods/5196)] Makes almost all objects edible.
+
+[[Upgrade Empty Cabins](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/UpgradeEmptyCabins) | [Release](https://www.nexusmods.com/stardewvalley/mods/5253)] Allows players to upgrade uninhabited cabins
