@@ -8,7 +8,7 @@ using StardewValley.Menus;
 using System;
 using System.Collections.Generic;
 
-namespace UpgradeCabinsAsHost
+namespace UpgradeEmptyCabins
 {
     public class CabinQuestionsBox : IClickableMenu
     {

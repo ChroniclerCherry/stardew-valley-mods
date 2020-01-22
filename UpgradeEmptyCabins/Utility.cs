@@ -2,7 +2,7 @@
 using StardewValley.Buildings;
 using System.Collections.Generic;
 
-namespace UpgradeCabinsAsHost
+namespace UpgradeEmptyCabins
 {
     class ModUtility
     {

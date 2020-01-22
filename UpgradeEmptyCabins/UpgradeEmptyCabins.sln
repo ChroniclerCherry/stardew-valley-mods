@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpgradeCabinsAsHost", "UpgradeCabinsAsHost.csproj", "{9779007E-4733-4637-94F3-A1C27CD4EC49}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpgradeEmptyCabins", "UpgradeEmptyCabins.csproj", "{9779007E-4733-4637-94F3-A1C27CD4EC49}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

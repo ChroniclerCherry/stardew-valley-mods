@@ -6,7 +6,7 @@ using StardewValley.Buildings;
 using StardewValley.Objects;
 using System.Linq;
 
-namespace UpgradeCabinsAsHost
+namespace UpgradeEmptyCabins
 {
     public class UpgradeCabins : Mod
     {
