@@ -157,7 +157,8 @@ namespace HayBalesSilo
                 IDictionary<int, string> data = asset.AsDictionary<int, string>().Data;
                 string[] fields = data[45].Split('/');
 
-                fields[4] = Helper.Translation.Get("Description"); //description
+                fields[4] = Helper.Translation.Get("Description",
+                    new { capacity = 240 * Config.HayBaleEquivalentToHowManySilos }); //description
                 fields[8] = Helper.Translation.Get("DisplayName"); //display name
 
                 data[45] = string.Join("/", fields);
