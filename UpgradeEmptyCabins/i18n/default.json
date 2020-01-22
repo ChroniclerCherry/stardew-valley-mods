@@ -1,0 +1,8 @@
+﻿{
+    "robin.whichcabin_question": "Which Cabin would you like to upgrade?",
+    "robin.hu1_materials": "Kitchen upgrade: 10,000g and 450 pieces of wood",
+    "robin.hu2_materials": "Nursery upgrade: 50,000g and 150 pieces of hardwood",
+    "robin.hu3_materials": "Cellar upgrade: 100,000g",
+    "robin.busy": "Robin is currently working on another building. Come back later.",
+    "menu.cancel_option": "Nevermind."
+}
