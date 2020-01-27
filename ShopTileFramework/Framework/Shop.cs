@@ -16,9 +16,9 @@ namespace ShopTileFramework
         private readonly Texture2D Portrait = null;
         private readonly string Quote;
         private readonly int ShopPrice;
-        internal ItemStock[] ItemStocks { get; set; }
+        internal ItemStock[] ItemStocks;
         private readonly int MaxNumItemsSoldInStore;
-        internal Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
+        internal Dictionary<ISalable, int[]> ItemPriceAndStock;
 
         public string ShopName;
         private string[] OpenConditions;
@@ -27,6 +27,8 @@ namespace ShopTileFramework
         private List<int> CategoriesToSellHere;
 
         private static Dictionary<string, IDictionary<int, string>> ObjectInfoSource;
+
+        private static List<string> RecipesList;
         public Shop(ShopPack pack, IContentPack contentPack)
         {
             ShopName = pack.ShopName;
@@ -70,7 +72,6 @@ namespace ShopTileFramework
                     ModEntry.monitor.Log($" \"{Inventory.ItemType}\" is not a valid ItemType. Some items will not be added.", LogLevel.Warn);
                     continue;
                 }
-
 
                 int CurrencyItemID = GetIndexByName(Inventory.StockItemCurrency, Game1.objectInformation);
 
@@ -250,6 +251,7 @@ namespace ShopTileFramework
             }
             //randomly reduce store's entire inventory to the specified MaxNumItemsSoldInStore
             RandomizeStock(ItemPriceAndStock, MaxNumItemsSoldInStore);
+
         }
 
         private void AddToItemPriceAndStock(Dictionary<ISalable, int[]> dict)
@@ -272,7 +274,15 @@ namespace ShopTileFramework
         {
             var i = GetItem(ItemType, itemID, Stock, isRecipe);
             if (isRecipe)
+            {
                 Stock = 1;
+                if (!RecipesList.Contains(i.Name))
+                {
+                    ModEntry.monitor.Log($"{i.Name} is not a valid recipe and won't be added.");
+                    return;
+                }
+            }
+                
 
             if (i != null)
             {
@@ -297,9 +307,7 @@ namespace ShopTileFramework
             }
             else
             {
-                ModEntry.monitor.Log($"Crop of ID {itemID} " +
-                    $"could not be added to {ShopName}",
-                    LogLevel.Debug);
+                ModEntry.monitor.Log($"Crop of ID {itemID} could not be added to {ShopName}",LogLevel.Debug);
             }
         }
 
@@ -307,7 +315,15 @@ namespace ShopTileFramework
         {
             var i = GetItem(ItemType, ItemName, Stock, isRecipe);
             if (isRecipe)
+            {
                 Stock = 1;
+                if (!RecipesList.Contains(i.Name))
+                {
+                    ModEntry.monitor.Log($"{i.Name} is not a valid recipe and won't be added.");
+                    return;
+                }
+            }
+
             if (i != null)
             {
                 int[] PriceStockCurrency;
@@ -327,10 +343,8 @@ namespace ShopTileFramework
                 itemStockInventory.Add(i, PriceStockCurrency);
             }
             else
-            {
-                ModEntry.monitor.Log($"{ItemType} named " +
-                    $"\"{ItemName}\" could not be added to {ShopName}",
-                    LogLevel.Debug);
+            { 
+                ModEntry.monitor.Log($"{ItemType} named \"{ItemName}\" could not be added to {ShopName}",LogLevel.Debug);
             }
         }
 
@@ -376,9 +390,7 @@ namespace ShopTileFramework
         {
 
             if (name == null)
-            {
                 return null;
-            }
 
             ObjectInfoSource.TryGetValue(objectType, out var InfoSource);
             if (InfoSource != null)
@@ -422,6 +434,13 @@ namespace ShopTileFramework
                             (@"Data/weapons", ContentSource.GameContent)
                 }
             };
+
+            //load up recipe information
+            RecipesList = ModEntry.helper.Content.Load<Dictionary<string, string>>(@"Data/CraftingRecipes", ContentSource.GameContent).Keys.ToList();
+            RecipesList.AddRange(ModEntry.helper.Content.Load<Dictionary<string, string>>(@"Data/CookingRecipes", ContentSource.GameContent).Keys.ToList());
+            
+            //add "recipe" to the end of every element
+            RecipesList = RecipesList.Select(s => s + " Recipe").ToList();
         }
 
         private static int GetIndexByName(string name, IDictionary<int, string> ObjectInfo)
