@@ -13,10 +13,10 @@ namespace UpgradeEmptyCabins
         internal static IModHelper helper;
         public override void Entry(IModHelper h)
         {
-                
+
             helper = h;
             helper.ConsoleCommands.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", UpgradeCabinsCommand);
-            helper.ConsoleCommands.Add("remove_seed_boxes","Removes seed boxes from all unclaimed cabins.",RemoveSeedBoxesCommand);
+            helper.ConsoleCommands.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", RemoveSeedBoxesCommand);
 
             helper.Events.GameLoop.DayEnding += GameLoop_DayEnding;
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
@@ -28,8 +28,8 @@ namespace UpgradeEmptyCabins
             {
                 if (((Cabin)cab.indoors.Value).owner.Name != "")
                     continue;
-                foreach (var obj in 
-                    ((Cabin)cab.indoors.Value).Objects.SelectMany(objs => 
+                foreach (var obj in
+                    ((Cabin)cab.indoors.Value).Objects.SelectMany(objs =>
                     objs.Where(obj => obj.Value is Chest).Select(obj => obj)))
                 {
                     Chest chest = (Chest)obj.Value;
@@ -48,13 +48,6 @@ namespace UpgradeEmptyCabins
 
         private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
         {
-
-            if (Context.IsWorldReady && e.Button == SButton.Escape && Game1.activeClickableMenu is CabinQuestionsBox)
-            {
-                Game1.playSound("smallSelect");
-                helper.Input.Suppress(e.Button);
-                Game1.activeClickableMenu = null;
-            }
 
             if (!Context.CanPlayerMove)
                 return;
@@ -124,20 +117,30 @@ namespace UpgradeEmptyCabins
                 if (displayInfo != null)
                     cabinNames.Add(new Response(cabin.nameOfIndoors, displayInfo));
             }
-                    
+
             if (cabinNames.Count > 0)
             {
-                cabinNames.Add(new Response("Cancel",helper.Translation.Get("menu.cancel_option")));
-                Game1.activeClickableMenu = new CabinQuestionsBox("Which Cabin would you like to upgrade?", cabinNames);
+                cabinNames.Add(new Response("Cancel", helper.Translation.Get("menu.cancel_option")));
+                //Game1.activeClickableMenu = new CabinQuestionsBox("Which Cabin would you like to upgrade?", cabinNames);
+                Game1.currentLocation.createQuestionDialogue(
+                                helper.Translation.Get("robin.whichcabin_question"),
+                                cabinNames.ToArray(),
+                                delegate (Farmer who, string answer)
+                                {
+                                    Game1.activeClickableMenu = null;
+                                    houseUpgradeAccept(ModUtility.GetCabin(answer));
+                                }
+                                );
             }
         }
 
         internal static void houseUpgradeAccept(Building cab)
         {
+            Game1.activeClickableMenu = null;
+            Game1.player.canMove = true;
             if (cab == null)
             {
                 Game1.playSound("smallSelect");
-                Game1.activeClickableMenu = null;
                 return;
             }
 
