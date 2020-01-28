@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace PlatonicRelationships
 {
+    /// <summary>
+    /// Changes all the vanilla 10 heart events that doesn't have a "Dating" prerequisite to have one
+    /// so that they don't play while platonically at 10 hearts
+    /// </summary>
     class AddDatingPrereq : IAssetEditor
     {
         public bool CanEdit<T>(IAssetInfo asset)
@@ -13,7 +17,8 @@ namespace PlatonicRelationships
                 asset.AssetNameEquals("Data/Events/Mine") ||
                 asset.AssetNameEquals("Data/Events/HaleyHouse") ||
                 asset.AssetNameEquals("Data/Events/Forest") ||
-                asset.AssetNameEquals("Data/Events/ScienceHouse")
+                asset.AssetNameEquals("Data/Events/ScienceHouse") ||
+                asset.AssetNameEquals("Data/Events/Mountain")
                 );
         }
 
@@ -65,6 +70,14 @@ namespace PlatonicRelationships
                     data.Remove("10/f Maru 2500/t 900 1600");
                 }
             }
+            else if (asset.AssetNameEquals("Data/Events/Mountain"))
+            {
+                if (data.ContainsKey("384882/f Sebastian 2500/t 2000 2400"))
+                {
+                    data.Add("384882/f Sebastian 2500/D Sebastian/t 2000 2400", data["384882/f Sebastian 2500/t 2000 2400"]);
+                    data.Remove("384882/f Sebastian 2500/t 2000 2400");
+                }
+            }
         }
 
         public void changeMails(IDictionary<string, string> data)
@@ -91,6 +104,12 @@ namespace PlatonicRelationships
             {
                 data.Remove("2346091/f Alex 2502/x joshMessage");
                 data.Add("2346091/f Alex 2502/D Alex/x joshMessage", "null");
+            }
+
+            if (data.ContainsKey("2346096/f Penny 2505/x pennySpa"))
+            {
+                data.Remove("2346096/f Penny 2505/x pennySpa");
+                data.Add("2346096/f Penny 2505/D Penny/x pennySpa", "null");
             }
         }
 
