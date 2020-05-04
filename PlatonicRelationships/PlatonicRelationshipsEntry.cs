@@ -8,9 +8,12 @@ namespace PlatonicRelationships
 {
     public class ModEntry : Mod
     {
+        private ModConfig Config;
         public override void Entry(IModHelper helper)
         {
-            helper.Content.AssetEditors.Add(new AddDatingPrereq());
+            Config = this.Helper.ReadConfig<ModConfig>();
+            if (Config.AddDatingRequirementToRomanticEvents)
+                helper.Content.AssetEditors.Add(new AddDatingPrereq());
 
             //apply harmony patches
             ApplyPatches();
@@ -48,5 +51,10 @@ namespace PlatonicRelationships
                 return;
             }
         }
+    }
+
+    class ModConfig
+    {
+        public bool AddDatingRequirementToRomanticEvents { get; set; } = true;
     }
 }
