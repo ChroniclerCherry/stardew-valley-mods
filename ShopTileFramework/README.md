@@ -4,7 +4,7 @@
 - [Intro](#intro)
 - [Requirements](#requirements)
 - [Create a Content Pack](#create-a-content-pack)
-    * [JA Integration] (#ja-integration)
+    * [JA Integration](#ja-integration)
     * [Regular shops](#regular-shops)
       * [Item Types](#itemtypes)
     * [Animal Shops](#animal-shops)
