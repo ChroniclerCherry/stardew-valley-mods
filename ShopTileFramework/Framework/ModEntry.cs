@@ -6,6 +6,7 @@ using StardewValley.Menus;
 using StardewValley.Util;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using xTile.ObjectModel;
 
 namespace ShopTileFramework
@@ -26,6 +27,8 @@ namespace ShopTileFramework
 
         internal static GameLocation SourceLocation = null;
         internal static Vector2 PlayerPos = Vector2.Zero;
+
+        internal static LocalizedContentManager.LanguageCode currLang;
 
         /// <summary>
         /// the Mod entry point called by SMAPI
@@ -73,7 +76,7 @@ namespace ShopTileFramework
             //Fixes the game warping the player to places we don't want them to warp
             //if buildings/animal purchase menus are brought up from a custom tile
             if (SourceLocation != null && (
-                Game1.locationRequest?.Name == "AnimalShop" || 
+                Game1.locationRequest?.Name == "AnimalShop" ||
                 Game1.locationRequest?.Name == "WizardHouse" ||
                 Game1.locationRequest?.Name == "ScienceHouse"))
             {
@@ -108,15 +111,10 @@ namespace ShopTileFramework
                 //close the current menu to open our own	
                 Game1.exitActiveMenu();
                 var AllAnimalsStock = Utility.getPurchaseAnimalStock();
-                var newAnimalStock = new List<StardewValley.Object>();
-                foreach (var animal in AllAnimalsStock)
-                {
-                    if (!ExcludeFromMarnie.Contains(animal.Name))
-                    {
-                        newAnimalStock.Add(animal);
-                    }
-                }
                 ChangedMarnieStock = true;
+                var newAnimalStock = (from animal in AllAnimalsStock
+                                      where !ExcludeFromMarnie.Contains(animal.Name)
+                                      select animal).ToList();
                 Game1.activeClickableMenu = new PurchaseAnimalsMenu(newAnimalStock);
             }
 
@@ -142,6 +140,7 @@ namespace ShopTileFramework
         /// <param name="e"></param>
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
+            currLang = LocalizedContentManager.CurrentLanguageCode;
             Shop.GetObjectInfoSource();
         }
 
@@ -450,12 +449,9 @@ namespace ShopTileFramework
             if (map == null)
                 return null;
 
-            var checkTile = map.Map.GetLayer(layer).Tiles[(int)tile.X, (int)tile.Y];
+            xTile.Tiles.Tile checkTile = map.Map.GetLayer(layer).Tiles[(int)tile.X, (int)tile.Y];
 
-            if (checkTile == null)
-                return null;
-
-            return checkTile.Properties;
+            return checkTile == null ? null : checkTile.Properties;
         }
 
         public static void RegisterShops(ContentModel data, IContentPack contentPack)
@@ -517,7 +513,7 @@ namespace ShopTileFramework
                         Monitor.Log(ex.Message + ex.StackTrace);
                         continue;
                     }
-                    
+
                     Monitor.Log($"      {contentPack.Manifest.Name} by {contentPack.Manifest.Author} | " +
                         $"{contentPack.Manifest.Version} | {contentPack.Manifest.Description}", LogLevel.Info);
 
@@ -564,6 +560,15 @@ namespace ShopTileFramework
                     }
                 }
             }
+        }
+
+        internal static string localize(string english, Dictionary<string,string> translations)
+        {
+            if (currLang == LocalizedContentManager.LanguageCode.en)
+                return english;
+            if (translations == null || !translations.ContainsKey(currLang.ToString()))
+                return english;
+            return translations[currLang.ToString()];
         }
 
         private void DisplayShopMenu(string command, string[] args)

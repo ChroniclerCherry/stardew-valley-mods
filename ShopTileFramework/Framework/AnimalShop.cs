@@ -9,9 +9,12 @@ namespace ShopTileFramework
         private List<StardewValley.Object> ShopAnimalStock;
         private List<StardewValley.Object> AllAnimalsStock;
         private AnimalShopPack ShopPack;
+        private string ClosedMessage;
+
         public AnimalShop(AnimalShopPack ShopPack, string ShopName)
         {
             this.ShopPack = ShopPack;
+            ClosedMessage = ModEntry.localize(ShopPack.ClosedMessage, ShopPack.LocalizedClosedMessage);
         }
 
         private void UpdateShopAnimalStock()
@@ -40,7 +43,7 @@ namespace ShopTileFramework
             }
             else if (ShopPack.ClosedMessage != null)
             {
-                Game1.activeClickableMenu = new DialogueBox(ShopPack.ClosedMessage);
+                Game1.activeClickableMenu = new DialogueBox(ClosedMessage);
             }
         }
     }

@@ -29,6 +29,9 @@ namespace ShopTileFramework
         private static Dictionary<string, IDictionary<int, string>> ObjectInfoSource;
 
         private static List<string> RecipesList;
+
+        Dictionary<string,string> LocalizedQuote;
+        Dictionary<string, string> LocalizedClosedMessage;
         public Shop(ShopPack pack, IContentPack contentPack)
         {
             ShopName = pack.ShopName;
@@ -40,6 +43,9 @@ namespace ShopTileFramework
             ItemStocks = pack.ItemStocks;
             Quote = pack.Quote;
             MaxNumItemsSoldInStore = pack.MaxNumItemsSoldInStore;
+            LocalizedQuote = pack.LocalizedQuote;
+            LocalizedClosedMessage = pack.LocalizedClosedMessage;
+
 
             //try and load in the portrait
             if (pack.PortraitPath != null)
@@ -90,7 +96,7 @@ namespace ShopTileFramework
                 {
                     foreach (var ItemID in Inventory.ItemIDs)
                     {
-                        AddItem(Inventory.ItemType, Inventory.IsRecipe, ItemID, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                        AddItem(Inventory.ItemType, ItemID, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                     }
                 }
 
@@ -99,7 +105,7 @@ namespace ShopTileFramework
                 {
                     foreach (var ItemName in Inventory.ItemNames)
                     {
-                        AddItem(Inventory.ItemType, Inventory.IsRecipe, ItemName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                        AddItem(Inventory.ItemType, ItemName, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                     }
                 }
 
@@ -127,7 +133,7 @@ namespace ShopTileFramework
                                         Int32.TryParse(kvp.Value.Split('/')[2], out int id);
                                         if (CropID == id)
                                         {
-                                            AddItem("Object", false, kvp.Key, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                            AddItem("Object", kvp.Key, false, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                         }
                                     }
                                 }
@@ -153,7 +159,7 @@ namespace ShopTileFramework
                                         Int32.TryParse(kvp.Value.Split('/')[0], out int id);
                                         if (TreeID == id)
                                         {
-                                            AddItem("Object", Inventory.IsRecipe, kvp.Key, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                            AddItem("Object", kvp.Key, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                         }
                                     }
                                 }
@@ -173,7 +179,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string ItemName in attemptToGetPack)
                                 {
-                                    AddItem(Inventory.ItemType, Inventory.IsRecipe, ItemName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                    AddItem(Inventory.ItemType, ItemName, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                             else
@@ -188,7 +194,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string CraftableName in attemptToGetPack)
                                 {
-                                    AddItem(Inventory.ItemType, Inventory.IsRecipe, CraftableName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                    AddItem(Inventory.ItemType, CraftableName, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                             else
@@ -203,7 +209,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string HatName in attemptToGetPack)
                                 {
-                                    AddItem(Inventory.ItemType, false, HatName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                    AddItem(Inventory.ItemType, HatName, false, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                             else
@@ -218,7 +224,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string WeaponName in attemptToGetPack)
                                 {
-                                    AddItem(Inventory.ItemType, false, WeaponName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                    AddItem(Inventory.ItemType, WeaponName, false, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                             else
@@ -233,7 +239,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string ClothingName in ModEntry.JsonAssets.GetAllClothingFromContentPack(JAPack))
                                 {
-                                    AddItem(Inventory.ItemType, false, ClothingName, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                    AddItem(Inventory.ItemType, ClothingName, false, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                             else
@@ -270,50 +276,23 @@ namespace ShopTileFramework
 
         }
 
-        private void AddItem(String ItemType, bool isRecipe, int itemID, int Price, int Stock, Dictionary<ISalable, int[]> itemStockInventory, int ItemCurrencyID = -1, int ItemCurrencyStack = -1)
+        private void AddItem(string ItemType,
+            int itemID,
+            bool isRecipe,
+            int Price,
+            int Stock,
+            Dictionary<ISalable, int[]> itemStockInventory,
+            int ItemCurrencyID = -1,
+            int ItemCurrencyStack = -1)
         {
-            var i = GetItem(ItemType, itemID, Stock, isRecipe);
-            if (isRecipe)
+            Item i = GetItem(ItemType, itemID, Stock, isRecipe);
+
+            if (i == null)
             {
-                Stock = 1;
-                if (!RecipesList.Contains(i.Name))
-                {
-                    ModEntry.monitor.Log($"{i.Name} is not a valid recipe and won't be added.");
-                    return;
-                }
+                ModEntry.monitor.Log($"Item of ID {itemID} could not be added to {ShopName}", LogLevel.Debug);
+                return;
             }
-                
 
-            if (i != null)
-            {
-                int[] PriceStockCurrency;
-                var price = (Price == -1) ? i.salePrice() : Price;
-                if (ItemCurrencyID == -1)
-                {
-                    PriceStockCurrency = new int[] { price, Stock };
-
-                }
-                else if (ItemCurrencyStack == -1)
-                {
-                    PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID };
-                }
-                else
-                {
-                    PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID, ItemCurrencyStack };
-                }
-
-                itemStockInventory.Add(i, PriceStockCurrency);
-
-            }
-            else
-            {
-                ModEntry.monitor.Log($"Crop of ID {itemID} could not be added to {ShopName}",LogLevel.Debug);
-            }
-        }
-
-        private void AddItem(String ItemType, bool isRecipe, String ItemName, int Price, int Stock, Dictionary<ISalable, int[]> itemStockInventory, int ItemCurrencyID = -1, int ItemCurrencyStack = -1)
-        {
-            var i = GetItem(ItemType, ItemName, Stock, isRecipe);
             if (isRecipe)
             {
                 Stock = 1;
@@ -324,31 +303,73 @@ namespace ShopTileFramework
                 }
             }
 
-            if (i != null)
+            int[] PriceStockCurrency;
+            var price = (Price == -1) ? i.salePrice() : Price;
+            if (ItemCurrencyID == -1)
             {
-                int[] PriceStockCurrency;
-                var price = (Price == -1) ? i.salePrice() : Price;
-                if (ItemCurrencyID == -1)
-                {
-                    PriceStockCurrency = new int[] { price, Stock };
-                }
-                else if (ItemCurrencyStack == -1)
-                {
-                    PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID };
-                }
-                else
-                {
-                    PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID, ItemCurrencyStack };
-                }
-                itemStockInventory.Add(i, PriceStockCurrency);
+                PriceStockCurrency = new int[] { price, Stock };
+
+            }
+            else if (ItemCurrencyStack == -1)
+            {
+                PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID };
             }
             else
-            { 
-                ModEntry.monitor.Log($"{ItemType} named \"{ItemName}\" could not be added to {ShopName}",LogLevel.Debug);
+            {
+                PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID, ItemCurrencyStack };
             }
+
+            itemStockInventory.Add(i, PriceStockCurrency);
+
         }
 
-        private static Item GetItem(string objectType, int index, int stock, bool isRecipe)
+        private void AddItem(string ItemType,
+            String ItemName,
+            bool isRecipe,
+            int Price,
+            int Stock,
+            Dictionary<ISalable, int[]> itemStockInventory,
+            int ItemCurrencyID = -1,
+            int ItemCurrencyStack = -1)
+        {
+            Item i = GetItem(ItemType, ItemName, Stock, isRecipe);
+
+            if (i == null)
+            {
+                ModEntry.monitor.Log($"{ItemType} named \"{ItemName}\" could not be added to {ShopName}", LogLevel.Debug);
+                return;
+            }
+
+            if (isRecipe)
+            {
+                Stock = 1;
+                if (!RecipesList.Contains(i.Name))
+                {
+                    ModEntry.monitor.Log($"{i.Name} is not a valid recipe and won't be added.");
+                    return;
+                }
+            }
+
+            int[] PriceStockCurrency;
+            var price = (Price == -1) ? i.salePrice() : Price;
+            if (ItemCurrencyID == -1)
+            {
+                PriceStockCurrency = new int[] { price, Stock };
+            }
+            else if (ItemCurrencyStack == -1)
+            {
+                PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID };
+            }
+            else
+            {
+                PriceStockCurrency = new int[] { price, Stock, ItemCurrencyID, ItemCurrencyStack };
+            }
+            itemStockInventory.Add(i, PriceStockCurrency);
+        }
+        private static Item GetItem(string objectType,
+            int index,
+            int stock,
+            bool isRecipe)
         {
             Item item = null;
 
@@ -386,7 +407,10 @@ namespace ShopTileFramework
             return item;
         }
 
-        private static Item GetItem(string objectType, string name, int stock, bool isRecipe)
+        private static Item GetItem(string objectType,
+                                    string name,
+                                    int stock,
+                                    bool isRecipe)
         {
 
             if (name == null)
@@ -438,12 +462,14 @@ namespace ShopTileFramework
             //load up recipe information
             RecipesList = ModEntry.helper.Content.Load<Dictionary<string, string>>(@"Data/CraftingRecipes", ContentSource.GameContent).Keys.ToList();
             RecipesList.AddRange(ModEntry.helper.Content.Load<Dictionary<string, string>>(@"Data/CookingRecipes", ContentSource.GameContent).Keys.ToList());
-            
+
             //add "recipe" to the end of every element
             RecipesList = RecipesList.Select(s => s + " Recipe").ToList();
         }
 
-        private static int GetIndexByName(string name, IDictionary<int, string> ObjectInfo)
+        private static int GetIndexByName(
+            string name,
+            IDictionary<int, string> ObjectInfo)
         {
             foreach (KeyValuePair<int, string> kvp in ObjectInfo)
             {
@@ -475,25 +501,26 @@ namespace ShopTileFramework
                     currency: currency);
                 if (CategoriesToSellHere != null)
                     ShopMenu.categoriesToSellHere = CategoriesToSellHere;
+
+                ShopMenu.portraitPerson = new NPC();
+                ShopMenu.portraitPerson.Name = "STF." + ShopName;
                 if (Portrait != null)
                 {
-                    ShopMenu.portraitPerson = new NPC
-                    {
-                        Portrait = Portrait
-                    };
+                    ShopMenu.portraitPerson.Portrait = Portrait;
                 }
 
                 if (Quote != null)
                 {
-                    ShopMenu.potraitPersonDialogue = Game1.parseText(Quote, Game1.dialogueFont, 304);
+                    ShopMenu.potraitPersonDialogue = Game1.parseText(ModEntry.localize(Quote, LocalizedQuote), Game1.dialogueFont, 304);
                 }
 
                 Game1.activeClickableMenu = ShopMenu;
-            } else if (ClosedMessage != null)
-            {
-                Game1.activeClickableMenu = new DialogueBox(ClosedMessage);
             }
-            
+            else if (ClosedMessage != null)
+            {
+                Game1.activeClickableMenu = new DialogueBox(ModEntry.localize(ClosedMessage, LocalizedClosedMessage));
+            }
+
         }
     }
 }

@@ -15,7 +15,7 @@ namespace ShopTileFramework
         public string[] ExcludeFromMarnies { get; set; } = null;
         public string[] When { get; set; } = null;
         public string ClosedMessage { get; set; } = null;
-
+        public Dictionary<string, string> LocalizedClosedMessage { get; set; }
     }
 
     class ShopPack
@@ -30,6 +30,8 @@ namespace ShopTileFramework
         public ItemStock[] ItemStocks { get; set; }
         public string[] When { get; set; } = null;
         public string ClosedMessage { get; set; } = null;
+        public Dictionary<string, string> LocalizedQuote { get; set; }
+        public Dictionary<string, string> LocalizedClosedMessage { get; set; }
     }
 
     class ItemStock

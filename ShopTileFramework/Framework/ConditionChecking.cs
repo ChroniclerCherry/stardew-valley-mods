@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
-using System;
 
 namespace ShopTileFramework
 {
@@ -26,7 +25,7 @@ namespace ShopTileFramework
             if (Game1.player.eventsSeen.Contains(-5005))
             {
                 ModEntry.monitor.Log("STF uses the fake event ID of -5005 in order to use vanilla preconditions." +
-                    " Somehow your save has marked this ID as seen. STF is freeing it back up.",LogLevel.Warn);
+                    " Somehow your save has marked this ID as seen. STF is freeing it back up.", LogLevel.Warn);
                 Game1.player.eventsSeen.Remove(-5005);
             }
 
@@ -56,7 +55,8 @@ namespace ShopTileFramework
                     if (CheckCustomConditions(condition.Substring(1)))
                         return false;
 
-                } else if (!CheckCustomConditions(condition))
+                }
+                else if (!CheckCustomConditions(condition))
                     return false;
             }
             //passed all conditions
@@ -93,11 +93,11 @@ namespace ShopTileFramework
             var npc = Game1.getCharacterFromName(conditionParams[1]);
 
             //after that the expected paramaters are sets of x y coordinates
-            for (int i = 2; i < conditionParams.Length; i+= 2)
+            for (int i = 2; i < conditionParams.Length; i += 2)
             {
-                if (npc.currentLocation == Game1.currentLocation && 
+                if (npc.currentLocation == Game1.currentLocation &&
                     npc.getTileLocation() == new Vector2(int.Parse(conditionParams[i]), int.Parse(conditionParams[i + 1])))
-                        return true;
+                    return true;
             }
             return false;
         }
