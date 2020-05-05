@@ -94,7 +94,7 @@ namespace PlatonicRelationships
                 data.Add("2346093/f Harvey 2502/D Harvey/x harveyBalloon", "null");
             }
 
-            if (data.ContainsKey("2346093/f Harvey 2502/x harveyBalloon"))
+            if (data.ContainsKey("2346092/f Sam 2502/x samMessage"))
             {
                 data.Remove("2346092/f Sam 2502/x samMessage");
                 data.Add("2346092/f Sam 2502/D Sam/x samMessage", "null");
