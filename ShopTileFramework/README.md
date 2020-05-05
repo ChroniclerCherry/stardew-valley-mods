@@ -4,7 +4,7 @@
 - [Intro](#intro)
 - [Requirements](#requirements)
 - [Create a Content Pack](#create-a-content-pack)
-    * [JA Integration] (#ja-integration)
+    * [JA Integration](#ja-integration)
     * [Regular shops](#regular-shops)
       * [Item Types](#itemtypes)
     * [Animal Shops](#animal-shops)
@@ -49,7 +49,7 @@ AnimalShops | Optional | An array of AnimalShops | You can add as many animal sh
 ### JA Integration
 There are a few ways of selling custom JA items in the store. JA items or packs can be included in the shop.json as described below.
 
-STF shops can also be targetted in the Json Assets's json file, by setting the `PurchaseFrom` or `SeedPurchaseFrom` field to STF.<name of the shop>.
+STF shops can also be targetted in the Json Assets's json file, by setting the `PurchaseFrom` or `SeedPurchaseFrom` field to `"STF.<ShopName>"`
 
 ### Regular Shops
 Each Shop contains:
@@ -66,8 +66,8 @@ MaxNumItemsSoldInStore | Optional | int | The number of different items availabl
 ItemStocks | Mandatory | An array of `ItemStocks` | The items sold at this store. Each `ItemStocks` can contain one or more item of a single type
 When | Optional | Array of strings | The conditions for this store to open, checked each time a player interacts with it. More info can be found under [Condition Checking](#condition-checking)
 ClosedMessage | Optional | string | The message that displays if a user interacts with the store when conditions are not met. If not set, no message will be displayed.
-LocalizedQuote | | Optional | Dictionary<string,string> | Translations for the store quote. Refer to [Translations](#translations) for details.
-LocalizedClosedMessage | | Optional | Dictionary<string,string> | Translations for the closed message. Refer to [Translations](#translations) for details.
+LocalizedQuote | Optional | Dictionary<string,string> | Translations for the store quote. Refer to [Translations](#translations) for details.
+LocalizedClosedMessage | Optional | Dictionary<string,string> | Translations for the closed message. Refer to [Translations](#translations) for details.
 
 
 An `ItemStock` is used to define a group of properties --things like price, conditions, the number sold-- that is applied to one or more items of a single ItemType. There are three ways to specify items ( ID, Name, or JA Pack) and all three can be used at once in a single item stock. You can have as many ItemStocks as you need
@@ -114,7 +114,7 @@ AnimalStock | Mandatory | array of strings | A list of animals by name that are 
 ExcludeFromMarnies | Optional | array of strings | A list of animals to remove from Marnie's shop. This is a way to have the animal exclusively sold by your custom shop
 When | Optional | Array of strings | The conditions for this store to open, checked each time a player interacts with it. More info can be found under [Condition Checking](#condition-checking)
 ClosedMessage | Optional | string | The message that displays if a user interacts with the store when conditions are not met. If not set, no message will be displayed.
-LocalizedClosedMessage | | Optional | Dictionary<string,string> | Translations for the closed message. Refer to [Translations](#translations) for details.
+LocalizedClosedMessage | Optional | Dictionary<string,string> | Translations for the closed message. Refer to [Translations](#translations) for details.
 
 ### Condition Checking
 All `When` fields used for various condition checking uses vanilla [event preconditions](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions) as well as several custom ones. `When` conditions can be used to determine conditions for a shop opening ( such as hours, or when an NPC is nearby ) as well as for setting conditions for ItemStocks to be added to stores or not when stocks are refreshed.
@@ -184,7 +184,7 @@ Each store has localization fields that can be used to translate the message dis
     "LocalizedClosedMessage": { "zh": "再见" }
 ```
 
-The available lamguage codes supported by the game are `zh` (Chinese), `fr` (French), `de` (German), `hu`(Hungarian), `it` (Italian), `ja` (Japanese), `ko`(Korean), `pt` Portuguese, `ru` (Russian), `es` (Spanish), and `tr` (Turkish).
+The available language codes supported by the game are `zh` (Chinese), `fr` (French), `de` (German), `hu`(Hungarian), `it` (Italian), `ja` (Japanese), `ko`(Korean), `pt` Portuguese, `ru` (Russian), `es` (Spanish), and `tr` (Turkish).
 
 Any languages not provided will default to english
 
