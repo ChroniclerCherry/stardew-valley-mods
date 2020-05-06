@@ -13,14 +13,15 @@ namespace ShopTileFramework
 {
     class Shop
     {
-        private readonly Texture2D Portrait = null;
+        private Texture2D Portrait = null;
+        internal string PortraitPath { get; }
         private readonly string Quote;
         private readonly int ShopPrice;
-        internal ItemStock[] ItemStocks;
+        internal ItemStock[] ItemStocks { get; }
         private readonly int MaxNumItemsSoldInStore;
         internal Dictionary<ISalable, int[]> ItemPriceAndStock;
 
-        public string ShopName;
+        public string ShopName { get; }
         private string[] OpenConditions;
         private string ClosedMessage;
         private readonly string StoreCurrency;
@@ -32,6 +33,9 @@ namespace ShopTileFramework
 
         Dictionary<string,string> LocalizedQuote;
         Dictionary<string, string> LocalizedClosedMessage;
+
+        private IContentPack contentPack;
+
         public Shop(ShopPack pack, IContentPack contentPack)
         {
             ShopName = pack.ShopName;
@@ -45,20 +49,34 @@ namespace ShopTileFramework
             MaxNumItemsSoldInStore = pack.MaxNumItemsSoldInStore;
             LocalizedQuote = pack.LocalizedQuote;
             LocalizedClosedMessage = pack.LocalizedClosedMessage;
+            PortraitPath = pack.PortraitPath;
+            this.contentPack = contentPack;
 
+            UpdatePortrait();
+        }
 
-            //try and load in the portrait
-            if (pack.PortraitPath != null)
+        public void UpdatePortrait()
+        {
+            if (PortraitPath == null)
+                return;
+
+            string seasonalPath = PortraitPath.Insert(PortraitPath.IndexOf('.'), "_" + Game1.currentSeason);
+            try
             {
-                try
+                if (contentPack.HasFile(seasonalPath))
                 {
-                    Portrait = contentPack.LoadAsset<Texture2D>(pack.PortraitPath);
+                    Portrait = contentPack.LoadAsset<Texture2D>(seasonalPath);
                 }
-                catch (Exception ex)
+                else if (contentPack.HasFile(PortraitPath))
                 {
-                    ModEntry.monitor.Log(ex.Message, LogLevel.Warn);
+                    Portrait = contentPack.LoadAsset<Texture2D>(PortraitPath);
                 }
             }
+            catch (Exception ex)
+            {
+                ModEntry.monitor.Log(ex.Message, LogLevel.Warn);
+            }
+
         }
 
         public void UpdateItemPriceAndStock()

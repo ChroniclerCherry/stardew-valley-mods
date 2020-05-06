@@ -184,6 +184,7 @@ namespace ShopTileFramework
             foreach (Shop Store in Shops.Values)
             {
                 Store.UpdateItemPriceAndStock();
+                Store.UpdatePortrait();
             }
         }
 

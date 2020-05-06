@@ -11,6 +11,7 @@
     * [Condition Checking](#condition-checking)
       * [Available Conditions](#available-conditions)
     * [Translations](#translations)
+    * [Portrait](#portrait)
 - [Example](#example)
 - [Adding shops to the game](#adding-shops-to-the-game)
 - [Placing Vanilla Shops](#placing-vanilla-shops)
@@ -187,6 +188,20 @@ Each store has localization fields that can be used to translate the message dis
 The available language codes supported by the game are `zh` (Chinese), `fr` (French), `de` (German), `hu`(Hungarian), `it` (Italian), `ja` (Japanese), `ko`(Korean), `pt` Portuguese, `ru` (Russian), `es` (Spanish), and `tr` (Turkish).
 
 Any languages not provided will default to english
+
+### Portrait
+Similar to content patcher, the shop portrait can be made seasonal by adding the season to the end of the file name. For example, you have a portrait for your shop in `assets/Bob.png`. To make the portrait different during the Summer, you'd add the summer portrait to the same folder but name it `Bob_summer.png`
+
+```
+YourMod
+    manifest.json
+    shops.json
+    assets
+        Bob.png
+        Bob_summer.png
+```
+
+The result would be for spring, fall, and winter, `Bob.png` will be the portrait used, but during summer, `Bob_summer.png` will be used instead
 
 ## Example
 Example shops.json:

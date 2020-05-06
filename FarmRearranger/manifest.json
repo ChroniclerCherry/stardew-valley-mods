@@ -1,7 +1,7 @@
 ﻿{
   "Name": "Farm Rearranger",
   "Author": "Cherry & cel10e",
-  "Version": "1.0.1",
+  "Version": "1.0.2",
   "Description": "Lets you rearrange buildings on your farm!",
   "UniqueID": "cel10e.Cherry.FarmRearranger",
   "EntryDll": "FarmRearranger.dll",
