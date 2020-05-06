@@ -87,6 +87,13 @@ namespace ShopTileFramework
 
             foreach (ItemStock Inventory in ItemStocks)
             {
+                int quality = Inventory.Quality;
+
+                if (quality < 0 || quality == 3 || quality > 4)
+                {
+                    quality = 0;
+                    ModEntry.monitor.Log("Item quality can only be 0,1,2, or 4", LogLevel.Trace);
+                }
 
                 if (Inventory.When != null && !ConditionChecking.CheckConditions(Inventory.When))
                     continue;
@@ -114,7 +121,7 @@ namespace ShopTileFramework
                 {
                     foreach (var ItemID in Inventory.ItemIDs)
                     {
-                        AddItem(Inventory.ItemType, ItemID, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                        AddItem(Inventory.ItemType, ItemID, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, quality, CurrencyItemID, CurrencyItemStack);
                     }
                 }
 
@@ -123,7 +130,7 @@ namespace ShopTileFramework
                 {
                     foreach (var ItemName in Inventory.ItemNames)
                     {
-                        AddItem(Inventory.ItemType, ItemName, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                        AddItem(Inventory.ItemType, ItemName, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, quality, CurrencyItemID, CurrencyItemStack);
                     }
                 }
 
@@ -151,7 +158,7 @@ namespace ShopTileFramework
                                         Int32.TryParse(kvp.Value.Split('/')[2], out int id);
                                         if (CropID == id)
                                         {
-                                            AddItem("Object", kvp.Key, false, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                            AddItem("Object", kvp.Key, false, Price, Inventory.Stock, ItemStockInventory, quality, CurrencyItemID, CurrencyItemStack);
                                         }
                                     }
                                 }
@@ -177,7 +184,7 @@ namespace ShopTileFramework
                                         Int32.TryParse(kvp.Value.Split('/')[0], out int id);
                                         if (TreeID == id)
                                         {
-                                            AddItem("Object", kvp.Key, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                            AddItem("Object", kvp.Key, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, quality, CurrencyItemID, CurrencyItemStack);
                                         }
                                     }
                                 }
@@ -197,7 +204,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string ItemName in attemptToGetPack)
                                 {
-                                    AddItem(Inventory.ItemType, ItemName, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                    AddItem(Inventory.ItemType, ItemName, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, quality, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                             else
@@ -212,7 +219,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string CraftableName in attemptToGetPack)
                                 {
-                                    AddItem(Inventory.ItemType, CraftableName, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                    AddItem(Inventory.ItemType, CraftableName, Inventory.IsRecipe, Price, Inventory.Stock, ItemStockInventory, 0, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                             else
@@ -227,7 +234,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string HatName in attemptToGetPack)
                                 {
-                                    AddItem(Inventory.ItemType, HatName, false, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                    AddItem(Inventory.ItemType, HatName, false, Price, Inventory.Stock, ItemStockInventory, 0, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                             else
@@ -242,7 +249,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string WeaponName in attemptToGetPack)
                                 {
-                                    AddItem(Inventory.ItemType, WeaponName, false, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                    AddItem(Inventory.ItemType, WeaponName, false, Price, Inventory.Stock, ItemStockInventory, 0, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                             else
@@ -257,7 +264,7 @@ namespace ShopTileFramework
                             {
                                 foreach (string ClothingName in ModEntry.JsonAssets.GetAllClothingFromContentPack(JAPack))
                                 {
-                                    AddItem(Inventory.ItemType, ClothingName, false, Price, Inventory.Stock, ItemStockInventory, CurrencyItemID, CurrencyItemStack);
+                                    AddItem(Inventory.ItemType, ClothingName, false, Price, Inventory.Stock, ItemStockInventory, 0, CurrencyItemID, CurrencyItemStack);
                                 }
                             }
                             else
@@ -300,10 +307,11 @@ namespace ShopTileFramework
             int Price,
             int Stock,
             Dictionary<ISalable, int[]> itemStockInventory,
+            int quality,
             int ItemCurrencyID = -1,
             int ItemCurrencyStack = -1)
         {
-            Item i = GetItem(ItemType, itemID, Stock, isRecipe);
+            Item i = GetItem(ItemType, itemID, Stock, isRecipe, quality);
 
             if (i == null)
             {
@@ -347,10 +355,11 @@ namespace ShopTileFramework
             int Price,
             int Stock,
             Dictionary<ISalable, int[]> itemStockInventory,
+            int quality,
             int ItemCurrencyID = -1,
             int ItemCurrencyStack = -1)
         {
-            Item i = GetItem(ItemType, ItemName, Stock, isRecipe);
+            Item i = GetItem(ItemType, ItemName, Stock, isRecipe,quality);
 
             if (i == null)
             {
@@ -387,7 +396,8 @@ namespace ShopTileFramework
         private static Item GetItem(string objectType,
             int index,
             int stock,
-            bool isRecipe)
+            bool isRecipe,
+            int quality)
         {
             Item item = null;
 
@@ -398,7 +408,7 @@ namespace ShopTileFramework
             switch (objectType)
             {
                 case "Object":
-                    item = new StardewValley.Object(index, stock, isRecipe);
+                    item = new StardewValley.Object(index, stock, isRecipe,quality:quality);
                     break;
                 case "BigCraftable":
                     item = new StardewValley.Object(Vector2.Zero, index) { Stack = stock, IsRecipe = isRecipe };
@@ -428,7 +438,8 @@ namespace ShopTileFramework
         private static Item GetItem(string objectType,
                                     string name,
                                     int stock,
-                                    bool isRecipe)
+                                    bool isRecipe,
+                                    int quality)
         {
 
             if (name == null)
@@ -437,7 +448,7 @@ namespace ShopTileFramework
             ObjectInfoSource.TryGetValue(objectType, out var InfoSource);
             if (InfoSource != null)
             {
-                return GetItem(objectType, GetIndexByName(name, InfoSource), stock, isRecipe);
+                return GetItem(objectType, GetIndexByName(name, InfoSource), stock, isRecipe,quality);
             }
             else
             {

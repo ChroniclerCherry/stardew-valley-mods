@@ -82,6 +82,7 @@ IsRecipe | Optional | boolean | Only works for Objects and BigCraftables. If set
 StockPrice | Optional | int | Sets the price for all items in this ItemStock. Overrides ShopPrice. If neither price fields are given, default item sell prices are used
 StockItemCurrency | Optional | string | You can specify an `Object` by name as trading currency. Note: this will charge both the specified item as well as the `StoreCurrency` unless the price is set to 0. These can include JA Objects.
 StockCurrencyStack | Optional | int | The number of the `StockItemCurrency` it costs for each item. Defaults to 1
+Quality | Optional | int | The quality of the sold items. 0  for normal, 1 for silver, 2 for gold, and 4 for iridium. 3 is not a valid quality.
 ItemIDs | Optional | Array of ints | Adds a list of items by their IDS. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
 ItemNames | Optional | Array of strings | Adds a list of items by their internal names. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
 JAPacks | Optional | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and Trees added through `JAPacks` specified with `Object` will sell the products, while `Seed` will sell the seeds/saplings.
