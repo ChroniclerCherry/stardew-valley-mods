@@ -14,7 +14,7 @@ namespace ShopTileFramework
         public AnimalShop(AnimalShopPack ShopPack, string ShopName)
         {
             this.ShopPack = ShopPack;
-            ClosedMessage = ModEntry.localize(ShopPack.ClosedMessage, ShopPack.LocalizedClosedMessage);
+            ClosedMessage = ModEntry.Localize(ShopPack.ClosedMessage, ShopPack.LocalizedClosedMessage);
         }
 
         private void UpdateShopAnimalStock()

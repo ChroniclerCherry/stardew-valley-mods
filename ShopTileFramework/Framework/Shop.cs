@@ -36,6 +36,8 @@ namespace ShopTileFramework
 
         private IContentPack contentPack;
 
+        private Boolean shopOpenedToday;
+
         public Shop(ShopPack pack, IContentPack contentPack)
         {
             ShopName = pack.ShopName;
@@ -81,6 +83,7 @@ namespace ShopTileFramework
 
         public void UpdateItemPriceAndStock()
         {
+            shopOpenedToday = false;
             ModEntry.monitor.Log($"Generating stock for {ShopName}", LogLevel.Debug);
             //list of all items from this ItemStock
             ItemPriceAndStock = new Dictionary<ISalable, int[]>();
@@ -531,23 +534,25 @@ namespace ShopTileFramework
                 if (CategoriesToSellHere != null)
                     ShopMenu.categoriesToSellHere = CategoriesToSellHere;
 
-                ShopMenu.portraitPerson = new NPC();
-                ShopMenu.portraitPerson.Name = "STF." + ShopName;
                 if (Portrait != null)
                 {
+                    ShopMenu.portraitPerson = new NPC();
+                    if (!shopOpenedToday) //only add a shop name the first time store is open each day so that items added from JA's side are only added once
+                        ShopMenu.portraitPerson.Name = "STF." + ShopName;
                     ShopMenu.portraitPerson.Portrait = Portrait;
                 }
 
                 if (Quote != null)
                 {
-                    ShopMenu.potraitPersonDialogue = Game1.parseText(ModEntry.localize(Quote, LocalizedQuote), Game1.dialogueFont, 304);
+                    ShopMenu.potraitPersonDialogue = Game1.parseText(ModEntry.Localize(Quote, LocalizedQuote), Game1.dialogueFont, 304);
                 }
 
                 Game1.activeClickableMenu = ShopMenu;
+                shopOpenedToday = true;
             }
             else if (ClosedMessage != null)
             {
-                Game1.activeClickableMenu = new DialogueBox(ModEntry.localize(ClosedMessage, LocalizedClosedMessage));
+                Game1.activeClickableMenu = new DialogueBox(ModEntry.Localize(ClosedMessage, LocalizedClosedMessage));
             }
 
         }

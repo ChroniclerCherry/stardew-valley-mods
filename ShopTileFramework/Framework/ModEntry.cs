@@ -563,7 +563,13 @@ namespace ShopTileFramework
             }
         }
 
-        internal static string localize(string english, Dictionary<string,string> translations)
+        /// <summary>
+        /// I pretty much stole this from JSon Assets
+        /// </summary>
+        /// <param name="english"></param>
+        /// <param name="translations"></param>
+        /// <returns></returns>
+        internal static string Localize(string english, Dictionary<string,string> translations)
         {
             if (currLang == LocalizedContentManager.LanguageCode.en)
                 return english;

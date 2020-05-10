@@ -50,7 +50,9 @@ AnimalShops | Optional | An array of AnimalShops | You can add as many animal sh
 ### JA Integration
 There are a few ways of selling custom JA items in the store. JA items or packs can be included in the shop.json as described below.
 
-STF shops can also be targetted in the Json Assets's json file, by setting the `PurchaseFrom` or `SeedPurchaseFrom` field to `"STF.<ShopName>"`
+STF shops can also be targetted in the Json Assets's json file, by setting the `PurchaseFrom` or `SeedPurchaseFrom` field to `"STF.<ShopName>"`. Anything added to the shop from JA will always be added to the shop under the conditions specified by `PurchaseRequirements` in the JA json. It will not be subject to the conditions set in the STF shops.json, including shop-global settings such as price, and maximum items. The exception is currency: money/festival score/casino points, which will always apply to the entire store.
+
+Note: Due to how it is implemented, only stores with a portrait image can be targetted by json assets
 
 ### Regular Shops
 Each Shop contains:
