@@ -6,3 +6,4 @@ bin
 *.csproj
 *..sln
 packages.config
+.csproj.user
