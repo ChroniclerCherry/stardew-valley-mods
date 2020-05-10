@@ -1,47 +1,48 @@
+using ShopTileFramework.Framework.Data;
+using ShopTileFramework.Framework.Utility;
 using StardewValley;
 using StardewValley.Menus;
 using System.Collections.Generic;
 
-namespace ShopTileFramework
+namespace ShopTileFramework.Framework.Shop
 {
-    class AnimalShop
+
+
+    class AnimalShop : AnimalShopData
     {
+
         private List<StardewValley.Object> ShopAnimalStock;
         private List<StardewValley.Object> AllAnimalsStock;
-        private AnimalShopPack ShopPack;
-        private string ClosedMessage;
 
-        public AnimalShop(AnimalShopPack ShopPack, string ShopName)
+        public AnimalShop(string ShopName)
         {
-            this.ShopPack = ShopPack;
-            ClosedMessage = ModEntry.Localize(ShopPack.ClosedMessage, ShopPack.LocalizedClosedMessage);
+            ClosedMessage = Translations.Localize(ClosedMessage, LocalizedClosedMessage);
         }
 
         private void UpdateShopAnimalStock()
         {
             //BFAV patches this anyways so it'll automatically work if installed
-            AllAnimalsStock = Utility.getPurchaseAnimalStock();
+            AllAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock();
 
             ShopAnimalStock = new List<StardewValley.Object>();
             foreach (var animal in AllAnimalsStock)
             {
-                if (ShopPack.AnimalStock.Contains(animal.Name))
+                if (AnimalStock.Contains(animal.Name))
                 {
                     ShopAnimalStock.Add(animal);
                 }
             }
         }
-
-        internal void DisplayShop()
+        public void DisplayShop()
         {
-            if (ConditionChecking.CheckConditions(ShopPack.When))
+            if (ConditionChecking.CheckConditions(When))
             {
                 //get animal stock each time to refresh requirement checks
                 UpdateShopAnimalStock();
                 ModEntry.SourceLocation = Game1.currentLocation;
                 Game1.activeClickableMenu = new PurchaseAnimalsMenu(ShopAnimalStock);
             }
-            else if (ShopPack.ClosedMessage != null)
+            else if (ClosedMessage != null)
             {
                 Game1.activeClickableMenu = new DialogueBox(ClosedMessage);
             }

@@ -1,5 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ShopTileFramework.Framework.Data;
+using ShopTileFramework.Framework.ItemPriceAndStock;
+using ShopTileFramework.Framework.Utility;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
@@ -9,53 +12,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ShopTileFramework
+namespace ShopTileFramework.Framework.Shop
 {
-    class Shop
+    class ItemShop : ItemShopData
     {
         private Texture2D Portrait = null;
-        internal string PortraitPath { get; }
-        private readonly string Quote;
-        private readonly int ShopPrice;
-        internal ItemStock[] ItemStocks { get; }
-        private readonly int MaxNumItemsSoldInStore;
         internal Dictionary<ISalable, int[]> ItemPriceAndStock;
-
-        public string ShopName { get; }
-        private string[] OpenConditions;
-        private string ClosedMessage;
-        private readonly string StoreCurrency;
-        private List<int> CategoriesToSellHere;
 
         private static Dictionary<string, IDictionary<int, string>> ObjectInfoSource;
 
         private static List<string> RecipesList;
 
-        Dictionary<string,string> LocalizedQuote;
-        Dictionary<string, string> LocalizedClosedMessage;
+        public IContentPack ContentPack { set; get; }
 
-        private IContentPack contentPack;
-
-        private Boolean shopOpenedToday;
-
-        public Shop(ShopPack pack, IContentPack contentPack)
-        {
-            ShopName = pack.ShopName;
-            OpenConditions = pack.When;
-            ClosedMessage = pack.ClosedMessage;
-            ShopPrice = pack.ShopPrice;
-            StoreCurrency = pack.StoreCurrency;
-            CategoriesToSellHere = pack.CategoriesToSellHere;
-            ItemStocks = pack.ItemStocks;
-            Quote = pack.Quote;
-            MaxNumItemsSoldInStore = pack.MaxNumItemsSoldInStore;
-            LocalizedQuote = pack.LocalizedQuote;
-            LocalizedClosedMessage = pack.LocalizedClosedMessage;
-            PortraitPath = pack.PortraitPath;
-            this.contentPack = contentPack;
-
-            UpdatePortrait();
-        }
+        private bool shopOpenedToday;
 
         public void UpdatePortrait()
         {
@@ -65,13 +35,13 @@ namespace ShopTileFramework
             string seasonalPath = PortraitPath.Insert(PortraitPath.IndexOf('.'), "_" + Game1.currentSeason);
             try
             {
-                if (contentPack.HasFile(seasonalPath))
+                if (ContentPack.HasFile(seasonalPath))
                 {
-                    Portrait = contentPack.LoadAsset<Texture2D>(seasonalPath);
+                    Portrait = ContentPack.LoadAsset<Texture2D>(seasonalPath);
                 }
-                else if (contentPack.HasFile(PortraitPath))
+                else if (ContentPack.HasFile(PortraitPath))
                 {
-                    Portrait = contentPack.LoadAsset<Texture2D>(PortraitPath);
+                    Portrait = ContentPack.LoadAsset<Texture2D>(PortraitPath);
                 }
             }
             catch (Exception ex)
@@ -516,7 +486,7 @@ namespace ShopTileFramework
         public void DisplayShop()
         {
             ModEntry.monitor.Log($"Atempting to open the shop \"{ShopName}\"");
-            if (ConditionChecking.CheckConditions(OpenConditions))
+            if (ConditionChecking.CheckConditions(When))
             {
                 int currency = 0;
                 switch (StoreCurrency)
@@ -544,7 +514,7 @@ namespace ShopTileFramework
 
                 if (Quote != null)
                 {
-                    ShopMenu.potraitPersonDialogue = Game1.parseText(ModEntry.Localize(Quote, LocalizedQuote), Game1.dialogueFont, 304);
+                    ShopMenu.potraitPersonDialogue = Game1.parseText(Translations.Localize(Quote, LocalizedQuote), Game1.dialogueFont, 304);
                 }
 
                 Game1.activeClickableMenu = ShopMenu;
@@ -552,7 +522,7 @@ namespace ShopTileFramework
             }
             else if (ClosedMessage != null)
             {
-                Game1.activeClickableMenu = new DialogueBox(ModEntry.Localize(ClosedMessage, LocalizedClosedMessage));
+                Game1.activeClickableMenu = new DialogueBox(Translations.Localize(ClosedMessage, LocalizedClosedMessage));
             }
 
         }

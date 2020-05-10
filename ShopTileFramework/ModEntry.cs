@@ -1,4 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using ShopTileFramework.Framework;
+using ShopTileFramework.Framework.Data;
+using ShopTileFramework.Framework.Shop;
+using ShopTileFramework.Framework.Utility;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
@@ -22,13 +26,11 @@ namespace ShopTileFramework
         internal static List<string> ExcludeFromMarnie = new List<string>();
         private bool ChangedMarnieStock = false;
 
-        internal static Dictionary<string, Shop> Shops = new Dictionary<string, Shop>();
+        internal static Dictionary<string, ItemShop> Shops = new Dictionary<string, ItemShop>();
         internal static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
 
         internal static GameLocation SourceLocation = null;
         internal static Vector2 PlayerPos = Vector2.Zero;
-
-        internal static LocalizedContentManager.LanguageCode currLang;
 
         /// <summary>
         /// the Mod entry point called by SMAPI
@@ -104,7 +106,7 @@ namespace ShopTileFramework
                 Game1.activeClickableMenu = new DialogueBox(AnimalPurchaseMessage);
             }
 
-            //this is the vanilla Marnie menu for us to exclude animals from	
+            //this is the vanilla Marnie menu for us to exclude animals from
             if (e.NewMenu is PurchaseAnimalsMenu && SourceLocation == null &&
                 !ChangedMarnieStock && ExcludeFromMarnie.Count > 0)
             {
@@ -140,8 +142,8 @@ namespace ShopTileFramework
         /// <param name="e"></param>
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
-            currLang = LocalizedContentManager.CurrentLanguageCode;
-            Shop.GetObjectInfoSource();
+            Translations.LoadCurrentLang();
+            ItemShop.GetObjectInfoSource();
         }
 
         /// <summary>
@@ -181,7 +183,7 @@ namespace ShopTileFramework
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
         {
             Monitor.Log($"Refreshing stock for all custom shops...", LogLevel.Debug);
-            foreach (Shop Store in Shops.Values)
+            foreach (ItemShop Store in Shops.Values)
             {
                 Store.UpdateItemPriceAndStock();
                 Store.UpdatePortrait();
@@ -210,169 +212,30 @@ namespace ShopTileFramework
             if (!e.Button.IsActionButton())
                 return;
 
-            Vector2 clickedTile = Vector2.Zero;
-
-            clickedTile = Helper.Input.GetCursorPosition().GrabTile;
+            Vector2 clickedTile = Helper.Input.GetCursorPosition().GrabTile;
 
             //check if there is a tile property on Buildings layer
-            var tileProperty = GetTileProperty(Game1.currentLocation, "Buildings", clickedTile);
+            var tileProperty = TileUtility.GetTileProperty(Game1.currentLocation, "Buildings", clickedTile);
             if (tileProperty == null)
                 return;
 
             //check if there is a Shop property on clicked tile
             tileProperty.TryGetValue("Shop", out PropertyValue shopProperty);
             if (shopProperty != null)
+             //everything in this block is for the shop property "Shop"
             {
-                //everything in this block is for the shop property "Shop"
-                if (shopProperty == "Vanilla!PierreShop")
+                IClickableMenu menu = TileUtility.CheckVanillaShop(shopProperty, out bool warpingShop);
+                if (menu != null) // checks for vanilla shop properties
                 {
-                    helper.Input.Suppress(e.Button);
-                    var seedShop = new SeedShop();
-                    Game1.activeClickableMenu = new ShopMenu(seedShop.shopStock(), 0, "Pierre", null, null, null);
-
-                }
-                else if (shopProperty == "Vanilla!JojaShop")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(Utility.getJojaStock(), 0, (string)null, null, null, null);
-                }
-                else if (shopProperty == "Vanilla!RobinShop")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(Utility.getCarpenterStock(), 0,
-                        "Robin", null, null, null);
-                }
-                else if (shopProperty == "Vanilla!RobinBuildingsShop")
-                {
-                    helper.Input.Suppress(e.Button);
-                    SourceLocation = Game1.currentLocation;
-                    PlayerPos = Game1.player.position.Get();
-                    Game1.activeClickableMenu = new CarpenterMenu(false);
-                }
-                else if (shopProperty == "Vanilla!ClintShop")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(Utility.getBlacksmithStock(), 0,
-                        "Clint", null, null, null);
-                }
-                else if (shopProperty == "Vanilla!ClintGeodes")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new GeodeMenu();
-                }
-                else if (shopProperty == "Vanilla!ClintToolUpgrades")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(Utility.getBlacksmithUpgradeStock(Game1.player),
-                        0, "ClintUpgrade", null, null, null);
-                }
-                else if (shopProperty == "Vanilla!MarlonShop")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(Utility.getAdventureShopStock(),
-                        0, "Marlon", null, null, null);
-                }
-                else if (shopProperty == "Vanilla!MarnieShop")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(Utility.getAnimalShopStock(),
-                        0, "Marnie", null, null, null);
-                }
-                else if (shopProperty == "Vanilla!MarnieAnimalShop")
-                {
-                    helper.Input.Suppress(e.Button);
-                    PlayerPos = Game1.player.position.Get();
-                    SourceLocation = Game1.currentLocation;
-                    Game1.activeClickableMenu = new PurchaseAnimalsMenu(Utility.getPurchaseAnimalStock());
-                }
-                else if (shopProperty == "Vanilla!TravellingMerchant")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(Utility.getTravelingMerchantStock((int)((long)Game1.uniqueIDForThisGame + (long)Game1.stats.DaysPlayed)),
-                        0, "Traveler", new Func<ISalable, Farmer, int, bool>(Utility.onTravelingMerchantShopPurchase), null, null);
-                }
-                else if (shopProperty == "Vanilla!HarveyShop")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(Utility.getHospitalStock(),
-                        0, null, null, null, null);
-                }
-                else if (shopProperty == "Vanilla!SandyShop")
-                {
-                    helper.Input.Suppress(e.Button);
-                    var SandyStock = helper.Reflection.GetMethod(Game1.currentLocation, "sandyShopStock").Invoke<Dictionary<ISalable, int[]>>();
-                    Game1.activeClickableMenu = new ShopMenu(SandyStock, 0, "Sandy", new Func<ISalable,
-                        Farmer, int, bool>(onSandyShopPurchase), null, null);
-
-                }
-                else if (shopProperty == "Vanilla!DesertTrader")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(Desert.getDesertMerchantTradeStock(Game1.player),
-                        0, "DesertTrade", new Func<ISalable, Farmer, int, bool>(boughtTraderItem),
-                        null, null);
-
-                }
-                else if (shopProperty == "Vanilla!KrobusShop")
-                {
-                    helper.Input.Suppress(e.Button);
-                    var sewer = new Sewer();
-                    Game1.activeClickableMenu = new ShopMenu(sewer.getShadowShopStock(),
-                        0, "Krobus", new Func<ISalable, Farmer, int, bool>(sewer.onShopPurchase),
-                        null, null);
-
-                }
-                else if (shopProperty == "Vanilla!DwarfShop")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(Utility.getDwarfShopStock(), 0,
-                        "Dwarf", null, null, null);
-
-                }
-                else if (shopProperty == "Vanilla!AdventureRecovery")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(Utility.getAdventureRecoveryStock(),
-                        0, "Marlon_Recovery", null, null, null);
-
-                }
-                else if (shopProperty == "Vanilla!GusShop")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(Utility.getSaloonStock(), 0, "Gus", (item, farmer, amount) =>
+                    if (warpingShop)
                     {
-                        Game1.player.team.synchronizedShopStock.OnItemPurchased(SynchronizedShopStock.SynchedShop.Saloon, item, amount);
-                        return false;
-                    }, null, null);
-                }
-                else if (shopProperty == "Vanilla!WillyShop")
-                {
+                        SourceLocation = Game1.currentLocation;
+                        PlayerPos = Game1.player.position.Get();
+                    }
+
                     helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(Utility.getFishShopStock(Game1.player), 0,
-                        "Willy", null, null, null);
-                }
-                else if (shopProperty == "Vanilla!WizardBuildings")
-                {
-                    helper.Input.Suppress(e.Button);
-                    SourceLocation = Game1.currentLocation;
-                    PlayerPos = Game1.player.position.Get();
-                    Game1.activeClickableMenu = new CarpenterMenu(true);
-                }
-                else if (shopProperty == "Vanilla!QiShop")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(Utility.getQiShopStock(), 2, null, null, null, null);
-                }
-                else if (shopProperty == "Vanilla!IceCreamStand")
-                {
-                    helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = new ShopMenu(new Dictionary<ISalable, int[]>()
-                                {
-                                    {
-                                         new StardewValley.Object(233, 1, false, -1, 0),
-                                        new int[2]{ 250, int.MaxValue }
-                                    }
-                                }, 0, null, null, null, null);
+                    Game1.activeClickableMenu = menu;
+
                 }
                 else
                 {
@@ -380,7 +243,6 @@ namespace ShopTileFramework
                     string ShopName = shopProperty.ToString();
                     if (Shops.ContainsKey(ShopName))
                     {
-
                         helper.Input.Suppress(e.Button);
                         Shops[ShopName].DisplayShop();
                     }
@@ -419,45 +281,9 @@ namespace ShopTileFramework
 
         }
 
-        /// <summary>
-        /// Copied over method to make the desert trader work without reflection bs
-        /// </summary>
-        /// <param name="s"></param>
-        /// <param name="f"></param>
-        /// <param name="i"></param>
-        /// <returns></returns>
-        public bool boughtTraderItem(ISalable s, Farmer f, int i)
+        public static void RegisterShops(ContentPack data, IContentPack contentPack)
         {
-            if (s.Name == "Magic Rock Candy")
-                Desert.boughtMagicRockCandy = true;
-            return false;
-        }
-
-        /// <summary>
-        /// Copied over method to make Sandy's shop work without reflection bs
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="who"></param>
-        /// <param name="amount"></param>
-        /// <returns></returns>
-        private bool onSandyShopPurchase(ISalable item, Farmer who, int amount)
-        {
-            Game1.player.team.synchronizedShopStock.OnItemPurchased(SynchronizedShopStock.SynchedShop.Sandy, item, amount);
-            return false;
-        }
-        private static IPropertyCollection GetTileProperty(GameLocation map, string layer, Vector2 tile)
-        {
-            if (map == null)
-                return null;
-
-            xTile.Tiles.Tile checkTile = map.Map.GetLayer(layer).Tiles[(int)tile.X, (int)tile.Y];
-
-            return checkTile == null ? null : checkTile.Properties;
-        }
-
-        public static void RegisterShops(ContentModel data, IContentPack contentPack)
-        {
-            foreach (ShopPack shopPack in data.Shops)
+            foreach (ItemShop shopPack in data.Shops)
             {
                 if (Shops.ContainsKey(shopPack.ShopName))
                 {
@@ -467,12 +293,11 @@ namespace ShopTileFramework
                 }
                 else
                 {
-                    var shop = new Shop(shopPack, contentPack);
-                    Shops.Add(shopPack.ShopName, shop);
+                    Shops.Add(shopPack.ShopName, (ItemShop)shopPack);
                 }
             }
 
-            foreach (AnimalShopPack animalShopPack in data.AnimalShops)
+            foreach (AnimalShop animalShopPack in data.AnimalShops)
             {
                 if (AnimalShops.ContainsKey(animalShopPack.ShopName))
                 {
@@ -482,8 +307,7 @@ namespace ShopTileFramework
                 }
                 else
                 {
-                    var animalShop = new AnimalShop(animalShopPack, animalShopPack.ShopName);
-                    AnimalShops.Add(animalShopPack.ShopName, animalShop);
+                    AnimalShops.Add(animalShopPack.ShopName, (AnimalShop)animalShopPack);
                 }
             }
         }
@@ -503,10 +327,10 @@ namespace ShopTileFramework
                 }
                 else
                 {
-                    ContentModel data = null;
+                    ContentPack data = null;
                     try
                     {
-                        data = contentPack.ReadJsonFile<ContentModel>("shops.json");
+                        data = contentPack.ReadJsonFile<ContentPack>("shops.json");
                     }
                     catch (Exception ex)
                     {
@@ -521,17 +345,18 @@ namespace ShopTileFramework
                     //adds shops
                     if (data.Shops != null)
                     {
-                        foreach (ShopPack s in data.Shops)
+                        foreach (ItemShop itemShop in data.Shops)
                         {
-                            if (Shops.ContainsKey(s.ShopName))
+                            if (Shops.ContainsKey(itemShop.ShopName))
                             {
                                 monitor.Log($"      {contentPack.Manifest.UniqueID} is trying to add the shop " +
-                                    $"\"{s.ShopName}\", but a shop of this name has already been added. " +
+                                    $"\"{itemShop.ShopName}\", but a shop of this name has already been added. " +
                                     $"It will not be added.", LogLevel.Warn);
                             }
                             else
                             {
-                                Shops.Add(s.ShopName, new Shop(s, contentPack));
+                                itemShop.ContentPack = contentPack;
+                                Shops.Add(itemShop.ShopName, itemShop);
                             }
                         }
                     }
@@ -539,43 +364,27 @@ namespace ShopTileFramework
                     //adds animal shops
                     if (data.AnimalShops != null)
                     {
-                        foreach (AnimalShopPack animalShopPack in data.AnimalShops)
+                        foreach (AnimalShop animalShop in data.AnimalShops)
                         {
-                            if (AnimalShops.ContainsKey(animalShopPack.ShopName))
+                            if (AnimalShops.ContainsKey(animalShop.ShopName))
                             {
                                 monitor.Log($"      {contentPack.Manifest.UniqueID} is trying to add the animal shop " +
-                                    $"\"{animalShopPack.ShopName}\", but a shop of this name has already been added. " +
+                                    $"\"{animalShop.ShopName}\", but a shop of this name has already been added. " +
                                     $"It will not be added.", LogLevel.Warn);
                             }
                             else
                             {
-                                if (animalShopPack.ExcludeFromMarnies != null)
+                                if (animalShop.ExcludeFromMarnies != null)
                                 {
-                                    ExcludeFromMarnie.AddRange(animalShopPack.ExcludeFromMarnies);
+                                    ExcludeFromMarnie.AddRange(animalShop.ExcludeFromMarnies);
                                 }
 
-                                var animalShop = new AnimalShop(animalShopPack, animalShopPack.ShopName);
-                                AnimalShops.Add(animalShopPack.ShopName, animalShop);
+                                AnimalShops.Add(animalShop.ShopName, animalShop);
                             }
                         }
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// I pretty much stole this from JSon Assets
-        /// </summary>
-        /// <param name="english"></param>
-        /// <param name="translations"></param>
-        /// <returns></returns>
-        internal static string Localize(string english, Dictionary<string,string> translations)
-        {
-            if (currLang == LocalizedContentManager.LanguageCode.en)
-                return english;
-            if (translations == null || !translations.ContainsKey(currLang.ToString()))
-                return english;
-            return translations[currLang.ToString()];
         }
 
         private void DisplayShopMenu(string command, string[] args)
@@ -586,7 +395,7 @@ namespace ShopTileFramework
                 return;
             }
 
-            Shops.TryGetValue(args[0], out Shop value);
+            Shops.TryGetValue(args[0], out ItemShop value);
             if (value == null)
             {
                 Monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
@@ -636,7 +445,7 @@ namespace ShopTileFramework
                 return;
             }
 
-            Shops.TryGetValue(args[0], out Shop value);
+            Shops.TryGetValue(args[0], out ItemShop value);
             if (value == null)
             {
                 Monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);

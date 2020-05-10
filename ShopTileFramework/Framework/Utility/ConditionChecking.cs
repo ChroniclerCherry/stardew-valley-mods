@@ -2,7 +2,7 @@
 using StardewModdingAPI;
 using StardewValley;
 
-namespace ShopTileFramework
+namespace ShopTileFramework.Framework.Utility
 {
     internal static class ConditionChecking
     {

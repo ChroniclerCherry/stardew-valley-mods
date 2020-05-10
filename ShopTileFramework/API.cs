@@ -1,4 +1,5 @@
-﻿using StardewValley;
+﻿using ShopTileFramework.Framework.Data;
+using StardewValley;
 using System.Collections.Generic;
 
 namespace ShopTileFramework
@@ -17,7 +18,7 @@ namespace ShopTileFramework
         {
             //registers a shops.json inside the given dir
             var temp = ModEntry.helper.ContentPacks.CreateFake(dir);
-            ContentModel NewShopModel = temp.ReadJsonFile<ContentModel>("shops.json");
+            ContentPack NewShopModel = temp.ReadJsonFile<ContentPack>("shops.json");
 
             if (NewShopModel == null)
             {
