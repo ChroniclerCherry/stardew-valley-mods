@@ -11,7 +11,7 @@ namespace ShopTileFramework.Framework.Utility
     class ItemsUtil
     {
 
-        private static Dictionary<string, IDictionary<int, string>> ObjectInfoSource;
+        public static Dictionary<string, IDictionary<int, string>> ObjectInfoSource { get; set; }
         private static List<string> RecipesList;
 
         public static void GetObjectInfoSource()
@@ -74,6 +74,9 @@ namespace ShopTileFramework.Framework.Utility
             return -1;
         }
 
-
+        public static bool CheckItemType(string ItemType)
+        {
+            return (ItemType == "Seed" || ObjectInfoSource.ContainsKey(ItemType));
+        }
     }
 }

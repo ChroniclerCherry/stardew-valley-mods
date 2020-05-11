@@ -8,13 +8,18 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
     class ItemPriceAndStockManager
     {
         public Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
-        private ItemStock[] ItemStocks;
-        public ItemShopData shopData { get; }
+        private readonly ItemStock[] ItemStocks;
+        public ItemShopData shopData;
 
         public ItemPriceAndStockManager(ItemStock[] ItemStocks, ItemShopData data)
         {
             this.ItemStocks = ItemStocks;
             this.shopData = data;
+
+            foreach (ItemStock stock in ItemStocks)
+            {
+                stock.Initialize(data);
+            }
         }
 
         public void Update()
@@ -23,7 +28,11 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
 
             foreach (ItemStock stock in ItemStocks)
             {
-                Add(stock.Update());
+                var PriceAndStock = stock.Update();
+                if (PriceAndStock == null)
+                    continue;
+
+                Add(PriceAndStock);
             }
 
             ItemsUtil.RandomizeStock(ItemPriceAndStock,shopData.MaxNumItemsSoldInStore);
@@ -37,7 +46,6 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
                 ItemPriceAndStock.Add(kvp.Key, kvp.Value);
             }
         }
-
 
     }
 }

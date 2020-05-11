@@ -1,31 +1,26 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using ShopTileFramework.Framework.Data;
 using ShopTileFramework.Framework.ItemPriceAndStock;
 using ShopTileFramework.Framework.Utility;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
-using StardewValley.Objects;
-using StardewValley.Tools;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ShopTileFramework.Framework.Shop
 {
     class ItemShop : ItemShopData
     {
         private Texture2D Portrait = null;
-        public ItemPriceAndStockManager StockManager { get; }
+        public ItemPriceAndStockManager StockManager { get; set; }
 
         public IContentPack ContentPack { set; get; }
 
         private bool shopOpenedToday;
 
-        public ItemShop()
+        public void Initialize()
         {
-            StockManager = new ItemPriceAndStockManager(ItemStocks,this);
+            StockManager = new ItemPriceAndStockManager(ItemStocks, this);
         }
 
         public void UpdatePortrait()

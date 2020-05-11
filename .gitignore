@@ -4,5 +4,6 @@ obj
 properties
 bin
 *.csproj
-*..sln
+*.csproj.user
+*.sln
 packages.config

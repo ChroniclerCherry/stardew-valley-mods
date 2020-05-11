@@ -144,6 +144,11 @@ namespace ShopTileFramework
         {
             Translations.LoadCurrentLang();
             ItemsUtil.GetObjectInfoSource();
+
+            foreach (ItemShop shop in Shops.Values)
+            {
+                shop.Initialize();
+            }
         }
 
         /// <summary>
