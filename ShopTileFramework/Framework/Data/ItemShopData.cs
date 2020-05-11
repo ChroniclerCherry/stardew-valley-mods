@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ShopTileFramework.Framework.Data
 {
-    class ItemShopData
+    abstract class ItemShopData
     {
         public string ShopName { get; set; }
         public string StoreCurrency { get; set; } = "Money";

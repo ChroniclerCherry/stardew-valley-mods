@@ -143,7 +143,7 @@ namespace ShopTileFramework
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
             Translations.LoadCurrentLang();
-            ItemShop.GetObjectInfoSource();
+            ItemsUtil.GetObjectInfoSource();
         }
 
         /// <summary>
@@ -445,8 +445,8 @@ namespace ShopTileFramework
                 return;
             }
 
-            Shops.TryGetValue(args[0], out ItemShop value);
-            if (value == null)
+            Shops.TryGetValue(args[0], out ItemShop shop);
+            if (shop == null)
             {
                 Monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
             }
@@ -457,7 +457,7 @@ namespace ShopTileFramework
                     Monitor.Log($"The world hasn't loaded; shop stock can't be updated at this time", LogLevel.Debug);
                     return;
                 }
-                value.UpdateItemPriceAndStock();
+                shop.UpdateItemPriceAndStock();
             }
         }
         private void ListAllShops(string command, string[] args)

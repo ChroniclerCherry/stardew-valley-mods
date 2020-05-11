@@ -8,5 +8,15 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
 {
     class ItemBuilder
     {
+        private ItemBuilder()
+        {
+
+        }
+
+        public ItemBuilder Get()
+        {
+            return new ItemBuilder();
+        }
+
     }
 }

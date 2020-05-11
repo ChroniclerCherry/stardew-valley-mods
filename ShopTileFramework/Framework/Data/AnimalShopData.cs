@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShopTileFramework.Framework.Data
 {
-    class AnimalShopData
+    abstract class AnimalShopData
     {
         public string ShopName { get; set; }
         public List<string> AnimalStock { get; set; }

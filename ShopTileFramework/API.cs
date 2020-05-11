@@ -64,7 +64,7 @@ namespace ShopTileFramework
                 return null;
             }
 
-            return shop.ItemPriceAndStock;
+            return shop.StockManager.ItemPriceAndStock;
         }
 
     }
