@@ -10,13 +10,19 @@ using xTile.ObjectModel;
 
 namespace ShopTileFramework
 {
+    /// <summary>
+    /// Entry point of the Shop Tile Framework mod. This mod allows custom shops to be added to the game via data in
+    /// json format, loaded via the Stardew Valley Modding API (SMAPI) as content packs
+    /// </summary>
     class ModEntry : Mod
     {
+        //static copies of helper and monitor
         internal static IModHelper helper;
         internal static IMonitor monitor;
 
+        //The following variables are to help revert hardcoded warps done by the carpenter and
+        //animal shop menus
         private bool ChangedMarnieStock = false;
-
         internal static GameLocation SourceLocation = null;
         internal static Vector2 PlayerPos = Vector2.Zero;
 
@@ -38,19 +44,10 @@ namespace ShopTileFramework
             helper.Events.GameLoop.UpdateTicking += GameLoop_UpdateTicking;
 
             //add console commands
-            new ConsoleCommands().Register();
+            new ConsoleCommands().Register(h);
 
             //get all the info from content packs
             ShopManager.LoadContentPacks();
-
-            /*
-            //harmony black magic
-            var harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
-            harmony.Patch(
-                original: AccessTools.Method(typeof(StardewValley.Utility), "getPurchaseAnimalStock"),
-                postfix: new HarmonyMethod(typeof(PatchGetPurchaseAnimalStock), nameof(PatchGetPurchaseAnimalStock.PostFix))
-                );
-                */
         }
         /// <summary>
         /// Checks for warps from the buildings/animals menu 
@@ -91,6 +88,7 @@ namespace ShopTileFramework
                 Game1.activeClickableMenu = new DialogueBox(AnimalPurchaseMessage);
             }
 
+            //TODO: deprecate this once FAVR is out
             //this is the vanilla Marnie menu for us to exclude animals from
             if (e.NewMenu is PurchaseAnimalsMenu && SourceLocation == null &&
                 !ChangedMarnieStock && AnimalShop.ExcludeFromMarnie.Count > 0)
@@ -99,6 +97,8 @@ namespace ShopTileFramework
                 Game1.exitActiveMenu();
                 var AllAnimalsStock = Utility.getPurchaseAnimalStock();
                 ChangedMarnieStock = true;
+
+                //removes all animals on the exclusion list
                 var newAnimalStock = (from animal in AllAnimalsStock
                                       where !AnimalShop.ExcludeFromMarnie.Contains(animal.Name)
                                       select animal).ToList();
@@ -118,27 +118,33 @@ namespace ShopTileFramework
         /// <returns></returns>
         public override object GetApi()
         {
+            //TODO: Test this
             return new STFApi();
         }
         /// <summary>
-        /// refreshes the object information files on each save loaded in case of ids changing due to JA
+        /// On a save loaded, store the language for translation purposes. Done on save loaded in
+        /// case it's changed between saves
+        /// 
+        /// Also retrieve all object informations. This is done on save loaded because that's
+        /// when JA adds custom items
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
             Translations.UpdateSelectedLanguage();
+            ShopManager.UpdateTranslations();
             ItemsUtil.UpdateObjectInfoSource();
         }
 
         /// <summary>
-        /// 
+        /// On game launched initialize all the shops and register all external APIs
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
-            ShopManager.InitializeShops(); //things that need to be done after the game has launched
+            ShopManager.InitializeShops();
             APIs.RegisterJsonAssets();
             APIs.RegisterBFAV();
             APIs.RegisterFAVR();
@@ -156,7 +162,8 @@ namespace ShopTileFramework
         }
 
         /// <summary>
-        /// When input is received, check for shop tiles to open them as necessary
+        /// When input is received, check that the player is free and used an action button
+        /// If so, attempt open the shop if it exists
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -170,33 +177,36 @@ namespace ShopTileFramework
             //and lets me return them to their original location
             SourceLocation = null;
             PlayerPos = Vector2.Zero;
-
             //checks if i've changed marnie's stock already after opening her menu
             ChangedMarnieStock = false;
 
             if (!e.Button.IsActionButton())
                 return;
 
-            OpenShop(e);
-        }
-
-        private void OpenShop(StardewModdingAPI.Events.ButtonPressedEventArgs e)
-        {
-
             Vector2 clickedTile = Helper.Input.GetCursorPosition().GrabTile;
-
             //check if there is a tile property on Buildings layer
             var tileProperty = TileUtility.GetTileProperty(Game1.currentLocation, "Buildings", clickedTile);
             if (tileProperty == null)
                 return;
 
+            //if there is a tile property, attempt to open shop if it exists
+            CheckForShopToOpen(tileProperty,e);
+        }
+
+        /// <summary>
+        /// Checks the tile property for shops, and open them
+        /// </summary>
+        /// <param name="e"></param>
+        private void CheckForShopToOpen(IPropertyCollection tileProperty, StardewModdingAPI.Events.ButtonPressedEventArgs e)
+        {
+
             //check if there is a Shop property on clicked tile
             tileProperty.TryGetValue("Shop", out PropertyValue shopProperty);
-            if (shopProperty != null)
-            //everything in this block is for the shop property "Shop"
+            if (shopProperty != null) //There was a `Shop` property so attempt to open shop
             {
+                //check if the property is for a vanilla shop, and gets the shopmenu for that shop if it exists
                 IClickableMenu menu = TileUtility.CheckVanillaShop(shopProperty, out bool warpingShop);
-                if (menu != null) // checks for vanilla shop properties
+                if (menu != null)
                 {
                     if (warpingShop)
                     {
@@ -204,16 +214,18 @@ namespace ShopTileFramework
                         PlayerPos = Game1.player.position.Get();
                     }
 
+                    //stop the click action from going through after the menu has been opened
                     helper.Input.Suppress(e.Button);
                     Game1.activeClickableMenu = menu;
 
                 }
-                else
+                else //no vanilla shop found
                 {
                     //Extract the tile property value
                     string ShopName = shopProperty.ToString();
                     if (ShopManager.ItemShops.ContainsKey(ShopName))
                     {
+                        //stop the click action from going through after the menu has been opened
                         helper.Input.Suppress(e.Button);
                         ShopManager.ItemShops[ShopName].DisplayShop();
                     }
@@ -224,19 +236,15 @@ namespace ShopTileFramework
                     }
                 }
             }
-            else
+            else //no shop property found
             {
-                tileProperty.TryGetValue("AnimalShop", out shopProperty);
-                if (shopProperty == null)
-                {
-                    return;
-                }
-                else
+                tileProperty.TryGetValue("AnimalShop", out shopProperty); //see if there's an AnimalShop property
+                if (shopProperty != null) //no animal shop found
                 {
                     string ShopName = shopProperty.ToString();
                     if (ShopManager.AnimalShops.ContainsKey(ShopName))
                     {
-
+                        //stop the click action from going through after the menu has been opened
                         helper.Input.Suppress(e.Button);
                         ShopManager.AnimalShops[ShopName].DisplayShop();
                     }
@@ -247,7 +255,7 @@ namespace ShopTileFramework
                     }
                 }
 
-            }
+            } //end shopProperty null check
         }
     }
 }

@@ -2,6 +2,9 @@
 
 namespace ShopTileFramework.Framework.API
 {
+    /// <summary>
+    /// Interface for Json Assets API
+    /// </summary>
     public interface IJsonAssetsApi
     {
         List<string> GetAllObjectsFromContentPack(string cp);
@@ -11,13 +14,5 @@ namespace ShopTileFramework.Framework.API
         List<string> GetAllHatsFromContentPack(string cp);
         List<string> GetAllWeaponsFromContentPack(string cp);
         List<string> GetAllClothingFromContentPack(string cp);
-
-        int GetObjectId(string name);
-        int GetCropId(string name);
-        int GetFruitTreeId(string name);
-        int GetBigCraftableId(string name);
-        int GetHatId(string name);
-        int GetWeaponId(string name);
-        int GetClothingId(string name);
     }
 }

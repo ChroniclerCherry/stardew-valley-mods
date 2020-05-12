@@ -4,7 +4,7 @@ namespace ShopTileFramework.Framework.Data
 {
     class ContentPack
     {
-        public ItemShop[] Shops { get; set; } = null;
-        public AnimalShop[] AnimalShops { get; set; } = null;
+        public ItemShop[] Shops { get; set; }
+        public AnimalShop[] AnimalShops { get; set; }
     }
 }

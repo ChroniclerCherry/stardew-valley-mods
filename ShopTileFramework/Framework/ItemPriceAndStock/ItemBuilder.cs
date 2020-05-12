@@ -8,6 +8,10 @@ using System.Collections.Generic;
 
 namespace ShopTileFramework.Framework.ItemPriceAndStock
 {
+    /// <summary>
+    /// This class stores the global data for each itemstock, in order to generate and add items by ID or name
+    /// to the stock
+    /// </summary>
     class ItemBuilder
     {
         //These are set for each stock
@@ -21,6 +25,17 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         private readonly string shopName;
         private Dictionary<ISalable, int[]> itemPriceAndStock;
 
+        /// <summary>
+        /// Sets the global data for this item stock
+        /// </summary>
+        /// <param name="itemType">The string name of the item type</param>
+        /// <param name="isRecipe">If items are recipes or not</param>
+        /// <param name="price">The price of </param>
+        /// <param name="currencyItemID">the object ID of the currency item</param>
+        /// <param name="currencyItemStack">How many of the currency item is needed</param>
+        /// <param name="stock">how much of the item is available</param>
+        /// <param name="quality">The quality of the items</param>
+        /// <param name="shopName">Name of the shop, kept for logging purposes</param>
         public ItemBuilder(string itemType,
                            bool isRecipe,
                            int price,
@@ -39,24 +54,35 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             this.shopName = shopName;
         }
 
+        /// <param name="ItemPriceAndStock">the ItemPriceAndStock this builder will add items to</param>
         public void setItemPriceAndStock(Dictionary<ISalable, int[]> ItemPriceAndStock)
         {
             this.itemPriceAndStock = ItemPriceAndStock;
         }
 
-        public bool GetItem(string itemName)
+        /// <summary>
+        /// Takes an item name, and adds that item to the stock
+        /// </summary>
+        /// <param name="itemName">name of the item</param>
+        /// <returns></returns>
+        public bool AddItemToStock(string itemName)
         {
             int id = ItemsUtil.GetIndexByName(itemName, ItemsUtil.ObjectInfoSource[itemType]);
-            if (id == -1)
+            if (id < 0)
             {
                 ModEntry.monitor.Log($"{itemType} named \"{itemName}\" could not be added to the Shop {shopName}", LogLevel.Debug);
                 return false;
             }
 
-            return GetItem(id);
+            return AddItemToStock(id);
         }
 
-        public bool GetItem(int itemID)
+        /// <summary>
+        /// Takes an item id, and adds that item to the stock
+        /// </summary>
+        /// <param name="itemID">the id of the item</param>
+        /// <returns></returns>
+        public bool AddItemToStock(int itemID)
         {
             if (itemID < 0)
             {
@@ -85,6 +111,11 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             return true;       
         }
 
+        /// <summary>
+        /// Given an itemID, return an instance of that item with the parameters saved in this builder
+        /// </summary>
+        /// <param name="itemID"></param>
+        /// <returns></returns>
         private ISalable CreateItem(int itemID)
         {
             switch (itemType)
@@ -111,19 +142,26 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             }
         }
 
+        /// <summary>
+        /// Creates the second parameter in ItemStockAndPrice, an array that holds info on the price, stock,
+        /// and if it exists, the item currency it takes
+        /// </summary>
+        /// <param name="item">An instance of the item</param>
+        /// <returns>The array that's the second parameter in ItemPriceAndStock</returns>
         private int[] getPriceStockAndCurrency(ISalable item)
         {
             int[] PriceStockCurrency;
-            var price = (StockPrice == -1) ? item.salePrice() : StockPrice;
-            if (currencyItemID == -1)
+            //if no price is provided, use the item's sale price
+            var price = (StockPrice == -1) ? item.salePrice() : StockPrice; 
+            if (currencyItemID == -1) // no currency item
             {
                 PriceStockCurrency = new int[] { price, stock };
             }
-            else if (currencyItemStack == -1)
+            else if (currencyItemStack == -1) //no stack provided for currency item so defaults to 1
             {
                 PriceStockCurrency = new int[] { price, stock, currencyItemID };
             }
-            else
+            else //both currency item and stack provided
             {
                 PriceStockCurrency = new int[] { price, stock, currencyItemID, currencyItemStack };
             }

@@ -7,13 +7,24 @@ using System.Collections.Generic;
 
 namespace ShopTileFramework.Framework.ItemPriceAndStock
 {
+    /// <summary>
+    /// This class stores the data for each stock, with a stock being a list of items of the same itemtype
+    /// and sharing the same store parameters such as price
+    /// </summary>
     class ItemStock : ItemStockModel
     {
         private int currencyObjectID;
         private ItemBuilder builder;
         private Dictionary<ISalable, int[]> ItemPriceAndStock;
 
-        internal void Initialize(ItemShopModel data)
+        /// <summary>
+        /// Initialize the ItemStock, doing error checking on the quality, and setting the price to the store price
+        /// if none is given specifically for this stock.
+        /// Creates the builder
+        /// </summary>
+        /// <param name="shopName"></param>
+        /// <param name="price"></param>
+        internal void Initialize(string shopName, int price)
         {
             if (Quality < 0 || Quality == 3 || Quality > 4)
             {
@@ -22,9 +33,11 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             }
 
             currencyObjectID = ItemsUtil.GetIndexByName(StockItemCurrency, Game1.objectInformation);
+
+            //sets price to the store price if no stock price is given
             if (StockPrice == -1)
             {
-                StockPrice = data.ShopPrice;
+                StockPrice = price;
             }
 
             //initializes the builder with all the parameters of this itemstock
@@ -35,15 +48,19 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
                                       currencyItemStack: StockCurrencyStack,
                                       stock: Stock,
                                       quality: Quality,
-                                      shopName: data.ShopName);
+                                      shopName: shopName);
         }
 
+        /// <summary>
+        /// Resets the items of this item stock, with condition checks and randomization
+        /// </summary>
+        /// <returns></returns>
         public Dictionary<ISalable, int[]> Update()
         {
             if (When != null && !ConditionChecking.CheckConditions(When))
-                return null;
+                return null; //did not pass conditions
 
-            if (!ItemsUtil.CheckItemType(ItemType))
+            if (!ItemsUtil.CheckItemType(ItemType)) //check that itemtype is valid
             {
                 ModEntry.monitor.Log($" \"{ItemType}\" is not a valid ItemType. Some items will not be added.", LogLevel.Warn);
                 return null;
@@ -60,42 +77,39 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             return ItemPriceAndStock;
         }
 
+        /// <summary>
+        /// Add all items listed in the ItemIDs section
+        /// </summary>
         private void AddByID()
         {
 
             if (ItemIDs == null)
                 return;
 
-            if (ItemType == "Seed")
-            {
-                ModEntry.monitor.Log($" Itemtype \"Seed\" is only applicable to JAPacks, not ItemIDs", LogLevel.Warn);
-                return;
-            }
-
             foreach (var ItemID in ItemIDs)
             {
-                builder.GetItem(ItemID);
+                builder.AddItemToStock(ItemID);
             }
         }
 
+        /// <summary>
+        /// Add all items listed in the ItemNames section
+        /// </summary>
         private void AddByName()
         {
             if (ItemNames == null)
                 return;
 
-            if (ItemType == "Seed")
-            {
-                ModEntry.monitor.Log($" Itemtype \"Seed\" is only applicable to JAPacks, not ItemNames", LogLevel.Warn);
-                return;
-            }
-
             foreach (var ItemName in ItemNames)
             {
-                builder.GetItem(ItemName);
+                builder.AddItemToStock(ItemName);
             }
 
         }
 
+        /// <summary>
+        /// Add all items from the JA Packs listed in the JAPacks section
+        /// </summary>
         private void AddByJAPack()
         {
             if (JAPacks == null)
@@ -119,7 +133,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
                         {
                             int id = ItemsUtil.GetSeedID(crop);
                             if (id >0)
-                                builder.GetItem(id);
+                                builder.AddItemToStock(id);
                         }
                     }
 
@@ -129,11 +143,11 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
                         {
                             int id = ItemsUtil.GetSaplingID(tree);
                             if (id > 0)
-                                builder.GetItem(id);
+                                builder.AddItemToStock(id);
                         }
                     }
 
-                    continue;
+                    continue; //skip the rest of the loop so we don't also add the none-seed version
                 }
 
                 var packs = getJAItems(JAPack);
@@ -145,11 +159,16 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
 
                 foreach (string itemName in packs)
                 {
-                    builder.GetItem(itemName);
+                    builder.AddItemToStock(itemName);
                 }
             }
         }
 
+        /// <summary>
+        /// Depending on the itemtype, returns a list of the names of all items of that type in a JA pack
+        /// </summary>
+        /// <param name="JAPack">Unique ID of the pack</param>
+        /// <returns>A list of all the names of the items of the right item type in that pack</returns>
         private List<string> getJAItems(string JAPack)
         {
             switch (ItemType)

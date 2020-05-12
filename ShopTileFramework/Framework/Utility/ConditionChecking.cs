@@ -4,14 +4,23 @@ using StardewValley;
 
 namespace ShopTileFramework.Framework.Utility
 {
+    /// <summary>
+    /// This class contains utility methods to do all the condition checking used by shops
+    /// </summary>
     internal static class ConditionChecking
     {
+        /// <summary>
+        /// This is the vanilla method used to check preconditions
+        /// Borriwing it to gain quick access to all existing preconditions
+        /// </summary>
         public static IReflectedMethod VanillaPreconditionsMethod { get; private set; }
 
         /// <summary>
-        /// Reflects into the game's event preconditions method to do condition checking
+        /// Each string in the array can have multiple conditions seperated by the character '/'
+        /// and each string is evaluated as true if all of the conditions are met
+        /// The method returns true if any of the strings are true
         /// </summary>
-        /// <param name="conditions"></param>
+        /// <param name="conditions">an array of condition strings</param>
         /// <returns>true if all conditions matches, otherwise false</returns>
         internal static bool CheckConditions(string[] conditions)
         {
@@ -44,6 +53,13 @@ namespace ShopTileFramework.Framework.Utility
             return false;
         }
 
+        /// <summary>
+        /// This method takes an array which was originally a single string condition, split at the '/' symbols
+        /// If any of the conditions are false, then the entire expression evaluates as false
+        /// If all conditions pass, then the whole expression evaluates as true
+        /// </summary>
+        /// <param name="conditions"></param>
+        /// <returns></returns>
         private static bool CheckIndividualConditions(string[] conditions)
         {
             //if any of the conditions fail, return false
@@ -65,6 +81,12 @@ namespace ShopTileFramework.Framework.Utility
 
         }
 
+        /// <summary>
+        /// takes a singular condition and evaluates it for true or false.
+        /// If it matches none of the custom conditions defined by STF, it then checks the vanilla preconditions
+        /// </summary>
+        /// <param name="con"></param>
+        /// <returns></returns>
         private static bool CheckCustomConditions(string con)
         {
             string[] ConditionParams = con.Split(' ');
@@ -88,6 +110,12 @@ namespace ShopTileFramework.Framework.Utility
             }
         }
 
+        /// <summary>
+        /// Checks that a given NPC is at the tile indexes
+        /// </summary>
+        /// <param name="conditionParams">The condition string split by spaces, with the first parameter being the NPC 
+        /// name and every two after that is the X and Y coordinates</param>
+        /// <returns>true if the npc was found at the given tile, false if not</returns>
         private static bool CheckNPCAt(string[] conditionParams)
         {
             //the second paramter at index 1 is the name of an npc
@@ -103,6 +131,11 @@ namespace ShopTileFramework.Framework.Utility
             return false;
         }
 
+        /// <summary>
+        /// Returns true if Joja route was completed
+        /// Borrowed code from Content Patcher
+        /// </summary>
+        /// <returns>true if jojamart is complete, false if not</returns>
         private static bool CheckJojaMartComplete()
         {
             //I pretty much c&p'd this straight from CP, thanks Pathos
@@ -113,6 +146,11 @@ namespace ShopTileFramework.Framework.Utility
             return ModEntry.helper.Reflection.GetMethod(town, "checkJojaCompletePrerequisite").Invoke<bool>();
         }
 
+        /// <summary>
+        /// Returns true if the given mods are present
+        /// </summary>
+        /// <param name="conditionParams">The condition string split by spaces, with each parameter being a mod uniqueID</param>
+        /// <returns>True if every mod is loaded, otherwise return false</returns>
         private static bool CheckHasMod(string[] conditionParams)
         {
             //each string is the UniqueID of a mod that is required
@@ -126,6 +164,12 @@ namespace ShopTileFramework.Framework.Utility
             return true;
         }
 
+        /// <summary>
+        /// Returns true if the player has at least the level given for each skill and level pair
+        /// </summary>
+        /// <param name="conditionParams">The condition string split by spaces,
+        /// with each skill name paired with a level</param>
+        /// <returns>Return true if the player has at least the level given for every skill, otherwise returns false</returns>
         private static bool CheckSkillLevel(string[] conditionParams)
         {
             //each paramater is a pair of skill name and its level

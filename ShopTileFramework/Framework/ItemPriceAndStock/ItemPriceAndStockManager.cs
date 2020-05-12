@@ -5,23 +5,35 @@ using System.Collections.Generic;
 
 namespace ShopTileFramework.Framework.ItemPriceAndStock
 {
+    /// <summary>
+    /// This class manages the total inventory for each shop
+    /// </summary>
     class ItemPriceAndStockManager
     {
         public Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
         private readonly ItemStock[] ItemStocks;
-        public ItemShopModel shopData;
+        private readonly int maxNumItemsSoldInStore;
 
+        /// <summary>
+        /// Initializes the manager with the itemstocks, and how many items max this shop will contain
+        /// </summary>
+        /// <param name="ItemStocks"></param>
+        /// <param name="data"></param>
         public ItemPriceAndStockManager(ItemStock[] ItemStocks, ItemShopModel data)
         {
             this.ItemStocks = ItemStocks;
-            this.shopData = data;
+            this.maxNumItemsSoldInStore = data.MaxNumItemsSoldInStore;
 
+            //initialize each stock
             foreach (ItemStock stock in ItemStocks)
             {
-                stock.Initialize(data);
+                stock.Initialize(data.ShopName,data.ShopPrice);
             }
         }
 
+        /// <summary>
+        /// Refreshes the stock of all items, doing condition checking and randomization
+        /// </summary>
         public void Update()
         {
             ItemPriceAndStock = new Dictionary<ISalable, int[]>();
@@ -29,17 +41,23 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             foreach (ItemStock stock in ItemStocks)
             {
                 var PriceAndStock = stock.Update();
-                if (PriceAndStock == null)
+                //null is returned if conhditions aren't met, skip adding this stock
+                if (PriceAndStock == null) 
                     continue;
 
                 Add(PriceAndStock);
             }
 
-            ItemsUtil.RandomizeStock(ItemPriceAndStock,shopData.MaxNumItemsSoldInStore);
+            //randomly reduces the stock of the whole store down to maxNumItemsSoldInStore
+            ItemsUtil.RandomizeStock(ItemPriceAndStock,maxNumItemsSoldInStore);
 
         }
 
-        public void Add(Dictionary<ISalable, int[]> dict)
+        /// <summary>
+        /// Adds the stock from each ItemStock to the overall inventory
+        /// </summary>
+        /// <param name="dict"></param>
+        private void Add(Dictionary<ISalable, int[]> dict)
         {
             foreach (var kvp in dict)
             {

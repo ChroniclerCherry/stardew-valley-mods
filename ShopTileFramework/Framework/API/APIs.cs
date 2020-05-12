@@ -1,13 +1,19 @@
-﻿using ShopTileFramework.Framework.Shop;
-using StardewModdingAPI;
+﻿using StardewModdingAPI;
 
 namespace ShopTileFramework.Framework.API
 {
+    /// <summary>
+    /// This class is used to register external APIs and hold the instances of those APIs to be accessed
+    /// by the rest of the mod
+    /// </summary>
     class APIs
     {
         internal static IJsonAssetsApi JsonAssets;
         internal static IBFAVApi BFAV;
 
+        /// <summary>
+        /// Register the API for Json Assets
+        /// </summary>
         public static void RegisterJsonAssets()
         {
             JsonAssets = ModEntry.helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
@@ -20,6 +26,10 @@ namespace ShopTileFramework.Framework.API
 
         }
 
+        /// <summary>
+        /// Registers the API for Better Farm Animal Variety, and check if it has been disabled in the user's options.
+        /// If so, set it to null
+        /// </summary>
         public static void RegisterBFAV()
         {
             BFAV = ModEntry.helper.ModRegistry.GetApi<IBFAVApi>("Paritee.BetterFarmAnimalVariety");

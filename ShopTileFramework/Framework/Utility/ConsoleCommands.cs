@@ -3,15 +3,41 @@ using StardewModdingAPI;
 
 namespace ShopTileFramework.Framework.Utility
 {
+    /// <summary>
+    /// This class registers and handles console commands to SMAPI
+    /// </summary>
     class ConsoleCommands
     {
-        internal void Register()
+        /// <summary>
+        /// Registers all commands
+        /// </summary>
+        /// <param name="helper">the SMAPI helper</param>
+        internal void Register(IModHelper helper)
         {
-            ModEntry.helper.ConsoleCommands.Add("open_shop", "Opens up a custom shop's menu. \n\nUsage: open_shop <ShopName>\n-ShopName: the name of the shop to open", DisplayShopMenu);
-            ModEntry.helper.ConsoleCommands.Add("open_animal_shop", "Opens up a custom animal shop's menu. \n\nUsage: open_shop <open_animal_shop>\n-ShopName: the name of the animal shop to open", DisplayAnimalShopMenus);
-            ModEntry.helper.ConsoleCommands.Add("reset_shop", "Resets the stock of specified shop. Rechecks conditions and randomizations\n\nUsage: reset_shop <ShopName>\n-ShopName: the name of the shop to reset", ResetShopStock);
-            ModEntry.helper.ConsoleCommands.Add("list_shops", "Lists all shops registered with Shop Tile Framework", ListAllShops);
+            helper.ConsoleCommands.Add("open_shop",
+                "Opens up a custom shop's menu. \n\n" +
+                "Usage: open_shop <ShopName>\n" +
+                "-ShopName: the name of the shop to open",
+                DisplayShopMenu);
+            helper.ConsoleCommands.Add("open_animal_shop",
+                "Opens up a custom animal shop's menu. \n\n" +
+                "Usage: open_shop <open_animal_shop>\n" +
+                "-ShopName: the name of the animal shop to open",
+                DisplayAnimalShopMenus);
+            helper.ConsoleCommands.Add("reset_shop",
+                "Resets the stock of specified shop. Rechecks conditions and randomizations\n\n" +
+                "Usage: reset_shop <ShopName>\n" +
+                "-ShopName: the name of the shop to reset",
+                ResetShopStock);
+            helper.ConsoleCommands.Add("list_shops",
+                "Lists all shops registered with Shop Tile Framework",
+                ListAllShops);
         }
+
+        /// <summary>
+        /// Opens the item shop of the given name if able
+        /// </summary>
+        /// <param name="args">only checks the first argument for a shop name</param>
         private void DisplayShopMenu(string command, string[] args)
         {
             if (args.Length == 0)
@@ -33,10 +59,14 @@ namespace ShopTileFramework.Framework.Utility
                     return;
                 }
 
-                value.DisplayShop();
+                value.DisplayShop(true);
             }
         }
 
+        /// <summary>
+        /// Opens the animal shop of the given name if able
+        /// </summary>
+        /// <param name="args">only checks the first argument for a shop name</param>
         private void DisplayAnimalShopMenus(string command, string[] args)
         {
             if (args.Length == 0)
@@ -58,10 +88,14 @@ namespace ShopTileFramework.Framework.Utility
                     return;
                 }
 
-                value.DisplayShop();
+                value.DisplayShop(true);
             }
         }
 
+        /// <summary>
+        /// Resets the shop stock of the given shop name
+        /// </summary>
+        /// <param name="args">only checks the first argument for a shop name</param>
         private void ResetShopStock(string command, string[] args)
         {
             if (args.Length == 0)
@@ -85,6 +119,10 @@ namespace ShopTileFramework.Framework.Utility
                 shop.UpdateItemPriceAndStock();
             }
         }
+
+        /// <summary>
+        /// Prints a list of all registered shops
+        /// </summary>
         private void ListAllShops(string command, string[] args)
         {
             if (ShopManager.ItemShops.Count == 0)

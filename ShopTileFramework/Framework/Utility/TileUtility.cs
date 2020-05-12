@@ -9,8 +9,18 @@ using xTile.ObjectModel;
 
 namespace ShopTileFramework.Framework.Utility
 {
+    /// <summary>
+    /// This class contains static utility methods for dealing with tile properties
+    /// </summary>
     class TileUtility
     {
+        /// <summary>
+        /// Returns the tile property found at the given parameters
+        /// </summary>
+        /// <param name="map">an instance of the the map location</param>
+        /// <param name="layer">the name of the layer</param>
+        /// <param name="tile">the coordinates of the tile</param>
+        /// <returns>The tile property if there is one, null if there isn't</returns>
         public  static IPropertyCollection GetTileProperty(GameLocation map, string layer, Vector2 tile)
         {
             if (map == null)
@@ -21,6 +31,13 @@ namespace ShopTileFramework.Framework.Utility
             return checkTile?.Properties;
         }
 
+        /// <summary>
+        /// Given the name of a shop property, return an instance of the vanilla menu that matches the property
+        /// </summary>
+        /// <param name="shopProperty">the name of the property, as outlined in the README.md</param>
+        /// <param name="warpingShop">is true for animal shops and carpenter shops, which need special handling due to
+        /// the fact it physically warps the players to hard-coded locations</param>
+        /// <returns>An instance of the vanilla stores if the property matches, null otherwise</returns>
         public static IClickableMenu CheckVanillaShop(string shopProperty, out bool warpingShop)
         {
             warpingShop = false;
@@ -115,9 +132,6 @@ namespace ShopTileFramework.Framework.Utility
         /// <summary>
         /// Copied over method to make the desert trader work without reflection bs
         /// </summary>
-        /// <param name="s"></param>
-        /// <param name="f"></param>
-        /// <param name="i"></param>
         /// <returns></returns>
         private static bool boughtTraderItem(ISalable s, Farmer f, int i)
         {
@@ -129,9 +143,6 @@ namespace ShopTileFramework.Framework.Utility
         /// <summary>
         /// Copied over method to make Sandy's shop work without reflection bs
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="who"></param>
-        /// <param name="amount"></param>
         /// <returns></returns>
         private static bool onSandyShopPurchase(ISalable item, Farmer who, int amount)
         {
