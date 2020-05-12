@@ -10,134 +10,111 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
 {
     class ItemBuilder
     {
+        //These are set for each stock
         private readonly string itemType;
         private readonly bool isRecipe;
-        private int StockPrice = -1;
+        private readonly int StockPrice = -1;
+        private readonly int quality = 0;
+        private readonly int currencyItemID = -1;
+        private readonly int currencyItemStack = int.MaxValue;
+        private readonly int stock = int.MaxValue;
+        private readonly string shopName;
+        private Dictionary<ISalable, int[]> itemPriceAndStock;
 
-        private string itemName = null;
-        private int itemID = -1;
-        private int quality = 0;
-
-
-        private int currencyItemID = -1;
-        private int currencyItemStack = int.MaxValue;
-        private int stock = int.MaxValue;
-
-        public ItemBuilder(string itemType, bool isRecipe, int price) {
+        public ItemBuilder(string itemType,
+                           bool isRecipe,
+                           int price,
+                           int currencyItemID,
+                           int currencyItemStack,
+                           int stock,
+                           int quality,
+                           string shopName) {
             this.itemType = itemType;
             this.isRecipe = isRecipe;
             this.StockPrice = price;
+            this.currencyItemID = currencyItemID;
+            this.currencyItemStack = currencyItemStack;
+            this.stock = stock;
+            this.quality = quality;
+            this.shopName = shopName;
         }
 
-        public ItemBuilder SetItemName(string itemName)
+        public void setItemPriceAndStock(Dictionary<ISalable, int[]> ItemPriceAndStock)
+        {
+            this.itemPriceAndStock = ItemPriceAndStock;
+        }
+
+        public bool GetItem(string itemName)
         {
             int id = ItemsUtil.GetIndexByName(itemName, ItemsUtil.ObjectInfoSource[itemType]);
-            SetItemID(id);
+            if (id == -1)
+            {
+                ModEntry.monitor.Log($"{itemType} named \"{itemName}\" could not be added to the Shop {shopName}", LogLevel.Debug);
+                return false;
+            }
 
-            return this;
+            return GetItem(id);
         }
 
-        public ItemBuilder SetItemID(int itemID)
-        {
-            this.itemID = itemID;
-
-            return this;
-        }
-
-        public ItemBuilder SetQuality(int quality)
-        {
-            this.quality = quality;
-            return this;
-        }
-
-        public ItemBuilder SetCurrencyItemID(int currencyItemID)
-        {
-            this.currencyItemID = currencyItemID;
-            return this;
-        }
-
-        public ItemBuilder SetCurrencyItemStack(int currencyItemStack)
-        {
-            this.currencyItemStack = currencyItemStack;
-            return this;
-        }
-
-        public ItemBuilder SetStock(int stock)
-        {
-            this.stock = stock;
-            return this;
-        }
-
-        public bool Build(Dictionary<ISalable, int[]> ItemPriceAndStock)
+        public bool GetItem(int itemID)
         {
             if (itemID < 0)
             {
-                ModEntry.monitor.Log((itemName == null) ?
-                    $"{itemType} named \"{itemName}\" could not be added":
-                    $"{itemType} of ID {itemID} could not be added", LogLevel.Debug);
-
-                clear();
+                ModEntry.monitor.Log($"{itemType} of ID {itemID} could not be added to the Shop {shopName}", LogLevel.Debug);
                 return false;
             }
 
-            var item = GetItem();
+            var item = CreateItem(itemID);
             if (item == null)
             {
-                clear();
                 return false;
+            }
+
+            if (isRecipe)
+            {
+                if (!ItemsUtil.RecipesList.Contains(item.Name))
+                {
+                    ModEntry.monitor.Log($"{item.Name} is not a valid recipe and won't be added.");
+                    return false;
+                }
             }
 
             var priceStockCurrency = getPriceStockAndCurrency(item);
+            itemPriceAndStock.Add(item, priceStockCurrency);
 
-            ItemPriceAndStock.Add(item, priceStockCurrency);
-
-            clear();
             return true;       
         }
 
-        private ISalable GetItem()
+        private ISalable CreateItem(int itemID)
         {
-            Item item = null;
-
-            if (itemID == -1)
-            {
-                return null;
-            }
-
             switch (itemType)
             {
                 case "Object":
-                    item = new Object(itemID, stock, isRecipe, quality: quality);
-                    break;
+                    return new Object(itemID, isRecipe? 1 : stock, isRecipe, quality: quality);
+                case "Seed":
+                    return new Object(itemID, isRecipe ? 1 : stock, isRecipe, quality: quality);
                 case "BigCraftable":
-                    item = new Object(Vector2.Zero, itemID) { Stack = stock, IsRecipe = isRecipe };
-                    break;
+                    return new Object(Vector2.Zero, itemID) { Stack = isRecipe ? 1 : stock, IsRecipe = isRecipe };
                 case "Clothing":
-                    item = new Clothing(itemID);
-                    break;
+                    return new Clothing(itemID);
                 case "Ring":
-                    item = new Ring(itemID);
-                    break;
+                    return new Ring(itemID);
                 case "Hat":
-                    item = new Hat(itemID);
-                    break;
+                    return new Hat(itemID);
                 case "Boot":
-                    item = new Boots(itemID);
-                    break;
+                    return new Boots(itemID);
                 case "Furniture":
-                    item = new Furniture(itemID, Vector2.Zero);
-                    break;
+                    return new Furniture(itemID, Vector2.Zero);
                 case "Weapon":
-                    item = new MeleeWeapon(itemID);
-                    break;
+                    return new MeleeWeapon(itemID);
+                default: return null;
             }
-            return item;
         }
 
-        private int[] getPriceStockAndCurrency(ISalable i)
+        private int[] getPriceStockAndCurrency(ISalable item)
         {
             int[] PriceStockCurrency;
-            var price = (StockPrice == -1) ? i.salePrice() : StockPrice;
+            var price = (StockPrice == -1) ? item.salePrice() : StockPrice;
             if (currencyItemID == -1)
             {
                 PriceStockCurrency = new int[] { price, stock };
@@ -153,17 +130,5 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
 
             return PriceStockCurrency;
         }
-
-
-        private void clear()
-        {
-            itemName = null;
-            itemID = -1;
-            quality = 0;
-            currencyItemID = -1;
-            currencyItemStack = int.MaxValue;
-            stock = int.MaxValue;
-        }
-
     }
 }

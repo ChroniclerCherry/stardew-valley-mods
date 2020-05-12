@@ -1,17 +1,11 @@
 ﻿using ShopTileFramework.Framework.Data;
+using ShopTileFramework.Framework.Shop;
 using StardewValley;
 using System.Collections.Generic;
 
-namespace ShopTileFramework
+namespace ShopTileFramework.Framework.API
 {
-    public interface IApi
-    {
-        bool RegisterShops(string dir);
-        bool OpenShop(string ShopName);
-        bool ResetShop(string ShopName);
-        Dictionary<ISalable, int[]> GetItemPriceAndStock(string ShopName);
-    }
-    public class Api : IApi
+    public class STFApi : ISTFApi
     {
 
         public bool RegisterShops(string dir)
@@ -25,14 +19,14 @@ namespace ShopTileFramework
                 return false;
             }
 
-            ModEntry.RegisterShops(NewShopModel, temp);
+            ShopManager.RegisterShops(NewShopModel, temp);
             return true;
         }
 
         public bool OpenShop(string ShopName)
         {
             //opens up the shop of ShopName in-game
-            ModEntry.Shops.TryGetValue(ShopName, out var shop);
+            ShopManager.ItemShops.TryGetValue(ShopName, out var shop);
             if (shop == null)
             {
                 return false;
@@ -45,7 +39,7 @@ namespace ShopTileFramework
         public bool ResetShop(string ShopName)
         {
             //resets the stock of the given ShopName
-            ModEntry.Shops.TryGetValue(ShopName, out var shop);
+            ShopManager.ItemShops.TryGetValue(ShopName, out var shop);
             if (shop == null)
             {
                 return false;
@@ -58,7 +52,7 @@ namespace ShopTileFramework
         public Dictionary<ISalable, int[]> GetItemPriceAndStock(string ShopName)
         {
             //gets the ItemStockAndPrice of the given ShopName
-            ModEntry.Shops.TryGetValue(ShopName, out var shop);
+            ShopManager.ItemShops.TryGetValue(ShopName, out var shop);
             if (shop == null)
             {
                 return null;

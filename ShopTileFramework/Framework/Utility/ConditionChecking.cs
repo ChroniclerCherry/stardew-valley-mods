@@ -15,10 +15,11 @@ namespace ShopTileFramework.Framework.Utility
         /// <returns>true if all conditions matches, otherwise false</returns>
         internal static bool CheckConditions(string[] conditions)
         {
-            VanillaPreconditionsMethod = ModEntry.helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition");
             //if no conditions are supplied, then conditions are always met
             if (conditions == null)
                 return true;
+
+            VanillaPreconditionsMethod = ModEntry.helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition");
 
             //if someone somewhow marked this fake ID as seen, 
             //unmark it so condition checking will actually work
@@ -82,7 +83,7 @@ namespace ShopTileFramework.Framework.Utility
                     return CheckJojaMartComplete();
                 default:
                     // Note: "-5005" is a random event id cause the vanilla method is for events and needs one ¯\_(ツ)_/¯
-                    //so it's the negative mod id
+                    // so it's the negative mod id
                     return (VanillaPreconditionsMethod.Invoke<int>("-5005/" + con) != -1);
             }
         }

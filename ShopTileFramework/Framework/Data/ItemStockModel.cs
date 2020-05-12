@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShopTileFramework.Framework.Data
 {
-    abstract class ItemStockData
+    abstract class ItemStockModel
     {
         public string ItemType { get; set; }
         public bool IsRecipe { get; set; } = false;

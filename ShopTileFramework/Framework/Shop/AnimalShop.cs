@@ -6,15 +6,15 @@ using System.Collections.Generic;
 
 namespace ShopTileFramework.Framework.Shop
 {
-
-
-    class AnimalShop : AnimalShopData
+    class AnimalShop : AnimalShopModel
     {
 
-        private List<StardewValley.Object> ShopAnimalStock;
-        private List<StardewValley.Object> AllAnimalsStock;
+        private List<Object> ShopAnimalStock;
+        private List<Object> AllAnimalsStock;
 
-        public AnimalShop(string ShopName)
+        internal static List<string> ExcludeFromMarnie = new List<string>();
+
+        public void Initialize()
         {
             ClosedMessage = Translations.Localize(ClosedMessage, LocalizedClosedMessage);
         }
@@ -47,13 +47,5 @@ namespace ShopTileFramework.Framework.Shop
                 Game1.activeClickableMenu = new DialogueBox(ClosedMessage);
             }
         }
-    }
-
-    public interface BFAVApi
-    {
-        bool IsEnabled();
-        List<StardewValley.Object> GetAnimalShopStock(Farm farm);
-        Dictionary<string, List<string>> GetFarmAnimalCategories();
-
     }
 }

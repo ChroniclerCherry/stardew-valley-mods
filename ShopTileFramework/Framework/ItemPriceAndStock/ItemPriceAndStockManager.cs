@@ -9,9 +9,9 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
     {
         public Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
         private readonly ItemStock[] ItemStocks;
-        public ItemShopData shopData;
+        public ItemShopModel shopData;
 
-        public ItemPriceAndStockManager(ItemStock[] ItemStocks, ItemShopData data)
+        public ItemPriceAndStockManager(ItemStock[] ItemStocks, ItemShopModel data)
         {
             this.ItemStocks = ItemStocks;
             this.shopData = data;

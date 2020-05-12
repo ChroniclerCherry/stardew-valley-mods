@@ -18,7 +18,7 @@ namespace ShopTileFramework.Framework.Utility
 
             xTile.Tiles.Tile checkTile = map.Map.GetLayer(layer).Tiles[(int)tile.X, (int)tile.Y];
 
-            return checkTile == null ? null : checkTile.Properties;
+            return checkTile?.Properties;
         }
 
         public static IClickableMenu CheckVanillaShop(string shopProperty, out bool warpingShop)
@@ -39,8 +39,7 @@ namespace ShopTileFramework.Framework.Utility
                     return new ShopMenu(StardewValley.Utility.getCarpenterStock(), 0,"Robin", null, null, null);
                 case "Vanilla!RobinBuildingsShop":
                     warpingShop = true;
-                    Game1.activeClickableMenu = new CarpenterMenu(false);
-                    break;
+                    return new CarpenterMenu(false);
                 case "Vanilla!ClintShop":
                     return new ShopMenu(StardewValley.Utility.getBlacksmithStock(), 0,"Clint", null, null, null);
                 case "Vanilla!ClintGeodes":

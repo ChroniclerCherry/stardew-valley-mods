@@ -3,18 +3,17 @@ using StardewValley;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShopTileFramework.Framework.Utility
 {
     class ItemsUtil
     {
-
         public static Dictionary<string, IDictionary<int, string>> ObjectInfoSource { get; set; }
-        private static List<string> RecipesList;
+        public static List<string> RecipesList;
+        private static Dictionary<int, string> fruitTreeData;
+        private static Dictionary<int, string> cropData;
 
-        public static void GetObjectInfoSource()
+        public static void UpdateObjectInfoSource()
         {
             //load up all the object information into a static dictionary
             ObjectInfoSource = new Dictionary<string, IDictionary<int, string>>
@@ -51,6 +50,10 @@ namespace ShopTileFramework.Framework.Utility
 
             //add "recipe" to the end of every element
             RecipesList = RecipesList.Select(s => s + " Recipe").ToList();
+
+            //load up tree and crop data
+            fruitTreeData = ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/fruitTrees", ContentSource.GameContent);
+            cropData = ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/Crops", ContentSource.GameContent);
         }
 
         public static void RandomizeStock(Dictionary<ISalable, int[]> inventory, int MaxNum)
@@ -77,6 +80,35 @@ namespace ShopTileFramework.Framework.Utility
         public static bool CheckItemType(string ItemType)
         {
             return (ItemType == "Seed" || ObjectInfoSource.ContainsKey(ItemType));
+        }
+
+        public static int GetSeedID(string cropName)
+        {
+            //int cropID = ModEntry.JsonAssets.GetCropId(cropName);
+            int cropID = GetIndexByName(cropName, ObjectInfoSource["Object"]);
+            foreach (KeyValuePair<int, string> kvp in cropData)
+            {
+                //find the tree id in crops information to get seed id
+                Int32.TryParse(kvp.Value.Split('/')[3], out int id);
+                if (cropID == id)
+                    return kvp.Key;
+            }
+
+            return -1;
+        }
+
+        public static int GetSaplingID(string treeName)
+        {
+            int treeID = GetIndexByName(treeName, ObjectInfoSource["Object"]);
+            foreach (KeyValuePair<int, string> kvp in fruitTreeData)
+            {
+                //find the tree id in fruitTrees information to get sapling id
+                Int32.TryParse(kvp.Value.Split('/')[2], out int id);
+                if (treeID == id)
+                    return kvp.Key;
+            }
+
+            return -1;
         }
     }
 }

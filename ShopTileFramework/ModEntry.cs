@@ -1,15 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using ShopTileFramework.Framework;
-using ShopTileFramework.Framework.Data;
+using ShopTileFramework.Framework.API;
 using ShopTileFramework.Framework.Shop;
 using ShopTileFramework.Framework.Utility;
 using StardewModdingAPI;
 using StardewValley;
-using StardewValley.Locations;
 using StardewValley.Menus;
-using StardewValley.Util;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using xTile.ObjectModel;
 
@@ -20,14 +15,7 @@ namespace ShopTileFramework
         internal static IModHelper helper;
         internal static IMonitor monitor;
 
-        internal static IJsonAssetsApi JsonAssets;
-        internal static BFAVApi BFAV;
-
-        internal static List<string> ExcludeFromMarnie = new List<string>();
         private bool ChangedMarnieStock = false;
-
-        internal static Dictionary<string, ItemShop> Shops = new Dictionary<string, ItemShop>();
-        internal static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
 
         internal static GameLocation SourceLocation = null;
         internal static Vector2 PlayerPos = Vector2.Zero;
@@ -50,13 +38,10 @@ namespace ShopTileFramework
             helper.Events.GameLoop.UpdateTicking += GameLoop_UpdateTicking;
 
             //add console commands
-            helper.ConsoleCommands.Add("open_shop", "Opens up a custom shop's menu. \n\nUsage: open_shop <ShopName>\n-ShopName: the name of the shop to open", this.DisplayShopMenu);
-            helper.ConsoleCommands.Add("open_animal_shop", "Opens up a custom animal shop's menu. \n\nUsage: open_shop <open_animal_shop>\n-ShopName: the name of the animal shop to open", this.DisplayAnimalShopMenus);
-            helper.ConsoleCommands.Add("reset_shop", "Resets the stock of specified shop. Rechecks conditions and randomizations\n\nUsage: reset_shop <ShopName>\n-ShopName: the name of the shop to reset", this.ResetShopStock);
-            helper.ConsoleCommands.Add("list_shops", "Lists all shops registered with Shop Tile Framework", this.ListAllShops);
+            new ConsoleCommands().Register();
 
             //get all the info from content packs
-            LoadContentPacks();
+            ShopManager.LoadContentPacks();
 
             /*
             //harmony black magic
@@ -108,14 +93,14 @@ namespace ShopTileFramework
 
             //this is the vanilla Marnie menu for us to exclude animals from
             if (e.NewMenu is PurchaseAnimalsMenu && SourceLocation == null &&
-                !ChangedMarnieStock && ExcludeFromMarnie.Count > 0)
+                !ChangedMarnieStock && AnimalShop.ExcludeFromMarnie.Count > 0)
             {
                 //close the current menu to open our own	
                 Game1.exitActiveMenu();
                 var AllAnimalsStock = Utility.getPurchaseAnimalStock();
                 ChangedMarnieStock = true;
                 var newAnimalStock = (from animal in AllAnimalsStock
-                                      where !ExcludeFromMarnie.Contains(animal.Name)
+                                      where !AnimalShop.ExcludeFromMarnie.Contains(animal.Name)
                                       select animal).ToList();
                 Game1.activeClickableMenu = new PurchaseAnimalsMenu(newAnimalStock);
             }
@@ -133,7 +118,7 @@ namespace ShopTileFramework
         /// <returns></returns>
         public override object GetApi()
         {
-            return new Api();
+            return new STFApi();
         }
         /// <summary>
         /// refreshes the object information files on each save loaded in case of ids changing due to JA
@@ -142,13 +127,8 @@ namespace ShopTileFramework
         /// <param name="e"></param>
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
-            Translations.LoadCurrentLang();
-            ItemsUtil.GetObjectInfoSource();
-
-            foreach (ItemShop shop in Shops.Values)
-            {
-                shop.Initialize();
-            }
+            Translations.UpdateSelectedLanguage();
+            ItemsUtil.UpdateObjectInfoSource();
         }
 
         /// <summary>
@@ -158,26 +138,11 @@ namespace ShopTileFramework
         /// <param name="e"></param>
         private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
-            JsonAssets = helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
-            BFAV = helper.ModRegistry.GetApi<BFAVApi>("Paritee.BetterFarmAnimalVariety");
+            ShopManager.InitializeShops(); //things that need to be done after the game has launched
+            APIs.RegisterJsonAssets();
+            APIs.RegisterBFAV();
+            APIs.RegisterFAVR();
 
-            if (JsonAssets == null)
-            {
-                Monitor.Log("Json Assets API not detected. Custom JA items will not be added to shops.",
-                    LogLevel.Info);
-            }
-
-            if (BFAV == null)
-            {
-                Monitor.Log("BFAV API not detected. Custom farm animals will not be added to animal shops.",
-                    LogLevel.Info);
-            }
-            else if (!BFAV.IsEnabled())
-            {
-                BFAV = null;
-                Monitor.Log("BFAV is installed but not enabled. Custom farm animals will not be added to animal shops.",
-                    LogLevel.Info);
-            }
         }
 
         /// <summary>
@@ -187,12 +152,7 @@ namespace ShopTileFramework
         /// <param name="e"></param>
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
         {
-            Monitor.Log($"Refreshing stock for all custom shops...", LogLevel.Debug);
-            foreach (ItemShop Store in Shops.Values)
-            {
-                Store.UpdateItemPriceAndStock();
-                Store.UpdatePortrait();
-            }
+            ShopManager.UpdateStock();
         }
 
         /// <summary>
@@ -217,6 +177,12 @@ namespace ShopTileFramework
             if (!e.Button.IsActionButton())
                 return;
 
+            OpenShop(e);
+        }
+
+        private void OpenShop(StardewModdingAPI.Events.ButtonPressedEventArgs e)
+        {
+
             Vector2 clickedTile = Helper.Input.GetCursorPosition().GrabTile;
 
             //check if there is a tile property on Buildings layer
@@ -227,7 +193,7 @@ namespace ShopTileFramework
             //check if there is a Shop property on clicked tile
             tileProperty.TryGetValue("Shop", out PropertyValue shopProperty);
             if (shopProperty != null)
-             //everything in this block is for the shop property "Shop"
+            //everything in this block is for the shop property "Shop"
             {
                 IClickableMenu menu = TileUtility.CheckVanillaShop(shopProperty, out bool warpingShop);
                 if (menu != null) // checks for vanilla shop properties
@@ -246,10 +212,10 @@ namespace ShopTileFramework
                 {
                     //Extract the tile property value
                     string ShopName = shopProperty.ToString();
-                    if (Shops.ContainsKey(ShopName))
+                    if (ShopManager.ItemShops.ContainsKey(ShopName))
                     {
                         helper.Input.Suppress(e.Button);
-                        Shops[ShopName].DisplayShop();
+                        ShopManager.ItemShops[ShopName].DisplayShop();
                     }
                     else
                     {
@@ -268,11 +234,11 @@ namespace ShopTileFramework
                 else
                 {
                     string ShopName = shopProperty.ToString();
-                    if (AnimalShops.ContainsKey(ShopName))
+                    if (ShopManager.AnimalShops.ContainsKey(ShopName))
                     {
 
                         helper.Input.Suppress(e.Button);
-                        AnimalShops[ShopName].DisplayShop();
+                        ShopManager.AnimalShops[ShopName].DisplayShop();
                     }
                     else
                     {
@@ -282,229 +248,6 @@ namespace ShopTileFramework
                 }
 
             }
-            //TODO: add another else check if no tile properties were found for bigcraftables
-
         }
-
-        public static void RegisterShops(ContentPack data, IContentPack contentPack)
-        {
-            foreach (ItemShop shopPack in data.Shops)
-            {
-                if (Shops.ContainsKey(shopPack.ShopName))
-                {
-                    monitor.Log($"A mod is trying to add a Shop \"{shopPack.ShopName}\"," +
-                        $" but a shop of this name has already been added. " +
-                        $"It will not be added.", LogLevel.Warn);
-                }
-                else
-                {
-                    Shops.Add(shopPack.ShopName, (ItemShop)shopPack);
-                }
-            }
-
-            foreach (AnimalShop animalShopPack in data.AnimalShops)
-            {
-                if (AnimalShops.ContainsKey(animalShopPack.ShopName))
-                {
-                    monitor.Log($"A mod is trying to add an AnimalShop \"{animalShopPack.ShopName}\"," +
-                        $" but a shop of this name has already been added. " +
-                        $"It will not be added.", LogLevel.Warn);
-                }
-                else
-                {
-                    AnimalShops.Add(animalShopPack.ShopName, (AnimalShop)animalShopPack);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Reads content packs and loads the relevent information to create the shops
-        /// </summary>
-        private void LoadContentPacks()
-        {
-            monitor.Log("Adding Content Packs...", LogLevel.Info);
-            foreach (IContentPack contentPack in helper.ContentPacks.GetOwned())
-            {
-                if (!contentPack.HasFile("shops.json"))
-                {
-                    monitor.Log($"No shops.json found from the mod {contentPack.Manifest.UniqueID}. " +
-                        $"Skipping pack.", LogLevel.Warn);
-                }
-                else
-                {
-                    ContentPack data = null;
-                    try
-                    {
-                        data = contentPack.ReadJsonFile<ContentPack>("shops.json");
-                    }
-                    catch (Exception ex)
-                    {
-                        Monitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}. Skipping pack. (More details in Trace)", LogLevel.Error);
-                        Monitor.Log(ex.Message + ex.StackTrace);
-                        continue;
-                    }
-
-                    Monitor.Log($"      {contentPack.Manifest.Name} by {contentPack.Manifest.Author} | " +
-                        $"{contentPack.Manifest.Version} | {contentPack.Manifest.Description}", LogLevel.Info);
-
-                    //adds shops
-                    if (data.Shops != null)
-                    {
-                        foreach (ItemShop itemShop in data.Shops)
-                        {
-                            if (Shops.ContainsKey(itemShop.ShopName))
-                            {
-                                monitor.Log($"      {contentPack.Manifest.UniqueID} is trying to add the shop " +
-                                    $"\"{itemShop.ShopName}\", but a shop of this name has already been added. " +
-                                    $"It will not be added.", LogLevel.Warn);
-                            }
-                            else
-                            {
-                                itemShop.ContentPack = contentPack;
-                                Shops.Add(itemShop.ShopName, itemShop);
-                            }
-                        }
-                    }
-
-                    //adds animal shops
-                    if (data.AnimalShops != null)
-                    {
-                        foreach (AnimalShop animalShop in data.AnimalShops)
-                        {
-                            if (AnimalShops.ContainsKey(animalShop.ShopName))
-                            {
-                                monitor.Log($"      {contentPack.Manifest.UniqueID} is trying to add the animal shop " +
-                                    $"\"{animalShop.ShopName}\", but a shop of this name has already been added. " +
-                                    $"It will not be added.", LogLevel.Warn);
-                            }
-                            else
-                            {
-                                if (animalShop.ExcludeFromMarnies != null)
-                                {
-                                    ExcludeFromMarnie.AddRange(animalShop.ExcludeFromMarnies);
-                                }
-
-                                AnimalShops.Add(animalShop.ShopName, animalShop);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void DisplayShopMenu(string command, string[] args)
-        {
-            if (args.Length == 0)
-            {
-                Monitor.Log($"A shop name is required", LogLevel.Debug);
-                return;
-            }
-
-            Shops.TryGetValue(args[0], out ItemShop value);
-            if (value == null)
-            {
-                Monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
-            }
-            else
-            {
-                if (!Context.IsPlayerFree)
-                {
-                    Monitor.Log($"The player isn't free to act; can't display a menu right now", LogLevel.Debug);
-                    return;
-                }
-
-                value.DisplayShop();
-            }
-        }
-
-        private void DisplayAnimalShopMenus(string command, string[] args)
-        {
-            if (args.Length == 0)
-            {
-                Monitor.Log($"A shop name is required", LogLevel.Debug);
-                return;
-            }
-
-            AnimalShops.TryGetValue(args[0], out AnimalShop value);
-            if (value == null)
-            {
-                Monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
-            }
-            else
-            {
-                if (!Context.IsPlayerFree)
-                {
-                    Monitor.Log($"The player isn't free to act; can't display a menu right now", LogLevel.Debug);
-                    return;
-                }
-
-                value.DisplayShop();
-            }
-        }
-
-        private void ResetShopStock(string command, string[] args)
-        {
-            if (args.Length == 0)
-            {
-                Monitor.Log($"A shop name is required", LogLevel.Debug);
-                return;
-            }
-
-            Shops.TryGetValue(args[0], out ItemShop shop);
-            if (shop == null)
-            {
-                Monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
-            }
-            else
-            {
-                if (!Context.IsWorldReady)
-                {
-                    Monitor.Log($"The world hasn't loaded; shop stock can't be updated at this time", LogLevel.Debug);
-                    return;
-                }
-                shop.UpdateItemPriceAndStock();
-            }
-        }
-        private void ListAllShops(string command, string[] args)
-        {
-            if (Shops.Count == 0)
-            {
-                Monitor.Log($"No shops were found", LogLevel.Debug);
-            }
-            else
-            {
-                string temp = "";
-                foreach (string k in Shops.Keys)
-                {
-                    temp += "\nShop: " + k;
-                }
-
-                foreach (string k in AnimalShops.Keys)
-                {
-                    temp += "\nAnimalShop: " + k;
-                }
-
-                Monitor.Log(temp, LogLevel.Debug);
-            }
-        }
-    }
-
-    public interface IJsonAssetsApi
-    {
-        List<string> GetAllObjectsFromContentPack(string cp);
-        List<string> GetAllCropsFromContentPack(string cp);
-        List<string> GetAllFruitTreesFromContentPack(string cp);
-        List<string> GetAllBigCraftablesFromContentPack(string cp);
-        List<string> GetAllHatsFromContentPack(string cp);
-        List<string> GetAllWeaponsFromContentPack(string cp);
-        List<string> GetAllClothingFromContentPack(string cp);
-
-        int GetObjectId(string name);
-        int GetCropId(string name);
-        int GetFruitTreeId(string name);
-        int GetBigCraftableId(string name);
-        int GetHatId(string name);
-        int GetWeaponId(string name);
-        int GetClothingId(string name);
     }
 }

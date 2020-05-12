@@ -1,27 +1,23 @@
 ﻿using StardewValley;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShopTileFramework.Framework.Utility
 {
     class Translations
     {
-        private static LocalizedContentManager.LanguageCode currLang;
+        private static LocalizedContentManager.LanguageCode selectedLanguage;
         public static string Localize(string english, Dictionary<string, string> translations)
         {
-            if (currLang == LocalizedContentManager.LanguageCode.en)
+            if (selectedLanguage == LocalizedContentManager.LanguageCode.en)
                 return english;
-            if (translations == null || !translations.ContainsKey(currLang.ToString()))
+            if (translations == null || !translations.ContainsKey(selectedLanguage.ToString()))
                 return english;
-            return translations[currLang.ToString()];
+            return translations[selectedLanguage.ToString()];
         }
 
-        internal static void LoadCurrentLang()
+        internal static void UpdateSelectedLanguage()
         {
-            currLang = LocalizedContentManager.CurrentLanguageCode;
+            selectedLanguage = LocalizedContentManager.CurrentLanguageCode;
         }
     }
 }
