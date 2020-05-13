@@ -1,6 +1,6 @@
 ﻿using StardewModdingAPI;
 
-namespace ShopTileFramework.Framework.API
+namespace ShopTileFramework.API
 {
     /// <summary>
     /// This class is used to register external APIs and hold the instances of those APIs to be accessed

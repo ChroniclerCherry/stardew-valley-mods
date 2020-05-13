@@ -1,11 +1,7 @@
-﻿using ShopTileFramework.Framework.ItemPriceAndStock;
-using System;
+﻿using ShopTileFramework.ItemPriceAndStock;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ShopTileFramework.Framework.Data
+namespace ShopTileFramework.Data
 {
     abstract class ItemShopModel
     {

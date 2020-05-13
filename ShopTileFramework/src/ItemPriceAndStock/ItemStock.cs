@@ -1,11 +1,11 @@
-﻿using ShopTileFramework.Framework.API;
-using ShopTileFramework.Framework.Data;
-using ShopTileFramework.Framework.Utility;
+﻿using ShopTileFramework.API;
+using ShopTileFramework.Data;
+using ShopTileFramework.Utility;
 using StardewModdingAPI;
 using StardewValley;
 using System.Collections.Generic;
 
-namespace ShopTileFramework.Framework.ItemPriceAndStock
+namespace ShopTileFramework.ItemPriceAndStock
 {
     /// <summary>
     /// This class stores the data for each stock, with a stock being a list of items of the same itemtype
@@ -26,10 +26,23 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// <param name="price"></param>
         internal void Initialize(string shopName, int price)
         {
+
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log($"Initializing Item Stock:" +
+                    $" | ItemType:{ItemType}," +
+                    $" | IsRecipe:{IsRecipe}" +
+                    $" | StockPrice: {StockPrice}" +
+                    $" | StockItemCurrency: {StockItemCurrency}" +
+                    $" | StockCurrencyStack : {StockCurrencyStack}" +
+                    $" | Quality: {Quality}" +
+                    $" | Stock: {Stock}" +
+                    $" | MaxNumItemsSoldInItemStock: {MaxNumItemsSoldInItemStock}" +
+                    $" | When : {When}", LogLevel.Debug);
+
             if (Quality < 0 || Quality == 3 || Quality > 4)
             {
                 Quality = 0;
-                ModEntry.monitor.Log("Item quality can only be 0,1,2, or 4. Defaulting to 0", LogLevel.Trace);
+                ModEntry.monitor.Log("Item quality can only be 0,1,2, or 4. Defaulting to 0", LogLevel.Warn);
             }
 
             currencyObjectID = ItemsUtil.GetIndexByName(StockItemCurrency, Game1.objectInformation);
@@ -57,12 +70,17 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// <returns></returns>
         public Dictionary<ISalable, int[]> Update()
         {
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log("\tUpdating an ItemStock...",LogLevel.Debug);
+
+
             if (When != null && !ConditionChecking.CheckConditions(When))
                 return null; //did not pass conditions
 
             if (!ItemsUtil.CheckItemType(ItemType)) //check that itemtype is valid
             {
-                ModEntry.monitor.Log($" \"{ItemType}\" is not a valid ItemType. Some items will not be added.", LogLevel.Warn);
+                ModEntry.monitor.Log($"\t\"{ItemType}\" is not a valid ItemType. No items from this stock will be added."
+                    , LogLevel.Warn);
                 return null;
             }
 
@@ -73,6 +91,8 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             AddByName();
             AddByJAPack();
 
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log($"\tReducing this stock down to {MaxNumItemsSoldInItemStock} items\n\n");
             ItemsUtil.RandomizeStock(ItemPriceAndStock, MaxNumItemsSoldInItemStock);
             return ItemPriceAndStock;
         }
@@ -82,9 +102,11 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// </summary>
         private void AddByID()
         {
-
             if (ItemIDs == null)
                 return;
+
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log($"Adding items by ID...", LogLevel.Debug);
 
             foreach (var ItemID in ItemIDs)
             {
@@ -99,6 +121,9 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         {
             if (ItemNames == null)
                 return;
+
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log($"Adding items by Name...", LogLevel.Debug);
 
             foreach (var ItemName in ItemNames)
             {
@@ -118,18 +143,25 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             if (APIs.JsonAssets == null)
                 return;
 
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log($"Adding items by JA Pack...", LogLevel.Debug);
+
             foreach (var JAPack in JAPacks)
             {
-                ModEntry.monitor.Log($"Adding objects from JA pack {JAPack}", LogLevel.Debug);
+                ModEntry.monitor.Log($"Adding all {ItemType}s from {JAPack}", LogLevel.Debug);
 
                 if (ItemType == "Seed")
                 {
                     var crops = APIs.JsonAssets.GetAllCropsFromContentPack(JAPack);
                     var trees = APIs.JsonAssets.GetAllFruitTreesFromContentPack(JAPack);
 
+
                     if (crops != null)
                     {
-                        foreach(string crop in crops)
+                        if (ModEntry.VerboseLogging)
+                            ModEntry.monitor.Log($"Adding seeds of crops from {JAPack}", LogLevel.Debug);
+
+                        foreach (string crop in crops)
                         {
                             int id = ItemsUtil.GetSeedID(crop);
                             if (id >0)
@@ -139,6 +171,9 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
 
                     if (trees != null)
                     {
+                        if (ModEntry.VerboseLogging)
+                            ModEntry.monitor.Log($"Adding saplings of tree crops from {JAPack}", LogLevel.Debug);
+
                         foreach (string tree in trees)
                         {
                             int id = ItemsUtil.GetSaplingID(tree);
@@ -153,7 +188,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
                 var packs = getJAItems(JAPack);
                 if (packs == null)
                 {
-                    ModEntry.monitor.Log($"No {ItemType} from {JAPack} could be found", LogLevel.Trace);
+                    ModEntry.monitor.Log($"No {ItemType} from {JAPack} could be found", ModEntry.VerboseLogging? LogLevel.Debug : LogLevel.Trace);
                     continue;
                 }
 

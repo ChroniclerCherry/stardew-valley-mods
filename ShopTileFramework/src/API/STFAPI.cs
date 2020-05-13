@@ -1,10 +1,10 @@
-﻿using ShopTileFramework.Framework.Data;
-using ShopTileFramework.Framework.Shop;
+﻿using ShopTileFramework.Data;
+using ShopTileFramework.Shop;
 using StardewValley;
 using System;
 using System.Collections.Generic;
 
-namespace ShopTileFramework.Framework.API
+namespace ShopTileFramework.API
 {
     /// <summary>
     /// API for Shop Tile Framework. 

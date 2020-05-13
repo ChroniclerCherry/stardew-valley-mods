@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using ShopTileFramework.Framework.Data;
-using ShopTileFramework.Framework.ItemPriceAndStock;
-using ShopTileFramework.Framework.Utility;
+using ShopTileFramework.Data;
+using ShopTileFramework.ItemPriceAndStock;
+using ShopTileFramework.Utility;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
 using System;
 
-namespace ShopTileFramework.Framework.Shop
+namespace ShopTileFramework.Shop
 {
     /// <summary>
     /// This class holds all the information for each custom item shop
@@ -58,7 +58,7 @@ namespace ShopTileFramework.Framework.Shop
             }
             catch (Exception ex) //couldn't load the image
             {
-                ModEntry.monitor.Log(ex.Message, LogLevel.Warn);
+                ModEntry.monitor.Log(ex.Message+ex.StackTrace, LogLevel.Error);
             }
         }
         /// <summary>
@@ -77,7 +77,7 @@ namespace ShopTileFramework.Framework.Shop
         /// </summary>
         public void DisplayShop(bool debug = false)
         {
-            ModEntry.monitor.Log($"Atempting to open the shop \"{ShopName}\"");
+            ModEntry.monitor.Log($"Atempting to open the shop \"{ShopName}\"", ModEntry.VerboseLogging ? LogLevel.Debug : LogLevel.Trace);
 
             //if conditions aren't met, display closed message if there is one
             //skips condition checking if debug mode

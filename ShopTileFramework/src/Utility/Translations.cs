@@ -1,7 +1,8 @@
-﻿using StardewValley;
+﻿using StardewModdingAPI;
+using StardewValley;
 using System.Collections.Generic;
 
-namespace ShopTileFramework.Framework.Utility
+namespace ShopTileFramework.Utility
 {
     /// <summary>
     /// This class stores the current language and handles translation work
@@ -33,6 +34,7 @@ namespace ShopTileFramework.Framework.Utility
         internal static void UpdateSelectedLanguage()
         {
             selectedLanguage = LocalizedContentManager.CurrentLanguageCode;
+            ModEntry.monitor.Log($"Updating current language settings: {selectedLanguage}", ModEntry.VerboseLogging ? LogLevel.Debug : LogLevel.Trace);
         }
     }
 }

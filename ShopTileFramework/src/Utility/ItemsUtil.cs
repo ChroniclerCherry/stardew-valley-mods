@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ShopTileFramework.Framework.Utility
+namespace ShopTileFramework.Utility
 {
     /// <summary>
     /// This class contains static utility methods used to handle items

@@ -1,7 +1,7 @@
-﻿using ShopTileFramework.Framework.Shop;
+﻿using ShopTileFramework.Shop;
 using StardewModdingAPI;
 
-namespace ShopTileFramework.Framework.Utility
+namespace ShopTileFramework.Utility
 {
     /// <summary>
     /// This class registers and handles console commands to SMAPI

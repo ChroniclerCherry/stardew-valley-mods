@@ -1,10 +1,10 @@
-using ShopTileFramework.Framework.Data;
-using ShopTileFramework.Framework.Utility;
+using ShopTileFramework.Data;
+using ShopTileFramework.Utility;
 using StardewValley;
 using StardewValley.Menus;
 using System.Collections.Generic;
 
-namespace ShopTileFramework.Framework.Shop
+namespace ShopTileFramework.Shop
 {
     /// <summary>
     /// This class represents each animal store

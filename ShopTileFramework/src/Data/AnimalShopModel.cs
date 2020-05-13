@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ShopTileFramework.Framework.Data
+namespace ShopTileFramework.Data
 {
     abstract class AnimalShopModel
     {

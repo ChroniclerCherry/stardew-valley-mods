@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using ShopTileFramework.Framework.API;
-using ShopTileFramework.Framework.Shop;
-using ShopTileFramework.Framework.Utility;
+using ShopTileFramework.API;
+using ShopTileFramework.Shop;
+using ShopTileFramework.Utility;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
@@ -26,6 +26,8 @@ namespace ShopTileFramework
         internal static GameLocation SourceLocation = null;
         internal static Vector2 PlayerPos = Vector2.Zero;
 
+        public static bool VerboseLogging;
+
         /// <summary>
         /// the Mod entry point called by SMAPI
         /// </summary>
@@ -36,6 +38,12 @@ namespace ShopTileFramework
             helper = h;
             monitor = Monitor;
 
+            //set verbose logging
+            VerboseLogging = helper.ReadConfig<ModConfig>().VerboseLogging;
+
+            if (VerboseLogging)
+                monitor.Log("Verbose logging has been turned on. More information will be printed to the console.", LogLevel.Info);
+
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
             helper.Events.Display.MenuChanged += Display_MenuChanged;
             helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
@@ -44,7 +52,7 @@ namespace ShopTileFramework
             helper.Events.GameLoop.UpdateTicking += GameLoop_UpdateTicking;
 
             //add console commands
-            new ConsoleCommands().Register(h);
+            new ConsoleCommands().Register(helper);
 
             //get all the info from content packs
             ShopManager.LoadContentPacks();
@@ -95,7 +103,7 @@ namespace ShopTileFramework
             {
                 //close the current menu to open our own	
                 Game1.exitActiveMenu();
-                var AllAnimalsStock = Utility.getPurchaseAnimalStock();
+                var AllAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock();
                 ChangedMarnieStock = true;
 
                 //removes all animals on the exclusion list
@@ -257,5 +265,10 @@ namespace ShopTileFramework
 
             } //end shopProperty null check
         }
+    }
+
+    class ModConfig
+    {
+        public bool VerboseLogging { get; set; } = false;
     }
 }

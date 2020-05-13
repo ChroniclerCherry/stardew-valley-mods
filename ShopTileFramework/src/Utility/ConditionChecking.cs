@@ -2,7 +2,7 @@
 using StardewModdingAPI;
 using StardewValley;
 
-namespace ShopTileFramework.Framework.Utility
+namespace ShopTileFramework.Utility
 {
     /// <summary>
     /// This class contains utility methods to do all the condition checking used by shops
@@ -42,12 +42,19 @@ namespace ShopTileFramework.Framework.Utility
             //if any of the conditions are met, return true
             foreach (var con in conditions)
             {
+                if (ModEntry.VerboseLogging)
+                    ModEntry.monitor.Log($"Checking condition string: \"{con}\"", LogLevel.Debug);
+
                 if (CheckIndividualConditions(con.Split('/')))
                 {
-                    ModEntry.monitor.Log($"Player met the conditions: \"{con}\"");
+                    if (ModEntry.VerboseLogging)
+                        ModEntry.monitor.Log($"\tPlayer met the conditions: \"{con}\"",LogLevel.Debug);
                     return true;
                 }
             }
+
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log($"No conditions were met", LogLevel.Debug);
 
             //if no conditions are met, return false
             return false;
@@ -65,17 +72,32 @@ namespace ShopTileFramework.Framework.Utility
             //if any of the conditions fail, return false
             foreach (var condition in conditions)
             {
-                ModEntry.monitor.Log($"Checking conditions: {condition}");
+                if (ModEntry.VerboseLogging)
+                    ModEntry.monitor.Log($"\t\tChecking individual condition: {condition}",LogLevel.Trace);
                 //if condition starts with a ! return false if condition checking is true
                 if (condition[0] == '!')
                 {
                     if (CheckCustomConditions(condition.Substring(1)))
+                    {
+                        if (ModEntry.VerboseLogging)
+                            ModEntry.monitor.Log($"\t\tFailed individual condition: {condition}", LogLevel.Trace);
                         return false;
+                    }
+                        
 
                 }
                 else if (!CheckCustomConditions(condition))
+                {
+                    if (ModEntry.VerboseLogging)
+                        ModEntry.monitor.Log($"\t\tFailed individual condition: {condition}", LogLevel.Trace);
+
                     return false;
+                }
+                    
             }
+
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log($"\t\tPassed all conditions: {conditions}", LogLevel.Trace);
             //passed all conditions
             return true;
 
@@ -202,7 +224,7 @@ namespace ShopTileFramework.Framework.Utility
                             return false;
                         break;
                     default:
-                        ModEntry.monitor.Log($"\"{conditionParams[i]}\" is not a valid paramater for SkillLevel. Skipping check.");
+                        ModEntry.monitor.Log($"\"{conditionParams[i]}\" is not a valid paramater for SkillLevel. Skipping check.",LogLevel.Trace);
                         break;
                 }
             }

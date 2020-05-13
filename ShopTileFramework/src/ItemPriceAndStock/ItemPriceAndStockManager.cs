@@ -1,9 +1,10 @@
-﻿using ShopTileFramework.Framework.Data;
-using ShopTileFramework.Framework.Utility;
+﻿using ShopTileFramework.Data;
+using ShopTileFramework.Utility;
+using StardewModdingAPI;
 using StardewValley;
 using System.Collections.Generic;
 
-namespace ShopTileFramework.Framework.ItemPriceAndStock
+namespace ShopTileFramework.ItemPriceAndStock
 {
     /// <summary>
     /// This class manages the total inventory for each shop
@@ -11,8 +12,9 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
     class ItemPriceAndStockManager
     {
         public Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
-        private readonly ItemStock[] ItemStocks;
+        private readonly ItemStock[] itemStocks;
         private readonly int maxNumItemsSoldInStore;
+        private readonly string shopName;
 
         /// <summary>
         /// Initializes the manager with the itemstocks, and how many items max this shop will contain
@@ -21,8 +23,21 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// <param name="data"></param>
         public ItemPriceAndStockManager(ItemStock[] ItemStocks, ItemShopModel data)
         {
-            this.ItemStocks = ItemStocks;
-            this.maxNumItemsSoldInStore = data.MaxNumItemsSoldInStore;
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log($"Initializing Shop:" +
+                    $" ShopName: {data.ShopName}" +
+                    $" | StoreCurrency: {data.StoreCurrency}" +
+                    $" | CategoriesToSellHere: {data.CategoriesToSellHere}" +
+                    $" | PortraitPath: {data.PortraitPath}" +
+                    $" | Quote: {data.Quote}" +
+                    $" | ShopPrice: {data.ShopPrice}" +
+                    $" | MaxNumItemsSoldInStore: {data.MaxNumItemsSoldInStore}" +
+                    $" | When: {data.When}" +
+                    $" | ClosedMessage: {data.ClosedMessage}\n", LogLevel.Debug);
+
+            itemStocks = ItemStocks;
+            maxNumItemsSoldInStore = data.MaxNumItemsSoldInStore;
+            shopName = data.ShopName;
 
             //initialize each stock
             foreach (ItemStock stock in ItemStocks)
@@ -37,8 +52,10 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         public void Update()
         {
             ItemPriceAndStock = new Dictionary<ISalable, int[]>();
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log($"---------updating {shopName}--------------");
 
-            foreach (ItemStock stock in ItemStocks)
+            foreach (ItemStock stock in itemStocks)
             {
                 var PriceAndStock = stock.Update();
                 //null is returned if conhditions aren't met, skip adding this stock
@@ -48,8 +65,13 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
                 Add(PriceAndStock);
             }
 
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log($"Reducing shop stock down to {maxNumItemsSoldInStore} items");
             //randomly reduces the stock of the whole store down to maxNumItemsSoldInStore
             ItemsUtil.RandomizeStock(ItemPriceAndStock,maxNumItemsSoldInStore);
+
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log($"---------finished updating {shopName}--------------");
 
         }
 

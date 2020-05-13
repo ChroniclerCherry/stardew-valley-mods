@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using ShopTileFramework.Framework.Utility;
+using ShopTileFramework.Utility;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Objects;
 using StardewValley.Tools;
 using System.Collections.Generic;
 
-namespace ShopTileFramework.Framework.ItemPriceAndStock
+namespace ShopTileFramework.ItemPriceAndStock
 {
     /// <summary>
     /// This class stores the global data for each itemstock, in order to generate and add items by ID or name
@@ -67,10 +67,13 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// <returns></returns>
         public bool AddItemToStock(string itemName)
         {
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log($"Getting ID of {itemName} to add to {shopName}",LogLevel.Debug);
+
             int id = ItemsUtil.GetIndexByName(itemName, ItemsUtil.ObjectInfoSource[itemType]);
             if (id < 0)
             {
-                ModEntry.monitor.Log($"{itemType} named \"{itemName}\" could not be added to the Shop {shopName}", LogLevel.Debug);
+                ModEntry.monitor.Log($"{itemType} named \"{itemName}\" could not be added to the Shop {shopName}", ModEntry.VerboseLogging ? LogLevel.Debug : LogLevel.Trace);
                 return false;
             }
 
@@ -84,9 +87,13 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// <returns></returns>
         public bool AddItemToStock(int itemID)
         {
+
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log($"Adding item ID {itemID} to {shopName}", LogLevel.Debug);
+
             if (itemID < 0)
             {
-                ModEntry.monitor.Log($"{itemType} of ID {itemID} could not be added to the Shop {shopName}", LogLevel.Debug);
+                ModEntry.monitor.Log($"{itemType} of ID {itemID} could not be added to the Shop {shopName}", ModEntry.VerboseLogging ? LogLevel.Debug : LogLevel.Trace);
                 return false;
             }
 
@@ -100,7 +107,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             {
                 if (!ItemsUtil.RecipesList.Contains(item.Name))
                 {
-                    ModEntry.monitor.Log($"{item.Name} is not a valid recipe and won't be added.");
+                    ModEntry.monitor.Log($"{item.Name} is not a valid recipe and won't be added.", ModEntry.VerboseLogging ? LogLevel.Debug : LogLevel.Trace);
                     return false;
                 }
             }

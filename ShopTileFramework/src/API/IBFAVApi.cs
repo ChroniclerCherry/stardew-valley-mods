@@ -1,7 +1,7 @@
 ﻿using StardewValley;
 using System.Collections.Generic;
 
-namespace ShopTileFramework.Framework.API
+namespace ShopTileFramework.API
 {
     /// <summary>
     /// Interface for Better Farm Animal Variety API

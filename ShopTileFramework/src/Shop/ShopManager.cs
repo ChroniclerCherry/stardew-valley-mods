@@ -1,9 +1,9 @@
-﻿using ShopTileFramework.Framework.Data;
+﻿using ShopTileFramework.Data;
 using StardewModdingAPI;
 using System;
 using System.Collections.Generic;
 
-namespace ShopTileFramework.Framework.Shop
+namespace ShopTileFramework.Shop
 {
     /// <summary>
     /// This class holds and manages all the shops, loading content packs to create shops
@@ -36,12 +36,12 @@ namespace ShopTileFramework.Framework.Shop
                 }
                 catch (Exception ex)
                 {
-                    ModEntry.monitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}. Skipping pack. (More details in Trace)", LogLevel.Error);
-                    ModEntry.monitor.Log(ex.Message + ex.StackTrace);
+                    ModEntry.monitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}.", LogLevel.Error);
+                    ModEntry.monitor.Log(ex.Message + ex.StackTrace,LogLevel.Error);
                     continue;
                 }
 
-                ModEntry.monitor.Log($"      {contentPack.Manifest.Name} by {contentPack.Manifest.Author} | " +
+                ModEntry.monitor.Log($"Loading: {contentPack.Manifest.Name} by {contentPack.Manifest.Author} | " +
                     $"{contentPack.Manifest.Version} | {contentPack.Manifest.Description}", LogLevel.Info);
 
                 RegisterShops(data, contentPack);
@@ -61,7 +61,7 @@ namespace ShopTileFramework.Framework.Shop
                 {
                     if (ItemShops.ContainsKey(shopPack.ShopName))
                     {
-                        ModEntry.monitor.Log($"A mod is trying to add a Shop \"{shopPack.ShopName}\"," +
+                        ModEntry.monitor.Log($"{contentPack.Manifest.Name} is trying to add a Shop \"{shopPack.ShopName}\"," +
                             $" but a shop of this name has already been added. " +
                             $"It will not be added.", LogLevel.Warn);
                         continue;
@@ -77,7 +77,7 @@ namespace ShopTileFramework.Framework.Shop
                 {
                     if (AnimalShops.ContainsKey(animalShopPack.ShopName))
                     {
-                        ModEntry.monitor.Log($"A mod is trying to add an AnimalShop \"{animalShopPack.ShopName}\"," +
+                        ModEntry.monitor.Log($"{contentPack.Manifest.Name} is trying to add an AnimalShop \"{animalShopPack.ShopName}\"," +
                             $" but a shop of this name has already been added. " +
                             $"It will not be added.", LogLevel.Warn);
                         continue;

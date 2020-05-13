@@ -1,6 +1,6 @@
-﻿using ShopTileFramework.Framework.Shop;
+﻿using ShopTileFramework.Shop;
 
-namespace ShopTileFramework.Framework.Data
+namespace ShopTileFramework.Data
 {
     class ContentPack
     {

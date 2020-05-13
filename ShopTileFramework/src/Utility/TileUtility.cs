@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using xTile.ObjectModel;
 
-namespace ShopTileFramework.Framework.Utility
+namespace ShopTileFramework.Utility
 {
     /// <summary>
     /// This class contains static utility methods for dealing with tile properties
