@@ -27,14 +27,15 @@ namespace MultiYieldCrop
         public static void CropHarvest_postfix(int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester,
             Crop __instance, bool __result, int __state)
         {
+
+            //ignore if this is a forage crop or the crop is dead or not fully grown
+            if (__instance.forageCrop.Get() || __instance.dead.Get() || !__instance.fullyGrown.Get())
+                return;
+
             if (__instance.regrowAfterHarvest.Get() > 0 &&__state > 1)
                 return;
             
             if (!__result && __instance.regrowAfterHarvest.Get() <= 0)
-                return;
-
-            //ignore if this is a forage crop or the crop is dead
-            if (__instance.forageCrop.Get() || __instance.dead.Get())
                 return;
 
             try

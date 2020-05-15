@@ -58,7 +58,7 @@ namespace MultiYieldCrop
                         continue;
                     if (junimo == null)
                     {
-                        Game1.createItemDebris(item, location, Game1.player.FacingDirection);
+                        Game1.createItemDebris(item, location, -1);
                     }
                     else
                     {
@@ -82,10 +82,10 @@ namespace MultiYieldCrop
             double lowerQualityChance = Math.Min(0.75, highQualityChance * 2.0);
 
             //stole this code from the game to calculate # of crops
-            int num5 = 0;
+            int increaseMaxHarvest = 0;
             if (data.maxHarvestIncreasePerFarmingLevel > 0)
-                num5 = (int)(Game1.player.FarmingLevel * data.maxHarvestIncreasePerFarmingLevel);
-            int quantity = random.Next(data.minHarvest, Math.Max(data.minHarvest + 1, data.maxHarvest + 1 + num5));
+                increaseMaxHarvest = (int)(Game1.player.FarmingLevel * data.maxHarvestIncreasePerFarmingLevel);
+            int quantity = random.Next(data.minHarvest, Math.Max(data.minHarvest, data.maxHarvest + increaseMaxHarvest));
 
             if (quantity < 0)
                 quantity = 0;
@@ -175,6 +175,8 @@ namespace MultiYieldCrop
 
         }
 
+
+
         private void InitializeHarvestRules()
         {
             allHarvestRules = new Dictionary<string, List<Rule>>();
@@ -183,10 +185,7 @@ namespace MultiYieldCrop
                 ContentModel data = Helper.ReadConfig<ContentModel>();
                 if (data.Harvests != null)
                 {
-                    foreach (var rules in data.Harvests)
-                    {
-                        allHarvestRules[rules.CropName] = rules.HarvestRules;
-                    }
+                    LoadContentPack(data);
                 }
 
             } catch(Exception ex)
