@@ -80,11 +80,11 @@ The code for the number of crops yielded is:
 ```
 
 Broken down:
-1. Extra number of maximum crops is multipled by the farming level + maxHarvestIncreasePerFarmingLevel
+1. Extra number of maximum items is multipled by the farming level + maxHarvestIncreasePerFarmingLevel
 2. A random number is generated between minHarvest and (maxHarvest+ increaseMaxHarvest)
 3. If a negative number is generated, 0 crops are spawned
 
-Therefore, a negative minHarvest introduces the chance that no extra crops are spawned, and the lower it is compared to the maxHarvest, the less likely it is for that item to spawn.
+Therefore, a negative minHarvest introduces the chance that no extra items are spawned, and the lower it is compared to the maxHarvest, the less likely it is for that item to spawn.
 
 The quality is calculated the same way as the game's crops. For each harvest, this is the code that runs
 
