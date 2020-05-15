@@ -144,10 +144,11 @@ When multiple fields are provided, the condition will work if _any_ of the strin
         }
       ],
       "When": [
-        "!z spring/t 600 1000", //in spring, only opens between 6am and 10am
-        "!z summer/t 1000 1400", //in summer only opens from 10am to 2pm
-        "z spring/z summer/t 1800 20000", //in fall and winter, only open from 6pm to 10pm
-        "f Linus 2500" //is always open if player has 2500 friendship points / 10 hearts with linus
+        "!z spring/t 600 1000", //open if it's `During Spring` AND `The time is between 6AM to 10AM`
+        //OR
+        "f Linus 1000/w rainy/z spring" //opens if `Player has at least 1000 friendship points with Linus' AND 'It is rainy` AND `It's not Spring`,
+        //OR
+        "f Linus 2500" //opens if `Player has at least 2500 friendship points with Linus`
       ],
       "ClosedMessage": "This shop is closed."
     }
