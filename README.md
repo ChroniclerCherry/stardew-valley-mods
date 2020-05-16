@@ -38,4 +38,4 @@ A mod that allows players to access a custom menu that allows them to fully cust
 
 [[Upgrade Empty Cabins](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/UpgradeEmptyCabins) | [Release](https://www.nexusmods.com/stardewvalley/mods/5253)] Allows players to upgrade uninhabited cabins
 
-[[Multi Yield Crops](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/master/MultiYieldCrops/README.md) | [Release](https://www.nexusmods.com/stardewvalley/mods/6069) | [README](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/master/MultiYieldCrops/README.md) ]
+[[Multi Yield Crops](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/MultiYieldCrops) | [Release](https://www.nexusmods.com/stardewvalley/mods/6069) | [README](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/master/MultiYieldCrops/README.md) ]
