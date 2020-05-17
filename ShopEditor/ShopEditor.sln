@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopEditor", "ShopEditor.csproj", "{D9C7A745-5550-40F8-9B74-37402FE394CF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D9C7A745-5550-40F8-9B74-37402FE394CF}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{D9C7A745-5550-40F8-9B74-37402FE394CF}.Debug|Any CPU.Build.0 = Debug|x86
+		{D9C7A745-5550-40F8-9B74-37402FE394CF}.Release|Any CPU.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B548E1D5-2489-482D-82D2-8D2D6AAD0102}
+	EndGlobalSection
+EndGlobal
