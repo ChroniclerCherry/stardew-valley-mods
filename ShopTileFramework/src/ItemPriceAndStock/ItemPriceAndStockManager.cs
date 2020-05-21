@@ -1,8 +1,10 @@
-﻿using ShopTileFramework.Data;
+﻿using Harmony;
+using ShopTileFramework.Data;
 using ShopTileFramework.Utility;
 using StardewModdingAPI;
 using StardewValley;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ShopTileFramework.ItemPriceAndStock
 {
@@ -12,7 +14,7 @@ namespace ShopTileFramework.ItemPriceAndStock
     class ItemPriceAndStockManager
     {
         public Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
-        private readonly ItemStock[] itemStocks;
+        private ItemStock[] itemStocks;
         private readonly int maxNumItemsSoldInStore;
         private readonly string shopName;
 
@@ -43,6 +45,26 @@ namespace ShopTileFramework.ItemPriceAndStock
             foreach (ItemStock stock in ItemStocks)
             {
                 stock.Initialize(data.ShopName,data.ShopPrice);
+            }
+        }
+
+        public void AddToStock(ItemStock[] ItemStocks) => itemStocks.Concat(ItemStocks);
+
+        public ItemPriceAndStockManager(ItemStock[] ItemStocks, VanillaShopModel data)
+        {
+            if (ModEntry.VerboseLogging)
+                ModEntry.monitor.Log($"Initializing Vanilla shop:" +
+                    $" ShopName: {data.ShopName}",
+                    LogLevel.Debug);
+
+            itemStocks = ItemStocks;
+            maxNumItemsSoldInStore = data.MaxNumItemsSoldInStore;
+            shopName = data.ShopName;
+
+            //initialize each stock
+            foreach (ItemStock stock in ItemStocks)
+            {
+                stock.Initialize(data.ShopName, data.ShopPrice);
             }
         }
 

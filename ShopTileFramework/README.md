@@ -7,6 +7,7 @@
     * [JA Integration](#ja-integration)
     * [Regular shops](#regular-shops)
       * [Item Types](#itemtypes)
+    * [Vanilla shops](#vanilla-shops)
     * [Animal Shops](#animal-shops)
     * [Condition Checking](#condition-checking)
       * [Available Conditions](#available-conditions)
@@ -44,8 +45,10 @@ Then from there, you need to make a `shops.json` file to define the properties o
 
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
+RemovePacksFromVanilla | Optional | An array of strings | Takes a list of Unique IDs of Json Asset packs. Will remove all items from these packs from vanilla shops
 Shops | Optional | An array of Shops | You can add as many shops as you want, as long as they have unique `ShopName`among Shops.
 AnimalShops | Optional | An array of AnimalShops | You can add as many animal shops as you want, as long as they have unique `ShopName` among AnimalShops.
+VanillaShops | Optional | An array of VanillaShops | You can add as many of these as you want. Multiple mods can target the same vanilla shops.
 
 ### JA Integration
 There are a few ways of selling custom JA items in the store. JA items or packs can be included in the shop.json as described below.
@@ -108,6 +111,19 @@ ItemType | Source | Notes
 "Wallpaper" | Maps/walls_and_floors.png | Wallpapers have no name and thus have to be specified by `ItemIDs`
 "Floors" | Maps/walls_and_floors.png | Floors have no name and thus have to be specified by `ItemIDs`
 "Seed" | JA Packs Only | Use this ItemType if adding custom crops through `JAPacks` and you want the seeds/saplings instead of the produce
+
+### Regular Shops
+Using the VanillaShops section allows you to change vanilla item shops. It has similar fields to custom item shops.
+
+Multiple 
+
+Field | Optional | Format | Description
+------------ | ------------- | ------------- | -------------
+ReplaceInsteadOfAdd | Optional | boolean | Defaults to false. If true, the original vanilla stock will be removed.
+ShopName | Mandatory | string | The vanilla store this stock is targetting. Valid options are: `"JojaShop","RobinShop","ClintShop","MarlonShop","MarnieShop","TravellingMerchant","HarveyShop","SandyShop","DesertTrader","KrobusShop","DwarfShop","GusShop","QiShop","WillyShop","IceCreamStand"`
+ShopPrice | Optional | int | Sets the price of every item added to the store from this content pack
+MaxNumItemsSoldInStore | Optional | int | The number of different items available. If there is more items within all the `ItemStocks` than this number, they will be randomly picked at the beginning of each day so that the total number of items match this. This is how to randomize the stock of all items added from this content pack.
+ItemStocks | Mandatory | An array of `ItemStocks` | The items sold at this store. Each `ItemStocks` can contain one or more item of a single type. Identical to those in ItemShops
 
 ### Animal Shops
 

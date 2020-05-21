@@ -1,7 +1,9 @@
 ﻿using ShopTileFramework.Data;
+using ShopTileFramework.ItemPriceAndStock;
 using StardewModdingAPI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ShopTileFramework.Shop
 {
@@ -13,6 +15,24 @@ namespace ShopTileFramework.Shop
     {
         public static Dictionary<string, ItemShop> ItemShops = new Dictionary<string, ItemShop>();
         public static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
+        public static Dictionary<string, VanillaShop> VanillaShops = new Dictionary<string, VanillaShop>();
+        public static readonly string[] VanillaShopNames = {
+            "JojaShop",
+            "RobinShop",
+            "ClintShop",
+            "MarlonShop",
+            "MarnieShop",
+            "TravellingMerchant",
+            "HarveyShop",
+            "SandyShop",
+            "DesertTrader",
+            "KrobusShop",
+            "DwarfShop",
+            "GusShop",
+            "QiShop",
+            "WillyShop",
+            "IceCreamStand"};
+
 
         /// <summary>
         /// Takes content packs and loads them as ItemShop and AnimalShop objects
@@ -86,6 +106,27 @@ namespace ShopTileFramework.Shop
                 }
             }
 
+            if (data.VanillaShops != null)
+            {
+                foreach (var vanillaShopPack in data.VanillaShops)
+                {
+                    if (!VanillaShopNames.Contains(vanillaShopPack.ShopName)){
+                        ModEntry.monitor.Log($"{contentPack.Manifest.Name}" +
+                            $" is trying to edit nonexistent vanilla store" +
+                            $" \"{vanillaShopPack.ShopName}\"", LogLevel.Warn);
+                        continue;
+                    }
+
+                    if (VanillaShops.ContainsKey(vanillaShopPack.ShopName))
+                    {
+                        VanillaShops[vanillaShopPack.ShopName].StockManagers.Add(new ItemPriceAndStockManager(vanillaShopPack.ItemStocks, vanillaShopPack));
+                    } else
+                    {
+                        VanillaShops.Add(vanillaShopPack.ShopName, vanillaShopPack);
+                    }
+                }
+            }
+
         }
 
         /// <summary>
@@ -112,6 +153,11 @@ namespace ShopTileFramework.Shop
             foreach (ItemShop itemShop in ItemShops.Values)
             {
                 itemShop.Initialize();
+            }
+
+            foreach (VanillaShop vanillaShop in VanillaShops.Values)
+            {
+                vanillaShop.Initialize();
             }
         }
 
