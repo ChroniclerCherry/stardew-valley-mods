@@ -30,6 +30,8 @@ namespace ShopTileFramework
 
         public static bool VerboseLogging;
 
+        public static bool justOpenedVanilla = false;
+
         /// <summary>
         /// the Mod entry point called by SMAPI
         /// </summary>
@@ -150,6 +152,8 @@ namespace ShopTileFramework
 
             ItemsUtil.UpdateObjectInfoSource();
             ShopManager.InitializeItemStocks();
+
+            ItemsUtil.RegisterItemsToRemove();
         }
 
         /// <summary>
@@ -160,10 +164,28 @@ namespace ShopTileFramework
         private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
             ShopManager.InitializeShops();
+
             APIs.RegisterJsonAssets();
+            if (APIs.JsonAssets!= null)
+                APIs.JsonAssets.AddedItemsToShop += JsonAssets_AddedItemsToShop;
+
             APIs.RegisterBFAV();
             APIs.RegisterFAVR();
+        }
 
+        private void JsonAssets_AddedItemsToShop(object sender, System.EventArgs e)
+        {
+            //make sure we only remove all objects if we camew from a vanilla store
+            //this stops us from removing all packs from custom TMXL or STF stores
+            if (!justOpenedVanilla)
+                return;
+
+            if (Game1.activeClickableMenu is ShopMenu shop)
+            {
+                shop.setItemPriceAndStock(ItemsUtil.RemoveSpecifiedJAPacks(shop.itemPriceAndStock));
+            }
+
+            justOpenedVanilla = false;
         }
 
         /// <summary>
@@ -173,6 +195,7 @@ namespace ShopTileFramework
         /// <param name="e"></param>
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
         {
+            VanillaShopStockPatches.resetPersistentStock();
             ShopManager.UpdateStock();
         }
 

@@ -1,4 +1,5 @@
-﻿using StardewModdingAPI;
+﻿using ShopTileFramework.API;
+using StardewModdingAPI;
 using StardewValley;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,9 @@ namespace ShopTileFramework.Utility
         public static List<string> RecipesList;
         private static Dictionary<int, string> fruitTreeData;
         private static Dictionary<int, string> cropData;
+
+        private static List<string> packsToRemove = new List<string>();
+        private static List<string> itemsToRemove = new List<string>();
 
         /// <summary>
         /// Loads up the onject information for all types, 
@@ -142,6 +146,58 @@ namespace ShopTileFramework.Utility
             }
 
             return -1;
+        }
+
+        public static void RegisterPacksToRemove(string[] JApacks)
+        {
+            packsToRemove = packsToRemove.Union(JApacks).ToList();
+        }
+
+        public static void RegisterItemsToRemove()
+        {
+            if (APIs.JsonAssets == null)
+                return;
+
+            foreach (string pack in packsToRemove)
+            {
+
+                var items = APIs.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
+                if (items != null)
+                    itemsToRemove.AddRange(items);
+
+                items = APIs.JsonAssets.GetAllClothingFromContentPack(pack);
+                if (items != null)
+                    itemsToRemove.AddRange(items);
+
+                items = APIs.JsonAssets.GetAllHatsFromContentPack(pack);
+                if (items != null)
+                    itemsToRemove.AddRange(items);
+                    
+
+                items = APIs.JsonAssets.GetAllObjectsFromContentPack(pack);
+                if (items != null)
+                {
+                    itemsToRemove.AddRange(items);
+                    itemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
+                }
+                    
+
+                items = APIs.JsonAssets.GetAllWeaponsFromContentPack(pack);
+                if (items != null)
+                    itemsToRemove.AddRange(items);
+            }
+        }
+
+        public static Dictionary<ISalable, int[]> RemoveSpecifiedJAPacks(Dictionary<ISalable, int[]> stock)
+        {
+            List<ISalable> removeItems = (stock.Keys.Where(item => itemsToRemove.Contains(item.Name))).ToList();
+            
+            foreach (var item in removeItems)
+            {
+                stock.Remove(item);
+            }
+
+            return stock;
         }
     }
 }

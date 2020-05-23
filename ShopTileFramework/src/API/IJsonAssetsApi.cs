@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ShopTileFramework.API
 {
@@ -14,5 +15,7 @@ namespace ShopTileFramework.API
         List<string> GetAllHatsFromContentPack(string cp);
         List<string> GetAllWeaponsFromContentPack(string cp);
         List<string> GetAllClothingFromContentPack(string cp);
+
+        event EventHandler AddedItemsToShop;
     }
 }

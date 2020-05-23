@@ -1,5 +1,6 @@
 ﻿using ShopTileFramework.Data;
 using ShopTileFramework.ItemPriceAndStock;
+using ShopTileFramework.Utility;
 using StardewModdingAPI;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace ShopTileFramework.Shop
         public static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
         public static Dictionary<string, VanillaShop> VanillaShops = new Dictionary<string, VanillaShop>();
         public static readonly string[] VanillaShopNames = {
+            "PierreShop",
             "JojaShop",
             "RobinShop",
             "ClintShop",
@@ -30,8 +32,7 @@ namespace ShopTileFramework.Shop
             "DwarfShop",
             "GusShop",
             "QiShop",
-            "WillyShop",
-            "IceCreamStand"};
+            "WillyShop"};
 
 
         /// <summary>
@@ -75,6 +76,9 @@ namespace ShopTileFramework.Shop
         /// <param name="contentPack"></param>
         public static void RegisterShops(ContentPack data, IContentPack contentPack)
         {
+            if (data.RemovePacksFromVanilla != null)
+                ItemsUtil.RegisterPacksToRemove(data.RemovePacksFromVanilla);
+
             if (data.Shops != null)
             {
                 foreach (ItemShop shopPack in data.Shops)
