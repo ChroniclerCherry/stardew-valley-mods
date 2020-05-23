@@ -12,9 +12,6 @@ namespace ShopTileFramework.Patches
     public class VanillaShopStockPatches
     {
 
-        private static bool hasChangedKrobus;
-        private static bool hasChangedTravellingCart;
-
         public static void Apply(HarmonyInstance harmony)
         {
             harmony.Patch(
@@ -98,11 +95,6 @@ namespace ShopTileFramework.Patches
             );
         }
 
-        public static void resetPersistentStock()
-        {
-            hasChangedKrobus = false;
-            hasChangedTravellingCart = false;
-        }
         public static void SeedShop_shopStock(ref Dictionary<ISalable, int[]> __result)
         {
             ModEntry.justOpenedVanilla = true;
@@ -120,7 +112,6 @@ namespace ShopTileFramework.Patches
         }
         public static void Utility_getJojaStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.justOpenedVanilla = true;
             if (ShopManager.VanillaShops.ContainsKey("JojaShop"))
             {
                 var customStock = ShopManager.VanillaShops["JojaShop"].ItemPriceAndStock;
@@ -200,10 +191,6 @@ namespace ShopTileFramework.Patches
         }
         public static void Utility_getTravelingMerchantStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.justOpenedVanilla = true;
-            if (hasChangedTravellingCart)
-                return;
-
             if (ShopManager.VanillaShops.ContainsKey("TravellingMerchant"))
             {
                 var customStock = ShopManager.VanillaShops["TravellingMerchant"].ItemPriceAndStock;
@@ -215,8 +202,6 @@ namespace ShopTileFramework.Patches
                 {
                     __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
                 }
-
-                hasChangedTravellingCart = true;
             }
         }
         public static void Utility_getHospitalStock(ref Dictionary<ISalable, int[]> __result)
@@ -253,7 +238,6 @@ namespace ShopTileFramework.Patches
         }
         public static void Desert_getDesertMerchantTradeStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.justOpenedVanilla = true;
             if (ShopManager.VanillaShops.ContainsKey("DesertTrader"))
             {
                 var customStock = ShopManager.VanillaShops["DesertTrader"].ItemPriceAndStock;
@@ -270,9 +254,6 @@ namespace ShopTileFramework.Patches
         public static void Sewer_getShadowShopStock(ref Dictionary<ISalable, int[]> __result)
         {
             ModEntry.justOpenedVanilla = true;
-
-            if (hasChangedKrobus)
-                return;
             if (ShopManager.VanillaShops.ContainsKey("KrobusShop"))
             {
                 var customStock = ShopManager.VanillaShops["KrobusShop"].ItemPriceAndStock;
@@ -284,8 +265,6 @@ namespace ShopTileFramework.Patches
                 {
                     __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
                 }
-
-                hasChangedKrobus = true;
             }
         }
         public static void Utility_getDwarfShopStock(ref Dictionary<ISalable, int[]> __result)
@@ -340,7 +319,6 @@ namespace ShopTileFramework.Patches
 
         public static void Utility_getQiShopStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.justOpenedVanilla = true;
             if (ShopManager.VanillaShops.ContainsKey("QiShop"))
             {
                 var customStock = ShopManager.VanillaShops["QiShop"].ItemPriceAndStock;

@@ -195,7 +195,6 @@ namespace ShopTileFramework
         /// <param name="e"></param>
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
         {
-            VanillaShopStockPatches.resetPersistentStock();
             ShopManager.UpdateStock();
         }
 
@@ -237,7 +236,6 @@ namespace ShopTileFramework
         /// <param name="e"></param>
         private void CheckForShopToOpen(IPropertyCollection tileProperty, StardewModdingAPI.Events.ButtonPressedEventArgs e)
         {
-
             //check if there is a Shop property on clicked tile
             tileProperty.TryGetValue("Shop", out PropertyValue shopProperty);
             if (shopProperty != null) //There was a `Shop` property so attempt to open shop

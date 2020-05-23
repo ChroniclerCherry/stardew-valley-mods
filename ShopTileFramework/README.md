@@ -45,7 +45,7 @@ Then from there, you need to make a `shops.json` file to define the properties o
 
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
-RemovePacksFromVanilla | Optional | An array of strings | Takes a list of Unique IDs of Json Asset packs. Will remove all items from these packs from vanilla shops
+RemovePacksFromVanilla | Optional | An array of strings | Takes a list of Unique IDs of Json Asset packs. Will remove all items from these packs from vanilla shops. WARNING: This includes any items from these packs added to vanilla shops using this mod!
 Shops | Optional | An array of Shops | You can add as many shops as you want, as long as they have unique `ShopName`among Shops.
 AnimalShops | Optional | An array of AnimalShops | You can add as many animal shops as you want, as long as they have unique `ShopName` among AnimalShops.
 VanillaShops | Optional | An array of VanillaShops | You can add as many of these as you want. Multiple mods can target the same vanilla shops.
@@ -115,7 +115,7 @@ ItemType | Source | Notes
 ### Vanilla Shops
 Using the VanillaShops section allows you to change vanilla item shops. It has similar fields to custom item shops.
 
-Multiple 
+Multiple mods can edit the same vanilla store. Each mod's stocks will be calculated independently of each other and not affected by fields such as `MaxNumItemsSoldInStore` from other mods, and added to the vanilla stock this way.
 
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
