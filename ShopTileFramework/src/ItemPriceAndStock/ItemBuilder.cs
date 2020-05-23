@@ -70,7 +70,7 @@ namespace ShopTileFramework.ItemPriceAndStock
             if (ModEntry.VerboseLogging)
                 ModEntry.monitor.Log($"Getting ID of {itemName} to add to {shopName}",LogLevel.Debug);
 
-            int id = ItemsUtil.GetIndexByName(itemName, ItemsUtil.ObjectInfoSource[itemType]);
+            int id = ItemsUtil.GetIndexByName(itemName,itemType);
             if (id < 0)
             {
                 ModEntry.monitor.Log($"{itemType} named \"{itemName}\" could not be added to the Shop {shopName}", ModEntry.VerboseLogging ? LogLevel.Debug : LogLevel.Trace);

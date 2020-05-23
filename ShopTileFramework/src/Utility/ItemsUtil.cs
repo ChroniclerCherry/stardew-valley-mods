@@ -83,9 +83,9 @@ namespace ShopTileFramework.Utility
         /// <param name="name">name of the item</param>
         /// <param name="ObjectInfo">the information data for that item's type</param>
         /// <returns></returns>
-        public static int GetIndexByName(string name, IDictionary<int, string> ObjectInfo)
+        public static int GetIndexByName(string name, string itemType= "Object")
         {
-            foreach (KeyValuePair<int, string> kvp in ObjectInfo)
+            foreach (KeyValuePair<int, string> kvp in ObjectInfoSource[itemType])
             {
                 if (kvp.Value.Split('/')[0] == name)
                 {
@@ -113,7 +113,7 @@ namespace ShopTileFramework.Utility
         public static int GetSeedID(string cropName)
         {
             //int cropID = ModEntry.JsonAssets.GetCropId(cropName);
-            int cropID = GetIndexByName(cropName, ObjectInfoSource["Object"]);
+            int cropID = GetIndexByName(cropName);
             foreach (KeyValuePair<int, string> kvp in cropData)
             {
                 //find the tree id in crops information to get seed id
@@ -132,7 +132,7 @@ namespace ShopTileFramework.Utility
         /// <returns>The ID of the sapling object if found, -1 if not</returns>
         public static int GetSaplingID(string treeName)
         {
-            int treeID = GetIndexByName(treeName, ObjectInfoSource["Object"]);
+            int treeID = GetIndexByName(treeName);
             foreach (KeyValuePair<int, string> kvp in fruitTreeData)
             {
                 //find the tree id in fruitTrees information to get sapling id

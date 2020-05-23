@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Harmony;
+using Microsoft.Xna.Framework;
 using ShopTileFramework.API;
+using ShopTileFramework.Patches;
 using ShopTileFramework.Shop;
 using ShopTileFramework.Utility;
 using StardewModdingAPI;
@@ -56,6 +58,9 @@ namespace ShopTileFramework
 
             //get all the info from content packs
             ShopManager.LoadContentPacks();
+
+            HarmonyInstance harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
+            VanillaShopStockPatches.Apply(harmony);
         }
         /// <summary>
         /// Checks for warps from the buildings/animals menu 
@@ -142,7 +147,9 @@ namespace ShopTileFramework
         {
             Translations.UpdateSelectedLanguage();
             ShopManager.UpdateTranslations();
+
             ItemsUtil.UpdateObjectInfoSource();
+            ShopManager.InitializeItemStocks();
         }
 
         /// <summary>

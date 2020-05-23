@@ -91,9 +91,9 @@ Full description of each field can be found in the README
       "ReplaceInsteadOfAdd": false,
       "ShopPrice": -1,
       "MaxNumItemsSoldInStore": 2147483647,
+      "ItemStocks": [
 
       ///start of block for each itemstock. Each shop can have as many of these as you want
-      "ItemStocks": [
         {
           "ItemType": "ItemType1",
           "IsRecipe": false,

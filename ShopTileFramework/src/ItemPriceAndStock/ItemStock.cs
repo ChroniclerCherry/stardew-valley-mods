@@ -26,7 +26,6 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// <param name="price"></param>
         internal void Initialize(string shopName, int price)
         {
-
             if (ModEntry.VerboseLogging)
                 ModEntry.monitor.Log($"Initializing Item Stock:" +
                     $" | ItemType:{ItemType}," +
@@ -45,7 +44,7 @@ namespace ShopTileFramework.ItemPriceAndStock
                 ModEntry.monitor.Log("Item quality can only be 0,1,2, or 4. Defaulting to 0", LogLevel.Warn);
             }
 
-            currencyObjectID = ItemsUtil.GetIndexByName(StockItemCurrency, Game1.objectInformation);
+            currencyObjectID = ItemsUtil.GetIndexByName(StockItemCurrency);
 
             //sets price to the store price if no stock price is given
             if (StockPrice == -1)

@@ -17,6 +17,7 @@ namespace ShopTileFramework.ItemPriceAndStock
         private ItemStock[] itemStocks;
         private readonly int maxNumItemsSoldInStore;
         private readonly string shopName;
+        private readonly int shopPrice;
 
         /// <summary>
         /// Initializes the manager with the itemstocks, and how many items max this shop will contain
@@ -40,12 +41,7 @@ namespace ShopTileFramework.ItemPriceAndStock
             itemStocks = ItemStocks;
             maxNumItemsSoldInStore = data.MaxNumItemsSoldInStore;
             shopName = data.ShopName;
-
-            //initialize each stock
-            foreach (ItemStock stock in ItemStocks)
-            {
-                stock.Initialize(data.ShopName,data.ShopPrice);
-            }
+            shopPrice = data.ShopPrice;
         }
         public ItemPriceAndStockManager(ItemStock[] ItemStocks, VanillaShopModel data)
         {
@@ -57,11 +53,15 @@ namespace ShopTileFramework.ItemPriceAndStock
             itemStocks = ItemStocks;
             maxNumItemsSoldInStore = data.MaxNumItemsSoldInStore;
             shopName = data.ShopName;
+            shopPrice = data.ShopPrice;
+        }
 
+        public void Initialize()
+        {
             //initialize each stock
-            foreach (ItemStock stock in ItemStocks)
+            foreach (ItemStock stock in itemStocks)
             {
-                stock.Initialize(data.ShopName, data.ShopPrice);
+                stock.Initialize(shopName, shopPrice);
             }
         }
 

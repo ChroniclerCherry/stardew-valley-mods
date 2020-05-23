@@ -120,8 +120,13 @@ namespace ShopTileFramework.Shop
                     if (VanillaShops.ContainsKey(vanillaShopPack.ShopName))
                     {
                         VanillaShops[vanillaShopPack.ShopName].StockManagers.Add(new ItemPriceAndStockManager(vanillaShopPack.ItemStocks, vanillaShopPack));
+
+                        if (vanillaShopPack.ReplaceInsteadOfAdd)
+                            VanillaShops[vanillaShopPack.ShopName].ReplaceInsteadOfAdd = true;
                     } else
                     {
+                        vanillaShopPack.Initialize();
+                        vanillaShopPack.StockManagers.Add(new ItemPriceAndStockManager(vanillaShopPack.ItemStocks, vanillaShopPack));
                         VanillaShops.Add(vanillaShopPack.ShopName, vanillaShopPack);
                     }
                 }
@@ -154,10 +159,21 @@ namespace ShopTileFramework.Shop
             {
                 itemShop.Initialize();
             }
+        }
 
-            foreach (VanillaShop vanillaShop in VanillaShops.Values)
+        /// <summary>
+        /// Initializes the stocks of each shop after the save file has loaded so that item IDs are available to generate items
+        /// </summary>
+        public static void InitializeItemStocks()
+        {
+            foreach (ItemShop itemShop in ItemShops.Values)
             {
-                vanillaShop.Initialize();
+                itemShop.StockManager.Initialize();
+            }
+
+            foreach (var manager in VanillaShops.Values.SelectMany(vanillaShop => vanillaShop.StockManagers))
+            {
+                manager.Initialize();
             }
         }
 
@@ -167,11 +183,21 @@ namespace ShopTileFramework.Shop
         /// </summary>
         internal static void UpdateStock()
         {
-            ModEntry.monitor.Log($"Refreshing stock for all custom shops...", LogLevel.Debug);
+            if (ItemShops.Count > 0)
+                ModEntry.monitor.Log($"Refreshing stock for all custom shops...", LogLevel.Debug);
+
             foreach (ItemShop Store in ItemShops.Values)
             {
                 Store.UpdateItemPriceAndStock();
                 Store.UpdatePortrait();
+            }
+
+            if (VanillaShops.Count > 0)
+                ModEntry.monitor.Log($"Refreshing stock for all Vanilla shops...", LogLevel.Debug);
+
+            foreach (VanillaShop shop in VanillaShops.Values)
+            {
+                shop.UpdateItemPriceAndStock();
             }
         }
 

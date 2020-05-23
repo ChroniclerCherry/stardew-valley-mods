@@ -47,7 +47,6 @@ namespace ShopTileFramework.Utility
                     {
                         var seedShop = new SeedShop();
                         return new ShopMenu(seedShop.shopStock(), 0, "Pierre", null, null, null);
-
                     }
 
                 case "Vanilla!JojaShop":
