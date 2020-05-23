@@ -6,5 +6,5 @@
   "UniqueID": "Cherry.MultiYieldCrops",
   "EntryDll": "MultiYieldCrops.dll",
   "MinimumApiVersion": "3.5.0",
-  "UpdateKeys": [""]
+  "UpdateKeys": ["Nexus:6069"]
 }

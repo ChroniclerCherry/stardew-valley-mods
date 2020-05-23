@@ -133,6 +133,10 @@ namespace MultiYieldCrop
 
         public int GetIndexByName(string name,string itemType)
         {
+            //there's multiple stone items and 390 is the one that works
+            if (itemType == "Object" && name == "Stone")
+                return 390;
+
             foreach (KeyValuePair<int, string> kvp in ObjectInfoSource[itemType])
             {
                 if (kvp.Value.Split('/')[0] == name)
