@@ -47,9 +47,6 @@ namespace ShopTileFramework.ItemPriceAndStock
                 stock.Initialize(data.ShopName,data.ShopPrice);
             }
         }
-
-        public void AddToStock(ItemStock[] ItemStocks) => itemStocks.Concat(ItemStocks);
-
         public ItemPriceAndStockManager(ItemStock[] ItemStocks, VanillaShopModel data)
         {
             if (ModEntry.VerboseLogging)
