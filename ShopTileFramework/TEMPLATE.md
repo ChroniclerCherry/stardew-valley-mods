@@ -1,6 +1,6 @@
 ﻿A template of the full `shops.json` format
 
-Full description of each field can be found in the README
+Please refer to the README to learn the function of each of these fields and which ones are mandatory vs optional
 
 ```js
 {
