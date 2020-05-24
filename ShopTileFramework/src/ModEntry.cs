@@ -217,8 +217,13 @@ namespace ShopTileFramework
             //checks if i've changed marnie's stock already after opening her menu
             ChangedMarnieStock = false;
 
-            if (Constants.TargetPlatform == GamePlatform.Android && e.Button != SButton.MouseLeft)
-                return;
+            if (Constants.TargetPlatform == GamePlatform.Android)
+            {
+                if (e.Button != SButton.MouseLeft)
+                    return;
+                if (e.Cursor.GrabTile != e.Cursor.Tile)
+                    return;
+            }
             else if (!e.Button.IsActionButton())
                 return;
 
