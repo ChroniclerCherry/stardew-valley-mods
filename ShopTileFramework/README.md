@@ -45,7 +45,7 @@ Then from there, you need to make a `shops.json` file to define the properties o
 
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
-RemovePacksFromVanilla | Optional | An array of strings | Takes a list of Unique IDs of Json Asset packs. Will remove all items from these packs from vanilla shops. WARNING: This includes any items from these packs added to vanilla shops using this mod!
+RemovePacksFromVanilla | Optional | An array of strings | Takes a list of Unique IDs of Json Asset packs. Will remove all items from these packs from vanilla shops. **Warning:** This includes any items from these packs added to vanilla shops using this mod!
 Shops | Optional | An array of Shops | You can add as many shops as you want, as long as they have unique `ShopName`among Shops.
 AnimalShops | Optional | An array of AnimalShops | You can add as many animal shops as you want, as long as they have unique `ShopName` among AnimalShops.
 VanillaShops | Optional | An array of VanillaShops | You can add as many of these as you want. Multiple mods can target the same vanilla shops.
@@ -224,6 +224,9 @@ YourMod
 The result would be for spring, fall, and winter, `Bob.png` will be the portrait used, but during summer, `Bob_summer.png` will be used instead
 
 ## Example
+There is a full template found [here](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/Master/ShopTileFramework/TEMPLATE.md)
+
+The below example still works but is outdated in that it's missing newer features
 Example shops.json:
 ```js
 {
