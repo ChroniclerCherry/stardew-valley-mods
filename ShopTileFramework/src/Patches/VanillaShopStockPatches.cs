@@ -11,7 +11,6 @@ namespace ShopTileFramework.Patches
 {
     public class VanillaShopStockPatches
     {
-
         public static void Apply(HarmonyInstance harmony)
         {
             harmony.Patch(
@@ -100,6 +99,7 @@ namespace ShopTileFramework.Patches
             ModEntry.justOpenedVanilla = true;
             if (ShopManager.VanillaShops.ContainsKey("PierreShop"))
             {
+                ModEntry.monitor.Log("Editing PierreShop...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["PierreShop"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["PierreShop"].ReplaceInsteadOfAdd)
                 {
@@ -114,6 +114,7 @@ namespace ShopTileFramework.Patches
         {
             if (ShopManager.VanillaShops.ContainsKey("JojaShop"))
             {
+                ModEntry.monitor.Log("Editing JojaShop...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["JojaShop"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["JojaShop"].ReplaceInsteadOfAdd)
                 {
@@ -130,6 +131,7 @@ namespace ShopTileFramework.Patches
             ModEntry.justOpenedVanilla = true;
             if (ShopManager.VanillaShops.ContainsKey("RobinShop"))
             {
+                ModEntry.monitor.Log("Editing RobinShop...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["RobinShop"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["RobinShop"].ReplaceInsteadOfAdd)
                 {
@@ -146,6 +148,7 @@ namespace ShopTileFramework.Patches
             ModEntry.justOpenedVanilla = true;
             if (ShopManager.VanillaShops.ContainsKey("ClintShop"))
             {
+                ModEntry.monitor.Log("Editing ClintShop...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["ClintShop"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["ClintShop"].ReplaceInsteadOfAdd)
                 {
@@ -162,6 +165,7 @@ namespace ShopTileFramework.Patches
             ModEntry.justOpenedVanilla = true;
             if (ShopManager.VanillaShops.ContainsKey("MarlonShop"))
             {
+                ModEntry.monitor.Log("Editing MarlonShop...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["MarlonShop"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["MarlonShop"].ReplaceInsteadOfAdd)
                 {
@@ -178,6 +182,7 @@ namespace ShopTileFramework.Patches
             ModEntry.justOpenedVanilla = true;
             if (ShopManager.VanillaShops.ContainsKey("MarnieShop"))
             {
+                ModEntry.monitor.Log("Editing MarnieShop...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["MarnieShop"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["MarnieShop"].ReplaceInsteadOfAdd)
                 {
@@ -191,8 +196,10 @@ namespace ShopTileFramework.Patches
         }
         public static void Utility_getTravelingMerchantStock(ref Dictionary<ISalable, int[]> __result)
         {
+
             if (ShopManager.VanillaShops.ContainsKey("TravellingMerchant"))
             {
+                ModEntry.monitor.Log("Editing TravellingMerchant...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["TravellingMerchant"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["TravellingMerchant"].ReplaceInsteadOfAdd)
                 {
@@ -209,6 +216,7 @@ namespace ShopTileFramework.Patches
             ModEntry.justOpenedVanilla = true;
             if (ShopManager.VanillaShops.ContainsKey("HarveyShop"))
             {
+                ModEntry.monitor.Log("Editing HarveyShop...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["HarveyShop"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["HarveyShop"].ReplaceInsteadOfAdd)
                 {
@@ -225,6 +233,7 @@ namespace ShopTileFramework.Patches
             ModEntry.justOpenedVanilla = true;
             if (ShopManager.VanillaShops.ContainsKey("SandyShop"))
             {
+                ModEntry.monitor.Log("Editing SandyShop...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["SandyShop"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["SandyShop"].ReplaceInsteadOfAdd)
                 {
@@ -240,6 +249,7 @@ namespace ShopTileFramework.Patches
         {
             if (ShopManager.VanillaShops.ContainsKey("DesertTrader"))
             {
+                ModEntry.monitor.Log("Editing DesertTrader...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["DesertTrader"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["DesertTrader"].ReplaceInsteadOfAdd)
                 {
@@ -256,6 +266,7 @@ namespace ShopTileFramework.Patches
             ModEntry.justOpenedVanilla = true;
             if (ShopManager.VanillaShops.ContainsKey("KrobusShop"))
             {
+                ModEntry.monitor.Log("Editing KrobusShop...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["KrobusShop"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["KrobusShop"].ReplaceInsteadOfAdd)
                 {
@@ -272,6 +283,7 @@ namespace ShopTileFramework.Patches
             ModEntry.justOpenedVanilla = true;
             if (ShopManager.VanillaShops.ContainsKey("DwarfShop"))
             {
+                ModEntry.monitor.Log("Editing DwarfShop...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["DwarfShop"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["DwarfShop"].ReplaceInsteadOfAdd)
                 {
@@ -288,6 +300,7 @@ namespace ShopTileFramework.Patches
             ModEntry.justOpenedVanilla = true;
             if (ShopManager.VanillaShops.ContainsKey("GusShop"))
             {
+                ModEntry.monitor.Log("Editing GusShop...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["GusShop"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["GusShop"].ReplaceInsteadOfAdd)
                 {
@@ -305,6 +318,7 @@ namespace ShopTileFramework.Patches
             ModEntry.justOpenedVanilla = true;
             if (ShopManager.VanillaShops.ContainsKey("WillyShop"))
             {
+                ModEntry.monitor.Log("Editing WillyShop...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["WillyShop"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["WillyShop"].ReplaceInsteadOfAdd)
                 {
@@ -321,6 +335,7 @@ namespace ShopTileFramework.Patches
         {
             if (ShopManager.VanillaShops.ContainsKey("QiShop"))
             {
+                ModEntry.monitor.Log("Editing QiShop...", LogLevel.Debug);
                 var customStock = ShopManager.VanillaShops["QiShop"].ItemPriceAndStock;
                 if (ShopManager.VanillaShops["QiShop"].ReplaceInsteadOfAdd)
                 {
