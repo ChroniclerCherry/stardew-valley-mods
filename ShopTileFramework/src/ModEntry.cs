@@ -217,12 +217,17 @@ namespace ShopTileFramework
             //checks if i've changed marnie's stock already after opening her menu
             ChangedMarnieStock = false;
 
-            if (Constants.TargetPlatform == GamePlatform.Android && e.Button != SButton.MouseLeft)
-                return;
+            if (Constants.TargetPlatform == GamePlatform.Android)
+            {
+                if (e.Button != SButton.MouseLeft)
+                    return;
+                if (e.Cursor.GrabTile != e.Cursor.Tile)
+                    return;
+            }
             else if (!e.Button.IsActionButton())
                 return;
 
-            Vector2 clickedTile = Helper.Input.GetCursorPosition().GrabTile;
+            Vector2 clickedTile = e.Cursor.GrabTile;
 
             //check if there is a tile property on Buildings layer
             IPropertyCollection tileProperty = TileUtility.GetTileProperty(Game1.currentLocation, "Buildings", clickedTile);
