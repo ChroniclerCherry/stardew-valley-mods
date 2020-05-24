@@ -190,8 +190,6 @@ namespace ShopTileFramework.Utility
 
         public static Dictionary<ISalable, int[]> RemoveSpecifiedJAPacks(Dictionary<ISalable, int[]> stock)
         {
-            if (itemsToRemove.Count > 0)
-                ModEntry.monitor.Log("Decluttering vanilla stores...", LogLevel.Debug);
             List<ISalable> removeItems = (stock.Keys.Where(item => itemsToRemove.Contains(item.Name))).ToList();
             
             foreach (var item in removeItems)

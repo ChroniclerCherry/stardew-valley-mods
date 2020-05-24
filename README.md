@@ -37,3 +37,5 @@ A mod that allows players to access a custom menu that allows them to fully cust
 [[Snack Anything](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/SnackEverything) | [Release](https://www.nexusmods.com/stardewvalley/mods/5196)] Makes almost all objects edible.
 
 [[Upgrade Empty Cabins](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/UpgradeEmptyCabins) | [Release](https://www.nexusmods.com/stardewvalley/mods/5253)] Allows players to upgrade uninhabited cabins
+
+[[Multi Yield Crops](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/MultiYieldCrops) | [Release](https://www.nexusmods.com/stardewvalley/mods/6069) | [README](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/master/MultiYieldCrops/README.md) ] Allows crops to have more than a single item as its yield
