@@ -199,5 +199,12 @@ namespace ShopTileFramework.Utility
 
             return stock;
         }
+
+        public static void RemoveSoldOutItems(Dictionary<ISalable, int[]> stock)
+        {
+            List<ISalable> keysToRemove = (stock.Where(kvp => kvp.Value[1] == 0).Select(kvp => kvp.Key)).ToList();
+            foreach (ISalable item in keysToRemove)
+                stock.Remove(item);
+        }
     }
 }

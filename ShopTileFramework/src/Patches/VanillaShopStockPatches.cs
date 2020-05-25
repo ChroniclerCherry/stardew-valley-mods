@@ -1,7 +1,6 @@
 ﻿using Harmony;
 using ShopTileFramework.Shop;
 using ShopTileFramework.Utility;
-using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
 using System.Collections.Generic;
@@ -101,6 +100,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("PierreShop"))
             {
                 var customStock = ShopManager.VanillaShops["PierreShop"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["PierreShop"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
@@ -115,6 +115,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("JojaShop"))
             {
                 var customStock = ShopManager.VanillaShops["JojaShop"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["JojaShop"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
@@ -131,6 +132,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("RobinShop"))
             {
                 var customStock = ShopManager.VanillaShops["RobinShop"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["RobinShop"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
@@ -147,6 +149,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("ClintShop"))
             {
                 var customStock = ShopManager.VanillaShops["ClintShop"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["ClintShop"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
@@ -163,6 +166,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("MarlonShop"))
             {
                 var customStock = ShopManager.VanillaShops["MarlonShop"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["MarlonShop"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
@@ -179,6 +183,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("MarnieShop"))
             {
                 var customStock = ShopManager.VanillaShops["MarnieShop"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["MarnieShop"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
@@ -194,6 +199,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("TravellingMerchant"))
             {
                 var customStock = ShopManager.VanillaShops["TravellingMerchant"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["TravellingMerchant"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
@@ -210,6 +216,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("HarveyShop"))
             {
                 var customStock = ShopManager.VanillaShops["HarveyShop"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["HarveyShop"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
@@ -226,6 +233,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("SandyShop"))
             {
                 var customStock = ShopManager.VanillaShops["SandyShop"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["SandyShop"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
@@ -241,6 +249,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("DesertTrader"))
             {
                 var customStock = ShopManager.VanillaShops["DesertTrader"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["DesertTrader"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
@@ -257,6 +266,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("KrobusShop"))
             {
                 var customStock = ShopManager.VanillaShops["KrobusShop"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["KrobusShop"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
@@ -273,6 +283,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("DwarfShop"))
             {
                 var customStock = ShopManager.VanillaShops["DwarfShop"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["DwarfShop"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
@@ -289,6 +300,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("GusShop"))
             {
                 var customStock = ShopManager.VanillaShops["GusShop"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["GusShop"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
@@ -306,6 +318,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("WillyShop"))
             {
                 var customStock = ShopManager.VanillaShops["WillyShop"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["WillyShop"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
@@ -322,6 +335,7 @@ namespace ShopTileFramework.Patches
             if (ShopManager.VanillaShops.ContainsKey("QiShop"))
             {
                 var customStock = ShopManager.VanillaShops["QiShop"].ItemPriceAndStock;
+                ItemsUtil.RemoveSoldOutItems(customStock);
                 if (ShopManager.VanillaShops["QiShop"].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
