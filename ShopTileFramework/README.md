@@ -117,10 +117,12 @@ Using the VanillaShops section allows you to add to, or completely replace vanil
 
 Multiple mods can edit the same vanilla store. Each mod's stocks will be calculated independently of each other and not affected by fields such as `MaxNumItemsSoldInStore` from other mods, and added to the vanilla stock this way.
 
+AddStockAboveVanilla
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
-ReplaceInsteadOfAdd | Optional | boolean | Defaults to false. If true, the original vanilla stock will be removed.
 ShopName | Mandatory | string | The vanilla store this stock is targetting. Valid options are: `PierreShop`, `JojaShop`, `RobinShop`, `ClintShop`, `MarlonShop`, `MarnieShop`, `TravellingMerchant`, `HarveyShop`, `SandyShop`, `DesertTrader`, `KrobusShop`, `DwarfShop`, `GusShop`, `QiShop`, `WillyShop`
+ReplaceInsteadOfAdd | Optional | boolean | Defaults to false. If true, the original vanilla stock will be removed.
+AddStockAboveVanilla | Optional | boolean | Defaults to false. If true, the custom stock will be added at the top of the shop menu rather than the bottom. This will affect all custom stocks for this vanilla shop, not just the current mod's'
 ShopPrice | Optional | int | Sets the price of every item added to the store from this content pack ( and not of the whole store )
 MaxNumItemsSoldInStore | Optional | int | The number of different items available. If there is more items within all the `ItemStocks` than this number, they will be randomly picked at the beginning of each day so that the total number of items match this. This is how to randomize the stock of all items added from this content pack ( and not of the whole store ).
 ItemStocks | Mandatory | An array of `ItemStocks` | The items sold at this store. Each `ItemStocks` can contain one or more item of a single type. Identical to those in ItemShops

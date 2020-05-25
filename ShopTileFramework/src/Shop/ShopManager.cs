@@ -127,6 +127,10 @@ namespace ShopTileFramework.Shop
 
                         if (vanillaShopPack.ReplaceInsteadOfAdd)
                             VanillaShops[vanillaShopPack.ShopName].ReplaceInsteadOfAdd = true;
+
+                        if (vanillaShopPack.AddStockAboveVanilla)
+                            VanillaShops[vanillaShopPack.ShopName].AddStockAboveVanilla = true;
+
                     } else
                     {
                         vanillaShopPack.Initialize();

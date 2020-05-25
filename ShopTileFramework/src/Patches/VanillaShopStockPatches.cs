@@ -94,257 +94,102 @@ namespace ShopTileFramework.Patches
             );
         }
 
-        public static void SeedShop_shopStock(ref Dictionary<ISalable, int[]> __result)
+        private static void EditShopStock(string shopName, ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.justOpenedVanilla = true;
-            if (ShopManager.VanillaShops.ContainsKey("PierreShop"))
+            if (ShopManager.VanillaShops.ContainsKey(shopName))
             {
-                var customStock = ShopManager.VanillaShops["PierreShop"].ItemPriceAndStock;
+                var customStock = ShopManager.VanillaShops[shopName].ItemPriceAndStock;
                 ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["PierreShop"].ReplaceInsteadOfAdd)
-                {
-                    __result = customStock;
-                } else
-                {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                }
-            }
-        }
-        public static void Utility_getJojaStock(ref Dictionary<ISalable, int[]> __result)
-        {
-            if (ShopManager.VanillaShops.ContainsKey("JojaShop"))
-            {
-                var customStock = ShopManager.VanillaShops["JojaShop"].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["JojaShop"].ReplaceInsteadOfAdd)
+                if (ShopManager.VanillaShops[shopName].ReplaceInsteadOfAdd)
                 {
                     __result = customStock;
                 }
                 else
                 {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
+                    if (ShopManager.VanillaShops[shopName].AddStockAboveVanilla)
+                    {
+                        __result = customStock.Concat(__result).ToDictionary(x => x.Key, x => x.Value);
+                    }
+                    else
+                    {
+                        __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
+                    }
                 }
             }
+        }
+
+        public static void SeedShop_shopStock(ref Dictionary<ISalable, int[]> __result)
+        {
+            ModEntry.justOpenedVanilla = true;
+            EditShopStock("PierreShop", ref __result);
+        }
+        public static void Utility_getJojaStock(ref Dictionary<ISalable, int[]> __result)
+        {
+            EditShopStock("JojaShop", ref __result);
         }
         public static void Utility_getCarpenterStock(ref Dictionary<ISalable, int[]> __result)
         {
             ModEntry.justOpenedVanilla = true;
-            if (ShopManager.VanillaShops.ContainsKey("RobinShop"))
-            {
-                var customStock = ShopManager.VanillaShops["RobinShop"].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["RobinShop"].ReplaceInsteadOfAdd)
-                {
-                    __result = customStock;
-                }
-                else
-                {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                }
-            }
+            EditShopStock("RobinShop", ref __result);
         }
         public static void Utility_getBlacksmithStock(ref Dictionary<ISalable, int[]> __result)
         {
             ModEntry.justOpenedVanilla = true;
-            if (ShopManager.VanillaShops.ContainsKey("ClintShop"))
-            {
-                var customStock = ShopManager.VanillaShops["ClintShop"].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["ClintShop"].ReplaceInsteadOfAdd)
-                {
-                    __result = customStock;
-                }
-                else
-                {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                }
-            }
+            EditShopStock("ClintShop", ref __result);
         }
         public static void Utility_getAdventureShopStock(ref Dictionary<ISalable, int[]> __result)
         {
             ModEntry.justOpenedVanilla = true;
-            if (ShopManager.VanillaShops.ContainsKey("MarlonShop"))
-            {
-                var customStock = ShopManager.VanillaShops["MarlonShop"].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["MarlonShop"].ReplaceInsteadOfAdd)
-                {
-                    __result = customStock;
-                }
-                else
-                {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                }
-            }
+            EditShopStock("MarlonShop", ref __result);
         }
         public static void Utility_getAnimalShopStock(ref Dictionary<ISalable, int[]> __result)
         {
             ModEntry.justOpenedVanilla = true;
-            if (ShopManager.VanillaShops.ContainsKey("MarnieShop"))
-            {
-                var customStock = ShopManager.VanillaShops["MarnieShop"].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["MarnieShop"].ReplaceInsteadOfAdd)
-                {
-                    __result = customStock;
-                }
-                else
-                {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                }
-            }
+            EditShopStock("MarnieShop", ref __result);
         }
         public static void Utility_getTravelingMerchantStock(ref Dictionary<ISalable, int[]> __result)
         {
-            if (ShopManager.VanillaShops.ContainsKey("TravellingMerchant"))
-            {
-                var customStock = ShopManager.VanillaShops["TravellingMerchant"].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["TravellingMerchant"].ReplaceInsteadOfAdd)
-                {
-                    __result = customStock;
-                }
-                else
-                {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                }
-            }
+            EditShopStock("TravellingMerchant", ref __result);
         }
         public static void Utility_getHospitalStock(ref Dictionary<ISalable, int[]> __result)
         {
             ModEntry.justOpenedVanilla = true;
-            if (ShopManager.VanillaShops.ContainsKey("HarveyShop"))
-            {
-                var customStock = ShopManager.VanillaShops["HarveyShop"].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["HarveyShop"].ReplaceInsteadOfAdd)
-                {
-                    __result = customStock;
-                }
-                else
-                {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                }
-            }
+            EditShopStock("HarveyShop", ref __result);
         }
         public static void GameLocation_sandyShopStock(ref Dictionary<ISalable, int[]> __result)
         {
             ModEntry.justOpenedVanilla = true;
-            if (ShopManager.VanillaShops.ContainsKey("SandyShop"))
-            {
-                var customStock = ShopManager.VanillaShops["SandyShop"].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["SandyShop"].ReplaceInsteadOfAdd)
-                {
-                    __result = customStock;
-                }
-                else
-                {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                }
-            }
+            EditShopStock("SandyShop", ref __result);
         }
         public static void Desert_getDesertMerchantTradeStock(ref Dictionary<ISalable, int[]> __result)
         {
-            if (ShopManager.VanillaShops.ContainsKey("DesertTrader"))
-            {
-                var customStock = ShopManager.VanillaShops["DesertTrader"].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["DesertTrader"].ReplaceInsteadOfAdd)
-                {
-                    __result = customStock;
-                }
-                else
-                {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                }
-            }
+            EditShopStock("DesertTrader", ref __result);
         }
         public static void Sewer_getShadowShopStock(ref Dictionary<ISalable, int[]> __result)
         {
             ModEntry.justOpenedVanilla = true;
-            if (ShopManager.VanillaShops.ContainsKey("KrobusShop"))
-            {
-                var customStock = ShopManager.VanillaShops["KrobusShop"].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["KrobusShop"].ReplaceInsteadOfAdd)
-                {
-                    __result = customStock;
-                }
-                else
-                {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                }
-            }
+            EditShopStock("KrobusShop", ref __result);
         }
         public static void Utility_getDwarfShopStock(ref Dictionary<ISalable, int[]> __result)
         {
             ModEntry.justOpenedVanilla = true;
-            if (ShopManager.VanillaShops.ContainsKey("DwarfShop"))
-            {
-                var customStock = ShopManager.VanillaShops["DwarfShop"].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["DwarfShop"].ReplaceInsteadOfAdd)
-                {
-                    __result = customStock;
-                }
-                else
-                {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                }
-            }
+            EditShopStock("DwarfShop", ref __result);
         }
         public static void Utility_getSaloonStock(ref Dictionary<ISalable, int[]> __result)
         {
             ModEntry.justOpenedVanilla = true;
-            if (ShopManager.VanillaShops.ContainsKey("GusShop"))
-            {
-                var customStock = ShopManager.VanillaShops["GusShop"].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["GusShop"].ReplaceInsteadOfAdd)
-                {
-                    __result = customStock;
-                }
-                else
-                {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                }
-            }
+            EditShopStock("GusShop", ref __result);
         }
 
         public static void Utility_getFishShopStock(ref Dictionary<ISalable, int[]> __result)
         {
             ModEntry.justOpenedVanilla = true;
-            if (ShopManager.VanillaShops.ContainsKey("WillyShop"))
-            {
-                var customStock = ShopManager.VanillaShops["WillyShop"].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["WillyShop"].ReplaceInsteadOfAdd)
-                {
-                    __result = customStock;
-                }
-                else
-                {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                }
-            }
+            EditShopStock("WillyShop", ref __result);
         }
 
         public static void Utility_getQiShopStock(ref Dictionary<ISalable, int[]> __result)
         {
-            if (ShopManager.VanillaShops.ContainsKey("QiShop"))
-            {
-                var customStock = ShopManager.VanillaShops["QiShop"].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops["QiShop"].ReplaceInsteadOfAdd)
-                {
-                    __result = customStock;
-                }
-                else
-                {
-                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                }
-            }
+            EditShopStock("QiShop", ref __result);
         }
 
     }
