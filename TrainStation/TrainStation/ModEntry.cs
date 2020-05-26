@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using xTile.Layers;
 using xTile.Tiles;
 using System.Linq;
+using StardewValley.Locations;
+using StardewValley.BellsAndWhistles;
 
 namespace TrainStation
 {
@@ -17,10 +19,6 @@ namespace TrainStation
         private readonly int OutdoorsTilesheetIndex = 1;
         private readonly int TicketStationTopTile = 1032;
         private readonly int TicketStationBottomTile = 1057;
-
-        private static LocalizedContentManager.LanguageCode selectedLanguage;
-
-
         public override void Entry(IModHelper helper)
         {
             Config = helper.ReadConfig<ModConfig>();
@@ -39,6 +37,13 @@ namespace TrainStation
             UpdateSelectedLanguage(); //get language code
             LoadContentPacks();
 
+            DrawInTicketStation();
+
+            RemoveInvalidLocations();
+        }
+
+        private void DrawInTicketStation()
+        {
             //get references to all the stuff I need to edit the railroad map
             GameLocation railway = Game1.getLocationFromName("Railroad");
             Layer buildingsLayer = railway.map.GetLayer("Buildings");
@@ -46,15 +51,13 @@ namespace TrainStation
             TileSheet tilesheet = railway.map.TileSheets[OutdoorsTilesheetIndex];
 
             //draw the ticket station
-            buildingsLayer.Tiles[Config.TicketStationX, Config.TicketStationY] = 
+            buildingsLayer.Tiles[Config.TicketStationX, Config.TicketStationY] =
                 new StaticTile(buildingsLayer, tilesheet, BlendMode.Alpha, tileIndex: TicketStationBottomTile);
-            buildingsLayer.Tiles[Config.TicketStationX, Config.TicketStationY-1] = 
+            buildingsLayer.Tiles[Config.TicketStationX, Config.TicketStationY - 1] =
                 new StaticTile(frontLayer, tilesheet, BlendMode.Alpha, tileIndex: TicketStationTopTile);
 
             //set the TrainStation property
             railway.setTileProperty(Config.TicketStationX, Config.TicketStationY, "Buildings", "Action", "TrainStation");
-
-            RemoveInvalidLocations();
         }
 
         private void LoadContentPacks()
@@ -133,6 +136,7 @@ namespace TrainStation
             if (tileProperty != "TrainStation")
                 return;
 
+            VanillaPreconditionsMethod = Helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition");
             OpenTrainMenu();
         }
 
@@ -157,6 +161,9 @@ namespace TrainStation
             foreach (TrainStop stop in TrainStops)
             {
                 if (stop.TargetMapName == Game1.currentLocation.Name) //remove stops to the current map
+                    continue;
+
+                if (!CheckConditions(stop.Conditions)) //remove stops that don't meet conditions
                     continue;
 
                 string displayName = $"{stop.TranslatedName} ({stop.Cost}g)";
@@ -188,11 +195,6 @@ namespace TrainStation
 
         private void AttemptToWarp(TrainStop stop)
         {
-            if (!CheckConditions(stop.Conditions))
-            {
-                Game1.drawObjectDialogue(Helper.Translation.Get("StopNotAvailable", new { DestinationName = stop.TranslatedName }));
-                return;
-            }
 
             if (!TryToChargeMoney(stop.Cost))
             {
@@ -201,7 +203,7 @@ namespace TrainStation
             }
 
             Game1.playSound("trainWhistle");
-            Game1.warpFarmer(stop.TargetMapName, stop.TargetX, stop.TargetY, true);
+            Game1.warpFarmer(stop.TargetMapName, stop.TargetX, stop.TargetY, stop.FacingDirectionAfterWarp);
 
         }
 
@@ -209,9 +211,15 @@ namespace TrainStation
         ** Utility **
         ************************/
 
+        public static IReflectedMethod VanillaPreconditionsMethod;
+
         private bool CheckConditions(string conditions)
         {
-            return true;
+            if (conditions == null || conditions.Length == 0)
+                return true;
+
+            int result = VanillaPreconditionsMethod.Invoke<int>("-5005/" + conditions);
+            return result != -1;
         }
 
         private bool TryToChargeMoney(int cost)
@@ -229,6 +237,8 @@ namespace TrainStation
         /***********************
         ** Localization stuff **
         ************************/
+
+        private static LocalizedContentManager.LanguageCode selectedLanguage;
         private void UpdateSelectedLanguage()
         {
             selectedLanguage = LocalizedContentManager.CurrentLanguageCode;
@@ -237,7 +247,10 @@ namespace TrainStation
         private string Localize(Dictionary<string, string> translations)
         {
             if (!translations.ContainsKey(selectedLanguage.ToString()))
-                return translations["en"];
+            {
+                return translations.ContainsKey("en")? translations["en"] : "No translation";
+            }
+
             return translations[selectedLanguage.ToString()];
         }
     }
@@ -267,7 +280,7 @@ namespace TrainStation
         public int TargetX { get; set; }
         public int TargetY { get; set; }
         public int Cost { get; set; } = 0;
-        public int TripTime { get; set; } = 0;
+        public int FacingDirectionAfterWarp { get; set; } = 2;
         public string Conditions { get; set; }
 
         public string StopID;
