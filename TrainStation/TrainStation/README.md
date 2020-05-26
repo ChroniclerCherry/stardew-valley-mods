@@ -7,9 +7,9 @@ Heavily inspired by the mod Bus Locations which does something similar but with 
 This mod does more by not only adding destinations to the rail station, but also allow the placement of more rail stations via a map property. In this way, it's like a second minecart system.
 
 ## Adding a train station
-An `Action` property with a value of `TrainStation` on the `Buildings` lair of the map will becomes an interactable point to bring up the menu showing available destinations.
+An `Action` property with a value of `TrainStation` on the `Buildings` lair of the map will becomes an interactable point to bring up the menu showing available destinations. Tile properties can be added in through various methods such as Content patcher, TMXL Map Toolkit, or directly through code.
 
-The menu will not show any destinations on the current map or those that do not meet the specified criteria
+The menu will not show any destinations on the current map or those that do not meet the specified conditions
 
 ## Adding a destination
 
@@ -32,6 +32,9 @@ To add a destination to the train stops menu, make a content pack with a `TrainS
     },
   ]
 }
+
+You have have multiple trainstops definied in each `TrainStops.json`. To see vailable event preconditions, check out the [wiki](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions)
+
 ```
 
 ## Compatibility

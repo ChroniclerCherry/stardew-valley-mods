@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using xTile.Layers;
 using xTile.Tiles;
 using System.Linq;
-using StardewValley.Locations;
-using StardewValley.BellsAndWhistles;
 
 namespace TrainStation
 {
@@ -123,13 +121,17 @@ namespace TrainStation
             if (!Context.CanPlayerMove)
                 return;
 
-            if (!e.Button.IsActionButton() || (Constants.TargetPlatform == GamePlatform.Android && e.Button != SButton.MouseLeft))
+            if (Constants.TargetPlatform == GamePlatform.Android)
+            {
+                if (e.Button != SButton.MouseLeft)
+                    return;
+                if (e.Cursor.GrabTile != e.Cursor.Tile)
+                    return;
+            }
+            else if (!e.Button.IsActionButton())
                 return;
 
             Vector2 grabTile = e.Cursor.GrabTile;
-
-            if (Constants.TargetPlatform == GamePlatform.Android && grabTile != e.Cursor.Tile)
-                return;
 
             string tileProperty = Game1.currentLocation.doesTileHaveProperty((int)grabTile.X, (int)grabTile.Y, "Action", "Buildings");
 
