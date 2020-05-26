@@ -166,7 +166,13 @@ namespace TrainStation
                 if (!CheckConditions(stop.Conditions)) //remove stops that don't meet conditions
                     continue;
 
-                string displayName = $"{stop.TranslatedName} ({stop.Cost}g)";
+                string displayName = $"{stop.TranslatedName}";
+
+                if (stop.Cost > 0)
+                {
+                    displayName += $" - {stop.Cost}g";
+                }
+                
                 responses.Add(new Response(stop.StopID, displayName));
             }
 

@@ -1,26 +1,47 @@
-﻿
-## Placing stations
+﻿# Train Station
 
+Train Station is a mod that transforms the train station at the railroad into a working train station. A ticket booth is added that allows players to pay a fee to travel to other train stations set by modders.
 
-## Example
+Heavily inspired by the mod Bus Locations which does something similar but with the Bus.
 
-To add a destination to the train stops menu, make a content pack with a `TrainStops.json`.
+This mod does more by not only adding destinations to the rail station, but also allow the placement of more rail stations via a map property. In this way, it's like a second minecart system.
+
+## Adding a train station
+An `Action` property with a value of `TrainStation` on the `Buildings` lair of the map will becomes an interactable point to bring up the menu showing available destinations.
+
+The menu will not show any destinations on the current map or those that do not meet the specified criteria
+
+## Adding a destination
+
+To add a destination to the train stops menu, make a content pack with a `TrainStops.json` targetting `Cherry.TrainStation`
 
 ```js
 {
   "TrainStops": [
     {
-      "TargetMapName": "Town",
-      "LocalizedDisplayName": {
+      "TargetMapName": "Town", //the internal name of the map the player will be warped to
+      "LocalizedDisplayName": { //The display name of the destination. Will default to english if no translations are found for the current language
         "en": "Town",
         "zh":"镇"
       },
-      "TargetX": 10,
-      "TargetY": 10,
-      "Cost": 500,
-      "TripTime": 5,
-      "Conditions": "z winter";
+      "TargetX": 10, //the X of where the player willl be warped to
+      "TargetY": 10, //the Y of where the player willl be warped to
+      "Cost": 500, //how much gold it costs to buy this ticket
+      "FacingDirectionAfterWarp":-2, //Direction the player faces when they arrived. 0 is up, 1 is right, 2 is down, 3 is left. Defaults to 2
+      "Conditions": "z winter/e 100"; //Conditions for the destination to be available using event preconditions
     },
   ]
+}
+```
+
+## Compatibility
+The ticket station and the warp to the railroad may end up somewhere invalid if a map mod changes the shape of the map. In such cases, those coordinates can be adjusted in the Config.json
+
+```js
+{
+  "TicketStationX": 32,
+  "TicketStationY": 40,
+  "RailroadWarpX": 32,
+  "RailroadWarpY": 42
 }
 ```
