@@ -1,0 +1,8 @@
+﻿{
+	"NotEnoughMoney":"You don't have enough money to buy the ticket to {{DestinationName}}",
+	"StopNotAvailable":"{{DestinationName}} is not yet available",
+	"MenuCancelOption":"Cancel",
+	"NoDestinations":"There are no available destinations",
+	"ChooseDestination":"Choose your destination",
+	"TrainStationDisplayName":"Train Station"
+}
