@@ -5,6 +5,10 @@ using System.Collections.Generic;
 using xTile.Layers;
 using xTile.Tiles;
 using System.Linq;
+using StardewValley.Locations;
+using xTile.Dimensions;
+using System;
+using StardewValley.Menus;
 
 namespace TrainStation
 {
@@ -23,8 +27,8 @@ namespace TrainStation
 
             helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
+            helper.Events.Display.MenuChanged += Display_MenuChanged;
         }
-
 
 
         /*****************
@@ -105,7 +109,7 @@ namespace TrainStation
                 TrainStop stop = TrainStops[i];
                 if (Game1.getLocationFromName(stop.TargetMapName) == null)
                 {
-                    Monitor.Log($"Could not find location {stop.TargetMapName}",LogLevel.Warn);
+                    Monitor.Log($"Could not find location {stop.TargetMapName}", LogLevel.Warn);
                     TrainStops.RemoveAt(i);
                 }
                     
@@ -183,9 +187,9 @@ namespace TrainStation
             return responses;
         }
 
-        /***********************
-        ** Logic after choice **
-        ************************/
+        /************************************
+        ** Warp after choosing destination **
+        *************************************/
 
         private void DestinationPicked(Farmer who, string whichAnswer)
         {
@@ -201,6 +205,10 @@ namespace TrainStation
             }
         }
 
+
+
+        string destinationMessage;
+        ICue cue;
         private void AttemptToWarp(TrainStop stop)
         {
 
@@ -209,15 +217,47 @@ namespace TrainStation
                 Game1.drawObjectDialogue(Helper.Translation.Get("NotEnoughMoney", new { DestinationName = stop.TranslatedName }));
                 return;
             }
+            LocationRequest request = Game1.getLocationRequest(stop.TargetMapName);
+            request.OnWarp += Request_OnWarp;
+            destinationMessage = Helper.Translation.Get("ArrivalMessage", new { DestinationName = stop.TranslatedName });
 
-            Game1.playSound("trainWhistle");
-            Game1.warpFarmer(stop.TargetMapName, stop.TargetX, stop.TargetY, stop.FacingDirectionAfterWarp);
+            Game1.warpFarmer(request, stop.TargetX, stop.TargetY, stop.FacingDirectionAfterWarp);
 
+            cue = Game1.soundBank.GetCue("trainLoop");
+            cue.SetVariable("Volume", 100f);
+            cue.Play();
         }
 
-        /***********************
-        ** Utility **
-        ************************/
+        private bool finishedTrainWarp = false;
+
+        private void Request_OnWarp()
+        {
+            Game1.pauseThenMessage(3000, destinationMessage,false);
+            finishedTrainWarp = true;
+        }
+
+        private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
+        {
+            if (!finishedTrainWarp)
+                return;
+
+            if (e.NewMenu is DialogueBox)
+            {
+                AfterWarpPause();
+            }
+            finishedTrainWarp = false;
+        }
+
+        private void AfterWarpPause()
+        {
+            //Game1.drawObjectDialogue(destinationMessage);
+            Game1.playSound("trainWhistle");
+            cue.Stop(Microsoft.Xna.Framework.Audio.AudioStopOptions.AsAuthored);
+        }
+
+        /******************
+        **    Utility    **
+        *******************/
 
         public static IReflectedMethod VanillaPreconditionsMethod;
 

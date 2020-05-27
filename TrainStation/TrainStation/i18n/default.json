@@ -3,5 +3,6 @@
 	"MenuCancelOption":"Cancel",
 	"NoDestinations":"There are no available destinations",
 	"ChooseDestination":"Choose your destination",
-	"TrainStationDisplayName":"Train Station"
+	"TrainStationDisplayName":"Train Station",
+	"ArrivalMessage":"You have arrived at {{DestinationName}}"
 }
