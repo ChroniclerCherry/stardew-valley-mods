@@ -32,10 +32,11 @@ To add a destination to the train stops menu, make a content pack with a `TrainS
     },
   ]
 }
-
-You have have multiple trainstops definied in each `TrainStops.json`. To see vailable event preconditions, check out the [wiki](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions)
-
 ```
+
+You can have have multiple trainstops definied in each `TrainStops.json`. To see vailable event preconditions, check out the [wiki](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions)
+
+
 
 ## Compatibility
 The ticket station and the warp to the railroad may end up somewhere invalid if a map mod changes the shape of the map. In such cases, those coordinates can be adjusted in the Config.json
