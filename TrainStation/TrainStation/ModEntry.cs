@@ -5,9 +5,6 @@ using System.Collections.Generic;
 using xTile.Layers;
 using xTile.Tiles;
 using System.Linq;
-using StardewValley.Locations;
-using xTile.Dimensions;
-using System;
 using StardewValley.Menus;
 
 namespace TrainStation
@@ -18,9 +15,6 @@ namespace TrainStation
 
         private List<TrainStop> TrainStops;
 
-        private readonly int OutdoorsTilesheetIndex = 1;
-        private readonly int TicketStationTopTile = 1032;
-        private readonly int TicketStationBottomTile = 1057;
         public override void Entry(IModHelper helper)
         {
             Config = helper.ReadConfig<ModConfig>();
@@ -44,6 +38,9 @@ namespace TrainStation
             RemoveInvalidLocations();
         }
 
+        private readonly int OutdoorsTilesheetIndex = 1;
+        private readonly int TicketStationTopTile = 1032;
+        private readonly int TicketStationBottomTile = 1057;
         private void DrawInTicketStation()
         {
             //get references to all the stuff I need to edit the railroad map
@@ -64,6 +61,7 @@ namespace TrainStation
 
         private void LoadContentPacks()
         {
+            //create the stop at the vanilla Railroad map
             TrainStop RailRoadStop = new TrainStop
             {
                 TargetMapName = "Railroad",
@@ -112,7 +110,7 @@ namespace TrainStation
                     Monitor.Log($"Could not find location {stop.TargetMapName}", LogLevel.Warn);
                     TrainStops.RemoveAt(i);
                 }
-                    
+
             }
         }
 
@@ -156,9 +154,7 @@ namespace TrainStation
             }
 
             Game1.currentLocation.createQuestionDialogue(Helper.Translation.Get("ChooseDestination"), responses, DestinationPicked);
-
         }
-
 
         private List<Response> GetReponses()
         {
@@ -178,7 +174,7 @@ namespace TrainStation
                 {
                     displayName += $" - {stop.Cost}g";
                 }
-                
+
                 responses.Add(new Response(stop.StopID, displayName));
             }
 
@@ -196,7 +192,7 @@ namespace TrainStation
             if (whichAnswer == "Cancel")
                 return;
 
-            foreach(TrainStop stop in TrainStops)
+            foreach (TrainStop stop in TrainStops)
             {
                 if (stop.StopID == whichAnswer)
                 {
@@ -204,9 +200,6 @@ namespace TrainStation
                 }
             }
         }
-
-
-
         string destinationMessage;
         ICue cue;
         private void AttemptToWarp(TrainStop stop)
@@ -232,7 +225,7 @@ namespace TrainStation
 
         private void Request_OnWarp()
         {
-            Game1.pauseThenMessage(3000, destinationMessage,false);
+            Game1.pauseThenMessage(3000, destinationMessage, false);
             finishedTrainWarp = true;
         }
 
@@ -296,7 +289,7 @@ namespace TrainStation
         {
             if (!translations.ContainsKey(selectedLanguage.ToString()))
             {
-                return translations.ContainsKey("en")? translations["en"] : "No translation";
+                return translations.ContainsKey("en") ? translations["en"] : "No translation";
             }
 
             return translations[selectedLanguage.ToString()];
@@ -331,7 +324,7 @@ namespace TrainStation
         public int FacingDirectionAfterWarp { get; set; } = 2;
         public string Conditions { get; set; }
 
-        public string StopID;
-        public string TranslatedName;
+        internal string StopID; //assigned by the mod's uniqueID and the number of stops from that pack
+        internal string TranslatedName;
     }
 }

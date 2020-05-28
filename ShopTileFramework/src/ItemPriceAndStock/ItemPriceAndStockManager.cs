@@ -1,5 +1,6 @@
 ﻿using Harmony;
 using ShopTileFramework.Data;
+using ShopTileFramework.Shop;
 using ShopTileFramework.Utility;
 using StardewModdingAPI;
 using StardewValley;
@@ -15,6 +16,8 @@ namespace ShopTileFramework.ItemPriceAndStock
     {
         public Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
         private ItemStock[] itemStocks;
+        private readonly double defaultSellPriceMultipler;
+        private readonly Dictionary<double, string[]> priceMultiplierWhen;
         private readonly int maxNumItemsSoldInStore;
         private readonly string shopName;
         private readonly int shopPrice;
@@ -24,7 +27,7 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// </summary>
         /// <param name="ItemStocks"></param>
         /// <param name="data"></param>
-        public ItemPriceAndStockManager(ItemStock[] ItemStocks, ItemShopModel data)
+        public ItemPriceAndStockManager(ItemShop data)
         {
             if (ModEntry.VerboseLogging)
                 ModEntry.monitor.Log($"Initializing Shop:" +
@@ -38,19 +41,23 @@ namespace ShopTileFramework.ItemPriceAndStock
                     $" | When: {data.When}" +
                     $" | ClosedMessage: {data.ClosedMessage}\n", LogLevel.Debug);
 
-            itemStocks = ItemStocks;
+            defaultSellPriceMultipler = data.DefaultSellPriceMultipler;
+            priceMultiplierWhen = data.PriceMultiplierWhen;
+            itemStocks = data.ItemStocks;
             maxNumItemsSoldInStore = data.MaxNumItemsSoldInStore;
             shopName = data.ShopName;
             shopPrice = data.ShopPrice;
         }
-        public ItemPriceAndStockManager(ItemStock[] ItemStocks, VanillaShopModel data)
+        public ItemPriceAndStockManager(VanillaShop data)
         {
             if (ModEntry.VerboseLogging)
                 ModEntry.monitor.Log($"Initializing Vanilla shop:" +
                     $" ShopName: {data.ShopName}",
                     LogLevel.Debug);
 
-            itemStocks = ItemStocks;
+            defaultSellPriceMultipler = data.DefaultSellPriceMultipler;
+            priceMultiplierWhen = data.PriceMultiplierWhen;
+            itemStocks = data.ItemStocks;
             maxNumItemsSoldInStore = data.MaxNumItemsSoldInStore;
             shopName = data.ShopName;
             shopPrice = data.ShopPrice;
@@ -61,7 +68,7 @@ namespace ShopTileFramework.ItemPriceAndStock
             //initialize each stock
             foreach (ItemStock stock in itemStocks)
             {
-                stock.Initialize(shopName, shopPrice);
+                stock.Initialize(shopName, shopPrice,defaultSellPriceMultipler,priceMultiplierWhen);
             }
         }
 

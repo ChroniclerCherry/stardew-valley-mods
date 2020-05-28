@@ -22,6 +22,7 @@ namespace ShopTileFramework.ItemPriceAndStock
         private readonly int currencyItemID = -1;
         private readonly int currencyItemStack = int.MaxValue;
         private readonly int stock = int.MaxValue;
+        private readonly double defaultSellPriceMultipler;
         private readonly string shopName;
         private Dictionary<ISalable, int[]> itemPriceAndStock;
 
@@ -43,7 +44,8 @@ namespace ShopTileFramework.ItemPriceAndStock
                            int currencyItemStack,
                            int stock,
                            int quality,
-                           string shopName) {
+                           string shopName,
+                           double defaultSellPriceMultipler) {
             this.itemType = itemType;
             this.isRecipe = isRecipe;
             this.StockPrice = price;
@@ -52,6 +54,7 @@ namespace ShopTileFramework.ItemPriceAndStock
             this.stock = stock;
             this.quality = quality;
             this.shopName = shopName;
+            this.defaultSellPriceMultipler = defaultSellPriceMultipler;
         }
 
         /// <param name="ItemPriceAndStock">the ItemPriceAndStock this builder will add items to</param>
@@ -65,7 +68,7 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// </summary>
         /// <param name="itemName">name of the item</param>
         /// <returns></returns>
-        public bool AddItemToStock(string itemName)
+        public bool AddItemToStock(string itemName, double priceMultiplier = 1)
         {
             if (ModEntry.VerboseLogging)
                 ModEntry.monitor.Log($"Getting ID of {itemName} to add to {shopName}",LogLevel.Debug);
@@ -77,7 +80,7 @@ namespace ShopTileFramework.ItemPriceAndStock
                 return false;
             }
 
-            return AddItemToStock(id);
+            return AddItemToStock(id, priceMultiplier);
         }
 
         /// <summary>
@@ -85,7 +88,7 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// </summary>
         /// <param name="itemID">the id of the item</param>
         /// <returns></returns>
-        public bool AddItemToStock(int itemID)
+        public bool AddItemToStock(int itemID, double priceMultiplier = 1)
         {
 
             if (ModEntry.VerboseLogging)
@@ -112,7 +115,7 @@ namespace ShopTileFramework.ItemPriceAndStock
                 }
             }
 
-            var priceStockCurrency = getPriceStockAndCurrency(item);
+            var priceStockCurrency = getPriceStockAndCurrency(item, priceMultiplier);
             itemPriceAndStock.Add(item, priceStockCurrency);
 
             return true;       
@@ -155,11 +158,14 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// </summary>
         /// <param name="item">An instance of the item</param>
         /// <returns>The array that's the second parameter in ItemPriceAndStock</returns>
-        private int[] getPriceStockAndCurrency(ISalable item)
+        private int[] getPriceStockAndCurrency(ISalable item, double priceMultiplier)
         {
             int[] PriceStockCurrency;
-            //if no price is provided, use the item's sale price
-            var price = (StockPrice == -1) ? item.salePrice() : StockPrice; 
+            //if no price is provided, use the item's sale price multiplied by defaultSellPriceMultipler
+            var price = (StockPrice == -1) ? (int)(item.salePrice()*this.defaultSellPriceMultipler) : StockPrice;
+            var a = item.salePrice();
+            price = (int)(price*priceMultiplier);
+
             if (currencyItemID == -1) // no currency item
             {
                 PriceStockCurrency = new int[] { price, stock };
