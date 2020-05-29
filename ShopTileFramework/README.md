@@ -41,7 +41,7 @@ The same with BFAV animals-- if the specific animals ( or the BFAV mod ) are not
 ## Create a content pack
 To make a content pack for Shop Tile Framework, add `Cherry.ShopTileFramework` to the `ContentPackFor` section of your mod's [manifest file](https://stardewvalleywiki.com/Modding:Modder_Guide/APIs/Manifest).
 
-Then from there, you need to make a `shops.json` file to define the properties of your shops. You can find an example [here](#adding-store-to-the-game), and each field is described below:
+Then from there, you need to make a `shops.json` file to define the properties of your shops. You can find an example [here](#adding-shops-to-the-game), and each field is described below:
 
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
