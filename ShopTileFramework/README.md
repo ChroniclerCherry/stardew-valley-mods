@@ -69,6 +69,8 @@ PortraitPath | Optional | string | The relative path to the image used as the po
 Quote | Optional | string | A quote displayed on the shop menu screen. If not provided, no quote will appear
 ShopPrice | Optional | int | Sets the price of every item in the store to this if set.
 MaxNumItemsSoldInStore | Optional | int | The number of different items available. If there is more items within all the `ItemStocks` than this number, they will be randomly picked at the beginning of each day so that the total number of items match this. This is how to randomize the stock of the entire store.
+DefaultSellPriceMultipler| Optional | decimal | Defaults to 1. If no prices are given, item prices default to their sell price. This will be a multiplier on top of that. e.g an Emerald will yield 250g if sold by the player. If this field is set to 2, then Emerald will be sold for 500g if no other price is given. This is a quick way to price large batches of items without individually giving them prices
+PriceMultiplierWhen | Optional | Dictionary<decimal,string array> | A dictionary of price multipliers to apply if the conditions are satisfied, with the second field being an array of conditions. 0.5 would be half the price, 2 would be double. More info can be found under [Condition Checking](#condition-checking)
 ItemStocks | Mandatory | An array of `ItemStocks` | The items sold at this store. Each `ItemStocks` can contain one or more item of a single type
 When | Optional | Array of strings | The conditions for this store to open, checked each time a player interacts with it. More info can be found under [Condition Checking](#condition-checking)
 ClosedMessage | Optional | string | The message that displays if a user interacts with the store when conditions are not met. If not set, no message will be displayed.
@@ -117,12 +119,17 @@ Using the VanillaShops section allows you to add to, or completely replace vanil
 
 Multiple mods can edit the same vanilla store. Each mod's stocks will be calculated independently of each other and not affected by fields such as `MaxNumItemsSoldInStore` from other mods, and added to the vanilla stock this way.
 
+Note that the shop-global fields used by custom ItemShops here will only affect the items added by the content pack adding it, and won't affect items added by other mods or the vanilla stock
+
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
-ReplaceInsteadOfAdd | Optional | boolean | Defaults to false. If true, the original vanilla stock will be removed.
 ShopName | Mandatory | string | The vanilla store this stock is targetting. Valid options are: `PierreShop`, `JojaShop`, `RobinShop`, `ClintShop`, `MarlonShop`, `MarnieShop`, `TravellingMerchant`, `HarveyShop`, `SandyShop`, `DesertTrader`, `KrobusShop`, `DwarfShop`, `GusShop`, `QiShop`, `WillyShop`
-ShopPrice | Optional | int | Sets the price of every item added to the store from this content pack ( and not of the whole store )
-MaxNumItemsSoldInStore | Optional | int | The number of different items available. If there is more items within all the `ItemStocks` than this number, they will be randomly picked at the beginning of each day so that the total number of items match this. This is how to randomize the stock of all items added from this content pack ( and not of the whole store ).
+ReplaceInsteadOfAdd | Optional | boolean | Defaults to false. If true, the original vanilla stock will be removed.
+AddStockAboveVanilla | Optional | boolean | Defaults to false. If true, the custom stock will be added at the top of the shop menu rather than the bottom. This will affect all custom stocks for this vanilla shop, not just the current mod's
+ShopPrice | Optional | int | Sets the price of every item added to the store from this content pack
+MaxNumItemsSoldInStore | Optional | int | The number of different items available. If there is more items within all the `ItemStocks` than this number, they will be randomly picked at the beginning of each day so that the total number of items match this. This is how to randomize the stock of all items added from this content pack.
+DefaultSellPriceMultipler| Optional | decimal | Defaults to 1. If no prices are given, item prices default to their sell price. This will be a multiplier on top of that. e.g an Emerald will yield 250g if sold by the player. If this field is set to 2, then Emerald will be sold for 500g if no other price is given. This is a quick way to price large batches of items without individually giving them prices
+PriceMultiplierWhen | Optional | Dictionary<decimal,string array> | A dictionary of price multipliers to apply if the conditions are satisfied, with the second field being an array of conditions. 0.5 would be half the price, 2 would be double. More info can be found under [Condition Checking](#condition-checking)
 ItemStocks | Mandatory | An array of `ItemStocks` | The items sold at this store. Each `ItemStocks` can contain one or more item of a single type. Identical to those in ItemShops
 
 ### Animal Shops

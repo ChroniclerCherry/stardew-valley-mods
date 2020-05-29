@@ -1,5 +1,6 @@
 ﻿using ShopTileFramework.API;
 using ShopTileFramework.Data;
+using ShopTileFramework.Shop;
 using ShopTileFramework.Utility;
 using StardewModdingAPI;
 using StardewValley;
@@ -14,6 +15,9 @@ namespace ShopTileFramework.ItemPriceAndStock
     class ItemStock : ItemStockModel
     {
         private int currencyObjectID;
+
+        private Dictionary<double, string[]> priceMultiplierWhen;
+
         private ItemBuilder builder;
         private Dictionary<ISalable, int[]> ItemPriceAndStock;
 
@@ -24,7 +28,7 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// </summary>
         /// <param name="shopName"></param>
         /// <param name="price"></param>
-        internal void Initialize(string shopName, int price)
+        internal void Initialize(string shopName, int price, double defaultSellPriceMultipler, Dictionary<double, string[]> priceMultiplierWhen)
         {
             if (ModEntry.VerboseLogging)
                 ModEntry.monitor.Log($"Initializing Item Stock:" +
@@ -51,6 +55,8 @@ namespace ShopTileFramework.ItemPriceAndStock
             {
                 StockPrice = price;
             }
+            this.priceMultiplierWhen = priceMultiplierWhen;
+
 
             //initializes the builder with all the parameters of this itemstock
             builder = new ItemBuilder(itemType: ItemType,
@@ -60,7 +66,8 @@ namespace ShopTileFramework.ItemPriceAndStock
                                       currencyItemStack: StockCurrencyStack,
                                       stock: Stock,
                                       quality: Quality,
-                                      shopName: shopName);
+                                      shopName: shopName,
+                                      defaultSellPriceMultipler: defaultSellPriceMultipler);
         }
 
         /// <summary>
@@ -86,9 +93,22 @@ namespace ShopTileFramework.ItemPriceAndStock
             ItemPriceAndStock = new Dictionary<ISalable, int[]>();
             builder.setItemPriceAndStock(ItemPriceAndStock);
 
-            AddByID();
-            AddByName();
-            AddByJAPack();
+            double pricemultiplier = 1;
+            if (priceMultiplierWhen != null)
+            {
+                foreach (KeyValuePair<double,string[]> kvp in priceMultiplierWhen)
+                {
+                    if (ConditionChecking.CheckConditions(kvp.Value))
+                    {
+                        pricemultiplier = kvp.Key;
+                        break;
+                    }
+                }
+            }
+
+            AddByID(pricemultiplier);
+            AddByName(pricemultiplier);
+            AddByJAPack(pricemultiplier);
 
             if (ModEntry.VerboseLogging)
                 ModEntry.monitor.Log($"\tReducing this stock down to {MaxNumItemsSoldInItemStock} items\n\n");
@@ -99,7 +119,7 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// <summary>
         /// Add all items listed in the ItemIDs section
         /// </summary>
-        private void AddByID()
+        private void AddByID(double pricemultiplier)
         {
             if (ItemIDs == null)
                 return;
@@ -109,14 +129,14 @@ namespace ShopTileFramework.ItemPriceAndStock
 
             foreach (var ItemID in ItemIDs)
             {
-                builder.AddItemToStock(ItemID);
+                builder.AddItemToStock(ItemID, pricemultiplier);
             }
         }
 
         /// <summary>
         /// Add all items listed in the ItemNames section
         /// </summary>
-        private void AddByName()
+        private void AddByName(double pricemultiplier)
         {
             if (ItemNames == null)
                 return;
@@ -126,7 +146,7 @@ namespace ShopTileFramework.ItemPriceAndStock
 
             foreach (var ItemName in ItemNames)
             {
-                builder.AddItemToStock(ItemName);
+                builder.AddItemToStock(ItemName, pricemultiplier);
             }
 
         }
@@ -134,7 +154,7 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// <summary>
         /// Add all items from the JA Packs listed in the JAPacks section
         /// </summary>
-        private void AddByJAPack()
+        private void AddByJAPack(double pricemultiplier)
         {
             if (JAPacks == null)
                 return;
@@ -164,7 +184,7 @@ namespace ShopTileFramework.ItemPriceAndStock
                         {
                             int id = ItemsUtil.GetSeedID(crop);
                             if (id >0)
-                                builder.AddItemToStock(id);
+                                builder.AddItemToStock(id, pricemultiplier);
                         }
                     }
 
@@ -177,7 +197,7 @@ namespace ShopTileFramework.ItemPriceAndStock
                         {
                             int id = ItemsUtil.GetSaplingID(tree);
                             if (id > 0)
-                                builder.AddItemToStock(id);
+                                builder.AddItemToStock(id, pricemultiplier);
                         }
                     }
 
@@ -193,7 +213,7 @@ namespace ShopTileFramework.ItemPriceAndStock
 
                 foreach (string itemName in packs)
                 {
-                    builder.AddItemToStock(itemName);
+                    builder.AddItemToStock(itemName, pricemultiplier);
                 }
             }
         }

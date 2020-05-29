@@ -30,7 +30,7 @@ namespace ShopTileFramework.Shop
         /// </summary>
         public void Initialize()
         {
-            StockManager = new ItemPriceAndStockManager(ItemStocks, this);
+            StockManager = new ItemPriceAndStockManager(this);
         }
 
         /// <summary>

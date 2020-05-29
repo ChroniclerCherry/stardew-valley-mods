@@ -123,14 +123,18 @@ namespace ShopTileFramework.Shop
 
                     if (VanillaShops.ContainsKey(vanillaShopPack.ShopName))
                     {
-                        VanillaShops[vanillaShopPack.ShopName].StockManagers.Add(new ItemPriceAndStockManager(vanillaShopPack.ItemStocks, vanillaShopPack));
+                        VanillaShops[vanillaShopPack.ShopName].StockManagers.Add(new ItemPriceAndStockManager(vanillaShopPack));
 
                         if (vanillaShopPack.ReplaceInsteadOfAdd)
                             VanillaShops[vanillaShopPack.ShopName].ReplaceInsteadOfAdd = true;
+
+                        if (vanillaShopPack.AddStockAboveVanilla)
+                            VanillaShops[vanillaShopPack.ShopName].AddStockAboveVanilla = true;
+
                     } else
                     {
                         vanillaShopPack.Initialize();
-                        vanillaShopPack.StockManagers.Add(new ItemPriceAndStockManager(vanillaShopPack.ItemStocks, vanillaShopPack));
+                        vanillaShopPack.StockManagers.Add(new ItemPriceAndStockManager(vanillaShopPack));
                         VanillaShops.Add(vanillaShopPack.ShopName, vanillaShopPack);
                     }
                 }
