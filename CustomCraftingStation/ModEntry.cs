@@ -1,5 +1,7 @@
-﻿using StardewModdingAPI;
+﻿using Microsoft.Xna.Framework;
+using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Menus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +36,70 @@ namespace CustomCraftingStation
 
         private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (!Context.CanPlayerMove)
+                return;
+
+            if (Constants.TargetPlatform == GamePlatform.Android)
+            {
+                if (e.Button != SButton.MouseLeft)
+                    return;
+                if (e.Cursor.GrabTile != e.Cursor.Tile)
+                    return;
+            }
+            else if (!e.Button.IsActionButton())
+                return;
+
+            Vector2 grabTile = e.Cursor.GrabTile;
+
+            Game1.currentLocation.Objects.TryGetValue(grabTile, out StardewValley.Object obj);
+            if (obj != null && obj.bigCraftable.Value)
+            {
+                if (CraftableCookingStations.ContainsKey(obj.Name)){
+                    OpenCookingMenu(CraftableCookingStations[obj.Name]);
+                    Helper.Input.Suppress(e.Button);
+                    return;
+                } else if (CraftableCookingStations.ContainsKey(obj.Name))
+                {
+                    OpenCraftingMenu(CraftableCookingStations[obj.Name]);
+                    Helper.Input.Suppress(e.Button);
+                    return;
+                }
+            }
+
+            //No relevant BigCraftable found so check for tiledata
+            string tileProperty = Game1.currentLocation.doesTileHaveProperty((int)grabTile.X, (int)grabTile.Y, "Action", "Buildings");
+            if (tileProperty == null)
+                return;
+
+            string[] properties = tileProperty.Split(' ');
+            if (properties[0] != "CraftingStation")
+                return;
+
+            if (CraftableCookingStations.ContainsKey(properties[1]))
+            {
+                OpenCookingMenu(CraftableCookingStations[properties[1]]);
+                Helper.Input.Suppress(e.Button);
+            } else if (CraftableCraftingStations.ContainsKey(properties[1]))
+            {
+                OpenCraftingMenu(CraftableCookingStations[properties[1]]);
+                Helper.Input.Suppress(e.Button);
+            }
+        }
+
+        public void OpenCookingMenu(Dictionary<string, string> recipes)
+        {
+            Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, 0, 0);
+            CraftingRecipe.cookingRecipes = recipes;
+            Game1.activeClickableMenu = new CraftingPage((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, true, true);
+            CraftingRecipe.cookingRecipes = ReducedCookingRecipes;
+        }
+
+        public void OpenCraftingMenu(Dictionary<string, string> recipes)
+        {
+            Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, 0, 0);
+            CraftingRecipe.cookingRecipes = recipes;
+            Game1.activeClickableMenu = new CraftingPage((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, false, true);
+            CraftingRecipe.cookingRecipes = ReducedCookingRecipes;
         }
 
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
@@ -79,6 +144,12 @@ namespace CustomCraftingStation
         private void RegisterContentPacks()
         {
             var packs = Helper.ContentPacks.GetOwned();
+
+            TileCookingStations = new Dictionary<string, Dictionary<string, string>>();
+            CraftableCookingStations = new Dictionary<string, Dictionary<string, string>>();
+            CookingRecipesToRemove = new List<string>();
+            CraftingRecipesToRemove = new List<string>();
+
             foreach (IContentPack pack in packs)
             {
                 if (!pack.HasFile("Content.json"))
@@ -89,9 +160,6 @@ namespace CustomCraftingStation
 
                 ContentPack contentPack = pack.LoadAsset<ContentPack>("Content.json");
 
-                TileCookingStations = new Dictionary<string, Dictionary<string, string>>();
-                CraftableCookingStations = new Dictionary<string, Dictionary<string, string>>();
-
                 RegisterCookingStations(contentPack.CookingStations);
                 RegisterCraftingStations(contentPack.CraftingStations);
             }
@@ -99,7 +167,6 @@ namespace CustomCraftingStation
 
         private void RegisterCookingStations(List<CraftingStation> CookingStations)
         {
-            CookingRecipesToRemove = new List<string>();
             foreach (CraftingStation station in CookingStations)
             {
                 Dictionary<string, string> recipesList = new Dictionary<string, string>();
@@ -142,7 +209,6 @@ namespace CustomCraftingStation
 
         private void RegisterCraftingStations(List<CraftingStation> CraftingStations)
         {
-            CraftingRecipesToRemove = new List<string>();
             foreach (CraftingStation station in CraftingStations)
             {
                 Dictionary<string, string> recipesList = new Dictionary<string, string>();
@@ -194,7 +260,7 @@ namespace CustomCraftingStation
     public class CraftingStation
     {
         public string BigCraftable { get; set; } //A big craftable to interact with to open the menu
-        public string TileData { get; set; } //
+        public string TileData { get; set; } //Name of the tiledata used to interact with to open the menu
         public bool ExclusiveRecipes { get; set; } = true; //Removes the listed recipes from the vanilla crafting menus
         public string[] Recipes { get; set; } //list of recipe names
 
