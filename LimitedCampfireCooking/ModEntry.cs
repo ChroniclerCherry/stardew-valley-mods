@@ -4,19 +4,41 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LimitedCampfireCooking
 {
     class ModEntry : Mod
     {
         internal static ModConfig Config;
-        internal static IMonitor monitor;
+
         public override void Entry(IModHelper helper)
         {
-            monitor = Monitor;
-            Config = this.Helper.ReadConfig<ModConfig>();
+            Config = Helper.ReadConfig<ModConfig>();
+            helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
         }
+
+        private void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
+        {
+            AllCookingRecipes = CraftingRecipe.cookingRecipes;
+            LimitedCookingRecipes = AllCookingRecipes;
+
+            if (!Config.EnableAllCookingRecipies)
+            {
+                LimitedCookingRecipes = new Dictionary<string, string>();
+                foreach (var kvp in from KeyValuePair<string, string> kvp in AllCookingRecipes
+                                    where Config.Recipes.Contains(kvp.Key)
+                                    select kvp)
+                {
+                    LimitedCookingRecipes.Add(kvp.Key, kvp.Value);
+                }
+            }
+        }
+
+        private Dictionary<string, string> AllCookingRecipes;
+        private Dictionary<string, string> LimitedCookingRecipes;
 
         private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
         {
@@ -34,7 +56,10 @@ namespace LimitedCampfireCooking
                 {
                     Helper.Input.Suppress(e.Button);
                     Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, 0, 0);
-                    Game1.activeClickableMenu = new CookingMenu((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2);
+                    
+                    CraftingRecipe.cookingRecipes = LimitedCookingRecipes;
+                    Game1.activeClickableMenu = new CraftingPage((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, true, true);
+                    CraftingRecipe.cookingRecipes = AllCookingRecipes;
                 }
             }
         }
