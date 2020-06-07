@@ -16,11 +16,11 @@ namespace CustomCraftingStation
         private Dictionary<string, string> ReducedCookingRecipes;
         private Dictionary<string, string> ReducedCraftingRecipes;
 
-        private Dictionary<string, Dictionary<string, string>> TileCookingStations;
-        private Dictionary<string, Dictionary<string, string>> CraftableCookingStations;
+        private Dictionary<string, string[]> TileCookingStations;
+        private Dictionary<string, string[]> CraftableCookingStations;
 
-        private Dictionary<string, Dictionary<string, string>> TileCraftingStations;
-        private Dictionary<string, Dictionary<string, string>> CraftableCraftingStations;
+        private Dictionary<string, string[]> TileCraftingStations;
+        private Dictionary<string, string[]> CraftableCraftingStations;
 
         private List<string> CookingRecipesToRemove;
         private List<string> CraftingRecipesToRemove;
@@ -28,11 +28,51 @@ namespace CustomCraftingStation
         public override void Entry(IModHelper helper)
         {
             Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
-            Helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
-            Helper.Events.GameLoop.DayEnding += GameLoop_DayEnding;
-
             Helper.Events.Input.ButtonPressed += Input_ButtonPressed;
+
+            Helper.Events.Display.MenuChanged += Display_MenuChanged;
         }
+
+        public bool OpenedModdedStation = false;
+        public bool OpenedVanillaCrafting = false;
+
+        private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
+        {
+            if (OpenedModdedStation)
+            {
+                OpenedModdedStation = false;
+                return;
+            }
+
+            if (OpenedVanillaCrafting)
+            {
+                OpenedVanillaCrafting = false;
+                CraftingRecipe.cookingRecipes = AllCookingRecipes;
+                CraftingRecipe.craftingRecipes = AllCraftingRecipes;
+            }
+            else if (e.NewMenu is CraftingPage)
+            {
+                OpenedVanillaCrafting = true;
+                CraftingRecipe.cookingRecipes = ReducedCookingRecipes;
+                CraftingRecipe.craftingRecipes = ReducedCraftingRecipes;
+
+                bool isCooking = Helper.Reflection.GetField<bool>(e.NewMenu, "cooking").GetValue();
+                Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, 0, 0);
+                Game1.activeClickableMenu.exitThisMenuNoSound();
+                Game1.activeClickableMenu = new CraftingPage((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, isCooking, true);
+            }
+            else if (e.NewMenu is GameMenu)
+            {
+                OpenedVanillaCrafting = true;
+                CraftingRecipe.cookingRecipes = ReducedCookingRecipes;
+                CraftingRecipe.craftingRecipes = ReducedCraftingRecipes;
+
+                Game1.activeClickableMenu.exitThisMenuNoSound();
+                Game1.activeClickableMenu = new GameMenu();
+
+            }
+        }
+
 
         private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
         {
@@ -58,9 +98,9 @@ namespace CustomCraftingStation
                     OpenCookingMenu(CraftableCookingStations[obj.Name]);
                     Helper.Input.Suppress(e.Button);
                     return;
-                } else if (CraftableCookingStations.ContainsKey(obj.Name))
+                } else if (CraftableCraftingStations.ContainsKey(obj.Name))
                 {
-                    OpenCraftingMenu(CraftableCookingStations[obj.Name]);
+                    OpenCraftingMenu(CraftableCraftingStations[obj.Name]);
                     Helper.Input.Suppress(e.Button);
                     return;
                 }
@@ -86,20 +126,33 @@ namespace CustomCraftingStation
             }
         }
 
-        public void OpenCookingMenu(Dictionary<string, string> recipes)
+        public void OpenCookingMenu(string[] recipes)
         {
+            Dictionary<string, string> stationRecipes = new Dictionary<string, string>();
+            foreach (var kvp in AllCookingRecipes.Where(kvp => recipes.Contains(kvp.Key)))
+            {
+                stationRecipes.Add(kvp.Key, kvp.Value);
+            }
             Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, 0, 0);
-            CraftingRecipe.cookingRecipes = recipes;
+            CraftingRecipe.cookingRecipes = stationRecipes;
             Game1.activeClickableMenu = new CraftingPage((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, true, true);
-            CraftingRecipe.cookingRecipes = ReducedCookingRecipes;
+            OpenedModdedStation = true;
+            CraftingRecipe.cookingRecipes = AllCookingRecipes;
         }
 
-        public void OpenCraftingMenu(Dictionary<string, string> recipes)
+        public void OpenCraftingMenu(string[] recipes)
         {
+            Dictionary<string, string> stationRecipes = new Dictionary<string, string>();
+            foreach (var kvp in AllCraftingRecipes.Where(kvp => recipes.Contains(kvp.Key)))
+            {
+                stationRecipes.Add(kvp.Key, kvp.Value);
+            }
+
             Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, 0, 0);
-            CraftingRecipe.cookingRecipes = recipes;
+            CraftingRecipe.craftingRecipes = stationRecipes;
             Game1.activeClickableMenu = new CraftingPage((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, false, true);
-            CraftingRecipe.cookingRecipes = ReducedCookingRecipes;
+            OpenedModdedStation = true;
+            CraftingRecipe.craftingRecipes = AllCraftingRecipes;
         }
 
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
@@ -128,37 +181,26 @@ namespace CustomCraftingStation
             }
         }
 
-        private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
-        {
-            //set limited recipes for default menus
-            CraftingRecipe.cookingRecipes = ReducedCookingRecipes;
-            CraftingRecipe.craftingRecipes = ReducedCraftingRecipes;
-        }
-        private void GameLoop_DayEnding(object sender, StardewModdingAPI.Events.DayEndingEventArgs e)
-        {
-            //return all recipes at end of day so that recipe unlocks can be checked for by vanilla
-            CraftingRecipe.cookingRecipes = AllCookingRecipes;
-            CraftingRecipe.craftingRecipes = AllCraftingRecipes;
-        }
-
         private void RegisterContentPacks()
         {
             var packs = Helper.ContentPacks.GetOwned();
 
-            TileCookingStations = new Dictionary<string, Dictionary<string, string>>();
-            CraftableCookingStations = new Dictionary<string, Dictionary<string, string>>();
+            TileCookingStations = new Dictionary<string, string[]>();
+            CraftableCookingStations = new Dictionary<string, string[]>();
+            TileCraftingStations = new Dictionary<string, string[]>();
+            CraftableCraftingStations = new Dictionary<string, string[]>();
             CookingRecipesToRemove = new List<string>();
             CraftingRecipesToRemove = new List<string>();
 
             foreach (IContentPack pack in packs)
             {
-                if (!pack.HasFile("Content.json"))
+                if (!pack.HasFile("content.json"))
                 {
-                    Monitor.Log($"{pack.Manifest.UniqueID} is missing a Content.json", LogLevel.Error);
+                    Monitor.Log($"{pack.Manifest.UniqueID} is missing a content.json", LogLevel.Error);
                     continue;
                 }
 
-                ContentPack contentPack = pack.LoadAsset<ContentPack>("Content.json");
+                ContentPack contentPack = pack.LoadAsset<ContentPack>("content.json");
 
                 RegisterCookingStations(contentPack.CookingStations);
                 RegisterCraftingStations(contentPack.CraftingStations);
@@ -167,18 +209,12 @@ namespace CustomCraftingStation
 
         private void RegisterCookingStations(List<CraftingStation> CookingStations)
         {
+            if (CookingStations == null)
+                return;
             foreach (CraftingStation station in CookingStations)
             {
-                Dictionary<string, string> recipesList = new Dictionary<string, string>();
-
                 if (station.ExclusiveRecipes)
                     CookingRecipesToRemove.AddRange(station.Recipes);
-
-                foreach (string recipe in station.Recipes)
-                {
-                    if (AllCookingRecipes.Keys.Contains(recipe))
-                        recipesList.Add(recipe, AllCookingRecipes[recipe]);
-                }
 
                 if (station.TileData != null)
                 {
@@ -186,7 +222,8 @@ namespace CustomCraftingStation
                         Monitor.Log($"Multiple mods are trying to use the Tiledata {station.TileData}; Only one will be applied.",LogLevel.Error);
                     } else
                     {
-                        TileCookingStations.Add(station.TileData, recipesList);
+                        if (station.TileData != null)
+                            TileCookingStations.Add(station.TileData, station.Recipes);
                     }
                     
                 }
@@ -199,7 +236,8 @@ namespace CustomCraftingStation
                     }
                     else
                     {
-                        CraftableCookingStations.Add(station.TileData, recipesList);
+                        if (station.BigCraftable != null)
+                            CraftableCookingStations.Add(station.BigCraftable, station.Recipes);
                     }
 
                 }
@@ -209,18 +247,12 @@ namespace CustomCraftingStation
 
         private void RegisterCraftingStations(List<CraftingStation> CraftingStations)
         {
+            if (CraftingStations == null)
+                return;
             foreach (CraftingStation station in CraftingStations)
             {
-                Dictionary<string, string> recipesList = new Dictionary<string, string>();
-
                 if (station.ExclusiveRecipes)
                     CraftingRecipesToRemove.AddRange(station.Recipes);
-
-                foreach (string recipe in station.Recipes)
-                {
-                    if (AllCraftingRecipes.Keys.Contains(recipe))
-                        recipesList.Add(recipe, AllCraftingRecipes[recipe]);
-                }
 
                 if (station.TileData != null)
                 {
@@ -230,7 +262,8 @@ namespace CustomCraftingStation
                     }
                     else
                     {
-                        TileCraftingStations.Add(station.TileData, recipesList);
+                        if (station.TileData != null)
+                            TileCraftingStations.Add(station.TileData, station.Recipes);
                     }
 
                 }
@@ -243,7 +276,8 @@ namespace CustomCraftingStation
                     }
                     else
                     {
-                        CraftableCraftingStations.Add(station.TileData, recipesList);
+                        if (station.BigCraftable != null)
+                            CraftableCraftingStations.Add(station.BigCraftable, station.Recipes);
                     }
 
                 }
