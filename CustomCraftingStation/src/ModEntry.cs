@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CustomCraftingStation.src;
+using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
@@ -10,11 +11,11 @@ namespace CustomCraftingStation
 {
     public class ModEntry : Mod
     {
-        private Dictionary<string, string> AllCookingRecipes;
-        private Dictionary<string, string> AllCraftingRecipes;
+        public Dictionary<string, string> AllCookingRecipes;
+        public Dictionary<string, string> AllCraftingRecipes;
 
-        private Dictionary<string, string> ReducedCookingRecipes;
-        private Dictionary<string, string> ReducedCraftingRecipes;
+        public Dictionary<string, string> ReducedCookingRecipes;
+        public Dictionary<string, string> ReducedCraftingRecipes;
 
         private Dictionary<string, string[]> TileCookingStations;
         private Dictionary<string, string[]> CraftableCookingStations;
@@ -25,54 +26,15 @@ namespace CustomCraftingStation
         private List<string> CookingRecipesToRemove;
         private List<string> CraftingRecipesToRemove;
 
+        public bool OpenedModdedStation { get; set; } = false;
+
         public override void Entry(IModHelper helper)
         {
             Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             Helper.Events.Input.ButtonPressed += Input_ButtonPressed;
 
-            Helper.Events.Display.MenuChanged += Display_MenuChanged;
+            PatchCraftingpage.Initialize(Monitor, this);
         }
-
-        public bool OpenedModdedStation = false;
-        public bool OpenedVanillaCrafting = false;
-
-        private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
-        {
-            if (OpenedModdedStation)
-            {
-                OpenedModdedStation = false;
-                return;
-            }
-
-            if (OpenedVanillaCrafting)
-            {
-                OpenedVanillaCrafting = false;
-                CraftingRecipe.cookingRecipes = AllCookingRecipes;
-                CraftingRecipe.craftingRecipes = AllCraftingRecipes;
-            }
-            else if (e.NewMenu is CraftingPage)
-            {
-                OpenedVanillaCrafting = true;
-                CraftingRecipe.cookingRecipes = ReducedCookingRecipes;
-                CraftingRecipe.craftingRecipes = ReducedCraftingRecipes;
-
-                bool isCooking = Helper.Reflection.GetField<bool>(e.NewMenu, "cooking").GetValue();
-                Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, 0, 0);
-                Game1.activeClickableMenu.exitThisMenuNoSound();
-                Game1.activeClickableMenu = new CraftingPage((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, isCooking, true);
-            }
-            else if (e.NewMenu is GameMenu)
-            {
-                OpenedVanillaCrafting = true;
-                CraftingRecipe.cookingRecipes = ReducedCookingRecipes;
-                CraftingRecipe.craftingRecipes = ReducedCraftingRecipes;
-
-                Game1.activeClickableMenu.exitThisMenuNoSound();
-                Game1.activeClickableMenu = new GameMenu();
-
-            }
-        }
-
 
         private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
         {
@@ -135,8 +97,8 @@ namespace CustomCraftingStation
             }
             Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, 0, 0);
             CraftingRecipe.cookingRecipes = stationRecipes;
-            Game1.activeClickableMenu = new CraftingPage((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, true, true);
             OpenedModdedStation = true;
+            Game1.activeClickableMenu = new CraftingPage((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, true, true);
             CraftingRecipe.cookingRecipes = AllCookingRecipes;
         }
 
@@ -150,8 +112,8 @@ namespace CustomCraftingStation
 
             Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, 0, 0);
             CraftingRecipe.craftingRecipes = stationRecipes;
-            Game1.activeClickableMenu = new CraftingPage((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, false, true);
             OpenedModdedStation = true;
+            Game1.activeClickableMenu = new CraftingPage((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, false, true);
             CraftingRecipe.craftingRecipes = AllCraftingRecipes;
         }
 
@@ -284,19 +246,5 @@ namespace CustomCraftingStation
 
             }
         }
-    }
-
-    public class ContentPack
-    {
-        public List<CraftingStation> CookingStations;
-        public List<CraftingStation> CraftingStations;
-    }
-    public class CraftingStation
-    {
-        public string BigCraftable { get; set; } //A big craftable to interact with to open the menu
-        public string TileData { get; set; } //Name of the tiledata used to interact with to open the menu
-        public bool ExclusiveRecipes { get; set; } = true; //Removes the listed recipes from the vanilla crafting menus
-        public string[] Recipes { get; set; } //list of recipe names
-
     }
 }
