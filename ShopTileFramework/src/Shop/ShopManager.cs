@@ -77,7 +77,7 @@ namespace ShopTileFramework.Shop
         public static void RegisterShops(ContentPack data, IContentPack contentPack)
         {
             if (data.RemovePacksFromVanilla != null)
-                ItemsUtil.RegisterPacksToRemove(data.RemovePacksFromVanilla);
+                ItemsUtil.RegisterPacksToRemove(data.RemovePacksFromVanilla, data.RemovePackRecipesFromVanilla);
 
             if (data.Shops != null)
             {

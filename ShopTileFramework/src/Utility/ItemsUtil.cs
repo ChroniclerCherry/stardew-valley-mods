@@ -18,7 +18,9 @@ namespace ShopTileFramework.Utility
         private static Dictionary<int, string> cropData;
 
         private static List<string> packsToRemove = new List<string>();
+        private static List<string> recipePacksToRemove = new List<string>();
         private static List<string> itemsToRemove = new List<string>();
+        private static List<string> recipesToRemove = new List<string>();
 
         /// <summary>
         /// Loads up the onject information for all types, 
@@ -148,9 +150,10 @@ namespace ShopTileFramework.Utility
             return -1;
         }
 
-        public static void RegisterPacksToRemove(string[] JApacks)
+        public static void RegisterPacksToRemove(string[] JApacks,string[] RecipePacks)
         {
             packsToRemove = packsToRemove.Union(JApacks).ToList();
+            recipePacksToRemove = recipePacksToRemove.Union(RecipePacks).ToList();
         }
 
         public static void RegisterItemsToRemove()
@@ -172,19 +175,30 @@ namespace ShopTileFramework.Utility
                 items = APIs.JsonAssets.GetAllHatsFromContentPack(pack);
                 if (items != null)
                     itemsToRemove.AddRange(items);
-                    
 
                 items = APIs.JsonAssets.GetAllObjectsFromContentPack(pack);
                 if (items != null)
                 {
                     itemsToRemove.AddRange(items);
-                    itemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
                 }
-                    
 
                 items = APIs.JsonAssets.GetAllWeaponsFromContentPack(pack);
                 if (items != null)
                     itemsToRemove.AddRange(items);
+            }
+
+            foreach (string pack in recipePacksToRemove)
+            {
+                var items = APIs.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
+                if (items != null)
+                    itemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
+
+                items = APIs.JsonAssets.GetAllObjectsFromContentPack(pack);
+                if (items != null)
+                {
+                    itemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
+                }
+
             }
         }
 
