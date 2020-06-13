@@ -27,6 +27,7 @@ The stations themselves are specified in a `content.json` in the following forma
 	{
 		"BigCraftable": "BigCraftableName",
 		"TileData": "StationName",
+		"ExclusiveRecipes":true,
 		"CraftingRecipes": ["recipe1","recipe2"],
 		"CookingRecipes": ["recipe1","recipe2"]
 	},
@@ -40,6 +41,7 @@ Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
 BigCraftable | Optional | string | The name of a bigcraftable where the player can open the menu*
 TileData | Optional | string | The name of the Tiledata where the player can open the menu*
+ExclusiveRecipes | Optional | boolean | Whether recipes from this station will be removed from vanilla menus or not. Defaults to true if not specified
 CraftingRecipes | Optional | list of strings | A list of the name of crafting recipes available at this station**
 CookingRecipes | Optional | list of strings | A list of the name of cooking  recipes available at this station **
 

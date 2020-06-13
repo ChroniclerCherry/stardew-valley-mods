@@ -6,5 +6,5 @@
   "UniqueID": "Cherry.CustomCraftingStations",
   "EntryDll": "CustomCraftingStation.dll",
   "MinimumApiVersion": "3.0.0",
-  "UpdateKeys": []
+  "UpdateKeys": ["Nexus:6293"]
 }

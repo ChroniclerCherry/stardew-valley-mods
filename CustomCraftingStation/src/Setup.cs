@@ -63,7 +63,7 @@ namespace CustomCraftingStation
                 {
                     if (!CraftingRecipe.craftingRecipes.Keys.Contains(station.CraftingRecipes[i]))
                     {
-                        Monitor.Log($"The recipe for {station.CraftingRecipes[i]} could not be found.", LogLevel.Trace);
+                        Monitor.Log($"The recipe for {station.CraftingRecipes[i]} could not be found.");
                         station.CraftingRecipes.RemoveAt(i);
                     }
                 }
@@ -73,12 +73,12 @@ namespace CustomCraftingStation
                 {
                     if (!CraftingRecipe.cookingRecipes.Keys.Contains(station.CookingRecipes[i]))
                     {
-                        Monitor.Log($"The recipe for {station.CookingRecipes[i]} could not be found.", LogLevel.Trace);
+                        Monitor.Log($"The recipe for {station.CookingRecipes[i]} could not be found.");
                         station.CookingRecipes.RemoveAt(i);
                     }
                 }
 
-                if (station.ExclusiveRecipes && !_config.DiableRemoveRecipesFromVanillaMenus)
+                if (station.ExclusiveRecipes)
                 {
                     _craftingRecipesToRemove.AddRange(station.CraftingRecipes);
                     _cookingRecipesToRemove.AddRange(station.CookingRecipes);

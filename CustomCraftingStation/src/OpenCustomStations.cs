@@ -78,8 +78,6 @@ namespace CustomCraftingStation
             int y = 0;
             int numRecipes = 0;
             ClickableTextureComponent[,] newPageLayout = createNewPageLayout.Invoke<ClickableTextureComponent[,]>();
-            List<ClickableTextureComponent[,]> textureComponentArrayList = new List<ClickableTextureComponent[,]>();
-            textureComponentArrayList.Add(newPageLayout);
             foreach (string playerRecipe in craftingRecipes)
             {
                 ++numRecipes;
@@ -95,7 +93,6 @@ namespace CustomCraftingStation
                         {
                             newPage = createNewPage.Invoke<Dictionary<ClickableTextureComponent, CraftingRecipe>>();
                             newPageLayout = createNewPageLayout.Invoke<ClickableTextureComponent[,]>();
-                            textureComponentArrayList.Add(newPageLayout);
                             x = 0;
                             y = 0;
                         }
@@ -144,7 +141,6 @@ namespace CustomCraftingStation
                         {
                             newPage = createNewPage.Invoke<Dictionary<ClickableTextureComponent, CraftingRecipe>>();
                             newPageLayout = createNewPageLayout.Invoke<ClickableTextureComponent[,]>();
-                            textureComponentArrayList.Add(newPageLayout);
                             x = 0;
                             y = 0;
                         }
