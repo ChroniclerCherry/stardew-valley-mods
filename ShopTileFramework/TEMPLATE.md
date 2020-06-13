@@ -22,7 +22,7 @@ Please refer to the README to learn the function of each of these fields and whi
       "Quote": "Quote1",
       "ShopPrice": -1,
       "MaxNumItemsSoldInStore": 2147483647,
-      "DefaultSellPriceMultipler": 1.0,
+      "DefaultSellPriceMultiplier": 1.0,
       "PriceMultiplierWhen": {
         "0.5": [
           "condition1",

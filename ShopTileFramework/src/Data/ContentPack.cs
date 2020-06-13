@@ -1,5 +1,4 @@
 ﻿using ShopTileFramework.Shop;
-using System.Collections.Generic;
 
 namespace ShopTileFramework.Data
 {

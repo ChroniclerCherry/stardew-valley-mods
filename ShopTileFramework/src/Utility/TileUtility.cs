@@ -1,11 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Menus;
 using StardewValley.Util;
-using System;
-using System.Collections.Generic;
 using xTile.ObjectModel;
+using xTile.Tiles;
 
 namespace ShopTileFramework.Utility
 {
@@ -26,7 +26,7 @@ namespace ShopTileFramework.Utility
             if (map == null)
                 return null;
 
-            xTile.Tiles.Tile checkTile = map.Map.GetLayer(layer).Tiles[(int)tile.X, (int)tile.Y];
+            Tile checkTile = map.Map.GetLayer(layer).Tiles[(int)tile.X, (int)tile.Y];
 
             return checkTile?.Properties;
         }
@@ -46,83 +46,81 @@ namespace ShopTileFramework.Utility
                 case "Vanilla!PierreShop":
                     {
                         var seedShop = new SeedShop();
-                        return new ShopMenu(seedShop.shopStock(), 0, "Pierre", null, null, null);
+                        return new ShopMenu(seedShop.shopStock(), 0, "Pierre");
                     }
 
                 case "Vanilla!JojaShop":
-                    return new ShopMenu(StardewValley.Utility.getJojaStock(), 0, null, null, null, null);
+                    return new ShopMenu(StardewValley.Utility.getJojaStock());
                 case "Vanilla!RobinShop":
-                    return new ShopMenu(StardewValley.Utility.getCarpenterStock(), 0,"Robin", null, null, null);
+                    return new ShopMenu(StardewValley.Utility.getCarpenterStock(), 0,"Robin");
                 case "Vanilla!RobinBuildingsShop":
                     warpingShop = true;
-                    return new CarpenterMenu(false);
+                    return new CarpenterMenu();
                 case "Vanilla!ClintShop":
-                    return new ShopMenu(StardewValley.Utility.getBlacksmithStock(), 0,"Clint", null, null, null);
+                    return new ShopMenu(StardewValley.Utility.getBlacksmithStock(), 0,"Clint");
                 case "Vanilla!ClintGeodes":
                     return new GeodeMenu();
                 case "Vanilla!ClintToolUpgrades":
-                    return new ShopMenu(StardewValley.Utility.getBlacksmithUpgradeStock(Game1.player),0, "ClintUpgrade", null, null, null);
+                    return new ShopMenu(StardewValley.Utility.getBlacksmithUpgradeStock(Game1.player),0, "ClintUpgrade");
                 case "Vanilla!MarlonShop":
-                    return new ShopMenu(StardewValley.Utility.getAdventureShopStock(),0, "Marlon", null, null, null);
+                    return new ShopMenu(StardewValley.Utility.getAdventureShopStock(),0, "Marlon");
                 case "Vanilla!MarnieShop":
-                    return new ShopMenu(StardewValley.Utility.getAnimalShopStock(),0, "Marnie", null, null, null);
+                    return new ShopMenu(StardewValley.Utility.getAnimalShopStock(),0, "Marnie");
                 case "Vanilla!MarnieAnimalShop":
                     warpingShop = true;
                     return new PurchaseAnimalsMenu(StardewValley.Utility.getPurchaseAnimalStock());
                 case "Vanilla!TravellingMerchant":
                     return new ShopMenu(StardewValley.Utility.getTravelingMerchantStock((int)((long)Game1.uniqueIDForThisGame + Game1.stats.DaysPlayed)),
-                        0, "Traveler", new Func<ISalable, Farmer, int, bool>(StardewValley.Utility.onTravelingMerchantShopPurchase), null, null);
+                        0, "Traveler", StardewValley.Utility.onTravelingMerchantShopPurchase);
                 case "Vanilla!HarveyShop":
-                    return new ShopMenu(StardewValley.Utility.getHospitalStock(),0, null, null, null, null);
+                    return new ShopMenu(StardewValley.Utility.getHospitalStock());
                 case "Vanilla!SandyShop":
                     {
                         var SandyStock = ModEntry.helper.Reflection.GetMethod(Game1.currentLocation, "sandyShopStock").Invoke<Dictionary<ISalable, int[]>>();
-                        return new ShopMenu(SandyStock, 0, "Sandy", new Func<ISalable,
-                            Farmer, int, bool>(onSandyShopPurchase), null, null);
+                        return new ShopMenu(SandyStock, 0, "Sandy", onSandyShopPurchase);
 
                     }
 
                 case "Vanilla!DesertTrader":
                     return new ShopMenu(Desert.getDesertMerchantTradeStock(Game1.player),0,
-                        "DesertTrade", new Func<ISalable, Farmer, int, bool>(boughtTraderItem),null, null);
+                        "DesertTrade", boughtTraderItem);
                 case "Vanilla!KrobusShop":
                     {
                         var sewer = new Sewer();
                         return new ShopMenu(sewer.getShadowShopStock(),
-                            0, "Krobus", new Func<ISalable, Farmer, int, bool>(sewer.onShopPurchase),
-                            null, null);
+                            0, "Krobus", sewer.onShopPurchase);
 
                     }
 
                 case "Vanilla!DwarfShop":
-                    return new ShopMenu(StardewValley.Utility.getDwarfShopStock(), 0,"Dwarf", null, null, null);
+                    return new ShopMenu(StardewValley.Utility.getDwarfShopStock(), 0,"Dwarf");
                 case "Vanilla!AdventureRecovery":
-                    return new ShopMenu(StardewValley.Utility.getAdventureRecoveryStock(),0, "Marlon_Recovery", null, null, null);
+                    return new ShopMenu(StardewValley.Utility.getAdventureRecoveryStock(),0, "Marlon_Recovery");
                 case "Vanilla!GusShop":
                     {
                         return new ShopMenu(StardewValley.Utility.getSaloonStock(), 0, "Gus", (item, farmer, amount) =>
                         {
                             Game1.player.team.synchronizedShopStock.OnItemPurchased(SynchronizedShopStock.SynchedShop.Saloon, item, amount);
                             return false;
-                        }, null, null);
+                        });
                     }
 
                 case "Vanilla!WillyShop":
-                    return new ShopMenu(StardewValley.Utility.getFishShopStock(Game1.player), 0,"Willy", null, null, null);
+                    return new ShopMenu(StardewValley.Utility.getFishShopStock(Game1.player), 0,"Willy");
                 case "Vanilla!WizardBuildings":
                     warpingShop = true;
                     return new CarpenterMenu(true);
                 case "Vanilla!QiShop":
-                    Game1.activeClickableMenu = new ShopMenu(StardewValley.Utility.getQiShopStock(), 2, null, null, null, null);
+                    Game1.activeClickableMenu = new ShopMenu(StardewValley.Utility.getQiShopStock(), 2);
                     break;
                 case "Vanilla!IceCreamStand":
-                    return new ShopMenu(new Dictionary<ISalable, int[]>()
-                                {
+                    return new ShopMenu(new Dictionary<ISalable, int[]>
+                    {
                                     {
-                                         new StardewValley.Object(233, 1, false, -1, 0),
-                                        new int[2]{ 250, int.MaxValue }
+                                         new Object(233, 1),
+                                        new[]{ 250, int.MaxValue }
                                     }
-                                }, 0, null, null, null, null);
+                                });
             }
 
             return null;

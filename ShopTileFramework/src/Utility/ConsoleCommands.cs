@@ -37,6 +37,7 @@ namespace ShopTileFramework.Utility
         /// <summary>
         /// Opens the item shop of the given name if able
         /// </summary>
+        /// <param name="command"></param>
         /// <param name="args">only checks the first argument for a shop name</param>
         private void DisplayShopMenu(string command, string[] args)
         {
@@ -66,6 +67,7 @@ namespace ShopTileFramework.Utility
         /// <summary>
         /// Opens the animal shop of the given name if able
         /// </summary>
+        /// <param name="command"></param>
         /// <param name="args">only checks the first argument for a shop name</param>
         private void DisplayAnimalShopMenus(string command, string[] args)
         {
@@ -95,6 +97,7 @@ namespace ShopTileFramework.Utility
         /// <summary>
         /// Resets the shop stock of the given shop name
         /// </summary>
+        /// <param name="command"></param>
         /// <param name="args">only checks the first argument for a shop name</param>
         private void ResetShopStock(string command, string[] args)
         {

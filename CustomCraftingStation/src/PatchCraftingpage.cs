@@ -1,27 +1,24 @@
-﻿using Harmony;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Harmony;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
 using StardewValley.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CustomCraftingStation.src
+namespace CustomCraftingStation
 {
     class PatchCraftingpage
     {
-        private static IMonitor Monitor;
-        private static ModEntry Instance;
+        private static IMonitor _monitor;
+        private static ModEntry _instance;
         public static void Initialize(IMonitor monitor, ModEntry mod)
         {
-            Monitor = monitor;
-            Instance = mod;
+            _monitor = monitor;
+            _instance = mod;
 
-            HarmonyInstance harmony = HarmonyInstance.Create(Instance.ModManifest.UniqueID);
+            var harmony = HarmonyInstance.Create(_instance.ModManifest.UniqueID);
 
             harmony.Patch(
                original: AccessTools.Constructor(typeof(CraftingPage), new Type[] {
@@ -43,9 +40,9 @@ namespace CustomCraftingStation.src
             {
                 __state = false; //this is set to true if I modify anything
 
-                if (Instance.OpenedModdedStation)
+                if (_instance.OpenedModdedStation)
                 {
-                    Instance.OpenedModdedStation = false;
+                    _instance.OpenedModdedStation = false;
                     return true;
                 }
 
@@ -53,16 +50,16 @@ namespace CustomCraftingStation.src
 
                 if (cooking)
                 {
-                    CraftingRecipe.cookingRecipes = CraftingRecipe.cookingRecipes.Intersect(Instance.ReducedCookingRecipes).ToDictionary(x => x.Key, x => x.Value);
+                    CraftingRecipe.cookingRecipes = CraftingRecipe.cookingRecipes.Intersect(_instance.ReducedCookingRecipes).ToDictionary(x => x.Key, x => x.Value);
                 } else
                 {
-                    CraftingRecipe.craftingRecipes = CraftingRecipe.craftingRecipes.Intersect(Instance.ReducedCraftingRecipes).ToDictionary(x => x.Key, x => x.Value);
+                    CraftingRecipe.craftingRecipes = CraftingRecipe.craftingRecipes.Intersect(_instance.ReducedCraftingRecipes).ToDictionary(x => x.Key, x => x.Value);
                 }
 
             }
             catch (Exception ex)
             {
-                Monitor.Log($"Failed in {nameof(CraftingPageConstructor_Prefix)}:\n{ex}", LogLevel.Error);
+                _monitor.Log($"Failed in {nameof(CraftingPageConstructor_Prefix)}:\n{ex}", LogLevel.Error);
             }
 
             return true; // run original logic
@@ -77,18 +74,18 @@ namespace CustomCraftingStation.src
 
                 if (cooking)
                 {
-                    CraftingRecipe.cookingRecipes = Instance.AllCookingRecipes;
+                    CraftingRecipe.cookingRecipes = _instance.AllCookingRecipes;
                 }
                 else
                 {
-                    CraftingRecipe.craftingRecipes = Instance.AllCraftingRecipes;
+                    CraftingRecipe.craftingRecipes = _instance.AllCraftingRecipes;
                 }
 
 
             }
             catch (Exception ex)
             {
-                Monitor.Log($"Failed in {nameof(CraftingPageConstructor_Prefix)}:\n{ex}", LogLevel.Error);
+                _monitor.Log($"Failed in {nameof(CraftingPageConstructor_Prefix)}:\n{ex}", LogLevel.Error);
             }
         }
 

@@ -1,5 +1,4 @@
-﻿using CustomCraftingStation.src;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
@@ -17,14 +16,14 @@ namespace CustomCraftingStation
         public Dictionary<string, string> ReducedCookingRecipes;
         public Dictionary<string, string> ReducedCraftingRecipes;
 
-        private Dictionary<string, string[]> TileCookingStations;
-        private Dictionary<string, string[]> CraftableCookingStations;
+        private Dictionary<string, string[]> _tileCookingStations;
+        private Dictionary<string, string[]> _craftableCookingStations;
 
-        private Dictionary<string, string[]> TileCraftingStations;
-        private Dictionary<string, string[]> CraftableCraftingStations;
+        private Dictionary<string, string[]> _tileCraftingStations;
+        private Dictionary<string, string[]> _craftableCraftingStations;
 
-        private List<string> CookingRecipesToRemove;
-        private List<string> CraftingRecipesToRemove;
+        private List<string> _cookingRecipesToRemove;
+        private List<string> _craftingRecipesToRemove;
 
         public bool OpenedModdedStation { get; set; } = false;
 
@@ -53,16 +52,16 @@ namespace CustomCraftingStation
 
             Vector2 grabTile = e.Cursor.GrabTile;
 
-            Game1.currentLocation.Objects.TryGetValue(grabTile, out StardewValley.Object obj);
+            Game1.currentLocation.Objects.TryGetValue(grabTile, out var obj);
             if (obj != null && obj.bigCraftable.Value)
             {
-                if (CraftableCookingStations.ContainsKey(obj.Name)){
-                    OpenCookingMenu(CraftableCookingStations[obj.Name]);
+                if (_craftableCookingStations.ContainsKey(obj.Name)){
+                    OpenCookingMenu(_craftableCookingStations[obj.Name]);
                     Helper.Input.Suppress(e.Button);
                     return;
-                } else if (CraftableCraftingStations.ContainsKey(obj.Name))
+                } else if (_craftableCraftingStations.ContainsKey(obj.Name))
                 {
-                    OpenCraftingMenu(CraftableCraftingStations[obj.Name]);
+                    OpenCraftingMenu(_craftableCraftingStations[obj.Name]);
                     Helper.Input.Suppress(e.Button);
                     return;
                 }
@@ -77,13 +76,13 @@ namespace CustomCraftingStation
             if (properties[0] != "CraftingStation")
                 return;
 
-            if (CraftableCookingStations.ContainsKey(properties[1]))
+            if (_craftableCookingStations.ContainsKey(properties[1]))
             {
-                OpenCookingMenu(CraftableCookingStations[properties[1]]);
+                OpenCookingMenu(_craftableCookingStations[properties[1]]);
                 Helper.Input.Suppress(e.Button);
-            } else if (CraftableCraftingStations.ContainsKey(properties[1]))
+            } else if (_craftableCraftingStations.ContainsKey(properties[1]))
             {
-                OpenCraftingMenu(CraftableCookingStations[properties[1]]);
+                OpenCraftingMenu(_craftableCookingStations[properties[1]]);
                 Helper.Input.Suppress(e.Button);
             }
         }
@@ -130,16 +129,14 @@ namespace CustomCraftingStation
             ReducedCookingRecipes = new Dictionary<string, string>();
             ReducedCraftingRecipes = new Dictionary<string, string>();
 
-            foreach (KeyValuePair<string, string> kvp in AllCookingRecipes)
+            foreach (var kvp in AllCookingRecipes.Where(kvp => !_cookingRecipesToRemove.Contains(kvp.Key)))
             {
-                if (!CookingRecipesToRemove.Contains(kvp.Key))
-                    ReducedCookingRecipes.Add(kvp.Key,kvp.Value);
+                ReducedCookingRecipes.Add(kvp.Key,kvp.Value);
             }
 
-            foreach (KeyValuePair<string, string> kvp in AllCraftingRecipes)
+            foreach (var kvp in AllCraftingRecipes.Where(kvp => !_craftingRecipesToRemove.Contains(kvp.Key)))
             {
-                if (!CraftingRecipesToRemove.Contains(kvp.Key))
-                    ReducedCraftingRecipes.Add(kvp.Key, kvp.Value);
+                ReducedCraftingRecipes.Add(kvp.Key, kvp.Value);
             }
         }
 
@@ -147,14 +144,14 @@ namespace CustomCraftingStation
         {
             var packs = Helper.ContentPacks.GetOwned();
 
-            TileCookingStations = new Dictionary<string, string[]>();
-            CraftableCookingStations = new Dictionary<string, string[]>();
-            TileCraftingStations = new Dictionary<string, string[]>();
-            CraftableCraftingStations = new Dictionary<string, string[]>();
-            CookingRecipesToRemove = new List<string>();
-            CraftingRecipesToRemove = new List<string>();
+            _tileCookingStations = new Dictionary<string, string[]>();
+            _craftableCookingStations = new Dictionary<string, string[]>();
+            _tileCraftingStations = new Dictionary<string, string[]>();
+            _craftableCraftingStations = new Dictionary<string, string[]>();
+            _cookingRecipesToRemove = new List<string>();
+            _craftingRecipesToRemove = new List<string>();
 
-            foreach (IContentPack pack in packs)
+            foreach (var pack in packs)
             {
                 if (!pack.HasFile("content.json"))
                 {
@@ -169,79 +166,73 @@ namespace CustomCraftingStation
             }
         }
 
-        private void RegisterCookingStations(List<CraftingStation> CookingStations)
+        private void RegisterCookingStations(List<CraftingStation> cookingStations)
         {
-            if (CookingStations == null)
+            if (cookingStations == null)
                 return;
-            foreach (CraftingStation station in CookingStations)
+            foreach (CraftingStation station in cookingStations)
             {
                 if (station.ExclusiveRecipes)
-                    CookingRecipesToRemove.AddRange(station.Recipes);
+                    _cookingRecipesToRemove.AddRange(station.Recipes);
 
                 if (station.TileData != null)
                 {
-                    if (TileCookingStations.Keys.Contains(station.TileData)){
+                    if (_tileCookingStations.Keys.Contains(station.TileData)){
                         Monitor.Log($"Multiple mods are trying to use the Tiledata {station.TileData}; Only one will be applied.",LogLevel.Error);
                     } else
                     {
                         if (station.TileData != null)
-                            TileCookingStations.Add(station.TileData, station.Recipes);
+                            _tileCookingStations.Add(station.TileData, station.Recipes);
                     }
                     
                 }
 
-                if (station.BigCraftable != null)
+                if (station.BigCraftable == null) continue;
+                if (_craftableCookingStations.Keys.Contains(station.BigCraftable))
                 {
-                    if (CraftableCookingStations.Keys.Contains(station.BigCraftable))
-                    {
-                        Monitor.Log($"Multiple mods are trying to use the BigCraftable {station.BigCraftable}; Only one will be applied.", LogLevel.Error);
-                    }
-                    else
-                    {
-                        if (station.BigCraftable != null)
-                            CraftableCookingStations.Add(station.BigCraftable, station.Recipes);
-                    }
-
+                    Monitor.Log($"Multiple mods are trying to use the BigCraftable {station.BigCraftable}; Only one will be applied.", LogLevel.Error);
+                }
+                else
+                {
+                    if (station.BigCraftable != null)
+                        _craftableCookingStations.Add(station.BigCraftable, station.Recipes);
                 }
 
             }
         }
 
-        private void RegisterCraftingStations(List<CraftingStation> CraftingStations)
+        private void RegisterCraftingStations(List<CraftingStation> craftingStations)
         {
-            if (CraftingStations == null)
+            if (craftingStations == null)
                 return;
-            foreach (CraftingStation station in CraftingStations)
+            foreach (var station in craftingStations)
             {
                 if (station.ExclusiveRecipes)
-                    CraftingRecipesToRemove.AddRange(station.Recipes);
+                    _craftingRecipesToRemove.AddRange(station.Recipes);
 
                 if (station.TileData != null)
                 {
-                    if (TileCraftingStations.Keys.Contains(station.TileData) || TileCookingStations.Keys.Contains(station.TileData))
+                    if (_tileCraftingStations.Keys.Contains(station.TileData) || _tileCookingStations.Keys.Contains(station.TileData))
                     {
                         Monitor.Log($"Multiple mods are trying to use the Tiledata {station.TileData}; Only one will be applied.", LogLevel.Error);
                     }
                     else
                     {
                         if (station.TileData != null)
-                            TileCraftingStations.Add(station.TileData, station.Recipes);
+                            _tileCraftingStations.Add(station.TileData, station.Recipes);
                     }
 
                 }
 
-                if (station.BigCraftable != null)
+                if (station.BigCraftable == null) continue;
+                if (_craftableCraftingStations.Keys.Contains(station.BigCraftable) || _craftableCookingStations.Keys.Contains(station.BigCraftable))
                 {
-                    if (CraftableCraftingStations.Keys.Contains(station.BigCraftable) || CraftableCookingStations.Keys.Contains(station.BigCraftable))
-                    {
-                        Monitor.Log($"Multiple mods are trying to use the BigCraftable {station.BigCraftable}; Only one will be applied.", LogLevel.Error);
-                    }
-                    else
-                    {
-                        if (station.BigCraftable != null)
-                            CraftableCraftingStations.Add(station.BigCraftable, station.Recipes);
-                    }
-
+                    Monitor.Log($"Multiple mods are trying to use the BigCraftable {station.BigCraftable}; Only one will be applied.", LogLevel.Error);
+                }
+                else
+                {
+                    if (station.BigCraftable != null)
+                        _craftableCraftingStations.Add(station.BigCraftable, station.Recipes);
                 }
 
             }

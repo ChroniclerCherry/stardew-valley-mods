@@ -14,13 +14,12 @@ namespace ShopTileFramework.Utility
     {
         public static Dictionary<string, IDictionary<int, string>> ObjectInfoSource { get; set; }
         public static List<string> RecipesList;
-        private static Dictionary<int, string> fruitTreeData;
-        private static Dictionary<int, string> cropData;
+        private static Dictionary<int, string> _fruitTreeData;
+        private static Dictionary<int, string> _cropData;
 
-        private static List<string> packsToRemove = new List<string>();
-        private static List<string> recipePacksToRemove = new List<string>();
-        private static List<string> itemsToRemove = new List<string>();
-        private static List<string> recipesToRemove = new List<string>();
+        private static List<string> _packsToRemove = new List<string>();
+        private static List<string> _recipePacksToRemove = new List<string>();
+        private static List<string> _itemsToRemove = new List<string>();
 
         /// <summary>
         /// Loads up the onject information for all types, 
@@ -65,18 +64,18 @@ namespace ShopTileFramework.Utility
             RecipesList = RecipesList.Select(s => s + " Recipe").ToList();
 
             //load up tree and crop data
-            fruitTreeData = ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/fruitTrees", ContentSource.GameContent);
-            cropData = ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/Crops", ContentSource.GameContent);
+            _fruitTreeData = ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/fruitTrees", ContentSource.GameContent);
+            _cropData = ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/Crops", ContentSource.GameContent);
         }
 
         /// <summary>
         /// Given and ItemInventoryAndStock, and a maximum number, randomly reduce the stock until it hits that number
         /// </summary>
         /// <param name="inventory">the ItemPriceAndStock</param>
-        /// <param name="MaxNum">The maximum number of items we want for this stock</param>
-        public static void RandomizeStock(Dictionary<ISalable, int[]> inventory, int MaxNum)
+        /// <param name="maxNum">The maximum number of items we want for this stock</param>
+        public static void RandomizeStock(Dictionary<ISalable, int[]> inventory, int maxNum)
         {
-            while (inventory.Count > MaxNum)
+            while (inventory.Count > maxNum)
             {
                 inventory.Remove(inventory.Keys.ElementAt(Game1.random.Next(inventory.Count)));
             }
@@ -87,7 +86,7 @@ namespace ShopTileFramework.Utility
         /// Get the itemID given a name and the object information that item belongs to
         /// </summary>
         /// <param name="name">name of the item</param>
-        /// <param name="ObjectInfo">the information data for that item's type</param>
+        /// <param name="itemType"></param>
         /// <returns></returns>
         public static int GetIndexByName(string name, string itemType= "Object")
         {
@@ -104,11 +103,11 @@ namespace ShopTileFramework.Utility
         /// <summary>
         /// Checks if an itemtype is valid
         /// </summary>
-        /// <param name="ItemType">The name of the itemtype</param>
+        /// <param name="itemType">The name of the itemtype</param>
         /// <returns>True if it's a valid type, false if not</returns>
-        public static bool CheckItemType(string ItemType)
+        public static bool CheckItemType(string itemType)
         {
-            return (ItemType == "Seed" || ObjectInfoSource.ContainsKey(ItemType));
+            return (itemType == "Seed" || ObjectInfoSource.ContainsKey(itemType));
         }
 
         /// <summary>
@@ -116,15 +115,15 @@ namespace ShopTileFramework.Utility
         /// </summary>
         /// <param name="cropName">The name of the crop object</param>
         /// <returns>The ID of the seed object if found, -1 if not</returns>
-        public static int GetSeedID(string cropName)
+        public static int GetSeedId(string cropName)
         {
             //int cropID = ModEntry.JsonAssets.GetCropId(cropName);
-            int cropID = GetIndexByName(cropName);
-            foreach (KeyValuePair<int, string> kvp in cropData)
+            int cropId = GetIndexByName(cropName);
+            foreach (KeyValuePair<int, string> kvp in _cropData)
             {
                 //find the tree id in crops information to get seed id
                 Int32.TryParse(kvp.Value.Split('/')[3], out int id);
-                if (cropID == id)
+                if (cropId == id)
                     return kvp.Key;
             }
 
@@ -134,26 +133,25 @@ namespace ShopTileFramework.Utility
         /// <summary>
         /// Given the name of a tree crop, return the ID of its sapling object
         /// </summary>
-        /// <param name="cropName">The name of the tree crop object</param>
         /// <returns>The ID of the sapling object if found, -1 if not</returns>
-        public static int GetSaplingID(string treeName)
+        public static int GetSaplingId(string treeName)
         {
-            int treeID = GetIndexByName(treeName);
-            foreach (KeyValuePair<int, string> kvp in fruitTreeData)
+            int treeId = GetIndexByName(treeName);
+            foreach (KeyValuePair<int, string> kvp in _fruitTreeData)
             {
                 //find the tree id in fruitTrees information to get sapling id
                 Int32.TryParse(kvp.Value.Split('/')[2], out int id);
-                if (treeID == id)
+                if (treeId == id)
                     return kvp.Key;
             }
 
             return -1;
         }
 
-        public static void RegisterPacksToRemove(string[] JApacks,string[] RecipePacks)
+        public static void RegisterPacksToRemove(string[] JApacks,string[] recipePacks)
         {
-            packsToRemove = packsToRemove.Union(JApacks).ToList();
-            recipePacksToRemove = recipePacksToRemove.Union(RecipePacks).ToList();
+            _packsToRemove = _packsToRemove.Union(JApacks).ToList();
+            _recipePacksToRemove = _recipePacksToRemove.Union(recipePacks).ToList();
         }
 
         public static void RegisterItemsToRemove()
@@ -161,42 +159,42 @@ namespace ShopTileFramework.Utility
             if (APIs.JsonAssets == null)
                 return;
 
-            foreach (string pack in packsToRemove)
+            foreach (string pack in _packsToRemove)
             {
 
                 var items = APIs.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
                 if (items != null)
-                    itemsToRemove.AddRange(items);
+                    _itemsToRemove.AddRange(items);
 
                 items = APIs.JsonAssets.GetAllClothingFromContentPack(pack);
                 if (items != null)
-                    itemsToRemove.AddRange(items);
+                    _itemsToRemove.AddRange(items);
 
                 items = APIs.JsonAssets.GetAllHatsFromContentPack(pack);
                 if (items != null)
-                    itemsToRemove.AddRange(items);
+                    _itemsToRemove.AddRange(items);
 
                 items = APIs.JsonAssets.GetAllObjectsFromContentPack(pack);
                 if (items != null)
                 {
-                    itemsToRemove.AddRange(items);
+                    _itemsToRemove.AddRange(items);
                 }
 
                 items = APIs.JsonAssets.GetAllWeaponsFromContentPack(pack);
                 if (items != null)
-                    itemsToRemove.AddRange(items);
+                    _itemsToRemove.AddRange(items);
             }
 
-            foreach (string pack in recipePacksToRemove)
+            foreach (string pack in _recipePacksToRemove)
             {
                 var items = APIs.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
                 if (items != null)
-                    itemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
+                    _itemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
 
                 items = APIs.JsonAssets.GetAllObjectsFromContentPack(pack);
                 if (items != null)
                 {
-                    itemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
+                    _itemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
                 }
 
             }
@@ -204,7 +202,7 @@ namespace ShopTileFramework.Utility
 
         public static Dictionary<ISalable, int[]> RemoveSpecifiedJAPacks(Dictionary<ISalable, int[]> stock)
         {
-            List<ISalable> removeItems = (stock.Keys.Where(item => itemsToRemove.Contains(item.Name))).ToList();
+            List<ISalable> removeItems = (stock.Keys.Where(item => _itemsToRemove.Contains(item.Name))).ToList();
             
             foreach (var item in removeItems)
             {
