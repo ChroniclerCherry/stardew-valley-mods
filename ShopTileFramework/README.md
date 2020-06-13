@@ -232,7 +232,7 @@ YourMod
 The result would be for spring, fall, and winter, `Bob.png` will be the portrait used, but during summer, `Bob_summer.png` will be used instead
 
 ## Example
-There is a full template found [here](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/Master/ShopTileFramework/TEMPLATE.md)
+There is a full template found [here](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/master/ShopTileFramework/TEMPLATE.md)
 
 The below example still works but is outdated in that it's missing newer features
 Example shops.json:
