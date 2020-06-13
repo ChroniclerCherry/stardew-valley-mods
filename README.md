@@ -17,14 +17,9 @@ A framework mod that allows modders to create new fully customizable shops and a
 
 A mod that removes the limits in the game preventing you from reaching 10 hearts with certain characters if you are not dating them. Edits existing events so that romantic mentions only happens while dating. Adding platonic versions of 10 heart events is in progress.
 
-## [Customize Anywhere](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/CustomizeAnywhere)
-[[Release](https://www.nexusmods.com/stardewvalley/mods/4734)]
-
-A mod that allows players to access a custom menu that allows them to fully customize their characters from anywhere. Also optionally adds a mirror item to the game to bring up the menu instead, as well as a dresser giving full access to all clothing items.
-
----
-
 **Other mods:**
+
+[[Customize Anywhere](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/CustomizeAnywhere) | [Release](https://www.nexusmods.com/stardewvalley/mods/4734)] A mod that allows players to access a custom menu that allows them to fully customize their characters from anywhere, and access a wardrobe with all clothing
 
 [[Profit Margins](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/ProfitMargins) | [Release](https://www.nexusmods.com/stardewvalley/mods/4663)] Allows configuration of profit margins via a config file
 
@@ -42,5 +37,6 @@ A mod that allows players to access a custom menu that allows them to fully cust
 
 [[Multi Yield Crops](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/MultiYieldCrops) | [Release](https://www.nexusmods.com/stardewvalley/mods/6069) | [README](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/master/MultiYieldCrops/README.md) ] Allows crops to have more than a single item as its yield
 
-
 [[Train Station](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/TrainStation/TrainStation) | [Release](https://www.nexusmods.com/stardewvalley/mods/6183) | [README](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/master/TrainStation/TrainStation/README.md) ] Allows crops to have more than a single item as its yield
+
+[[Custom Crafting Stations](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/CustomCraftingStation) | [Release](https://www.nexusmods.com/stardewvalley/mods/6293) | [README](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/master/CustomCraftingStation/README.md) ] Allows modders to add specialized crafting stations to the game
