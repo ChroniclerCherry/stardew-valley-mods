@@ -10,7 +10,7 @@ Custom stations can support crafting recipes, cooking recipes, or both in one me
 
 The android version of Stardew Valley uses a completely different crafting menu class, which means this mod needs to be almost completely rewritten to support it. Therefore, there are no current plans to make an android version.
 
-Other mods that make custom crafting menus will be affected. Because this mod removes certain recipes from vanilla menus, and there's no way to tell if a menu was opened by vanilla or another mod. In the cae of such conflicts, please make a bug report and I will see what I can do.
+Other mods that make custom crafting menus will be affected, because this mod removes certain recipes from vanilla menus and there's no way to tell if a menu was opened by vanilla or another mod. In the case of such conflicts, please make a bug report and I will see what I can do.
 
 While not reconmended to use bigcraftables that already have an action attached ( things like the workbench, or machines edited with Producer Framework Mod ) nothing will stop you from doing so.
 
