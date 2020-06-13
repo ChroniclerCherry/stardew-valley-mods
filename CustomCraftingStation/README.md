@@ -27,7 +27,7 @@ The stations themselves are specified in a `content.json` in the following forma
 	{
 		"BigCraftable": "BigCraftableName",
 		"TileData": "StationName",
-		"ExclusiveRecipes":true,
+		"ExclusiveRecipes": true,
 		"CraftingRecipes": ["recipe1","recipe2"],
 		"CookingRecipes": ["recipe1","recipe2"]
 	},
@@ -45,12 +45,15 @@ ExclusiveRecipes | Optional | boolean | Whether recipes from this station will b
 CraftingRecipes | Optional | list of strings | A list of the name of crafting recipes available at this station**
 CookingRecipes | Optional | list of strings | A list of the name of cooking  recipes available at this station **
 
-* You can specify both if you wish to attach the station to both a bigcraftable and tiledata.
-** Both crafting and cooking recipes can be added to the same menu
+\* You can specify both if you wish to attach the station to both a bigcraftable and tiledata.
+
+\** Both crafting and cooking recipes can be added to the same menu
 
 BigCraftables can be vanilla, but most likely you'll want to add custom ones. Those along with custom recipes will likely be handled with Json Assets.
 
-For Tiledata, they should be an Action tile on the `Buildings` layer with a format of `CraftingStation <StationName>` with StationName being what was put into the `TileData` field of the content.json
+For Tiledata, they should be an `Action` tile on the `Buildings` layer with a format of `CraftingStation <StationName>` with StationName being what was put into the `TileData` field of the content.json
+
+![Example of what the TileData looks like as described above in Tiled](https://imgur.com/9ZiQxyM.png)
 
 ## API
 There are plans to add an API, to allow other mods to programatically open crafting menus through this mod. With optional dependency set up properly, this should help with incompatibility issues in the future.
