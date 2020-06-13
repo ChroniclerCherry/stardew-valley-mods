@@ -23,7 +23,6 @@ The stations themselves are specified in a `content.json` in the following forma
 ```js
 {
 	"CraftingStations": [
-	
 	{
 		"BigCraftable": "BigCraftableName",
 		"TileData": "StationName",
@@ -31,8 +30,8 @@ The stations themselves are specified in a `content.json` in the following forma
 		"CraftingRecipes": ["recipe1","recipe2"],
 		"CookingRecipes": ["recipe1","recipe2"]
 	},
-
-]}
+	]
+}
 ```
 
 You can have as many CraftingStations as you want
