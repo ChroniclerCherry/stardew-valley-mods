@@ -14,7 +14,7 @@ namespace ShopTileFramework.Shop
     /// </summary>
     class ItemShop : ItemShopModel
     {
-        private Texture2D Portrait = null;
+        private Texture2D _portrait;
         public ItemPriceAndStockManager StockManager { get; set; }
 
         public IContentPack ContentPack { set; get; }
@@ -23,7 +23,7 @@ namespace ShopTileFramework.Shop
         /// This is used to make sure that JA only adds items to this shop the first time it is opened each day
         /// or else items will be added every time the shop is opened
         /// </summary>
-        private bool shopOpenedToday;
+        private bool _shopOpenedToday;
 
         /// <summary>
         /// Initializes the stock manager, done at game loaded so that content packs have finished loading in
@@ -48,12 +48,12 @@ namespace ShopTileFramework.Shop
                 //if the seasonal version exists, load it
                 if (ContentPack.HasFile(seasonalPath)) 
                 {
-                    Portrait = ContentPack.LoadAsset<Texture2D>(seasonalPath);
+                    _portrait = ContentPack.LoadAsset<Texture2D>(seasonalPath);
                 }
                 //if the seasonal version doesn't exist, try to load the default
                 else if (ContentPack.HasFile(PortraitPath))
                 {
-                    Portrait = ContentPack.LoadAsset<Texture2D>(PortraitPath);
+                    _portrait = ContentPack.LoadAsset<Texture2D>(PortraitPath);
                 }
             }
             catch (Exception ex) //couldn't load the image
@@ -67,7 +67,7 @@ namespace ShopTileFramework.Shop
         /// </summary>
         public void UpdateItemPriceAndStock()
         {
-            shopOpenedToday = false;
+            _shopOpenedToday = false;
             ModEntry.monitor.Log($"Generating stock for {ShopName}", LogLevel.Debug);
             StockManager.Update();
         }
@@ -102,28 +102,28 @@ namespace ShopTileFramework.Shop
                     break;
             }
 
-            var ShopMenu = new ShopMenu(StockManager.ItemPriceAndStock, currency: currency);
+            var shopMenu = new ShopMenu(StockManager.ItemPriceAndStock, currency: currency);
 
             if (CategoriesToSellHere != null)
-                ShopMenu.categoriesToSellHere = CategoriesToSellHere;
+                shopMenu.categoriesToSellHere = CategoriesToSellHere;
 
-            if (Portrait != null)
+            if (_portrait != null)
             {
-                ShopMenu.portraitPerson = new NPC();
+                shopMenu.portraitPerson = new NPC();
                 //only add a shop name the first time store is open each day so that items added from JA's side are only added once
-                if (!shopOpenedToday)
-                    ShopMenu.portraitPerson.Name = "STF." + ShopName;
+                if (!_shopOpenedToday)
+                    shopMenu.portraitPerson.Name = "STF." + ShopName;
 
-                ShopMenu.portraitPerson.Portrait = Portrait;
+                shopMenu.portraitPerson.Portrait = _portrait;
             }
 
             if (Quote != null)
             {
-                ShopMenu.potraitPersonDialogue = Game1.parseText(Quote, Game1.dialogueFont, 304);
+                shopMenu.potraitPersonDialogue = Game1.parseText(Quote, Game1.dialogueFont, 304);
             }
 
-            Game1.activeClickableMenu = ShopMenu;
-            shopOpenedToday = true;
+            Game1.activeClickableMenu = shopMenu;
+            _shopOpenedToday = true;
         }
 
         /// <summary>

@@ -21,26 +21,26 @@ namespace ShopTileFramework.API
         {
             //registers a shops.json inside the given dir
             var temp = ModEntry.helper.ContentPacks.CreateFake(dir);
-            ContentPack NewShopModel = temp.ReadJsonFile<ContentPack>("shops.json");
+            ContentPack newShopModel = temp.ReadJsonFile<ContentPack>("shops.json");
 
-            if (NewShopModel == null)
+            if (newShopModel == null)
             {
                 return false;
             }
 
-            ShopManager.RegisterShops(NewShopModel, temp);
+            ShopManager.RegisterShops(newShopModel, temp);
             return true;
         }
 
         /// <summary>
         /// Opens the item shop of a given name
         /// </summary>
-        /// <param name="ShopName">The name of the shop</param>
+        /// <param name="shopName">The name of the shop</param>
         /// <returns></returns>
-        public bool OpenItemShop(string ShopName)
+        public bool OpenItemShop(string shopName)
         {
             //opens up the shop of ShopName in-game
-            ShopManager.ItemShops.TryGetValue(ShopName, out var shop);
+            ShopManager.ItemShops.TryGetValue(shopName, out var shop);
             if (shop == null)
             {
                 return false;
@@ -53,12 +53,12 @@ namespace ShopTileFramework.API
         /// <summary>
         /// Opens the animal shop of a given name
         /// </summary>
-        /// <param name="ShopName">The name of the shop</param>
+        /// <param name="shopName">The name of the shop</param>
         /// <returns>true if the shop was successfully found, false if not</returns>
-        public bool OpenAnimalShop(string ShopName)
+        public bool OpenAnimalShop(string shopName)
         {
             //opens up the shop of ShopName in-game
-            ShopManager.AnimalShops.TryGetValue(ShopName, out var shop);
+            ShopManager.AnimalShops.TryGetValue(shopName, out var shop);
             if (shop == null)
             {
                 return false;
@@ -71,12 +71,12 @@ namespace ShopTileFramework.API
         /// <summary>
         /// Resets the stock of the shop, checking all conditions and randomizations as if it's a new day
         /// </summary>
-        /// <param name="ShopName">The name of the item shop</param>
+        /// <param name="shopName">The name of the item shop</param>
         /// <returns>true if the shop was found and reset, false if not</returns>
-        public bool ResetShopStock(string ShopName)
+        public bool ResetShopStock(string shopName)
         {
             //resets the stock of the given ShopName
-            ShopManager.ItemShops.TryGetValue(ShopName, out var shop);
+            ShopManager.ItemShops.TryGetValue(shopName, out var shop);
             if (shop == null)
             {
                 return false;
@@ -89,12 +89,12 @@ namespace ShopTileFramework.API
         /// <summary>
         /// Rettrieves the ItemPriceAndStock of the shop of a given name
         /// </summary>
-        /// <param name="ShopName">The name of the shop</param>
+        /// <param name="shopName">The name of the shop</param>
         /// <returns>The ItemPriceAndStock of the given store if found, null otherwise</returns>
-        public Dictionary<ISalable, int[]> GetItemPriceAndStock(string ShopName)
+        public Dictionary<ISalable, int[]> GetItemPriceAndStock(string shopName)
         {
             //gets the ItemStockAndPrice of the given ShopName
-            ShopManager.ItemShops.TryGetValue(ShopName, out var shop);
+            ShopManager.ItemShops.TryGetValue(shopName, out var shop);
             if (shop == null)
             {
                 return null;

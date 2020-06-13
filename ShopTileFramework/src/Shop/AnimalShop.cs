@@ -12,8 +12,8 @@ namespace ShopTileFramework.Shop
     class AnimalShop : AnimalShopModel
     {
 
-        private List<Object> ShopAnimalStock;
-        private List<Object> AllAnimalsStock;
+        private List<Object> _shopAnimalStock;
+        private List<Object> _allAnimalsStock;
 
         internal static List<string> ExcludeFromMarnie = new List<string>();
 
@@ -32,14 +32,14 @@ namespace ShopTileFramework.Shop
         private void UpdateShopAnimalStock()
         {
             //BFAV patches this anyways so it'll automatically work if installed
-            AllAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock();
+            _allAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock();
 
-            ShopAnimalStock = new List<Object>();
-            foreach (var animal in AllAnimalsStock)
+            _shopAnimalStock = new List<Object>();
+            foreach (var animal in _allAnimalsStock)
             {
                 if (AnimalStock.Contains(animal.Name))
                 {
-                    ShopAnimalStock.Add(animal);
+                    _shopAnimalStock.Add(animal);
                 }
             }
         }
@@ -53,7 +53,7 @@ namespace ShopTileFramework.Shop
 
                 //sets variables I use to control hardcoded warps
                 ModEntry.SourceLocation = Game1.currentLocation;
-                Game1.activeClickableMenu = new PurchaseAnimalsMenu(ShopAnimalStock);
+                Game1.activeClickableMenu = new PurchaseAnimalsMenu(_shopAnimalStock);
             }
             else if (ClosedMessage != null)
             {

@@ -9,8 +9,8 @@ namespace ShopTileFramework.API
     public interface ISTFApi
     {
         bool RegisterShops(string dir);
-        bool OpenItemShop(string ShopName);
-        bool ResetShopStock(string ShopName);
-        Dictionary<ISalable, int[]> GetItemPriceAndStock(string ShopName);
+        bool OpenItemShop(string shopName);
+        bool ResetShopStock(string shopName);
+        Dictionary<ISalable, int[]> GetItemPriceAndStock(string shopName);
     }
 }

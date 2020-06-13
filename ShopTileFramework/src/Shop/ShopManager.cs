@@ -77,7 +77,7 @@ namespace ShopTileFramework.Shop
         public static void RegisterShops(ContentPack data, IContentPack contentPack)
         {
             if (data.RemovePacksFromVanilla != null)
-                ItemsUtil.RegisterPacksToRemove(data.RemovePacksFromVanilla);
+                ItemsUtil.RegisterPacksToRemove(data.RemovePacksFromVanilla, data.RemovePackRecipesFromVanilla);
 
             if (data.Shops != null)
             {
@@ -194,10 +194,10 @@ namespace ShopTileFramework.Shop
             if (ItemShops.Count > 0)
                 ModEntry.monitor.Log($"Refreshing stock for all custom shops...", LogLevel.Debug);
 
-            foreach (ItemShop Store in ItemShops.Values)
+            foreach (ItemShop store in ItemShops.Values)
             {
-                Store.UpdateItemPriceAndStock();
-                Store.UpdatePortrait();
+                store.UpdateItemPriceAndStock();
+                store.UpdatePortrait();
             }
 
             if (VanillaShops.Count > 0)

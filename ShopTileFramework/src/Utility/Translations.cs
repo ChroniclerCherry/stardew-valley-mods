@@ -9,7 +9,7 @@ namespace ShopTileFramework.Utility
     /// </summary>
     class Translations
     {
-        private static LocalizedContentManager.LanguageCode selectedLanguage;
+        private static LocalizedContentManager.LanguageCode _selectedLanguage;
 
         /// <summary>
         /// Given the english string, and then a dictionary of localized versions of the string,
@@ -21,11 +21,11 @@ namespace ShopTileFramework.Utility
         /// <returns>The string of the current language if available, english as a default</returns>
         public static string Localize(string english, Dictionary<string, string> translations)
         {
-            if (selectedLanguage == LocalizedContentManager.LanguageCode.en)
+            if (_selectedLanguage == LocalizedContentManager.LanguageCode.en)
                 return english;
-            if (translations == null || !translations.ContainsKey(selectedLanguage.ToString()))
+            if (translations == null || !translations.ContainsKey(_selectedLanguage.ToString()))
                 return english;
-            return translations[selectedLanguage.ToString()];
+            return translations[_selectedLanguage.ToString()];
         }
 
         /// <summary>
@@ -33,8 +33,8 @@ namespace ShopTileFramework.Utility
         /// </summary>
         internal static void UpdateSelectedLanguage()
         {
-            selectedLanguage = LocalizedContentManager.CurrentLanguageCode;
-            ModEntry.monitor.Log($"Updating current language settings: {selectedLanguage}", ModEntry.VerboseLogging ? LogLevel.Debug : LogLevel.Trace);
+            _selectedLanguage = LocalizedContentManager.CurrentLanguageCode;
+            ModEntry.monitor.Log($"Updating current language settings: {_selectedLanguage}", ModEntry.VerboseLogging ? LogLevel.Debug : LogLevel.Trace);
         }
     }
 }

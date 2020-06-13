@@ -111,16 +111,16 @@ namespace ShopTileFramework.Utility
         /// <returns></returns>
         private static bool CheckCustomConditions(string con)
         {
-            string[] ConditionParams = con.Split(' ');
+            string[] conditionParams = con.Split(' ');
             //the first parameter at 0 is the command of which condition to check
-            switch (ConditionParams[0])
+            switch (conditionParams[0])
             {
                 case "NPCAt":
-                    return CheckNPCAt(ConditionParams);
+                    return CheckNPCAt(conditionParams);
                 case "HasMod":
-                    return CheckHasMod(ConditionParams);
+                    return CheckHasMod(conditionParams);
                 case "SkillLevel":
-                    return CheckSkillLevel(ConditionParams);
+                    return CheckSkillLevel(conditionParams);
                 case "CommunityCenterComplete":
                     return Game1.MasterPlayer.mailReceived.Contains("ccIsComplete") || Game1.MasterPlayer.hasCompletedCommunityCenter();
                 case "JojaMartComplete":
