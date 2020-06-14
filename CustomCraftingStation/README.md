@@ -19,7 +19,7 @@ While not reconmended to use bigcraftables that already have an action attached 
 
 ## Content Pack
 
-Content packs are created by targetting `Cherry.CustomCraftingStations` in the manifest.json
+Content packs are created by targetting `Cherry.CustomCraftingStations` in the [manifest.json](https://stardewvalleywiki.com/Modding:Modder_Guide/APIs/Manifest)
 
 The stations themselves are specified in a `content.json` in the following format:
 
