@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
@@ -55,7 +56,9 @@ namespace CustomCraftingStation
             var pagesOfCraftingRecipes = Helper.Reflection.GetField<List<Dictionary<ClickableTextureComponent, CraftingRecipe>>>(instance, "pagesOfCraftingRecipes");
             pagesOfCraftingRecipes.SetValue(new List<Dictionary<ClickableTextureComponent, CraftingRecipe>>());
 
-            layoutRecipes.Invoke(isCooking ? ReducedCookingRecipes : ReducedCraftingRecipes);
+            List<string> knownCraftingRecipes = ReducedCraftingRecipes.Where(recipe => Game1.player.craftingRecipes.ContainsKey(recipe)).ToList();
+
+            layoutRecipes.Invoke(isCooking ? ReducedCookingRecipes : knownCraftingRecipes);
         }
 
         private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
