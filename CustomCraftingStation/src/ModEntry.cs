@@ -11,6 +11,8 @@ namespace CustomCraftingStation
         private List<string> _cookingRecipesToRemove;
         private List<string> _craftingRecipesToRemove;
 
+        private IRemoteFridgeApi remoteFridgeApi { get; set; }
+
         public override void Entry(IModHelper helper)
         {
             if (Constants.TargetPlatform == GamePlatform.Android)
@@ -19,12 +21,18 @@ namespace CustomCraftingStation
                 return;
             }
 
+            Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
 
             Helper.Events.Display.RenderingActiveMenu += Display_RenderingActiveMenu;
             Helper.Events.Display.MenuChanged += Display_MenuChanged;
 
             Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             Helper.Events.Input.ButtonPressed += Input_ButtonPressed;
+        }
+
+        private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+        {
+            remoteFridgeApi = Helper.ModRegistry.GetApi<IRemoteFridgeApi>("EternalSoap.RemoteFridgeStorage");
         }
     }
 }

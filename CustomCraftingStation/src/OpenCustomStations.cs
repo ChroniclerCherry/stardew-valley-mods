@@ -59,6 +59,8 @@ namespace CustomCraftingStation
                 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, true, true, new List<Chest>());
 
             LayoutRecipe(menu, station.CraftingRecipes, station.CookingRecipes);
+
+            remoteFridgeApi?.UseCustomCraftingMenu(false);
             Game1.activeClickableMenu = menu;
         }
 
