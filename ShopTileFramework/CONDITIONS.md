@@ -1,0 +1,1 @@
+﻿## Synchronized randomness
