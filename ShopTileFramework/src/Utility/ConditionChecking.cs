@@ -167,15 +167,15 @@ namespace ShopTileFramework.Utility
 
             if (interval != 0)
             {
-                interval = (int)(Game1.MasterPlayer.stats.daysPlayed / interval);
+                interval = (int)((Game1.MasterPlayer.stats.daysPlayed-1) / interval);
             }
             
 
             ulong seed = Game1.uniqueIDForThisGame + (ulong) offset + (ulong) interval;
 
             var rng = new Random((int) seed);
-            float roll = rng.Next();
-            return (lowerCheck >= roll && roll <= higherCheck);
+            double roll = rng.NextDouble();
+            return (lowerCheck <= roll && roll < higherCheck);
 
         }
 

@@ -148,10 +148,11 @@ namespace ShopTileFramework.Utility
             return -1;
         }
 
-        public static void RegisterPacksToRemove(string[] JApacks,string[] recipePacks)
+        public static void RegisterPacksToRemove(string[] JApacks,string[] recipePacks, string[] itemNames)
         {
             _packsToRemove = _packsToRemove.Union(JApacks).ToList();
             _recipePacksToRemove = _recipePacksToRemove.Union(recipePacks).ToList();
+            _itemsToRemove = _itemsToRemove.Union(itemNames).ToList();
         }
 
         public static void RegisterItemsToRemove()

@@ -8,6 +8,14 @@ Please refer to the README to learn the function of each of these fields and whi
         "JAPack.UniqueID1",
         "JAPack.UniqueID2"
       ],
+  "RemovePackRecipesFromVanilla": [
+        "JAPack.UniqueID1",
+        "JAPack.UniqueID2"
+      ],
+   "RemoveItemsFromVanilla": [
+        "Item1",
+        "Item2"
+      ],
   "Shops": [
 
   /// start of block for each item shop. You can have as many of these as you want
