@@ -53,7 +53,7 @@ Here's an example of making two different stocks that change each week, and ther
 
 ```
 
-More complex example setting different time ranges. The following combination of conditions will have a 25% chance of returning true for days 22-28, 50% chance of being true for the days 26-28, 75% chance of only being true on the 28th, and if all those random checks fail then it returns false
+More complex example setting different time ranges. The following combination of conditions will have a 25% chance of returning true for days 22-28, 25% chance of being true for the days 26-28, 25% chance of only being true on the 28th, and 25% chance of returning false for any of the days
 
 ```js
 {
@@ -75,8 +75,8 @@ More complex example setting different time ranges. The following combination of
           "ItemNames": ["Item2","Item3","Item5"],
           "When": [
             "u 22 23 24 25 26 27 28/SeededRandom 1 Season 0 0.25",
-            "u 26 27 28/SeededRandom 1 Season 0 0.5",
-            "u 28/SeededRandom 1 Season 0 0.75"
+            "u 26 27 28/SeededRandom 1 Season 0.25 0.50",
+            "u 28/SeededRandom 1 Season 0.50 0.75"
             ],
         },
       ],
