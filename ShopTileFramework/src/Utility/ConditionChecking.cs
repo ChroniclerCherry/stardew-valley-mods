@@ -165,7 +165,11 @@ namespace ShopTileFramework.Utility
             float lowerCheck = Convert.ToSingle(conditionParams[3]);
             float higherCheck = Convert.ToSingle(conditionParams[4]);
 
-            interval = (int) (Game1.MasterPlayer.stats.daysPlayed / interval);
+            if (interval != 0)
+            {
+                interval = (int)(Game1.MasterPlayer.stats.daysPlayed / interval);
+            }
+            
 
             ulong seed = Game1.uniqueIDForThisGame + (ulong) offset + (ulong) interval;
 
