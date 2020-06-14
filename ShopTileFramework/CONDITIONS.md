@@ -4,7 +4,7 @@
  
  The structure of the condition looks like this:
  
- `SeededRandom <i:offset> <i:timeInterval/s:timeInterval> <f:random lower bounds> <f: random lower bounds>`
+ `SeededRandom <i:offset> <i:timeInterval/s:timeInterval> <f:random lower bounds> <f: random upper bounds>`
  
  Broken down:
  Parameter | Type | Description
