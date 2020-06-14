@@ -12,7 +12,10 @@ The android version of Stardew Valley uses a completely different crafting menu 
 
 Other mods that make custom crafting menus will be affected, because this mod removes certain recipes from vanilla menus and there's no way to tell if a menu was opened by vanilla or another mod. In the case of such conflicts, please make a bug report and I will see what I can do.
 
-While not reconmended to use bigcraftables that already have an action attached ( things like the workbench, or machines edited with Producer Framework Mod ) nothing will stop you from doing so.
+While not reconmended to use bigcraftables that already have an action attached ( things like the workbench, or machines edited with Producer Framework Mod ) nothing will stop you from doing so. Right click/action button will open up thecustom menu, while left click/use tool button will trigger the normal left click action
+
+**Compatibility has been added for:**
+* Remote Fridge Storage
 
 ## Content Pack
 
