@@ -1,0 +1,3 @@
+﻿## ConditioNS
+
+Most conditions for 

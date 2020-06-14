@@ -18,6 +18,7 @@
 - [Placing Vanilla Shops](#placing-vanilla-shops)
 - [Console Commands](#console-commands)
 - [Contact the dev](#contact-the-dev)
+- [More](#more)
 
 ## Intro
 
@@ -190,6 +191,7 @@ Syntax | Description | Example
 `SkillLevel [<s:SkillName> <i:SkillLevel>]` | This will check if the player has at least the given skill level for named skills. Multiple skill-level pairs can be provided, and returns true if all of them are matched. Valid skills are: `combat`, `farming`, `fishing`, `foraging`, `luck` (unsued in vanilla), and `mining` | `SkillLevel farming 5 fishing 3` Would return true if the player has at least level 5 farm and level 3 fishing
 `CommunityCenterComplete` | Returns true if the Community center is completed on this save file| 
 `JojaMartComplete` | Returns true if the joja mart route was completed on this save file |
+`SeededRandom <i:offset> <i:timeInterval/s:timeInterval> <f:random lower bounds> <f: random upper bounds>`| Used to make synchronized random checks, which can be used across different stocks/stores and remain constant over given periods of time | `SeededRandom 123 Season 0.5 1` [Find more detailed explanation here](CONDITIONS.md)
 
 I am always taking requests for more conditions as they are needed! Open an issue any time
 
@@ -232,7 +234,7 @@ YourMod
 The result would be for spring, fall, and winter, `Bob.png` will be the portrait used, but during summer, `Bob_summer.png` will be used instead
 
 ## Example
-There is a full template found [here](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/Master/ShopTileFramework/TEMPLATE.md)
+There is a full template found [here](TEMPLATE.md)
 
 The below example still works but is outdated in that it's missing newer features
 Example shops.json:
@@ -370,8 +372,12 @@ Command | Description
  `reset_shop <ShopName>` | Will reset the stock of the specified `ShopName`, which usually happens at the start of each day. Useful for checking that your conditions are applying / stock is randomizing as you'd like'
  `list_shops` | Lists all of the `ShopName`s registered with Shop Tile Framework
  
- ## Contact The Dev
+## Contact The Dev
 If you need to find me, the following methods are your best bets:
 - Bug reports can be made by submitting an issue on this repositiory, or use the [bugs tab](https://www.nexusmods.com/stardewvalley/mods/5005?tab=bugs) on the Nexus mod page. Please provide a [log](https://smapi.io/log/) with all bug reports and as much information about the circumstances of the bug as possible.
 - Suggestions should be submitted through an issue on this repository
 - If you have questions that aren't answered here or requires clarification, you can DM me on discord at `Chronicler#9318`
+
+## More
+* [Find a full template of the shops.json as an example here](TEMPLATE.md)
+* [Find examples and explanations of more complex conditions here](CONDITIONS.md)

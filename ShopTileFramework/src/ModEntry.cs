@@ -195,6 +195,9 @@ namespace ShopTileFramework
         /// <param name="e"></param>
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
         {
+            var testString = "SeededRandom 55 5 0.5 1";
+            ConditionChecking.CheckSeededRandom(testString.Split(' '));
+
             ShopManager.UpdateStock();
         }
 
