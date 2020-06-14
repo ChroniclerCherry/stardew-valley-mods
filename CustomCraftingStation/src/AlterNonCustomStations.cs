@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
@@ -37,31 +38,40 @@ namespace CustomCraftingStation
 
             CraftingPage instance;
 
-            switch (activeMenu)
-            {
-                case CraftingPage craftingPage:
-                    instance = craftingPage;
-                    break;
-                case GameMenu gameMenu:
-                    instance = (CraftingPage)gameMenu.pages[GameMenu.craftingTab];
-                    break;
-                default:
-                    return;
-            }
+            if (activeMenu is CraftingPage)
+                instance = (CraftingPage)activeMenu;
+            else if (activeMenu is GameMenu gameMenu)
+                instance = (CraftingPage) gameMenu.pages[GameMenu.craftingTab];
+            else
+                return;
 
+            OpenAndFixMenu(instance);
+        }
+
+        private void OpenAndFixMenu(CraftingPage instance)
+        {
             var isCooking = Helper.Reflection.GetField<bool>(instance, "cooking").GetValue();
             var layoutRecipes = Helper.Reflection.GetMethod(instance, "layoutRecipes");
 
-            var pagesOfCraftingRecipes = Helper.Reflection.GetField<List<Dictionary<ClickableTextureComponent, CraftingRecipe>>>(instance, "pagesOfCraftingRecipes");
+            var pagesOfCraftingRecipes =
+                Helper.Reflection.GetField<List<Dictionary<ClickableTextureComponent, CraftingRecipe>>>(instance,
+                    "pagesOfCraftingRecipes");
             pagesOfCraftingRecipes.SetValue(new List<Dictionary<ClickableTextureComponent, CraftingRecipe>>());
 
-            layoutRecipes.Invoke(isCooking ? ReducedCookingRecipes : ReducedCraftingRecipes);
+            List<string> knownCraftingRecipes =
+                ReducedCraftingRecipes.Where(recipe => Game1.player.craftingRecipes.ContainsKey(recipe)).ToList();
+
+            layoutRecipes.Invoke(isCooking ? ReducedCookingRecipes : knownCraftingRecipes);
         }
 
         private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
         {
             if (e.OldMenu is CraftingPage || e.OldMenu is GameMenu)
+            {
                 _openedNonCustomMenu = false;
+                remoteFridgeApi?.UseCustomCraftingMenu(true);
+            }
+                
         }
     }
 }

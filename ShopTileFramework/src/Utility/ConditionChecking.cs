@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
+using System;
 
 namespace ShopTileFramework.Utility
 {
@@ -48,7 +49,7 @@ namespace ShopTileFramework.Utility
                 if (CheckIndividualConditions(con.Split('/')))
                 {
                     if (ModEntry.VerboseLogging)
-                        ModEntry.monitor.Log($"\tPlayer met the conditions: \"{con}\"",LogLevel.Debug);
+                        ModEntry.monitor.Log($"\tPlayer met the conditions: \"{con}\"", LogLevel.Debug);
                     return true;
                 }
             }
@@ -73,7 +74,7 @@ namespace ShopTileFramework.Utility
             foreach (var condition in conditions)
             {
                 if (ModEntry.VerboseLogging)
-                    ModEntry.monitor.Log($"\t\tChecking individual condition: {condition}",LogLevel.Trace);
+                    ModEntry.monitor.Log($"\t\tChecking individual condition: {condition}", LogLevel.Trace);
                 //if condition starts with a ! return false if condition checking is true
                 if (condition[0] == '!')
                 {
@@ -125,11 +126,57 @@ namespace ShopTileFramework.Utility
                     return Game1.MasterPlayer.mailReceived.Contains("ccIsComplete") || Game1.MasterPlayer.hasCompletedCommunityCenter();
                 case "JojaMartComplete":
                     return CheckJojaMartComplete();
+                case "SeededRandom":
+                    return CheckSeededRandom(conditionParams);
                 default:
                     // Note: "-5005" is a random event id cause the vanilla method is for events and needs one ¯\_(ツ)_/¯
                     // so it's the negative mod id
                     return (VanillaPreconditionsMethod.Invoke<int>("-5005/" + con) != -1);
             }
+        }
+
+        public static bool CheckSeededRandom(string[] conditionParams)
+        {
+            int offset = Convert.ToInt32(conditionParams[1]);
+            string timePeriod = conditionParams[2];
+            if (!Int32.TryParse(timePeriod, out var interval))
+            {
+                switch (timePeriod)
+                {
+                    case "Day":
+                        interval = 1;
+                        break;
+                    case "Week":
+                        interval = 7;
+                        break;
+                    case "Season":
+                    case "Month":
+                        interval = 28;
+                        break;
+                    case "Year":
+                        interval = 112;
+                        break;
+                    case "Game":
+                        interval = 0;
+                        break;
+                }
+            }
+
+            float lowerCheck = Convert.ToSingle(conditionParams[3]);
+            float higherCheck = Convert.ToSingle(conditionParams[4]);
+
+            if (interval != 0)
+            {
+                interval = (int)((Game1.MasterPlayer.stats.daysPlayed-1) / interval);
+            }
+            
+
+            ulong seed = Game1.uniqueIDForThisGame + (ulong) offset + (ulong) interval;
+
+            var rng = new Random((int) seed);
+            double roll = rng.NextDouble();
+            return (lowerCheck <= roll && roll < higherCheck);
+
         }
 
         /// <summary>
@@ -224,7 +271,7 @@ namespace ShopTileFramework.Utility
                             return false;
                         break;
                     default:
-                        ModEntry.monitor.Log($"\"{conditionParams[i]}\" is not a valid paramater for SkillLevel. Skipping check.",LogLevel.Trace);
+                        ModEntry.monitor.Log($"\"{conditionParams[i]}\" is not a valid paramater for SkillLevel. Skipping check.", LogLevel.Trace);
                         break;
                 }
             }

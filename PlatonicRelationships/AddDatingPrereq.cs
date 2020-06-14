@@ -34,7 +34,7 @@ namespace PlatonicRelationships
             {
                 if (data.ContainsKey("43/f Elliott 2500/w sunny/t 700 1300"))
                 {
-                    data.Add("43/f Elliott 2500 /D Elliott /w sunny /t 700 1300", data["43/f Elliott 2500/w sunny/t 700 1300"]);
+                    data.Add("43/f Elliott 2500 /D Elliott/w sunny /t 700 1300", data["43/f Elliott 2500/w sunny/t 700 1300"]);
                     data.Remove("43/f Elliott 2500/w sunny/t 700 1300");
                 }
             }

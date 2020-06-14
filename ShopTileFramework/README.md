@@ -18,6 +18,7 @@
 - [Placing Vanilla Shops](#placing-vanilla-shops)
 - [Console Commands](#console-commands)
 - [Contact the dev](#contact-the-dev)
+- [More](#more)
 
 ## Intro
 
@@ -47,6 +48,7 @@ Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
 RemovePacksFromVanilla | Optional | An array of strings | Takes a list of Unique IDs of Json Asset packs. Will remove all items from these packs from vanilla shops. **Warning:** This includes any items from these packs added to vanilla shops using this mod!
 RemovePackRecipesFromVanilla | Optional | An array of strings | Takes a list of Unique IDs of Json Asset packs. Will remove all recipes from these packs from vanilla shops. **Warning:** This includes any items from these packs added to vanilla shops using this mod!
+RemoveItemsFromVanilla | Optional | An array of strings | Takes a list of Item names. Will remove all of those items from vanilla shops. For recipes, use "<item name> Recipe" **Warning:** This includes any items from these packs added to vanilla shops using this mod!
 Shops | Optional | An array of Shops | You can add as many shops as you want, as long as they have unique `ShopName`among Shops.
 AnimalShops | Optional | An array of AnimalShops | You can add as many animal shops as you want, as long as they have unique `ShopName` among AnimalShops.
 VanillaShops | Optional | An array of VanillaShops | You can add as many of these as you want. Multiple mods can target the same vanilla shops.
@@ -190,6 +192,7 @@ Syntax | Description | Example
 `SkillLevel [<s:SkillName> <i:SkillLevel>]` | This will check if the player has at least the given skill level for named skills. Multiple skill-level pairs can be provided, and returns true if all of them are matched. Valid skills are: `combat`, `farming`, `fishing`, `foraging`, `luck` (unsued in vanilla), and `mining` | `SkillLevel farming 5 fishing 3` Would return true if the player has at least level 5 farm and level 3 fishing
 `CommunityCenterComplete` | Returns true if the Community center is completed on this save file| 
 `JojaMartComplete` | Returns true if the joja mart route was completed on this save file |
+`SeededRandom <i:offset> <i:timeInterval/s:timeInterval> <f:random lower bounds> <f: random upper bounds>`| Used to make synchronized random checks, which can be used across different stocks/stores and remain constant over given periods of time | `SeededRandom 123 Season 0.5 1` [Find more detailed explanation here](CONDITIONS.md)
 
 I am always taking requests for more conditions as they are needed! Open an issue any time
 
@@ -370,8 +373,12 @@ Command | Description
  `reset_shop <ShopName>` | Will reset the stock of the specified `ShopName`, which usually happens at the start of each day. Useful for checking that your conditions are applying / stock is randomizing as you'd like'
  `list_shops` | Lists all of the `ShopName`s registered with Shop Tile Framework
  
- ## Contact The Dev
+## Contact The Dev
 If you need to find me, the following methods are your best bets:
 - Bug reports can be made by submitting an issue on this repositiory, or use the [bugs tab](https://www.nexusmods.com/stardewvalley/mods/5005?tab=bugs) on the Nexus mod page. Please provide a [log](https://smapi.io/log/) with all bug reports and as much information about the circumstances of the bug as possible.
 - Suggestions should be submitted through an issue on this repository
 - If you have questions that aren't answered here or requires clarification, you can DM me on discord at `Chronicler#9318`
+
+## More
+* [Find a full template of the shops.json as an example here](TEMPLATE.md)
+* [Find examples and explanations of more complex conditions here](CONDITIONS.md)

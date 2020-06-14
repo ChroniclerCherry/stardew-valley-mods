@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
+using StardewValley.Objects;
 
 namespace CustomCraftingStation
 {
@@ -55,9 +56,11 @@ namespace CustomCraftingStation
 
             OpenedModdedStation = true;
             var menu = new CraftingPage((int) centeringOnScreen.X, (int) centeringOnScreen.Y,
-                800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, true, true);
+                800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, true, true, new List<Chest>());
 
             LayoutRecipe(menu, station.CraftingRecipes, station.CookingRecipes);
+
+            remoteFridgeApi?.UseCustomCraftingMenu(false);
             Game1.activeClickableMenu = menu;
         }
 
