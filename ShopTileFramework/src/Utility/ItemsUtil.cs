@@ -156,7 +156,7 @@ namespace ShopTileFramework.Utility
             if (recipePacks != null)
                 _recipePacksToRemove = _recipePacksToRemove.Union(recipePacks).ToList();
 
-            if (JApacks!= null)
+            if (itemNames != null)
                 _itemsToRemove = _itemsToRemove.Union(itemNames).ToList();
         }
 
