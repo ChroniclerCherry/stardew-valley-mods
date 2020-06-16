@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace UpgradeEmptyCabins
 {
-    class ModUtility
+    internal static class ModUtility
     {
         public static Building GetCabin(string name)
         {
