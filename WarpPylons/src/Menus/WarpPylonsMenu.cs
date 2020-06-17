@@ -135,14 +135,14 @@ namespace WarpPylons
         private void DownArrowPressed()
         {
             this.DownArrow.scale = this.DownArrow.baseScale;
-            this.CurrentItemIndex+= 2;
+            ++this.CurrentItemIndex;
             this.SetScrollBarToCurrentIndex();
         }
 
         private void UpArrowPressed()
         {
             this.UpArrow.scale = this.UpArrow.baseScale;
-            this.CurrentItemIndex -= 2;
+            --this.CurrentItemIndex;
             this.SetScrollBarToCurrentIndex();
         }
 
@@ -175,6 +175,8 @@ namespace WarpPylons
         /// <param name="spriteBatch">The sprite batch being drawn.</param>
         public override void draw(SpriteBatch spriteBatch)
         {
+            if (!Game1.options.showMenuBackground)
+                spriteBatch.Draw(Game1.fadeToBlackRect, Game1.graphics.GraphicsDevice.Viewport.Bounds, Color.Black * 0.4f);
             base.draw(spriteBatch);
 
             Game1.drawDialogueBox(this.xPositionOnScreen, this.yPositionOnScreen, this.width, this.height, false, true);
@@ -187,18 +189,17 @@ namespace WarpPylons
             for (int index = 0; index < this.OptionSlots.Count; ++index)
             {
                 if (this.CurrentItemIndex >= 0 && this.CurrentItemIndex + index < this.Options.Count)
-                {
-                    this.Options[this.CurrentItemIndex + index].draw(spriteBatch, this.OptionSlots[index].bounds.X, this.OptionSlots[index].bounds.Y);
-                }
+                    this.Options[this.CurrentItemIndex + index].draw(spriteBatch, this.OptionSlots[index].bounds.X, this.OptionSlots[index].bounds.Y + 5);
             }
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
 
             if (this.Options.Count > ItemsPerPage)
             {
                 IClickableMenu.drawTextureBox(spriteBatch, Game1.mouseCursors, new Rectangle(403, 383, 6, 6), this.ScrollbarRunner.X, this.ScrollbarRunner.Y, this.ScrollbarRunner.Width, this.ScrollbarRunner.Height, Color.White, Game1.pixelZoom, false);
                 this.Scrollbar.draw(spriteBatch);
             }
-
-            drawMouse(Game1.spriteBatch);
 
         }
 

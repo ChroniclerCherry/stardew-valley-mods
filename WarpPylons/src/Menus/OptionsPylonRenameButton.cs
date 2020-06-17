@@ -21,7 +21,7 @@ namespace WarpPylons.src.Menus
         {
             _monitor = monitor;
             _pylon = pylon;
-            this.bounds = new Rectangle(32+ xOffset, 0, (int)Game1.dialogueFont.MeasureString(label).X + 64, 50);
+            this.bounds = new Rectangle(32+ xOffset, 15, (int)Game1.dialogueFont.MeasureString(label).X + 64, 50);
         }
 
         public override void receiveLeftClick(int x, int y)
