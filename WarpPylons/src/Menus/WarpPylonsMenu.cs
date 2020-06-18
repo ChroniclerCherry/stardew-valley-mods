@@ -10,14 +10,13 @@ using StardewValley;
 using StardewValley.Menus;
 using StardewValley.Quests;
 using WarpPylons.Menus;
-using WarpPylons.src.Menus;
 
 namespace WarpPylons
 {
     class WarpPylonsMenu : IClickableMenu
     {
         private List<ClickableComponent> OptionSlots = new List<ClickableComponent>();
-        private List<OptionsElement> Options = new List<OptionsElement>();
+        private List<PylonsElement> Options = new List<PylonsElement>();
         private ClickableTextureComponent UpArrow;
         private ClickableTextureComponent DownArrow;
         private ClickableTextureComponent Scrollbar;
@@ -41,12 +40,9 @@ namespace WarpPylons
             _pylons = pylons;
             _monitor = monitor;
 
-            for (int index = 0; index < _pylons.Count; index++)
+            foreach (var pylon in _pylons)
             {
-                var pylon = _pylons[index];
-                this.Options.Add(new OptionsElement($"{pylon.Name}",32,16,36,50));
-                this.Options.Add(new OptionsPylonRenameButton(_monitor,"Rename",pylon));
-                this.Options.Add(new OptionsPylonWarpButton(_monitor, "Warp", pylon));
+                Options.Add(new PylonsElement(_monitor,pylon));
             }
 
             UpdateLayout();
@@ -132,17 +128,32 @@ namespace WarpPylons
             }
         }
 
+        public override void performHoverAction(int x, int y)
+        {
+            this.CurrentItemIndex = Math.Max(0, Math.Min(this.Options.Count - ItemsPerPage, this.CurrentItemIndex));
+
+            for (int index = 0; index < this.OptionSlots.Count; ++index)
+            {
+                if (this.OptionSlots[index].bounds.Contains(x, y) && this.CurrentItemIndex + index < this.Options.Count)
+                {
+                    this.Options[this.CurrentItemIndex + index].performHoverAction(x - this.OptionSlots[index].bounds.X, y - this.OptionSlots[index].bounds.Y + 5);
+                    this.OptionsSlotHeld = index;
+                }
+            }
+
+        }
+
         private void DownArrowPressed()
         {
             this.DownArrow.scale = this.DownArrow.baseScale;
-            ++this.CurrentItemIndex;
+            this.CurrentItemIndex ++;
             this.SetScrollBarToCurrentIndex();
         }
 
         private void UpArrowPressed()
         {
             this.UpArrow.scale = this.UpArrow.baseScale;
-            --this.CurrentItemIndex;
+            this.CurrentItemIndex --;
             this.SetScrollBarToCurrentIndex();
         }
 
@@ -152,12 +163,6 @@ namespace WarpPylons
         public override void gameWindowSizeChanged(Rectangle oldBounds, Rectangle newBounds)
         {
             UpdateLayout();
-        }
-        public void HandleLeftClick(int x, int y)
-        {
-            // close menu when clicked outside
-            if (!isWithinBounds(x, y))
-                exitThisMenu();
         }
 
         public override void releaseLeftClick(int x, int y)
@@ -186,7 +191,7 @@ namespace WarpPylons
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null);
 
 
-            for (int index = 0; index < this.OptionSlots.Count; ++index)
+            for (int index = 0; index < ItemsPerPage; ++index)
             {
                 if (this.CurrentItemIndex >= 0 && this.CurrentItemIndex + index < this.Options.Count)
                     this.Options[this.CurrentItemIndex + index].draw(spriteBatch, this.OptionSlots[index].bounds.X, this.OptionSlots[index].bounds.Y + 5);
@@ -200,6 +205,8 @@ namespace WarpPylons
                 IClickableMenu.drawTextureBox(spriteBatch, Game1.mouseCursors, new Rectangle(403, 383, 6, 6), this.ScrollbarRunner.X, this.ScrollbarRunner.Y, this.ScrollbarRunner.Width, this.ScrollbarRunner.Height, Color.White, Game1.pixelZoom, false);
                 this.Scrollbar.draw(spriteBatch);
             }
+
+            this.drawMouse(spriteBatch);
 
         }
 
@@ -239,11 +246,7 @@ namespace WarpPylons
 
             for (int i = 0; i < this.Options.Count; i++)
             {
-                for (int j = 0; j < 3; j++)
-                {
-                    this.OptionSlots.Add(new ClickableComponent(new Rectangle(this.xPositionOnScreen + Game1.tileSize / 4, this.yPositionOnScreen + Game1.tileSize * 5 / 4 + Game1.pixelZoom + i * ((this.height - Game1.tileSize * 2) / ItemsPerPage), this.width - Game1.tileSize / 2, (this.height - Game1.tileSize * 2) / ItemsPerPage + Game1.pixelZoom), string.Concat(i)));
-                }
-
+                this.OptionSlots.Add(new ClickableComponent(new Rectangle(this.xPositionOnScreen + Game1.tileSize / 4, this.yPositionOnScreen + Game1.tileSize * 5 / 4 + Game1.pixelZoom + i * ((this.height - Game1.tileSize * 2) / ItemsPerPage), this.width - Game1.tileSize / 2, (this.height - Game1.tileSize * 2) / ItemsPerPage + Game1.pixelZoom), string.Concat(i)));
             }
    
         }
