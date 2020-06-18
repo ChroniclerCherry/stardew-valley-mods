@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using StardewModdingAPI;
 using StardewValley;
@@ -25,30 +26,29 @@ namespace CustomCraftingStation
 
             _openedNonCustomMenu = true;
 
-
-            if (OpenedModdedStation)
-            {
-                OpenedModdedStation = false;
-                return;
-            }
-
             var activeMenu = Game1.activeClickableMenu;
             if (activeMenu == null)
                 return;
 
-            CraftingPage instance;
+            IClickableMenu instance;
+
+            
 
             if (activeMenu is CraftingPage)
-                instance = (CraftingPage)activeMenu;
+                instance = activeMenu;
             else if (activeMenu is GameMenu gameMenu)
-                instance = (CraftingPage) gameMenu.pages[GameMenu.craftingTab];
+                instance = gameMenu.pages[GameMenu.craftingTab];
+            else if (activeMenu.GetType().Equals(CookingSkillMenu))
+                instance = activeMenu;
             else
                 return;
+
+            
 
             OpenAndFixMenu(instance);
         }
 
-        private void OpenAndFixMenu(CraftingPage instance)
+        private void OpenAndFixMenu(IClickableMenu instance)
         {
             var isCooking = Helper.Reflection.GetField<bool>(instance, "cooking").GetValue();
             var layoutRecipes = Helper.Reflection.GetMethod(instance, "layoutRecipes");
@@ -66,12 +66,14 @@ namespace CustomCraftingStation
 
         private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
         {
-            if (e.OldMenu is CraftingPage || e.OldMenu is GameMenu)
+            if (e.OldMenu == null ||
+                e.OldMenu is CustomCraftingMenu
+                || e.OldMenu is CraftingPage
+                || e.OldMenu is GameMenu
+                || e.OldMenu.GetType().Equals(CookingSkillMenu))
             {
                 _openedNonCustomMenu = false;
-                remoteFridgeApi?.UseCustomCraftingMenu(true);
             }
-                
         }
     }
 }

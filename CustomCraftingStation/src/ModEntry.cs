@@ -1,4 +1,5 @@
-﻿using StardewModdingAPI;
+﻿using System;
+using StardewModdingAPI;
 using System.Collections.Generic;
 
 namespace CustomCraftingStation
@@ -11,7 +12,7 @@ namespace CustomCraftingStation
         private List<string> _cookingRecipesToRemove;
         private List<string> _craftingRecipesToRemove;
 
-        private IRemoteFridgeApi remoteFridgeApi { get; set; }
+        //private IRemoteFridgeApi remoteFridgeApi { get; set; }
 
         public override void Entry(IModHelper helper)
         {
@@ -30,9 +31,11 @@ namespace CustomCraftingStation
             Helper.Events.Input.ButtonPressed += Input_ButtonPressed;
         }
 
+        public Type CookingSkillMenu;
+
         private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
-            remoteFridgeApi = Helper.ModRegistry.GetApi<IRemoteFridgeApi>("EternalSoap.RemoteFridgeStorage");
+            CookingSkillMenu = Type.GetType("CookingSkill.NewCraftingPage, CookingSkill");
         }
     }
 }
