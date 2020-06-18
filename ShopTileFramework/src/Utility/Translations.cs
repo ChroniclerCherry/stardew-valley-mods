@@ -34,7 +34,7 @@ namespace ShopTileFramework.Utility
         internal static void UpdateSelectedLanguage()
         {
             _selectedLanguage = LocalizedContentManager.CurrentLanguageCode;
-            ModEntry.monitor.Log($"Updating current language settings: {_selectedLanguage}", ModEntry.VerboseLogging ? LogLevel.Debug : LogLevel.Trace);
+            ModEntry.monitor.Log($"Updating current language settings: {_selectedLanguage}", LogLevel.Trace);
         }
     }
 }

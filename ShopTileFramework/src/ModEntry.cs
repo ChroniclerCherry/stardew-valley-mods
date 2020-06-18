@@ -223,6 +223,9 @@ namespace ShopTileFramework
                     return;
                 if (e.Cursor.GrabTile != e.Cursor.Tile)
                     return;
+
+                if (VerboseLogging)
+                    monitor.Log("Input detected!");
             }
             else if (!e.Button.IsActionButton())
                 return;
@@ -234,6 +237,9 @@ namespace ShopTileFramework
 
             if (tileProperty == null)
                 return;
+
+            if (VerboseLogging)
+                monitor.Log($"Tile property detected: {tileProperty}");
 
             //if there is a tile property, attempt to open shop if it exists
             CheckForShopToOpen(tileProperty,e);
@@ -248,6 +254,8 @@ namespace ShopTileFramework
         {
             //check if there is a Shop property on clicked tile
             tileProperty.TryGetValue("Shop", out PropertyValue shopProperty);
+            if (VerboseLogging)
+                monitor.Log($"Shop Property value is: {shopProperty}");
             if (shopProperty != null) //There was a `Shop` property so attempt to open shop
             {
                 //check if the property is for a vanilla shop, and gets the shopmenu for that shop if it exists
@@ -269,6 +277,10 @@ namespace ShopTileFramework
                 {
                     //Extract the tile property value
                     string shopName = shopProperty.ToString();
+
+                    if (VerboseLogging)
+                        monitor.Log($"Shop name is: {shopName}");
+
                     if (ShopManager.ItemShops.ContainsKey(shopName))
                     {
                         //stop the click action from going through after the menu has been opened

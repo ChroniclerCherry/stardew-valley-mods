@@ -72,13 +72,11 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// <returns></returns>
         public bool AddItemToStock(string itemName, double priceMultiplier = 1)
         {
-            if (ModEntry.VerboseLogging)
-                ModEntry.monitor.Log($"Getting ID of {itemName} to add to {_shopName}",LogLevel.Debug);
 
             int id = ItemsUtil.GetIndexByName(itemName,_itemType);
             if (id < 0)
             {
-                ModEntry.monitor.Log($"{_itemType} named \"{itemName}\" could not be added to the Shop {_shopName}", ModEntry.VerboseLogging ? LogLevel.Debug : LogLevel.Trace);
+                ModEntry.monitor.Log($"{_itemType} named \"{itemName}\" could not be added to the Shop {_shopName}", LogLevel.Trace);
                 return false;
             }
 
@@ -99,7 +97,7 @@ namespace ShopTileFramework.ItemPriceAndStock
 
             if (itemId < 0)
             {
-                ModEntry.monitor.Log($"{_itemType} of ID {itemId} could not be added to the Shop {_shopName}", ModEntry.VerboseLogging ? LogLevel.Debug : LogLevel.Trace);
+                ModEntry.monitor.Log($"{_itemType} of ID {itemId} could not be added to the Shop {_shopName}", LogLevel.Trace);
                 return false;
             }
 
@@ -113,7 +111,7 @@ namespace ShopTileFramework.ItemPriceAndStock
             {
                 if (!ItemsUtil.RecipesList.Contains(item.Name))
                 {
-                    ModEntry.monitor.Log($"{item.Name} is not a valid recipe and won't be added.", ModEntry.VerboseLogging ? LogLevel.Debug : LogLevel.Trace);
+                    ModEntry.monitor.Log($"{item.Name} is not a valid recipe and won't be added.", LogLevel.Trace);
                     return false;
                 }
             }

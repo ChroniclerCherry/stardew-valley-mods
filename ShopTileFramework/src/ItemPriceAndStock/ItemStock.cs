@@ -31,17 +31,6 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// <param name="priceMultiplierWhen"></param>
         internal void Initialize(string shopName, int price, double defaultSellPriceMultiplier, Dictionary<double, string[]> priceMultiplierWhen)
         {
-            if (ModEntry.VerboseLogging)
-                ModEntry.monitor.Log($"Initializing Item Stock:" +
-                    $" | ItemType:{ItemType}," +
-                    $" | IsRecipe:{IsRecipe}" +
-                    $" | StockPrice: {StockPrice}" +
-                    $" | StockItemCurrency: {StockItemCurrency}" +
-                    $" | StockCurrencyStack : {StockCurrencyStack}" +
-                    $" | Quality: {Quality}" +
-                    $" | Stock: {Stock}" +
-                    $" | MaxNumItemsSoldInItemStock: {MaxNumItemsSoldInItemStock}" +
-                    $" | When : {When}", LogLevel.Debug);
 
             if (Quality < 0 || Quality == 3 || Quality > 4)
             {
@@ -77,8 +66,6 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// <returns></returns>
         public Dictionary<ISalable, int[]> Update()
         {
-            if (ModEntry.VerboseLogging)
-                ModEntry.monitor.Log("\tUpdating an ItemStock...",LogLevel.Debug);
 
 
             if (When != null && !ConditionChecking.CheckConditions(When))
@@ -111,8 +98,6 @@ namespace ShopTileFramework.ItemPriceAndStock
             AddByName(pricemultiplier);
             AddByJAPack(pricemultiplier);
 
-            if (ModEntry.VerboseLogging)
-                ModEntry.monitor.Log($"\tReducing this stock down to {MaxNumItemsSoldInItemStock} items\n\n");
             ItemsUtil.RandomizeStock(_itemPriceAndStock, MaxNumItemsSoldInItemStock);
             return _itemPriceAndStock;
         }
@@ -124,9 +109,6 @@ namespace ShopTileFramework.ItemPriceAndStock
         {
             if (ItemIDs == null)
                 return;
-
-            if (ModEntry.VerboseLogging)
-                ModEntry.monitor.Log($"Adding items by ID...", LogLevel.Debug);
 
             foreach (var itemId in ItemIDs)
             {
@@ -141,9 +123,6 @@ namespace ShopTileFramework.ItemPriceAndStock
         {
             if (ItemNames == null)
                 return;
-
-            if (ModEntry.VerboseLogging)
-                ModEntry.monitor.Log($"Adding items by Name...", LogLevel.Debug);
 
             foreach (var itemName in ItemNames)
             {
@@ -163,9 +142,6 @@ namespace ShopTileFramework.ItemPriceAndStock
             if (APIs.JsonAssets == null)
                 return;
 
-            if (ModEntry.VerboseLogging)
-                ModEntry.monitor.Log($"Adding items by JA Pack...", LogLevel.Debug);
-
             foreach (var JAPack in JAPacks)
             {
                 ModEntry.monitor.Log($"Adding all {ItemType}s from {JAPack}", LogLevel.Debug);
@@ -178,8 +154,6 @@ namespace ShopTileFramework.ItemPriceAndStock
 
                     if (crops != null)
                     {
-                        if (ModEntry.VerboseLogging)
-                            ModEntry.monitor.Log($"Adding seeds of crops from {JAPack}", LogLevel.Debug);
 
                         foreach (string crop in crops)
                         {
@@ -191,8 +165,6 @@ namespace ShopTileFramework.ItemPriceAndStock
 
                     if (trees != null)
                     {
-                        if (ModEntry.VerboseLogging)
-                            ModEntry.monitor.Log($"Adding saplings of tree crops from {JAPack}", LogLevel.Debug);
 
                         foreach (string tree in trees)
                         {
@@ -208,7 +180,7 @@ namespace ShopTileFramework.ItemPriceAndStock
                 var packs = GetJaItems(JAPack);
                 if (packs == null)
                 {
-                    ModEntry.monitor.Log($"No {ItemType} from {JAPack} could be found", ModEntry.VerboseLogging? LogLevel.Debug : LogLevel.Trace);
+                    ModEntry.monitor.Log($"No {ItemType} from {JAPack} could be found", LogLevel.Trace);
                     continue;
                 }
 

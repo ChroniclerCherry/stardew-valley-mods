@@ -25,18 +25,6 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// <param name="data"></param>
         public ItemPriceAndStockManager(ItemShop data)
         {
-            if (ModEntry.VerboseLogging)
-                ModEntry.monitor.Log($"Initializing Shop:" +
-                    $" ShopName: {data.ShopName}" +
-                    $" | StoreCurrency: {data.StoreCurrency}" +
-                    $" | CategoriesToSellHere: {data.CategoriesToSellHere}" +
-                    $" | PortraitPath: {data.PortraitPath}" +
-                    $" | Quote: {data.Quote}" +
-                    $" | ShopPrice: {data.ShopPrice}" +
-                    $" | MaxNumItemsSoldInStore: {data.MaxNumItemsSoldInStore}" +
-                    $" | When: {data.When}" +
-                    $" | ClosedMessage: {data.ClosedMessage}\n", LogLevel.Debug);
-
             _defaultSellPriceMultipler = data.DefaultSellPriceMultiplier;
             _priceMultiplierWhen = data.PriceMultiplierWhen;
             _itemStocks = data.ItemStocks;
@@ -46,11 +34,6 @@ namespace ShopTileFramework.ItemPriceAndStock
         }
         public ItemPriceAndStockManager(VanillaShop data)
         {
-            if (ModEntry.VerboseLogging)
-                ModEntry.monitor.Log($"Initializing Vanilla shop:" +
-                    $" ShopName: {data.ShopName}",
-                    LogLevel.Debug);
-
             _defaultSellPriceMultipler = data.DefaultSellPriceMultiplier;
             _priceMultiplierWhen = data.PriceMultiplierWhen;
             _itemStocks = data.ItemStocks;
@@ -74,8 +57,7 @@ namespace ShopTileFramework.ItemPriceAndStock
         public void Update()
         {
             ItemPriceAndStock = new Dictionary<ISalable, int[]>();
-            if (ModEntry.VerboseLogging)
-                ModEntry.monitor.Log($"---------updating {_shopName}--------------");
+            ModEntry.monitor.Log($"Updating {_shopName}");
 
             foreach (ItemStock stock in _itemStocks)
             {
@@ -87,13 +69,8 @@ namespace ShopTileFramework.ItemPriceAndStock
                 Add(priceAndStock);
             }
 
-            if (ModEntry.VerboseLogging)
-                ModEntry.monitor.Log($"Reducing shop stock down to {_maxNumItemsSoldInStore} items");
             //randomly reduces the stock of the whole store down to maxNumItemsSoldInStore
             ItemsUtil.RandomizeStock(ItemPriceAndStock,_maxNumItemsSoldInStore);
-
-            if (ModEntry.VerboseLogging)
-                ModEntry.monitor.Log($"---------finished updating {_shopName}--------------");
 
         }
 

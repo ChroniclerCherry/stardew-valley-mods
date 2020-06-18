@@ -77,7 +77,7 @@ namespace ShopTileFramework.Shop
         /// </summary>
         public void DisplayShop(bool debug = false)
         {
-            ModEntry.monitor.Log($"Atempting to open the shop \"{ShopName}\"", ModEntry.VerboseLogging ? LogLevel.Debug : LogLevel.Trace);
+            ModEntry.monitor.Log($"Attempting to open the shop \"{ShopName}\"", LogLevel.Trace);
 
             //if conditions aren't met, display closed message if there is one
             //skips condition checking if debug mode
