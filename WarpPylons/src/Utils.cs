@@ -10,6 +10,7 @@ using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Locations;
 using StardewValley.Menus;
+using Object = StardewValley.Object;
 
 namespace WarpPylons
 {
@@ -50,6 +51,18 @@ namespace WarpPylons
                     MapName = $"MapName{i}",
                     Coordinates = new Vector2(i, i)
                 };
+            }
+        }
+
+        public static void IterateAllPylons(Action<GameLocation,KeyValuePair<Vector2,Object>> action)
+        {
+            foreach (var loc in GetAllLocations())
+            foreach (var obj in loc.Objects)
+            {
+                foreach (var kvp in obj.Where(kvp => kvp.Value.Name == PylonsManager.WarpPylonName))
+                {
+                    action.Invoke(loc, kvp);
+                }
             }
         }
 
