@@ -1,0 +1,13 @@
+﻿{
+  "Name": "Stardew Aquarium Code",
+  "Author": "Cherry",
+  "Version": "1.0.0",
+  "Description": "The coding portion of the Stardew Aquarium mod",
+  "UniqueID": "Cherry.StardewAquarium",
+  "EntryDll": "StardewAquarium.dll",
+  "MinimumApiVersion": "3.5.0",
+  "Dependencies": [
+	  { "UniqueID": "Pathoschild.ContentPatcher", "IsRequired": false }
+  ],
+  "UpdateKeys": []
+}

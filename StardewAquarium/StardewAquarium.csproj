@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>StardewAquarium</AssemblyName>
+		<RootNamespace>StardewAquarium</RootNamespace>
+		<Version>1.0.0</Version>
+		<TargetFramework>net452</TargetFramework>
+		<Platforms>x86</Platforms>
+		<PlatformTarget>x86</PlatformTarget>
+
+		<EnableHarmony>false</EnableHarmony>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="src\IContentPatcherAPI.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="3.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Properties\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="src\Tokens\IContentPatcherAPI.cs" />
+	</ItemGroup>
+
+</Project>
