@@ -13,6 +13,22 @@
  timeInterval | integer or a string | How long a seeded random roll lasts in days. This also supports entering certain strings as a shortcut.
  random lower/upper bounds | decimal number | This is the range the random number needs to be in to return a true
  
+ *Essentially what happens is this:*
+The offset + the time interval returns a random number between 0 and 1. This number will always be the same for each time interval.
+
+E.g if the time interval is 3, that random number will be the same on the same save file for three days at a time, changing on day 4, then day 7
+
+Changing the offset will produce a different random number, but using the same offset will always produce the same.
+
+The lower/upper bounds is then used to check if that random number is in the specified range.
+
+Example: For one save file, the offset is 50 and the interval is 7.
+On the first 7 days, the random number results in an 0.3. It will stay 0.3 for the entire week, so for example a condition check of 0-0.5 would return true, as 0.3 is in that range
+
+On the second week, the random number produced becomes 0.8, and stays for the entire week. The previous conditions would then become false for the entire week, as 0.8 is not between 0 and 0.5
+
+On the same save file, an offset of 30 might produce 0.4 the first week and then 0.1 the second.
+ 
 ##### timeInterval strings
 
 There's strings to provide a more readable shortcut for most use cases. If you want a different interval, for example every 3 days, then you'll be entering the timeInterval as an integer instead
