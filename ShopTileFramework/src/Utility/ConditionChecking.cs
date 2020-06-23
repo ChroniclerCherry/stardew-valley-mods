@@ -2,6 +2,8 @@
 using StardewModdingAPI;
 using StardewValley;
 using System;
+using Netcode;
+using StardewValley.Network;
 
 namespace ShopTileFramework.Utility
 {
@@ -128,12 +130,42 @@ namespace ShopTileFramework.Utility
                     return CheckJojaMartComplete();
                 case "SeededRandom":
                     return CheckSeededRandom(conditionParams);
+                case "HasCookingRecipe":
+                    return CheckHasRecipe(conditionParams,Game1.player.cookingRecipes);
+                case "HasCraftingRecipe":
+                    return CheckHasRecipe(conditionParams,Game1.player.craftingRecipes);
+                case "FarmHouseUpgradeLevel":
+                    return CheckFarmHouseUpgrade(conditionParams);
                 default:
                     // Note: "-5005" is a random event id cause the vanilla method is for events and needs one ¯\_(ツ)_/¯
                     // so it's the negative mod id
                     return (VanillaPreconditionsMethod.Invoke<int>("-5005/" + con) != -1);
             }
         }
+
+        private static bool CheckFarmHouseUpgrade(string[] conditionParams)
+        {
+            foreach (var level in conditionParams)
+            {
+                if (Int32.Parse(level) == Game1.player.HouseUpgradeLevel)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static bool CheckHasRecipe(string[] conditionParams,
+            NetStringDictionary<int, NetInt> playerCraftingRecipes)
+        {
+            for (int i = 1; i < conditionParams.Length; i++)
+            {
+                if (!playerCraftingRecipes.ContainsKey(conditionParams[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
 
         public static bool CheckSeededRandom(string[] conditionParams)
         {
