@@ -27,4 +27,10 @@
 	  <None Include="src\Tokens\IContentPatcherAPI.cs" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="data\data.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>

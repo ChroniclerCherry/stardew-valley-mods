@@ -193,6 +193,9 @@ Syntax | Description | Example
 `CommunityCenterComplete` | Returns true if the Community center is completed on this save file| 
 `JojaMartComplete` | Returns true if the joja mart route was completed on this save file |
 `SeededRandom <i:offset> <i:timeInterval/s:timeInterval> <f:random lower bounds> <f: random upper bounds>`| Used to make synchronized random checks, which can be used across different stocks/stores and remain constant over given periods of time | `SeededRandom 123 Season 0.5 1` [Find more detailed explanation here](CONDITIONS.md)
+`HasCookingRecipe [<s:recipe name>]` | Returns true if the player has learned all the listed recipes. **Note** spaces should be replaced with `-` | `HasCookingRecipe Fried-Egg Salad` will return true if the player knows how to cook both Fried Egg and salad
+`HasCraftingRecipe [<s:recipe name>]` | Returns true if the player has learned all the listed recipes. **Note** spaces should be replaced with `-` | `HasCookingRecipe Oil-Maker` will return true if the player knows how to craft Oil Makers
+`FarmHouseUpgradeLevel [<i:house upgrade levels>]` | Returns true if the player's current house levels matches any of the given numbers. Starter house is 0 and cellar is 3 | `FarmHouseUpgradeLevel 2 3` will return true if the player is on the final house upgrade and has the cellar
 
 I am always taking requests for more conditions as they are needed! Open an issue any time
 

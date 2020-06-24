@@ -155,12 +155,17 @@ namespace ShopTileFramework.Utility
         }
 
         private static bool CheckHasRecipe(string[] conditionParams,
-            NetStringDictionary<int, NetInt> playerCraftingRecipes)
+            NetStringDictionary<int, NetInt> craftingRecipes)
         {
             for (int i = 1; i < conditionParams.Length; i++)
             {
-                if (!playerCraftingRecipes.ContainsKey(conditionParams[i]))
-                    return false;
+                foreach (var key in craftingRecipes.Keys)
+                {
+                    if (conditionParams[i] != key.Replace(" ", "-"))
+                    {
+                        return false;
+                    }
+                }
             }
 
             return true;

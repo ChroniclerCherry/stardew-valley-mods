@@ -19,7 +19,7 @@ namespace StardewAquarium
                 return;
 
             //ExteriorMuseum
-            if (Game1.currentLocation.Name != "ExteriorMuseum")
+            if (Game1.currentLocation.Name != data.ExteriorMapName)
                 return;
 
             if (Utils.LastDonatedFish == null)
@@ -28,7 +28,7 @@ namespace StardewAquarium
             var loc = Game1.GlobalToLocal(LastDonatedFishCoordinates);
 
 
-            Utils.LastDonatedFish.drawInMenu(e.SpriteBatch, loc, 1);
+            Utils.LastDonatedFish.drawInMenu(e.SpriteBatch, loc,1);
         }
     }
 }

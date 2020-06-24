@@ -1,7 +1,9 @@
 ﻿using StardewModdingAPI;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using Microsoft.Xna.Framework;
 using StardewAquarium.Menu;
 using StardewAquarium.Tokens;
@@ -11,13 +13,17 @@ namespace StardewAquarium
 {
     public partial class ModEntry : Mod
     {
+        private ModData data;
         public override void Entry(IModHelper helper)
         {
             //TODO: implement a way to obtain legendaries after being caught, but at 0 sell price so it's not profitable to catch. its only for missed donations
 
-            //TODO: save the last donated fish and display on sign
-
             helper.ConsoleCommands.Add("donatefish", "", OpenDonationMenuCommand);
+
+            string dataPath = Path.Combine("data", "data.json");
+            data = helper.Data.ReadJsonFile<ModData>(dataPath);
+
+            LastDonatedFishCoordinates = new Vector2(data.LastDonatedFishCoordinateX,data.LastDonatedFishCoordinateY);
 
             Utils.Initialize(Helper, Monitor);
             helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
@@ -37,7 +43,10 @@ namespace StardewAquarium
 
         public class ModData
         {
-            private Vector2 LastDonatedFishCoordinates { get; set; }
+            public int LastDonatedFishCoordinateX { get; set; }
+            public int LastDonatedFishCoordinateY { get; set; }
+
+            public string ExteriorMapName { get; set; }
         }
     }
 }
