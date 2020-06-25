@@ -4,5 +4,8 @@
 	"OptionYes": "Yes",
 	"OptionNo": "No",
 	"DeclineToDonate": "You are free to return anytime if you change your mind!",
-	"NothingToDonate": "Welcome to the Stardew Aquarium! If you ever find a specimen we're missing we'd be delighted if you would considering making a donation."
+	"NothingToDonate": "Welcome to the Stardew Aquarium! If you ever find a specimen we're missing we'd be delighted if you would considering making a donation.",
+	"MenuCloseFishDonated": "Thank you so much for your contributions! It should only take us a day to prepare the habitats",
+	"MenuCloseNoFishDonated": "Please come back any time.",
+	"CollectionsMenu": "Stardew Aquarium Collection"
 }

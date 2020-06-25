@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using Microsoft.Xna.Framework;
 using Netcode;
 using StardewModdingAPI;
 using StardewValley;
+using xTile.Layers;
+using xTile.Tiles;
 using Object = StardewValley.Object;
 
 namespace StardewAquarium
@@ -12,13 +15,22 @@ namespace StardewAquarium
     internal static class Utils
     {
         private static NetStringList MasterPlayerMail => Game1.MasterPlayer.mailReceived;
+
         private static IModHelper _helper;
         private static IMonitor _monitor;
 
-        public static void Initialize(IModHelper helper, IMonitor monitor)
+        private static ModEntry.ModData _data;
+
+        private static LastDonatedFishSign _fishSign;
+        private static LegendaryRecatch _recatch;
+
+        public static void Initialize(IModHelper helper, IMonitor monitor, ModEntry.ModData data)
         {
             _helper = helper;
             _monitor = monitor;
+            _data = data;
+            _fishSign = new LastDonatedFishSign(helper, monitor, data);
+            _recatch = new LegendaryRecatch(helper, monitor);
         }
 
         public static bool IsUnDonatedFish(Item i)
@@ -44,44 +56,10 @@ namespace StardewAquarium
             if (!MasterPlayerMail.Contains(numDonated))
                 MasterPlayerMail.Add(numDonated);
 
-            UpdateLastDonatedFish(i);
+            _recatch.Donated(i);
+            _fishSign.UpdateLastDonatedFish(i);
 
             return true;
-        }
-
-        public static Item LastDonatedFish { get; set; }
-
-        public static void UpdateLastDonatedFish(Item i)
-        {
-            foreach (var flag in MasterPlayerMail.Where(flag => flag.StartsWith("AquariumLastDonated:")))
-            {
-                MasterPlayerMail.Remove(flag);
-                break;
-            }
-
-            LastDonatedFish = i;
-            MasterPlayerMail.Add($"AquariumLastDonated:{i.Name}");
-        }
-
-        public static void SetLastDonatedFish()
-        {
-            string fish = MasterPlayerMail
-                .Where(flag => flag
-                    .StartsWith("AquariumLastDonated:"))
-                .Select(flag => flag.Split(':')[1])
-                .FirstOrDefault();
-
-            if (fish == null)
-                return;
-
-            foreach (var kvp in Game1.objectInformation)
-            {
-                if (kvp.Value.Split('/')[0] != fish) continue;
-
-                LastDonatedFish = new Object(kvp.Key,1);
-                break;
-
-            }
         }
 
         public static int GetNumDonatedFish()
@@ -103,6 +81,12 @@ namespace StardewAquarium
 
             return false;
         }
+
+        /**************************
+         * Last donated fish stuff
+         * ************************/
+
+
 
         /******************
          * CP Token helpers
