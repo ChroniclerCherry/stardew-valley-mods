@@ -219,7 +219,7 @@ namespace WarpPylons
             // update size
             this.width = 800 + IClickableMenu.borderWidth * 2;
             this.height = 600 + IClickableMenu.borderWidth * 2;
-            this.xPositionOnScreen = Game1.viewport.Width / 2 - (this.width - (int)(Game1.tileSize * 2.4f)) / 2;
+            this.xPositionOnScreen = Game1.viewport.Width / 2 - this.width / 2;
             this.yPositionOnScreen = Game1.viewport.Height / 2 - this.height / 2;
 
             // update position
