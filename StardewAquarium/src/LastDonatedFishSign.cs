@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using Netcode;
+using StardewAquarium.Models;
 using StardewModdingAPI;
 using StardewValley;
 using xTile.Layers;
@@ -11,37 +13,32 @@ namespace StardewAquarium
     {
         private IModHelper _helper;
         private IMonitor _monitor;
-        private ModEntry.ModData _data;
+        private ModData _data;
 
-        public static int LastDonatedFish { get; set; } = -1;
+        public static int LastDonatedFish { get; set; } = 435;
         private static NetStringList MasterPlayerMail => Game1.MasterPlayer.mailReceived;
 
-        public LastDonatedFishSign(IModHelper helper, IMonitor monitor, ModEntry.ModData data)
+        public LastDonatedFishSign(IModHelper helper, IMonitor monitor)
         {
             _helper = helper;
             _monitor = monitor;
-            _data = data;
+
+            string dataPath = Path.Combine("data", "data.json");
+            _data = helper.Data.ReadJsonFile<ModData>(dataPath);
 
             _helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
+            _helper.Events.Player.Warped += Player_Warped;
+        }
+
+        private void Player_Warped(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
+        {
+            if (e?.NewLocation.Name == _data.ExteriorMapName)
+                UpdateLastDonatedFishSign();
         }
 
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
             SetLastDonatedFish();
-            var map = Game1.getLocationFromName(_data.ExteriorMapName).Map;
-            string tilesheetPath = _helper.Content.GetActualAssetKey("Maps/springobjects", ContentSource.GameContent);
-
-            TileSheet tilesheet = new TileSheet(
-                "z_springobjects", // a unique ID for the tilesheet
-                map,
-                tilesheetPath,
-                new xTile.Dimensions.Size(24, 4096), // the tile size of your tilesheet image.
-                new xTile.Dimensions.Size(16, 16) // should always be 16x16 for maps
-            );
-            map.AddTileSheet(tilesheet);
-            map.LoadTileSheets(Game1.mapDisplayDevice);
-
-            UpdateLastDonatedFishSign();
         }
 
         public void UpdateLastDonatedFish(Item i)
@@ -52,8 +49,8 @@ namespace StardewAquarium
                 break;
             }
 
+            _monitor.Log($"The last donated fish is {i.Name}");
             LastDonatedFish = i.ParentSheetIndex;
-            UpdateLastDonatedFishSign();
             MasterPlayerMail.Add($"AquariumLastDonated:{i.Name}");
         }
 
@@ -74,37 +71,21 @@ namespace StardewAquarium
 
                 LastDonatedFish = kvp.Key;
                 break;
-
             }
+
+            _monitor.Log($"The last donated fish on this file is {LastDonatedFish}");
         }
 
         internal void UpdateLastDonatedFishSign()
         {
-            if (LastDonatedFish == -1) return;
+            var map = Game1.getLocationFromName(_data.ExteriorMapName)?.Map;
 
-            var map = Game1.getLocationFromName(_data.ExteriorMapName).Map;
+            if (map == null)
+                return;
+
             Layer layer = map.GetLayer("Front");
-            TileSheet tilesheet = map.GetTileSheet("z_springobjects");
+            TileSheet tilesheet = map.GetTileSheet("springobjects");
             layer.Tiles[_data.LastDonatedFishCoordinateX, _data.LastDonatedFishCoordinateY] = new StaticTile(layer, tilesheet, BlendMode.Alpha, tileIndex: LastDonatedFish);
         }
-
-                /*
-        private void Display_RenderedWorld(object sender, StardewModdingAPI.Events.RenderedWorldEventArgs e)
-        {
-            if (!Context.IsWorldReady)
-                return;
-
-            //ExteriorMuseum
-            if (Game1.currentLocation.Name != data.ExteriorMapName)
-                return;
-
-            if (Utils.LastDonatedFish == null)
-                return;
-
-            var loc = Game1.GlobalToLocal(new Vector2(data.LastDonatedFishCoordinateX, data.LastDonatedFishCoordinateY));
-
-
-            Utils.LastDonatedFish.drawInMenu(e.SpriteBatch, loc,1);
-        } */
     }
 }

@@ -1,24 +1,22 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 
 namespace StardewAquarium.Menu
 {
-    public class MenuInteractionHandler
+    public class InteractionHandler
     {
         private IModHelper _helper;
         private IMonitor _monitor;
 
-        public MenuInteractionHandler(IModHelper helper, IMonitor monitor)
+        public InteractionHandler(IModHelper helper, IMonitor monitor)
         {
             _helper = helper;
             _monitor = monitor;
 
             _helper.Events.Input.ButtonPressed += Input_ButtonPressed;
-
-            helper.ConsoleCommands.Add("donatefish", "", OpenDonationMenuCommand);
-            helper.ConsoleCommands.Add("aquariumprogress", "", OpenAquariumCollectionMenu);
 
         }
 
@@ -40,16 +38,29 @@ namespace StardewAquarium.Menu
             Vector2 grabTile = e.Cursor.GrabTile;
 
             string tileProperty = Game1.currentLocation.doesTileHaveProperty((int)grabTile.X, (int)grabTile.Y, "Action", "Buildings");
+            
+            switch (tileProperty)
+            {
+                case null:
+                    return;
+                case "AquariumDonationMenu":
+                    _monitor.Log("AquariumDonationMenu tile detected, opening donation menu...");
+                    TryToOpenDonationMenu();
+                    break;
+                case "AquariumCollectionMenu":
+                    _monitor.Log("AquariumCollectionMenu tile detected, opening collections menu...");
+                    Game1.activeClickableMenu = new AquariumCollectionMenu(_helper.Translation.Get("CollectionsMenu"));
+                    break;
+                default:
+                {
+                    if (tileProperty.StartsWith("AquariumSign"))
+                    {
+                        new AquariumMessage(tileProperty.Split(' '));
+                    }
 
-            if (tileProperty == "AquariumDonationMenu")
-            {
-                TryToOpenDonationMenu();
-            } else if (tileProperty == "AquariumCollectionMenu")
-            {
-                Game1.activeClickableMenu = new AquariumCollectionMenu(_helper.Translation.Get("CollectionsMenu"));
+                    break;
+                }
             }
-
-
         }
 
         private void TryToOpenDonationMenu()
@@ -83,16 +94,6 @@ namespace StardewAquarium.Menu
             {
                 Game1.activeClickableMenu = new DonateFishMenu(_helper.Translation);
             }
-        }
-
-        private void OpenAquariumCollectionMenu(string arg1, string[] arg2)
-        {
-            Game1.activeClickableMenu = new AquariumCollectionMenu(_helper.Translation.Get("CollectionsMenu"));
-        }
-
-        private void OpenDonationMenuCommand(string arg1, string[] arg2)
-        {
-            TryToOpenDonationMenu();
         }
     }
 

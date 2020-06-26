@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Netcode;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
@@ -14,8 +10,7 @@ namespace StardewAquarium.Menu
     public class DonateFishMenu : InventoryMenu
     {
 
-        public static int FishCategory = -4;
-        private ITranslationHelper _translation;
+        private readonly ITranslationHelper _translation;
         private bool _donated;
 
         public DonateFishMenu(ITranslationHelper translate) : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, true, null, Utils.IsUnDonatedFish, 36, 3)

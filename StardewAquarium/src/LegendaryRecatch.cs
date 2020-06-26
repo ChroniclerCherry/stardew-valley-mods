@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Tools;
@@ -49,16 +47,10 @@ namespace StardewAquarium
             int index = item.ParentSheetIndex;
             if (LegendaryFish.ContainsKey(index) && UndonatedLegends.ContainsKey(index))
             {
+                Game1.drawObjectDialogue(_helper.Translation.Get("DuplicateLegendaryCaught"));
                 item.Price = 0;
             }
             UndonatedLegends.Clear();
-        }
-
-        public void Donated(Item i)
-        {
-            int index = i.ParentSheetIndex;
-            if (UndonatedLegends.Keys.Contains(index))
-                UndonatedLegends.Remove(index);
         }
 
         private void hideFish()
@@ -78,10 +70,15 @@ namespace StardewAquarium
                     }
                 }
             }
+
+            if (UndonatedLegends.Count > 0)
+                _monitor.Log($"Allowing recatch of legendaries:{UndonatedLegends.Keys}");
         }
 
         private void returnFish()
         {
+            if (UndonatedLegends.Count > 0)
+                _monitor.Log($"Returning fish IDs to player records:{UndonatedLegends.Keys}");
             foreach (var fishID in UndonatedLegends.Keys)
             {
                 int[] stashedData = UndonatedLegends[fishID];

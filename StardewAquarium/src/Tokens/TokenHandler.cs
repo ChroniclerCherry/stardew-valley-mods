@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
+using System.Linq;
 using StardewModdingAPI;
 using StardewValley;
 
@@ -18,8 +18,23 @@ namespace StardewAquarium.Tokens
         public void RegisterTokens()
         {
             var api = _helper.ModRegistry.GetApi<IContentPatcherAPI>("Pathoschild.ContentPatcher");
-            api.RegisterToken(_manifest, "Donated", Utils.GetDonatedFish);
-            api.RegisterToken(_manifest, "NumDonated", Utils.GetNumDonatedFishRange);
+            api.RegisterToken(_manifest, "Donated", GetDonatedFish);
+            api.RegisterToken(_manifest, "NumDonated", GetNumDonatedFishRange);
+        }
+
+        private static IEnumerable<string> GetDonatedFish()
+        {
+            return from mail in Game1.MasterPlayer.mailReceived
+                where mail.StartsWith("AquariumDonated:")
+                select mail.Split(':')[1];
+        }
+
+        private static IEnumerable<string> GetNumDonatedFishRange()
+        {
+            for (int i = 1; i < Utils.GetNumDonatedFish(); i++)
+            {
+                yield return i.ToString();
+            }
         }
     }
 }

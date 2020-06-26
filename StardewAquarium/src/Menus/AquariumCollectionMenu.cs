@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Netcode;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
@@ -56,8 +55,8 @@ namespace StardewAquarium.Menu
 
                 if (str.Contains("Fish") && !str.Contains("-20"))
                 {
-                    string name = keyValuePair.Value.Split('/')[0].Replace(" ", String.Empty);
-                    if (!Utils.IsUnDonatedFish(name))
+                    string name = keyValuePair.Value.Split('/')[0];
+                    if (!Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]))
                     {
                         drawShadow = true;
                     }
@@ -177,7 +176,7 @@ namespace StardewAquarium.Menu
             string[] strArray = Game1.objectInformation[index].Split('/');
 
             string name = strArray[0];
-            if (Utils.IsUnDonatedFish(name.Replace(" ", String.Empty)))
+            if (Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]))
                 return "???";
 
             string returnStr = strArray[4] + Environment.NewLine + Environment.NewLine + Game1.parseText(strArray[5], Game1.smallFont, 256) + Environment.NewLine;

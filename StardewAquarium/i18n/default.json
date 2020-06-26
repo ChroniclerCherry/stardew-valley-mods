@@ -1,11 +1,48 @@
 ﻿{
+	//Donation menu dialogue and options
 	"DonationMenuTitle": "Select fish to donate",
-	"DonationQuestion": "Would you like to donate a fish today?",
+	"DonationQuestion": "Welcome to the Stardeq Aquarium! Would you like to donate a fish today?",
 	"OptionYes": "Yes",
 	"OptionNo": "No",
 	"DeclineToDonate": "You are free to return anytime if you change your mind!",
-	"NothingToDonate": "Welcome to the Stardew Aquarium! If you ever find a specimen we're missing we'd be delighted if you would considering making a donation.",
-	"MenuCloseFishDonated": "Thank you so much for your contributions! It should only take us a day to prepare the habitats",
+	"NothingToDonate": "Welcome to the Stardew Aquarium! If you ever find a specimen we're missing, we'd be delighted if you would considering making a donation.",
+	"MenuCloseFishDonated": "Thank you so much for your contribution! We should have the tanks set up by tomorrow!",
 	"MenuCloseNoFishDonated": "Please come back any time.",
-	"CollectionsMenu": "Stardew Aquarium Collection"
+
+	//collections menu title
+	"CollectionsMenu": "Stardew Aquarium Collection",
+
+	//message when a duplicate legendary is caught
+	"DuplicateLegendaryCaught": "Strange, you've caught this legendary fish before. It looks like the real thing... but a lot less valuable... Maybe you should donate it to the Aquarium?",
+	
+	//tank messages
+	"WhichFishInfo": "Which fish would you like to know more about?",
+	"EmptyTank": "Just an empty tank...",
+
+	"Tank_Stonefish": "This brick looking fish may look harmless to you, but do not ever step on a Stonefish as they are poisonous. They blend in with the rocks and are slow swimmers.",
+	"Tank_IcePip": "The ice pip can be caught deep in the frozen mines, but it's small size and fast speed makes him a rare catch.",
+	"Tank_Ghostfish": "They say the ghost fish is a real ghost, but if it is, then how is it making the water move?",
+	"Tank_LavaEel": "The Lava Eel is a rare specimen found only in the deepest and hottest parts of the mines, their skin is extremely hot, therefore you must use special means in order to transport it.",
+	"Tank_ScorpionCarp": "The Scorpion Carp is a fine specimen found in the Calico Desert, it swims very fast and can sting you if you get too close!",
+	"Tank_Sandfish": "The Sandfish is a shy one, it always tries to hide within the sand using its sand-like scales.",
+	"Tank_MidnightSquid": "The midnight squid resembles your average winter Squid, but isn't as fierce. It lives deep down in the ocean depths and must be contained in a high pressure tank to match its natural habitat.",
+	"Tank_Blobfish": "You don't see this kind of blobfish everywhere, this is an actual blobfish that hasn't been damaged by fishing in any way, and he is perfectly preserved and living peacefully in this special tank.",
+	"Tank_SpookFish": "This specimen, the Spook fish, has three very efficient eyes that can detect the faintest silhouette in the darkness of the deep sea.",
+	"Tank_Woodskip": "The woodskip is a very sensitive fish that can only live in pools deep in the forest. Or this special aquarium.",
+	"Tank_VoidSalmon": "This used to be a simple salmon, but it was twisted by void energy and turned into this. Its fresh meat is jet black but when exposed to air, it will rapidly turn pink.",
+	"Tank_Angler": "The Angler fish doesn't do much, he sits still and wait for prey to come towards his bioluminescent light.",
+	"Tank_Legend": "The one and only Legend... They said that the king of fish himself would never be caught, but you proved them wrong.",
+	"Tank_MutantCarp": "Nobody knows how this carp became the way it is... It is a mystery that lays within the Sewer's waters.",
+	"Tank_Crimsonfish": "The Crimsonfish is a rare species of fish that lives deep in the ocean, but likes to surface during the summer to lay its eggs in the warm water.",
+	"Tank_Glacierfish": "The Glacierfish like to build nests on the underside of glaciers where they feel most at ease, the colder the water, the better they live.",
+	"Tank_Periwinkle": "Did you know Periwinkles are snails ? They hide in their tiny shell.",
+	"Tank_Snail": "Snails... You find them everywhere, especially when it's raining.",
+	"Tank_Crayfish": "The crayfish may just look like a dark lobster, but that relavtive of the lobster lives in freshwater.",
+	"Tank_Oyster": "Insert Oyster Dialogue",
+	"Tank_Crab": "Insert Crab Dialogue",
+	"Tank_Shrimp": "Insert Shrimp Dialogue",
+	"Tank_Cockle": "Insert Cockle Dialogue",
+	"Tank_Lobster": "Insert Lobster Dialogue",
+	"Tank_Mussel": "Insert Mussel Dialogue",
+	"Tank_Slimejack": "You may have never seen this fish before, it lives in the waters of a lair located below Pelican Town that is full of mutant bugs, this fish is called the Slimejack. Its anatomy closely resembles a Slime's, but the fish is docile unlike most slimes."
 }
