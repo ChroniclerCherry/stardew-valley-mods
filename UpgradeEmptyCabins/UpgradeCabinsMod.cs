@@ -53,7 +53,14 @@ namespace UpgradeEmptyCabins
             if (!Context.CanPlayerMove)
                 return;
 
-            if (!e.Button.IsActionButton())
+            if (Constants.TargetPlatform == GamePlatform.Android)
+            {
+                if (e.Button != SButton.MouseLeft)
+                    return;
+                if (e.Cursor.GrabTile != e.Cursor.Tile)
+                    return;
+            }
+            else if (!e.Button.IsActionButton())
                 return;
 
             if (Game1.currentLocation.Name != "ScienceHouse")
