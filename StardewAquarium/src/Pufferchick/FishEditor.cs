@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using StardewModdingAPI;
+using StardewValley;
+
+namespace StardewAquarium.src.Pufferchick
+{
+    class FishEditor : IAssetEditor
+    {
+        public bool CanEdit<T>(IAssetInfo asset)
+        {
+            return asset.AssetNameEquals("Data\\Fish");
+        }
+
+        public void Edit<T>(IAssetData asset)
+        {
+            var data = asset.AsDictionary<int, string>().Data;
+            int id = ModEntry.JsonAssets.GetObjectId("Pufferfish");
+            string localizedName = Game1.objectInformation[id].Split('/')[4];
+            data.Add(id, $"{localizedName}/95/mixed/36/36/0 2600/spring summer fall winter/both/688 .05/5/0/0/0");
+        }
+    }
+}

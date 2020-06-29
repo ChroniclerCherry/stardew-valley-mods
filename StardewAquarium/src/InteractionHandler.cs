@@ -38,33 +38,45 @@ namespace StardewAquarium.Menu
             Vector2 grabTile = e.Cursor.GrabTile;
 
             string tileProperty = Game1.currentLocation.doesTileHaveProperty((int)grabTile.X, (int)grabTile.Y, "Action", "Buildings");
-            
-            switch (tileProperty)
-            {
-                case null:
-                    return;
-                case "AquariumDonationMenu":
-                    _monitor.Log("AquariumDonationMenu tile detected, opening donation menu...");
-                    TryToOpenDonationMenu();
-                    break;
-                case "AquariumCollectionMenu":
-                    _monitor.Log("AquariumCollectionMenu tile detected, opening collections menu...");
-                    Game1.activeClickableMenu = new AquariumCollectionMenu(_helper.Translation.Get("CollectionsMenu"));
-                    break;
-                default:
-                {
-                    if (tileProperty.StartsWith("AquariumSign"))
-                    {
-                        new AquariumMessage(tileProperty.Split(' '));
-                    }
 
-                    break;
-                }
+            if (tileProperty == null)
+                return;
+            
+            if (tileProperty == "AquariumDonationMenu")
+            {
+                _monitor.Log("AquariumDonationMenu tile detected, opening donation menu...");
+                TryToOpenDonationMenu();
+            }
+            else if (tileProperty == "AquariumCollectionMenu")
+            {
+                _monitor.Log("AquariumCollectionMenu tile detected, opening collections menu...");
+                Game1.activeClickableMenu = new AquariumCollectionMenu(_helper.Translation.Get("CollectionsMenu"));
+            }
+            else if(tileProperty.StartsWith("AquariumSign"))
+            {
+                new AquariumMessage(tileProperty.Split(' '));
+            }
+            else if (tileProperty.StartsWith("AquariumString"))
+            {
+                string strKey = tileProperty.Split(' ')[1];
+                Game1.drawObjectDialogue(_helper.Translation.Get(strKey));
             }
         }
 
         private void TryToOpenDonationMenu()
         {
+            if (Game1.MasterPlayer.achievements.Contains(AchievementEditor.AchievementId))
+            {
+                if (!Game1.MasterPlayer.mailReceived.Contains("AquariumTrophyPickedUp"))
+                {
+                    Utils.TryAwardTrophy();
+                    return;
+                }
+
+                Game1.drawObjectDialogue(_helper.Translation.Get("AquariumWelcome"));
+                return;
+            }
+
             if (!Utils.DoesPlayerHaveDonatableFish())
             {
                 Game1.drawObjectDialogue(_helper.Translation.Get("NothingToDonate"));

@@ -1,0 +1,34 @@
+﻿{
+	"Name": "Stardew Aquarium Trophy",
+	"Price": 1,
+	"Description": "Rewarded for helping the Stardew Aquarium reach its full potential!",
+	"ProvidesLight": false,
+	"NameLocalization":
+	{
+		/*"es": "", //Spansih
+		"ko": "", //Korean
+		"de": "", //German
+		"fr": "", //French
+		"hu": "", //Hungarian
+		"it": "", //Italian
+		"ja": "", //Japanese
+		"pt": "", //Portuguese
+		"ru": "", //Russian
+		"tr": "", //Turkish
+		"zh": "农场布局器", //Chinese (Simplified)*/
+	},
+	"DescriptionLocalization":
+	{
+		/*"es": "", //Spansih
+		"ko": "", //Korean
+		"de": "", //German
+		"fr": "", //French
+		"hu": "", //Hungarian
+		"it": "", //Italian
+		"ja": "", //Japanese
+		"pt": "", //Portuguese
+		"ru": "", //Russian
+		"tr": "", //Turkish
+		"zh": "", //Chinese (Simplified)*/
+	}
+}

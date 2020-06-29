@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 using Netcode;
 using StardewModdingAPI;
 using StardewValley;
+using Object = StardewValley.Object;
 
 namespace StardewAquarium
 {
@@ -13,6 +15,7 @@ namespace StardewAquarium
 
         private static IModHelper _helper;
         private static IMonitor _monitor;
+        private static IManifest _manifest;
 
         /// <summary>
         /// Maps the InternalName of the fish to its internalname without spaces, eg. Tranbow Trout to RainbowTrout
@@ -26,12 +29,14 @@ namespace StardewAquarium
 
         private static LastDonatedFishSign _fishSign;
 
-        public static void Initialize(IModHelper helper, IMonitor monitor)
+        public static void Initialize(IModHelper helper, IMonitor monitor, IManifest modManifest)
         {
             _helper = helper;
             _monitor = monitor;
+            _manifest = modManifest;
 
             _helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
+            _helper.Events.Multiplayer.ModMessageReceived += Multiplayer_ModMessageReceived;
 
             _fishSign = new LastDonatedFishSign(helper, monitor);
         }
@@ -42,7 +47,7 @@ namespace StardewAquarium
             {
                 var info = kvp.Value.Split('/');
                 var fishName = info[0];
-                if (info[3].Contains("Fish") && !info[3].Contains("-20"))
+                if (info[3].Contains("-4"))
                 {
                     InternalNameToDonationName.Add(fishName, fishName.Replace(" ",String.Empty));
                     FishDisplayNames.Add(fishName.Replace(" ", String.Empty),info[4]);
@@ -74,8 +79,25 @@ namespace StardewAquarium
                 MasterPlayerMail.Add(numDonated);
 
             _fishSign.UpdateLastDonatedFish(i);
+            CheckAchievement();
 
             return true;
+        }
+
+        internal static void TryAwardTrophy()
+        {
+            if (Game1.player.freeSpotsInInventory() > 0)
+            {
+                int id = ModEntry.JsonAssets.GetBigCraftableId("Stardew Aquarium Trophy");
+                Object trophy = new Object(Vector2.Zero, id);
+                Game1.player.holdUpItemThenMessage(trophy, true);
+                Game1.MasterPlayer.mailReceived.Add("AquariumTrophyPickedUp");
+            }
+            else
+            {
+                Game1.drawObjectDialogue(_helper.Translation.Get("NoInventorySpace"));
+            }
+
         }
 
         public static int GetNumDonatedFish()
@@ -96,6 +118,40 @@ namespace StardewAquarium
             }
 
             return false;
+        }
+
+
+        private const string AchievementMessageType = "Achievement";
+        public static bool CheckAchievement()
+        {
+            if (GetNumDonatedFish() >= InternalNameToDonationName.Count)
+            {
+                _helper.Multiplayer.SendMessage(true, AchievementMessageType, modIDs:new[]{ _manifest.UniqueID});
+                UnlockAchievement();
+                TryAwardTrophy();
+                return true;
+            }
+
+            return false;
+        }
+
+        private static void UnlockAchievement()
+        {
+            int id = AchievementEditor.AchievementId;
+            if (Game1.player.achievements.Contains(id))
+                return;
+
+            Game1.player.achievements.Add(id);
+            Game1.addHUDMessage(new HUDMessage(_helper.Translation.Get("AchievementName"), true));
+            Game1.playSound("achievement");
+        }
+
+        private static void Multiplayer_ModMessageReceived(object sender, StardewModdingAPI.Events.ModMessageReceivedEventArgs e)
+        {
+            if (e.FromModID == _manifest.UniqueID && e.Type == AchievementMessageType)
+            {
+                UnlockAchievement();
+            }
         }
     }
 }

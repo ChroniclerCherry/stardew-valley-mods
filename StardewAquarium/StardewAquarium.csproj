@@ -8,7 +8,7 @@
 		<Platforms>x86</Platforms>
 		<PlatformTarget>x86</PlatformTarget>
 
-		<EnableHarmony>false</EnableHarmony>
+		<EnableHarmony>true</EnableHarmony>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -28,7 +28,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Update="data\BigCraftables\Stardew Aquarium Trophy\big-craftable.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="data\BigCraftables\Stardew Aquarium Trophy\big-craftable.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="data\content-pack.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	  <None Update="data\data.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="data\Objects\Pufferchick\object.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="data\Objects\Pufferchick\object.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>

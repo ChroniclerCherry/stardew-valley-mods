@@ -53,7 +53,7 @@ namespace StardewAquarium.Menu
                 string str = keyValuePair.Value.Split('/')[3];
                 bool drawShadow = false;
 
-                if (str.Contains("Fish") && !str.Contains("-20"))
+                if (str.Contains("-4"))
                 {
                     string name = keyValuePair.Value.Split('/')[0];
                     if (!Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]))
