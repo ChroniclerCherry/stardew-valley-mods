@@ -6,6 +6,10 @@
 	"Edibility": -300,
 	"IsColored": false,
 	"Recipe": null,
+	"ContextTags": 
+	[
+		"fish_legendary"
+	],
 
 	"NameLocalization":
 	{
