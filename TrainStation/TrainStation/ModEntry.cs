@@ -12,16 +12,23 @@ namespace TrainStation
     public class ModEntry : Mod
     {
         private ModConfig Config;
+        public static ModEntry Instance;
 
         private List<TrainStop> TrainStops;
 
         public override void Entry(IModHelper helper)
         {
             Config = helper.ReadConfig<ModConfig>();
+            Instance = this;
 
             helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
             helper.Events.Display.MenuChanged += Display_MenuChanged;
+        }
+
+        public override object GetApi()
+        {
+            return new Api();
         }
 
 
@@ -144,7 +151,7 @@ namespace TrainStation
             OpenTrainMenu();
         }
 
-        private void OpenTrainMenu()
+        public void OpenTrainMenu()
         {
             Response[] responses = GetReponses().ToArray();
             if (responses.Length <= 1) //only 1 response means there's only the cancel option
@@ -326,5 +333,18 @@ namespace TrainStation
 
         internal string StopID; //assigned by the mod's uniqueID and the number of stops from that pack
         internal string TranslatedName;
+    }
+
+    public interface IApi
+    {
+        void OpenTrainMenu();
+    }
+
+    public class Api : IApi
+    {
+        public void OpenTrainMenu()
+        {
+            ModEntry.Instance.OpenTrainMenu();
+        }
     }
 }
