@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Netcode;
+using StardewAquarium.MenuAndTiles;
 using StardewModdingAPI;
 using StardewValley;
 using Object = StardewValley.Object;
@@ -43,6 +44,10 @@ namespace StardewAquarium
 
         private static void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
+            //clear these dictionaries if 
+            InternalNameToDonationName.Clear();
+            FishDisplayNames.Clear();
+
             foreach (var kvp in Game1.objectInformation)
             {
                 var info = kvp.Value.Split('/');
@@ -79,18 +84,18 @@ namespace StardewAquarium
                 MasterPlayerMail.Add(numDonated);
 
             _fishSign.UpdateLastDonatedFish(i);
-            CheckAchievement();
 
             return true;
         }
 
-        internal static void TryAwardTrophy()
+        internal static void TryAwardTrophy(bool puffDonated = false)
         {
             if (Game1.player.freeSpotsInInventory() > 0)
             {
                 int id = ModEntry.JsonAssets.GetBigCraftableId("Stardew Aquarium Trophy");
                 Object trophy = new Object(Vector2.Zero, id);
                 Game1.player.holdUpItemThenMessage(trophy, true);
+                Game1.player.addItemToInventory(trophy);
                 Game1.MasterPlayer.mailReceived.Add("AquariumTrophyPickedUp");
             }
             else
@@ -98,6 +103,22 @@ namespace StardewAquarium
                 Game1.drawObjectDialogue(_helper.Translation.Get("NoInventorySpace"));
             }
 
+            if (puffDonated)
+                Game1.activeClickableMenu.exitFunction = () =>
+                {
+                    Game1.drawObjectDialogue(_helper.Translation.Get("PufferchickDonated"));
+                };
+        }
+
+        internal static bool PlayerInventoryContains(int fishId)
+        {
+            foreach (Item item in Game1.player.Items)
+            {
+                if (item is Object obj && obj.ParentSheetIndex == fishId)
+                    return true;
+            }
+
+            return false;
         }
 
         public static int GetNumDonatedFish()
@@ -120,6 +141,42 @@ namespace StardewAquarium
             return false;
         }
 
+        public static void DonationMenuExit(bool achievementUnlock, bool donated, bool pufferchickDonated)
+        {
+            string mainMessage = "";
+
+            if (achievementUnlock)
+            {
+                mainMessage = _helper.Translation.Get("AchievementCongratulations");
+                UnlockAchievement();
+            }
+            else if (donated)
+            {
+                mainMessage = _helper.Translation.Get("MenuCloseFishDonated");
+            }
+            else
+            {
+                mainMessage = _helper.Translation.Get("MenuCloseNoFishDonated");
+            }
+
+            Game1.drawObjectDialogue(mainMessage);
+            var dialoguesField = _helper.Reflection.GetField<List<string>>(Game1.activeClickableMenu, "dialogues");
+
+            if (pufferchickDonated)
+            {
+                var dialogues = dialoguesField.GetValue();
+                dialogues.Add(_helper.Translation.Get("PufferchickDonated"));
+                dialoguesField.SetValue(dialogues);
+                return;
+            }
+
+            if (achievementUnlock)
+            {
+                TryAwardTrophy();
+            }
+
+        }
+
 
         private const string AchievementMessageType = "Achievement";
         public static bool CheckAchievement()
@@ -127,15 +184,13 @@ namespace StardewAquarium
             if (GetNumDonatedFish() >= InternalNameToDonationName.Count)
             {
                 _helper.Multiplayer.SendMessage(true, AchievementMessageType, modIDs:new[]{ _manifest.UniqueID});
-                UnlockAchievement();
-                TryAwardTrophy();
                 return true;
             }
 
             return false;
         }
 
-        private static void UnlockAchievement()
+        public static void UnlockAchievement()
         {
             int id = AchievementEditor.AchievementId;
             if (Game1.player.achievements.Contains(id))

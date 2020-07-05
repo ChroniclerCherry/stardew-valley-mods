@@ -4,25 +4,28 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Menus;
+using System.Collections.Generic;
 
-namespace StardewAquarium.Menu
+namespace StardewAquarium.MenuAndTiles
 {
     public class DonateFishMenu : InventoryMenu
     {
 
         private readonly ITranslationHelper _translation;
         private bool _donated;
+        private bool _achievementUnlock;
+        private bool _pufferchickDonated;
+
+        private static int PufferChickID { get => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName) ?? -1; }
 
         public DonateFishMenu(ITranslationHelper translate) : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, true, null, Utils.IsUnDonatedFish, 36, 3)
         {
+            //  UnlockAchievement();
+            //  TryAwardTrophy();
+
             showGrayedOutSlots = true;
             _translation = translate;
-            this.exitFunction = () =>
-            {
-                Game1.drawObjectDialogue(_donated
-                    ? _translation.Get("MenuCloseFishDonated")
-                    : _translation.Get("MenuCloseNoFishDonated"));
-            };
+            exitFunction = () => Utils.DonationMenuExit(_achievementUnlock,_donated,_pufferchickDonated);
         }
 
         public override void receiveLeftClick(int x, int y, bool playSound = true)
@@ -38,6 +41,15 @@ namespace StardewAquarium.Menu
                 item.Stack--;
                 if (item.Stack == 0)
                     Game1.player.removeItemFromInventory(item);
+
+                if (item.ParentSheetIndex == PufferChickID)
+                {
+                    Game1.playSound("openChest");
+                    _pufferchickDonated = true;
+                }
+
+                _achievementUnlock = Utils.CheckAchievement();
+
             }
         }
 

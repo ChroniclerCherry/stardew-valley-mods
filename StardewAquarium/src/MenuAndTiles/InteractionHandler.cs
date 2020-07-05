@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 
-namespace StardewAquarium.Menu
+namespace StardewAquarium.MenuAndTiles
 {
     public class InteractionHandler
     {
@@ -41,7 +40,7 @@ namespace StardewAquarium.Menu
 
             if (tileProperty == null)
                 return;
-            
+
             if (tileProperty == "AquariumDonationMenu")
             {
                 _monitor.Log("AquariumDonationMenu tile detected, opening donation menu...");
@@ -52,7 +51,7 @@ namespace StardewAquarium.Menu
                 _monitor.Log("AquariumCollectionMenu tile detected, opening collections menu...");
                 Game1.activeClickableMenu = new AquariumCollectionMenu(_helper.Translation.Get("CollectionsMenu"));
             }
-            else if(tileProperty.StartsWith("AquariumSign"))
+            else if (tileProperty.StartsWith("AquariumSign"))
             {
                 new AquariumMessage(tileProperty.Split(' '));
             }

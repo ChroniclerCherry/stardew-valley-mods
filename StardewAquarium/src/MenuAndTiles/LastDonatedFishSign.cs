@@ -7,13 +7,13 @@ using StardewValley;
 using xTile.Layers;
 using xTile.Tiles;
 
-namespace StardewAquarium
+namespace StardewAquarium.MenuAndTiles
 {
     public class LastDonatedFishSign
     {
         private IModHelper _helper;
         private IMonitor _monitor;
-        private ModData _data;
+        private ModData _data { get => ModEntry.data; }
 
         public static int LastDonatedFish { get; set; } = 435;
         private static NetStringList MasterPlayerMail => Game1.MasterPlayer.mailReceived;
@@ -22,9 +22,6 @@ namespace StardewAquarium
         {
             _helper = helper;
             _monitor = monitor;
-
-            string dataPath = Path.Combine("data", "data.json");
-            _data = helper.Data.ReadJsonFile<ModData>(dataPath);
 
             _helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             _helper.Events.Player.Warped += Player_Warped;

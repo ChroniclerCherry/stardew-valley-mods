@@ -1,17 +1,24 @@
 ﻿using System;
 using System.IO;
 using StardewModdingAPI;
-using StardewAquarium.Menu;
 using StardewAquarium.Models;
 using StardewAquarium.src.Pufferchick;
 using StardewAquarium.Tokens;
 using StardewValley;
+using Harmony;
+using StardewAquarium.Patches;
+using StardewAquarium.MenuAndTiles;
 
 namespace StardewAquarium
 {
     public partial class ModEntry : Mod
     {
-        private static ModConfig config;
+        public static ModConfig config;
+        public static bool RecatchLegends;
+        public static ModData data;
+        public const string PufferChickName = "Pufferchick";
+        public static HarmonyInstance harmony { get; } = HarmonyInstance.Create("Cherry.StardewAquarium");
+
         public static IJsonAssetsApi JsonAssets { get; set; }
 
         public override void Entry(IModHelper helper)
@@ -24,16 +31,30 @@ namespace StardewAquarium
             helper.Content.AssetEditors.Add(new AchievementEditor(Helper,Monitor));
             helper.Content.AssetEditors.Add(new FishEditor());
 
-            LegendaryFish.Initialize(Helper,Monitor);
+            LegendaryFishPatches.Initialize(Helper, Monitor);
 
+            new ReturnTrain(Helper, Monitor);
             new InteractionHandler(Helper,Monitor);
 
             config = Helper.ReadConfig<ModConfig>();
 
+            string dataPath = Path.Combine("data", "data.json");
+            data = helper.Data.ReadJsonFile<ModData>(dataPath);
+
             //disable if recatch legendary fish is installed
             if (config.EnableRecatchWorthlessUndonatedLegends &&
                 !Helper.ModRegistry.IsLoaded("cantorsdust.RecatchLegendaryFish"))
-                new LegendaryRecatch(Helper, Monitor);
+            {
+                Monitor.Log("Enabling the recatch of legendaries...");
+                RecatchLegends = true;
+                //new LegendaryRecatch(Helper, Monitor);
+            }
+            else
+            {
+                Monitor.Log("Disabling the recatch of legendaries from this mod. ( if cantorsdust.RecatchLegendaryFish is installed, behaviour will default to that mod's )");
+                RecatchLegends = false;
+            }
+                
             
             if (config.EnableDebugCommands)
             {

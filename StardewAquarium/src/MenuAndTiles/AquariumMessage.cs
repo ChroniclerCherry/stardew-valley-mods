@@ -2,7 +2,7 @@
 using StardewModdingAPI;
 using StardewValley;
 
-namespace StardewAquarium
+namespace StardewAquarium.MenuAndTiles
 {
     class AquariumMessage
     {

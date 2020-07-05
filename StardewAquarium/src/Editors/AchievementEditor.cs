@@ -8,7 +8,7 @@ namespace StardewAquarium
         private IModHelper _helper;
         private IMonitor _monitor;
 
-        public const int AchievementId = 5005;
+        public const int AchievementId = 637201;
 
         public AchievementEditor(IModHelper helper, IMonitor monitor)
         {
