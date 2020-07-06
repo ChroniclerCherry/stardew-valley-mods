@@ -4,6 +4,8 @@ using StardewValley;
 using System;
 using Netcode;
 using StardewValley.Network;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ShopTileFramework.Utility
 {
@@ -83,7 +85,7 @@ namespace ShopTileFramework.Utility
                     if (CheckCustomConditions(condition.Substring(1)))
                     {
                         if (ModEntry.VerboseLogging)
-                            ModEntry.monitor.Log($"\t\tFailed individual condition: {condition}", LogLevel.Trace);
+                            ModEntry.monitor.Log($"\tFailed individual condition: {condition}", LogLevel.Trace);
                         return false;
                     }
                         
@@ -145,9 +147,10 @@ namespace ShopTileFramework.Utility
 
         private static bool CheckFarmHouseUpgrade(string[] conditionParams)
         {
-            foreach (var level in conditionParams)
+
+            for (int i = 1; i < conditionParams.Length; i++)
             {
-                if (Int32.Parse(level) == Game1.player.HouseUpgradeLevel)
+                if (int.Parse(conditionParams[i]) == Game1.player.HouseUpgradeLevel)
                     return true;
             }
 
@@ -157,15 +160,12 @@ namespace ShopTileFramework.Utility
         private static bool CheckHasRecipe(string[] conditionParams,
             NetStringDictionary<int, NetInt> craftingRecipes)
         {
+
             for (int i = 1; i < conditionParams.Length; i++)
             {
-                foreach (var key in craftingRecipes.Keys)
-                {
-                    if (conditionParams[i] != key.Replace(" ", "-"))
-                    {
-                        return false;
-                    }
-                }
+                if (!(from rec in craftingRecipes.Keys
+                      select rec.Replace(" ", "-")).Contains(conditionParams[i]))
+                    return false;
             }
 
             return true;
@@ -176,7 +176,7 @@ namespace ShopTileFramework.Utility
         {
             int offset = Convert.ToInt32(conditionParams[1]);
             string timePeriod = conditionParams[2];
-            if (!Int32.TryParse(timePeriod, out var interval))
+            if (!int.TryParse(timePeriod, out var interval))
             {
                 switch (timePeriod)
                 {
