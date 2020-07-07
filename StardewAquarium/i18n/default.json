@@ -1,6 +1,6 @@
 ﻿{
 	//Welcome message after the stardew aquarium has been completed
-	"AquariumWelcome":"Welcome to the Stardew Aquarium!",
+	"AquariumWelcome":"Welcome to the Stardew Aquarium! We fixed up this old thing... and now it's yours!",
 	"NoInventorySpace": "There's a gift waiting for you! Try coming back if you have space in your inventory.",
 	
 	//Donation menu dialogue and options
@@ -31,7 +31,7 @@
 	"IceMachine": "This machine keeps the tank cooled under very low temperatures.",
 	"Pressure": "This machine is used to monitor the pressure of this fish tank.",
 	"Shrimp":
-		"Interested by the deep sea shrimp, eh ? Well too bad, cause it's not real. This is just a television screen.",
+	"Interested by the deep sea shrimp, eh ? Well too bad, cause it's not real. This is just a television screen.",
 	"Depth": "This is a very accurate representation of a depth meter, but it's not real.",
 	"PanelCool": "This panel is for *insert something cool*.",
 	"Lever": "Sorry but that lever won't get you anywhere.",
@@ -160,12 +160,14 @@
 		"The Periwinkle, also known as a winkle or whelk, is a tiny gastropod. Their shells are often sharply pointed.",
 	"Tank_Oyster":
 		"The Oyster is a bivalve mollusc. They are commonly known for the production of pearls. Pearls are created when an irritation has worked its way inside the oyster. As a defense mechanism, a fluid is used to coat the irritant. Layer upon layer of this coating, called nacre, is deposited, until a lustrous pearl is formed.",
-
-	//Achievement stuff
+	"Tank_Pufferchick":
+		"'Long ago, when the earth was young and pufferchick didn't exist yet, #making-mods had its own emoji subculture based on pufferfish. I suggested adding some of them to the server's emoji slots (this is back when we could have 50 max), staff asked which ones I wanted to add, and I jokingly created a pufferchick to suggest it.' - Pathoschild, 2020",
+	
+	//achievement
 	"AchievementName": "Sleeping with the Fishies!",
 	"AchievementDescription": "Donated one of every fish to the Stardew Aquarium",
-	"AchievementCongratulations": "Someone else write this dialogue im tired",
+	"AchievementCongratulations": "You did it... Congratulations ! Try coming back tomorrow to see the Aquarium at its fullest!",
 
 	//ehehehe
-	"PufferchickDonated":"You hear a click behind the counter...?"
+	"PufferchickDonated":"You heard something click behind the counter..."
 }

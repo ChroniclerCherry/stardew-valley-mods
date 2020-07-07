@@ -1,0 +1,38 @@
+﻿{
+	"Name": "Fish Bowl",
+	"Price": 200,
+	"Description": "Cute fishy!",
+	"Category": "Gem",
+	"CategoryTextOverride": "Decor",
+	"Edibility": -300,
+	"IsColored": false,
+	"Recipe": null,
+	"NameLocalization":
+	{
+		/*"es": "", //Spansih
+		"ko": "", //Korean
+		"de": "", //German
+		"fr": "", //French
+		"hu": "", //Hungarian
+		"it": "", //Italian
+		"ja": "", //Japanese
+		"pt": "", //Portuguese
+		"ru": "", //Russian
+		"tr": "", //Turkish
+		"zh": "农场布局器", //Chinese (Simplified)*/
+	},
+	"DescriptionLocalization":
+	{
+		/*"es": "", //Spansih
+		"ko": "", //Korean
+		"de": "", //German
+		"fr": "", //French
+		"hu": "", //Hungarian
+		"it": "", //Italian
+		"ja": "", //Japanese
+		"pt": "", //Portuguese
+		"ru": "", //Russian
+		"tr": "", //Turkish
+		"zh": "", //Chinese (Simplified)*/
+	}
+}

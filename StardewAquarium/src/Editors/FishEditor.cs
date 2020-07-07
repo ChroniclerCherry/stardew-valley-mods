@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using StardewModdingAPI;
 using StardewValley;
 
-namespace StardewAquarium.src.Pufferchick
+namespace StardewAquarium.Editors
 {
     class FishEditor : IAssetEditor
     {
         public bool CanEdit<T>(IAssetInfo asset)
         {
-            return asset.AssetNameEquals("Data\\Fish");
+            return asset.AssetNameEquals("Data\\Fish") && ModEntry.JsonAssets != null;
         }
 
         public void Edit<T>(IAssetData asset)

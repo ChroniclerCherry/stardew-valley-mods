@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Netcode;
 using StardewAquarium.MenuAndTiles;
+using StardewAquarium.Editors;
 using StardewModdingAPI;
 using StardewValley;
 using Object = StardewValley.Object;

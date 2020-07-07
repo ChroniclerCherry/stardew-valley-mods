@@ -14,8 +14,10 @@ namespace StardewAquarium.MenuAndTiles
         private IModHelper _helper;
         private IMonitor _monitor;
         private ModData _data { get => ModEntry.data; }
+        public int LastDonatedFish { get; set; } = -1;
 
-        public static int LastDonatedFish { get; set; } = 435;
+        private const string objTilesheetName = "z_objects";
+        private TileSheet objectsTilesheet;
         private static NetStringList MasterPlayerMail => Game1.MasterPlayer.mailReceived;
 
         public LastDonatedFishSign(IModHelper helper, IMonitor monitor)
@@ -35,6 +37,22 @@ namespace StardewAquarium.MenuAndTiles
 
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
+            // This gets the asset key for a tilesheet.png file from your mod's folder. You can also load a game tilesheet like
+            // this: helper.Content.GetActualAssetKey("spring_town", ContentSource.GameContent).
+            string tilesheetPath = _helper.Content.GetActualAssetKey(@"Maps/springobjects", ContentSource.GameContent);
+
+            // Get an instance of the in-game location you want to patch. For the farm, use Game1.getFarm() instead.
+            GameLocation location = Game1.getLocationFromName(ModEntry.data.ExteriorMapName);
+
+            // Add the tilesheet.
+            objectsTilesheet = new TileSheet(
+               id: objTilesheetName, // a unique ID for the tilesheet
+               map: location.map,
+               imageSource: tilesheetPath,
+               sheetSize: new xTile.Dimensions.Size(24, 4000), // the tile size of your tilesheet image.
+               tileSize: new xTile.Dimensions.Size(16, 16) // should always be 16x16 for maps
+            );
+
             SetLastDonatedFish();
         }
 
@@ -60,7 +78,11 @@ namespace StardewAquarium.MenuAndTiles
                 .FirstOrDefault();
 
             if (fish == null)
+            {
+                LastDonatedFish = -1;
                 return;
+            }
+                
 
             foreach (var kvp in Game1.objectInformation)
             {
@@ -75,14 +97,23 @@ namespace StardewAquarium.MenuAndTiles
 
         internal void UpdateLastDonatedFishSign()
         {
+            if (LastDonatedFish < 0)
+                return;
+
             var map = Game1.getLocationFromName(_data.ExteriorMapName)?.Map;
 
             if (map == null)
                 return;
 
             Layer layer = map.GetLayer("Front");
-            TileSheet tilesheet = map.GetTileSheet("springobjects");
-            layer.Tiles[_data.LastDonatedFishCoordinateX, _data.LastDonatedFishCoordinateY] = new StaticTile(layer, tilesheet, BlendMode.Alpha, tileIndex: LastDonatedFish);
+
+            if (map.GetTileSheet(objTilesheetName) == null)
+            {
+                map.AddTileSheet(objectsTilesheet);
+                map.LoadTileSheets(Game1.mapDisplayDevice);
+            }  
+
+            layer.Tiles[_data.LastDonatedFishCoordinateX, _data.LastDonatedFishCoordinateY] = new StaticTile(layer, objectsTilesheet, BlendMode.Alpha, tileIndex: LastDonatedFish);
         }
     }
 }

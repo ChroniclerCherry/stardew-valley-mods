@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using StardewAquarium.Editors;
 using StardewModdingAPI;
 using StardewValley;
 

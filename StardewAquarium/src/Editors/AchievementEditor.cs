@@ -1,6 +1,6 @@
 ﻿using StardewModdingAPI;
 
-namespace StardewAquarium
+namespace StardewAquarium.Editors
 {
     class AchievementEditor : IAssetEditor
 
@@ -12,8 +12,8 @@ namespace StardewAquarium
 
         public AchievementEditor(IModHelper helper, IMonitor monitor)
         {
-            this._helper = helper;
-            this._monitor = monitor;
+            _helper = helper;
+            _monitor = monitor;
         }
 
         public bool CanEdit<T>(IAssetInfo asset)
@@ -24,7 +24,7 @@ namespace StardewAquarium
         public void Edit<T>(IAssetData asset)
         {
             var data = asset.AsDictionary<int, string>().Data;
-            data[AchievementId] 
+            data[AchievementId]
                 = $"{_helper.Translation.Get("AchievementName")}^{_helper.Translation.Get("AchievementDescription")}^true^-1^-1";
         }
     }

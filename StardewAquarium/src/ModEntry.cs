@@ -2,12 +2,12 @@
 using System.IO;
 using StardewModdingAPI;
 using StardewAquarium.Models;
-using StardewAquarium.src.Pufferchick;
 using StardewAquarium.Tokens;
 using StardewValley;
 using Harmony;
 using StardewAquarium.Patches;
 using StardewAquarium.MenuAndTiles;
+using StardewAquarium.Editors;
 
 namespace StardewAquarium
 {
@@ -20,9 +20,11 @@ namespace StardewAquarium
         public static HarmonyInstance harmony { get; } = HarmonyInstance.Create("Cherry.StardewAquarium");
 
         public static IJsonAssetsApi JsonAssets { get; set; }
-
         public override void Entry(IModHelper helper)
         {
+            //TODO: make last donated fish sign cycle when aquarium is completed
+            //TODO: MP sync the last donated fish signs
+
             Utils.Initialize(Helper, Monitor,ModManifest);
 
             Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
@@ -47,11 +49,10 @@ namespace StardewAquarium
             {
                 Monitor.Log("Enabling the recatch of legendaries...");
                 RecatchLegends = true;
-                //new LegendaryRecatch(Helper, Monitor);
             }
             else
             {
-                Monitor.Log("Disabling the recatch of legendaries from this mod. ( if cantorsdust.RecatchLegendaryFish is installed, behaviour will default to that mod's )");
+                Monitor.Log("Disabling the recatch of legendaries from this mod. (if cantorsdust.RecatchLegendaryFish is installed, behaviour will default to that mod's)");
                 RecatchLegends = false;
             }
                 
