@@ -8,6 +8,7 @@ using Harmony;
 using StardewAquarium.Patches;
 using StardewAquarium.MenuAndTiles;
 using StardewAquarium.Editors;
+using StardewAquarium.src.Editors;
 
 namespace StardewAquarium
 {
@@ -30,8 +31,7 @@ namespace StardewAquarium
             Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
             Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
 
-            helper.Content.AssetEditors.Add(new AchievementEditor(Helper,Monitor));
-            helper.Content.AssetEditors.Add(new FishEditor());
+            InitializeEditors();
 
             LegendaryFishPatches.Initialize(Helper, Monitor);
 
@@ -63,6 +63,13 @@ namespace StardewAquarium
                 Helper.ConsoleCommands.Add("aquariumprogress", "", OpenAquariumCollectionMenu);
                 Helper.ConsoleCommands.Add("removedonatedfish", "", RemoveDonatedFish);
             }
+        }
+
+        private void InitializeEditors()
+        {
+            Helper.Content.AssetEditors.Add(new AchievementEditor(Helper, Monitor));
+            Helper.Content.AssetEditors.Add(new LocationsEditor());
+            Helper.Content.AssetEditors.Add(new FishEditor());
         }
 
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
