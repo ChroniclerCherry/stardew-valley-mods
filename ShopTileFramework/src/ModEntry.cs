@@ -238,9 +238,6 @@ namespace ShopTileFramework
             if (tileProperty == null)
                 return;
 
-            if (VerboseLogging)
-                monitor.Log($"Tile property detected: {tileProperty}");
-
             //if there is a tile property, attempt to open shop if it exists
             CheckForShopToOpen(tileProperty,e);
         }
@@ -277,9 +274,6 @@ namespace ShopTileFramework
                 {
                     //Extract the tile property value
                     string shopName = shopProperty.ToString();
-
-                    if (VerboseLogging)
-                        monitor.Log($"Shop name is: {shopName}");
 
                     if (ShopManager.ItemShops.ContainsKey(shopName))
                     {
