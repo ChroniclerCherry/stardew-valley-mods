@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>StardewAquarium</AssemblyName>
+		<RootNamespace>StardewAquarium</RootNamespace>
+		<Version>1.0.0</Version>
+		<TargetFramework>net452</TargetFramework>
+		<Platforms>x86</Platforms>
+		<PlatformTarget>x86</PlatformTarget>
+
+		<EnableHarmony>true</EnableHarmony>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="src\IContentPatcherAPI.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="3.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Properties\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="src\Tokens\IContentPatcherAPI.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="data\BigCraftables\Stardew Aquarium Trophy\big-craftable.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="data\BigCraftables\Stardew Aquarium Trophy\big-craftable.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="data\content-pack.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="data\data.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="data\Objects\Fish Bowl\object.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="data\Objects\Fish Bowl\object.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="data\Objects\Pufferchick\object.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="data\Objects\Pufferchick\object.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+</Project>

@@ -2,6 +2,10 @@
 using StardewModdingAPI;
 using StardewValley;
 using System;
+using Netcode;
+using StardewValley.Network;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ShopTileFramework.Utility
 {
@@ -81,7 +85,7 @@ namespace ShopTileFramework.Utility
                     if (CheckCustomConditions(condition.Substring(1)))
                     {
                         if (ModEntry.VerboseLogging)
-                            ModEntry.monitor.Log($"\t\tFailed individual condition: {condition}", LogLevel.Trace);
+                            ModEntry.monitor.Log($"\tFailed individual condition: {condition}", LogLevel.Trace);
                         return false;
                     }
                         
@@ -128,6 +132,12 @@ namespace ShopTileFramework.Utility
                     return CheckJojaMartComplete();
                 case "SeededRandom":
                     return CheckSeededRandom(conditionParams);
+                case "HasCookingRecipe":
+                    return CheckHasRecipe(conditionParams,Game1.player.cookingRecipes);
+                case "HasCraftingRecipe":
+                    return CheckHasRecipe(conditionParams,Game1.player.craftingRecipes);
+                case "FarmHouseUpgradeLevel":
+                    return CheckFarmHouseUpgrade(conditionParams);
                 default:
                     // Note: "-5005" is a random event id cause the vanilla method is for events and needs one ¯\_(ツ)_/¯
                     // so it's the negative mod id
@@ -135,11 +145,38 @@ namespace ShopTileFramework.Utility
             }
         }
 
+        private static bool CheckFarmHouseUpgrade(string[] conditionParams)
+        {
+
+            for (int i = 1; i < conditionParams.Length; i++)
+            {
+                if (int.Parse(conditionParams[i]) == Game1.player.HouseUpgradeLevel)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static bool CheckHasRecipe(string[] conditionParams,
+            NetStringDictionary<int, NetInt> craftingRecipes)
+        {
+
+            for (int i = 1; i < conditionParams.Length; i++)
+            {
+                if (!(from rec in craftingRecipes.Keys
+                      select rec.Replace(" ", "-")).Contains(conditionParams[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
+
         public static bool CheckSeededRandom(string[] conditionParams)
         {
             int offset = Convert.ToInt32(conditionParams[1]);
             string timePeriod = conditionParams[2];
-            if (!Int32.TryParse(timePeriod, out var interval))
+            if (!int.TryParse(timePeriod, out var interval))
             {
                 switch (timePeriod)
                 {

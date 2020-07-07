@@ -106,6 +106,12 @@ namespace ShopTileFramework.Patches
                 }
                 else
                 {
+                    foreach (var key in customStock.Keys)
+                    {
+                        if (__result.ContainsKey(key))
+                            return;
+                    }
+
                     if (ShopManager.VanillaShops[shopName].AddStockAboveVanilla)
                     {
                         __result = customStock.Concat(__result).ToDictionary(x => x.Key, x => x.Value);
