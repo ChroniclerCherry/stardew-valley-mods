@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System;
 using System.Linq;
 using Netcode;
 using StardewAquarium.Models;
@@ -7,7 +7,7 @@ using StardewValley;
 using xTile.Layers;
 using xTile.Tiles;
 
-namespace StardewAquarium.MenuAndTiles
+namespace StardewAquarium.TilesLogic
 {
     public class LastDonatedFishSign
     {
@@ -17,7 +17,6 @@ namespace StardewAquarium.MenuAndTiles
         public int LastDonatedFish { get; set; } = -1;
 
         private const string objTilesheetName = "z_objects";
-        private TileSheet objectsTilesheet;
         private static NetStringList MasterPlayerMail => Game1.MasterPlayer.mailReceived;
 
         public LastDonatedFishSign(IModHelper helper, IMonitor monitor)
@@ -27,6 +26,28 @@ namespace StardewAquarium.MenuAndTiles
 
             _helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             _helper.Events.Player.Warped += Player_Warped;
+            _helper.Events.Multiplayer.ModMessageReceived += Multiplayer_ModMessageReceived;
+
+            _helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
+        }
+
+        private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
+        {
+            if (!Utils.CheckAchievement())
+                return;
+
+            var random = new Random((int)Game1.uniqueIDForThisGame + Game1.Date.TotalDays);
+            int i = random.Next(0, Utils.FishIDs.Count - 1);
+            LastDonatedFish = Utils.FishIDs[i];
+        }
+
+        private void Multiplayer_ModMessageReceived(object sender, StardewModdingAPI.Events.ModMessageReceivedEventArgs e)
+        {
+            if (e.FromModID == "Cherry.StardewAquarium" && e.Type == "FishDonated")
+            {
+                LastDonatedFish = e.ReadAs<int>();
+                _monitor.Log($"The player {e.FromPlayerID} donated the fish of ID {LastDonatedFish}");
+            }
         }
 
         private void Player_Warped(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
@@ -37,22 +58,6 @@ namespace StardewAquarium.MenuAndTiles
 
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
-            // This gets the asset key for a tilesheet.png file from your mod's folder. You can also load a game tilesheet like
-            // this: helper.Content.GetActualAssetKey("spring_town", ContentSource.GameContent).
-            string tilesheetPath = _helper.Content.GetActualAssetKey(@"Maps/springobjects", ContentSource.GameContent);
-
-            // Get an instance of the in-game location you want to patch. For the farm, use Game1.getFarm() instead.
-            GameLocation location = Game1.getLocationFromName(ModEntry.data.ExteriorMapName);
-
-            // Add the tilesheet.
-            objectsTilesheet = new TileSheet(
-               id: objTilesheetName, // a unique ID for the tilesheet
-               map: location.map,
-               imageSource: tilesheetPath,
-               sheetSize: new xTile.Dimensions.Size(24, 4000), // the tile size of your tilesheet image.
-               tileSize: new xTile.Dimensions.Size(16, 16) // should always be 16x16 for maps
-            );
-
             SetLastDonatedFish();
         }
 
@@ -66,6 +71,7 @@ namespace StardewAquarium.MenuAndTiles
 
             _monitor.Log($"The last donated fish is {i.Name}");
             LastDonatedFish = i.ParentSheetIndex;
+            _helper.Multiplayer.SendMessage(LastDonatedFish, "FishDonated", modIDs: new[] { "Cherry.StardewAquarium" });
             MasterPlayerMail.Add($"AquariumLastDonated:{i.Name}");
         }
 
@@ -106,12 +112,25 @@ namespace StardewAquarium.MenuAndTiles
                 return;
 
             Layer layer = map.GetLayer("Front");
+            TileSheet objectsTilesheet = map.GetTileSheet(objTilesheetName);
 
-            if (map.GetTileSheet(objTilesheetName) == null)
+            if (objectsTilesheet == null)
             {
+                string tilesheetPath = _helper.Content.GetActualAssetKey(@"Maps/springobjects", ContentSource.GameContent);
+                GameLocation location = Game1.getLocationFromName(ModEntry.data.ExteriorMapName);
+
+                // Add the tilesheet.
+                objectsTilesheet = new TileSheet(
+                   id: objTilesheetName, // a unique ID for the tilesheet
+                   map: map,
+                   imageSource: tilesheetPath,
+                   sheetSize: new xTile.Dimensions.Size(24, 4000), // the tile size of your tilesheet image.
+                   tileSize: new xTile.Dimensions.Size(16, 16) // should always be 16x16 for maps
+                );
+
                 map.AddTileSheet(objectsTilesheet);
                 map.LoadTileSheets(Game1.mapDisplayDevice);
-            }  
+            }
 
             layer.Tiles[_data.LastDonatedFishCoordinateX, _data.LastDonatedFishCoordinateY] = new StaticTile(layer, objectsTilesheet, BlendMode.Alpha, tileIndex: LastDonatedFish);
         }

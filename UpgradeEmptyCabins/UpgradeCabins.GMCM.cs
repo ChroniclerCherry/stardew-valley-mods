@@ -12,7 +12,6 @@ namespace UpgradeEmptyCabins
             if (api == null)
                 return;
 
-            _config = Helper.ReadConfig<Config>();
             api.RegisterModConfig(ModManifest, () => _config = new Config(), () => Helper.WriteConfig(_config));
             api.RegisterSimpleOption(ModManifest, "Instance Build", "Whether cabins are instantly upgraded", () => _config.InstantBuild, val => _config.InstantBuild = val);
         }

@@ -8,6 +8,7 @@
 	"DonationQuestion": "Welcome to the Stardeq Aquarium! Would you like to donate a fish today?",
 	"OptionYes": "Yes",
 	"OptionNo": "No",
+	"DonateButton": "Donate",
 	"DeclineToDonate": "You are free to return anytime if you change your mind!",
 	"NothingToDonate":
 		"Welcome to the Stardew Aquarium! If you ever find a specimen we're missing, we'd be delighted if you would considering making a donation.",
@@ -169,5 +170,10 @@
 	"AchievementCongratulations": "You did it... Congratulations ! Try coming back tomorrow to see the Aquarium at its fullest!",
 
 	//ehehehe
-	"PufferchickDonated":"You heard something click behind the counter..."
+	"PufferchickDonated":"You heard something click behind the counter...",
+
+	//mail
+	"AquariumOpenLandslide":"Dear @,. I am relieved to hear that no one got injured in the earthquake last night. But due to this event I hear the railroad is now available again to Pelican Town. Therefore I'm proud to announce that the brand new Stardew Aquarium is open for business! Speaking of business, we do not have any fish on display... My friend Willy tells me you’re quite the angler, perhaps you would consider donating some of the specimens you might catch. Best regards, The Curator of the Stardew Aquarium.",
+	"AquariumOPenLater":"Placeholder text"
+
 }

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Netcode;
-using StardewAquarium.MenuAndTiles;
 using StardewAquarium.Editors;
+using StardewAquarium.TilesLogic;
 using StardewModdingAPI;
 using StardewValley;
 using Object = StardewValley.Object;
@@ -23,6 +23,7 @@ namespace StardewAquarium
         /// Maps the InternalName of the fish to its internalname without spaces, eg. Tranbow Trout to RainbowTrout
         /// </summary>
         public static Dictionary<string, string> InternalNameToDonationName { get; set; } = new Dictionary<string, string>();
+        public static List<int> FishIDs = new List<int>();
 
         /// <summary>
         /// Maps the internal name without spaces to its localized display name
@@ -55,6 +56,7 @@ namespace StardewAquarium
                 var fishName = info[0];
                 if (info[3].Contains("-4"))
                 {
+                    FishIDs.Add(kvp.Key);
                     InternalNameToDonationName.Add(fishName, fishName.Replace(" ",String.Empty));
                     FishDisplayNames.Add(fishName.Replace(" ", String.Empty),info[4]);
                 }
@@ -142,9 +144,19 @@ namespace StardewAquarium
             return false;
         }
 
+        public static IEnumerable<int> GetUndonatedFishInInventory()
+        {
+            foreach (var item in Game1.player.Items)
+            {
+                if (IsUnDonatedFish(item)) yield return item.ParentSheetIndex;
+            }
+
+        }
+
         public static void DonationMenuExit(bool achievementUnlock, bool donated, bool pufferchickDonated)
         {
-            string mainMessage = "";
+            _monitor.Log("Exited!",LogLevel.Alert);
+            string mainMessage;
 
             if (achievementUnlock)
             {
@@ -182,13 +194,7 @@ namespace StardewAquarium
         private const string AchievementMessageType = "Achievement";
         public static bool CheckAchievement()
         {
-            if (GetNumDonatedFish() >= InternalNameToDonationName.Count)
-            {
-                _helper.Multiplayer.SendMessage(true, AchievementMessageType, modIDs:new[]{ _manifest.UniqueID});
-                return true;
-            }
-
-            return false;
+            return GetNumDonatedFish() >= InternalNameToDonationName.Count;
         }
 
         public static void UnlockAchievement()
@@ -200,6 +206,9 @@ namespace StardewAquarium
             Game1.player.achievements.Add(id);
             Game1.addHUDMessage(new HUDMessage(_helper.Translation.Get("AchievementName"), true));
             Game1.playSound("achievement");
+
+            _helper.Multiplayer.SendMessage(true, AchievementMessageType, modIDs: new[] { _manifest.UniqueID });
+
         }
 
         private static void Multiplayer_ModMessageReceived(object sender, StardewModdingAPI.Events.ModMessageReceivedEventArgs e)

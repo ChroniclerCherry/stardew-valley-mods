@@ -1,14 +1,14 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using StardewModdingAPI;
 using StardewAquarium.Models;
 using StardewAquarium.Tokens;
 using StardewValley;
 using Harmony;
 using StardewAquarium.Patches;
-using StardewAquarium.MenuAndTiles;
 using StardewAquarium.Editors;
-using StardewAquarium.src.Editors;
+using StardewAquarium.Menus;
+using StardewAquarium.TilesLogic;
+using StardewValley.Menus;
 
 namespace StardewAquarium
 {
@@ -18,14 +18,12 @@ namespace StardewAquarium
         public static bool RecatchLegends;
         public static ModData data;
         public const string PufferChickName = "Pufferchick";
+        private readonly bool IsAndroid = Constants.TargetPlatform == GamePlatform.Android;
         public static HarmonyInstance harmony { get; } = HarmonyInstance.Create("Cherry.StardewAquarium");
 
         public static IJsonAssetsApi JsonAssets { get; set; }
         public override void Entry(IModHelper helper)
         {
-            //TODO: make last donated fish sign cycle when aquarium is completed
-            //TODO: MP sync the last donated fish signs
-
             Utils.Initialize(Helper, Monitor,ModManifest);
 
             Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
@@ -34,6 +32,12 @@ namespace StardewAquarium
             InitializeEditors();
 
             LegendaryFishPatches.Initialize(Helper, Monitor);
+
+            if (IsAndroid)
+            {
+                AndroidShopMenuPatch.Initialize(Helper, Monitor);
+                Helper.Events.Display.MenuChanged += AndroidPlsHaveMercyOnMe;
+            }
 
             new ReturnTrain(Helper, Monitor);
             new InteractionHandler(Helper,Monitor);
@@ -59,10 +63,28 @@ namespace StardewAquarium
             
             if (config.EnableDebugCommands)
             {
-                Helper.ConsoleCommands.Add("donatefish", "", OpenDonationMenuCommand);
+                if (IsAndroid)
+                    Helper.ConsoleCommands.Add("donatefish", "", AndroidDonateFish);
+                else
+                    Helper.ConsoleCommands.Add("donatefish", "", OpenDonationMenuCommand);
+
                 Helper.ConsoleCommands.Add("aquariumprogress", "", OpenAquariumCollectionMenu);
                 Helper.ConsoleCommands.Add("removedonatedfish", "", RemoveDonatedFish);
             }
+        }
+        private void AndroidPlsHaveMercyOnMe(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
+        {
+            //don't ask me what the heck is going on here but its the only way to get it to work
+            if (!(e.OldMenu is DonateFishMenuAndroid androidMenu)) return;
+            //80% sure this is a DonateFishMenuAndroid but it won't work if i check for that but the harmony patch seems to work on it so idk
+            if (!(e.NewMenu is ShopMenu menu)) return;
+
+            menu.exitFunction = androidMenu.OnExit;
+        }
+
+        private void AndroidDonateFish(string arg1, string[] arg2)
+        {
+            Game1.activeClickableMenu = new DonateFishMenuAndroid(Helper, Monitor);
         }
 
         private void InitializeEditors()
@@ -70,6 +92,7 @@ namespace StardewAquarium
             Helper.Content.AssetEditors.Add(new AchievementEditor(Helper, Monitor));
             Helper.Content.AssetEditors.Add(new LocationsEditor());
             Helper.Content.AssetEditors.Add(new FishEditor());
+            Helper.Content.AssetEditors.Add(new MailEditor(Helper));
         }
 
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
@@ -94,7 +117,7 @@ namespace StardewAquarium
 
         private void OpenDonationMenuCommand(string arg1, string[] arg2)
         {
-            Game1.activeClickableMenu = new DonateFishMenu(Helper.Translation);
+            Game1.activeClickableMenu = new DonateFishMenu(Helper.Translation,Monitor);
         }
 
         private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
