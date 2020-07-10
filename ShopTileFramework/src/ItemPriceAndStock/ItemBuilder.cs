@@ -52,7 +52,7 @@ namespace ShopTileFramework.ItemPriceAndStock
             this._stockPrice = price;
             this._currencyItemId = currencyItemId;
             this._currencyItemStack = currencyItemStack;
-            this._stock = stock;
+            this._stock = _isRecipe? 1 : stock; //recipes should sell only 1 max
             this._quality = quality;
             this._shopName = shopName;
             this._defaultSellPriceMultiplier = defaultSellPriceMultiplier;
@@ -132,9 +132,8 @@ namespace ShopTileFramework.ItemPriceAndStock
             switch (_itemType)
             {
                 case "Object":
-                    return new Object(itemId, _isRecipe? 1 : _stock, _isRecipe, quality: _quality);
                 case "Seed":
-                    return new Object(itemId, _isRecipe ? 1 : _stock, _isRecipe, quality: _quality);
+                    return new Object(itemId, _stock, _isRecipe, quality: _quality);
                 case "BigCraftable":
                     return new Object(Vector2.Zero, itemId) { Stack = _isRecipe ? 1 : _stock, IsRecipe = _isRecipe };
                 case "Clothing":
