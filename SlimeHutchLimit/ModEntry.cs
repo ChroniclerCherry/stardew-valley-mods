@@ -7,10 +7,10 @@ namespace SlimeHutchLimit
 {
     public class ModEntry : Mod
     {
-        private static Config config;
+        private static Config _config;
         public override void Entry(IModHelper helper)
         {
-            config = Helper.ReadConfig<Config>();
+            _config = Helper.ReadConfig<Config>();
 
             Helper.ConsoleCommands.Add("SetSlimeHutchLimit", "Changes the max number of slimes that can inhabit a slime hutch.\n\nUsage: SetSlimeHutchLimit <value>\n- value: the number of slimes", ChangeMaxSlimes);
 
@@ -22,13 +22,23 @@ namespace SlimeHutchLimit
 
         private static void SlimeHutch_isFull_postfix(GameLocation __instance, ref bool __result)
         {
-            __result = __instance.characters.Count >= (config?.MaxSlimesInHutch ?? 20);
+            __result = __instance.characters.Count >= (_config?.MaxSlimesInHutch ?? 20);
         }
 
         private void ChangeMaxSlimes(string arg1, string[] arg2)
         {
-            config.MaxSlimesInHutch = int.Parse(arg2[0]);
-            Helper.WriteConfig(config);
+
+            if (int.TryParse(arg2[0], out int newLimit))
+            {
+                _config.MaxSlimesInHutch = newLimit;
+                Helper.WriteConfig(_config);
+                Monitor.Log($"The new Slime limit is: {_config.MaxSlimesInHutch}");
+            }
+            else
+            {
+                Monitor.Log($"Invalid input.");
+            }
+            
         }
     }
 
