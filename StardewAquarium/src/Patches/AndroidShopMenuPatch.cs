@@ -29,7 +29,6 @@ namespace StardewAquarium.Patches
         {
             try
             {
-                _monitor.Log($"In the menu {__instance} and item {item.Name}",LogLevel.Alert);
                 if (!(item is Item donatedFish)) return; //this shouldn't happen but /shrug
 
                 if (!Utils.DonateFish(donatedFish)) return; //this also shouldnt happen

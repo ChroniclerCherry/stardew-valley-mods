@@ -155,7 +155,6 @@ namespace StardewAquarium
 
         public static void DonationMenuExit(bool achievementUnlock, bool donated, bool pufferchickDonated)
         {
-            _monitor.Log("Exited!",LogLevel.Alert);
             string mainMessage;
 
             if (achievementUnlock)
