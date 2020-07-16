@@ -34,7 +34,7 @@ namespace StardewAquarium.TilesLogic
             if (!Context.IsWorldReady)
                 return;
 
-            if (Game1.currentLocation.Name != ModEntry.data.ExteriorMapName)
+            if (Game1.currentLocation?.Name != ModEntry.data.ExteriorMapName)
                 return;
 
             if (Game1.player.Position.Y > 32)

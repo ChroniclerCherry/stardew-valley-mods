@@ -21,8 +21,11 @@ namespace StardewAquarium.Menus
             //look android forced me to do this terrible thing don't judge me just pretend they're not static
             Donated = AchievementUnlock = PufferchickDonated = false;
 
-            //why do i have a whole custom class for something that gets immediately replaced by a vanilla one by smapi? bc screw u
-            // ( initial concept was to keep harmony targeting and menu detection clean without using an NPC name but like, idk anymore lmao )
+            /*
+             *why do i have a whole custom class for something that gets immediately replaced by a vanilla one by smapi? bc screw u
+             * ( initial concept was to keep harmony targeting and menu detection clean without using an NPC name but like, idk anymore lmao )
+             * I'll come back and readdress this someday probably, when I have more sanity to spend. I'm all out atm
+            */
 
             List<int> fishes = Utils.GetUndonatedFishInInventory().Distinct().ToList();
             if (fishes.Count == 0)

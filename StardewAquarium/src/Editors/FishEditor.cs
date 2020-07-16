@@ -7,7 +7,7 @@ namespace StardewAquarium.Editors
     {
         public bool CanEdit<T>(IAssetInfo asset)
         {
-            return asset.AssetNameEquals("Data\\Fish") && ModEntry.JsonAssets != null;
+            return asset.AssetNameEquals("Data\\Fish") && ModEntry.JsonAssets != null; 
         }
 
         public void Edit<T>(IAssetData asset)

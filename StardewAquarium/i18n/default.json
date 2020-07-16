@@ -1,14 +1,13 @@
 ﻿{
 	//Welcome message after the stardew aquarium has been completed
-	"AquariumWelcome":"Welcome to the Stardew Aquarium! We fixed up this old thing... and now it's yours!",
+	"AquariumWelcome":"Welcome to the Stardew Aquarium! We've now acquired a full collection. And it's all thanks to you!",
 	"NoInventorySpace": "There's a gift waiting for you! Try coming back if you have space in your inventory.",
 	
 	//Donation menu dialogue and options
 	"DonationMenuTitle": "Select fish to donate",
-	"DonationQuestion": "Welcome to the Stardeq Aquarium! Would you like to donate a fish today?",
+	"DonationQuestion": "Welcome to the Stardew Aquarium! Would you like to donate a fish today?",
 	"OptionYes": "Yes",
 	"OptionNo": "No",
-	"DonateButton": "Donate",
 	"DeclineToDonate": "You are free to return anytime if you change your mind!",
 	"NothingToDonate":
 		"Welcome to the Stardew Aquarium! If you ever find a specimen we're missing, we'd be delighted if you would considering making a donation.",
@@ -31,10 +30,8 @@
 	"Ice": "All this ice... it's used for cooling the tank with that machine.",
 	"IceMachine": "This machine keeps the tank cooled under very low temperatures.",
 	"Pressure": "This machine is used to monitor the pressure of this fish tank.",
-	"Shrimp":
-	"Interested by the deep sea shrimp, eh ? Well too bad, cause it's not real. This is just a television screen.",
 	"Depth": "This is a very accurate representation of a depth meter, but it's not real.",
-	"PanelCool": "This panel is for *insert something cool*.",
+	"PanelCool": "This panel has a lot of buttons on it, better not touch it.",
 	"Lever": "Sorry but that lever won't get you anywhere.",
 	"Bench": "These benches look brand new...",
 	"LegendaryBook": "A Fisherman's guide to the Legendary Fish",
@@ -43,9 +40,7 @@
 	"Dropped": "Looks like someone has little empathy for books...",
 	"PetBook": "Fish : A good pet?",
 	"Dwarf": "This reminds you of someone... But you can't tell who...",
-	"Introvert": "Why am i hiding here, you ask? I'm an introvert.",
-	"WillSmith": "You look through the telescope... *click* Ahahaaa! Ahhh that's hot, thaaaat's hot.",
-	"Gnomed": "*click* I'm a gnome, and you've been... GNOOOOOMED !",
+	"Introvert": "Why am I hiding here, you ask? I'm an introvert.",
 	"StayHydratedBois": "*drinking noises*",
 
 	//fish descriptions
@@ -173,7 +168,7 @@
 	"PufferchickDonated":"You heard something click behind the counter...",
 
 	//mail
-	"AquariumOpenLandslide":"Dear @,. I am relieved to hear that no one got injured in the earthquake last night. But due to this event I hear the railroad is now available again to Pelican Town. Therefore I'm proud to announce that the brand new Stardew Aquarium is open for business! Speaking of business, we do not have any fish on display... My friend Willy tells me you’re quite the angler, perhaps you would consider donating some of the specimens you might catch. Best regards, The Curator of the Stardew Aquarium.",
-	"AquariumOPenLater":"Placeholder text"
+	"AquariumOpenLandslide":"Dear @,^^I am relieved to hear that no one got injured in the earthquake last night. But due to this event I hear the railroad is now available again to Pelican Town.^Therefore I'm proud to announce that the brand new Stardew Aquarium is open for business! Speaking of business, we do not have any fish on display...^My friend Willy tells me you’re quite the angler, perhaps you would consider donating some of the specimens you might catch.^^Best regards, The Curator of the Stardew Aquarium.",
+	"AquariumOPenLater":"Hello @!^^I'm proud to announce that the brand new Stardew Aquarium is open for business! Speaking of business, we do not have any fish on display...^My friend Willy tells me you’re quite the angler, perhaps you would consider donating some of the specimens you might catch.^^Best regards, The Curator of the Stardew Aquarium."
 
 }

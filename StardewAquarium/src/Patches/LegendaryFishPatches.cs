@@ -3,7 +3,10 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Tools;
 using System.Collections.Generic;
+using StardewValley.Locations;
 using Object = StardewValley.Object;
+using System;
+using StardewValley.Network;
 
 namespace StardewAquarium.Patches
 {
@@ -14,12 +17,23 @@ namespace StardewAquarium.Patches
 
         private static bool _fishingStarted;
 
-        private static int PufferChickID { get => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName) ?? -1; }
-        private static Dictionary<int, int[]> _trackedFish;
+        private static int PufferChickID => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName) ?? -1;
+        private static int _trackedFishId = -1;
+        private static int[] _trackedFishStats;
+
+        private const int CrimsonFishId = 159;
+        private const int AnglerId = 160;
+        private const int LegendId = 163;
+        private const int MutantCarpId = 682;
+        private const int GlacierFishId = 775;
 
         private static Dictionary<int, string> LegendaryFish = new Dictionary<int, string>()
         {
-            {159,"CrimsonFish"},{160,"Angler"},{163,"Legend"},{682,"MutantCarp"},{775,"GlacierFish"}
+            {CrimsonFishId,"CrimsonFish"},
+            {AnglerId,"Angler"},
+            {LegendId,"Legend"},
+            {MutantCarpId,"MutantCarp"},
+            {GlacierFishId,"GlacierFish"}
         };
 
         public static void Initialize(IModHelper helper, IMonitor monitor)
@@ -32,20 +46,76 @@ namespace StardewAquarium.Patches
 
             //this patch returns the pufferchick as a legendary fish during the fishing minigame
             harmony.Patch(
-                original: AccessTools.Method(typeof(FishingRod), nameof(FishingRod.isFishBossFish)),
+                AccessTools.Method(typeof(FishingRod), nameof(FishingRod.isFishBossFish)),
                 postfix: new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.isFishBossFish_AddPufferchick))
             );
 
-            //patch handles making legendary fish recatchable and adds the pufferchick
+            //patch handles making the pufferchick catchable
             harmony.Patch(
-                original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.getFish)),
-                prefix: new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.getFish_prefix)),
-                postfix: new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.getFish_PostFix))
+                AccessTools.Method(typeof(GameLocation), nameof(GameLocation.getFish)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.GameLocation_getFish_Prefix))
+            );
+
+            //makes crimsonfish recatchable
+            harmony.Patch(
+                AccessTools.Method(typeof(Beach), nameof(GameLocation.getFish)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.Beach_getFish_prefix)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.ReturnFish))
+            );
+
+            //makes Angler recatchable
+            harmony.Patch(
+                AccessTools.Method(typeof(Town), nameof(GameLocation.getFish)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.Town_getFish_prefix)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.ReturnFish))
+            );
+
+            //makes Legend recatchable
+            harmony.Patch(
+                AccessTools.Method(typeof(Mountain), nameof(GameLocation.getFish)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.Mountain_getFish_prefix)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.ReturnFish))
+            );
+            //makes MutantCarp recatchable
+            harmony.Patch(
+                AccessTools.Method(typeof(Sewer), nameof(GameLocation.getFish)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.Sewer_getFish_prefix)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.ReturnFish))
+            );
+            //makes GlacierFish recatchable
+            harmony.Patch(
+                AccessTools.Method(typeof(Forest), nameof(GameLocation.getFish)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.Forest_getFish_prefix)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.ReturnFish))
             );
 
             _helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             _helper.Events.Player.InventoryChanged += Player_InventoryChanged;
         }
+
+        public static void Forest_getFish_prefix()
+        {
+            _fishingStarted = HideFish(GlacierFishId);
+        }
+        public static void Sewer_getFish_prefix()
+        {
+            _fishingStarted = HideFish(MutantCarpId);
+        }
+        public static void Mountain_getFish_prefix()
+        {
+            _fishingStarted = HideFish(LegendId);
+        }
+
+        public static void Town_getFish_prefix()
+        {
+            _fishingStarted = HideFish(AnglerId);
+        }
+
+        public static void Beach_getFish_prefix()
+        {
+            _fishingStarted = HideFish(CrimsonFishId);
+        }
+
 
         private static void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
@@ -55,24 +125,59 @@ namespace StardewAquarium.Patches
 
         }
 
+        private static bool HideFish(int fishId)
+        {
+            _trackedFishId = -1;
+            if (Game1.player.fishCaught.ContainsKey(fishId)
+                && Game1.player.fishCaught.TryGetValue(fishId, out int[] freshValues)
+                && !Utils.PlayerInventoryContains(fishId)) //if the player doesn't have the fish in their inventory
+            {
+                string fishname = LegendaryFish[fishId];
+
+                if (Utils.IsUnDonatedFish(fishname))
+                {
+                    //save stats of fish and remove it from player's records
+                    _trackedFishId = fishId;
+                    _trackedFishStats = freshValues;
+                    Game1.player.fishCaught.Remove(fishId);
+
+                    _monitor.Log($"Hiding {LegendaryFish[fishId]} records to allow recatch");
+                    return true; //don't run original game code
+                }
+            }
+
+            return false;
+        }
+
+        private static void ReturnFish()
+        {
+            if (_trackedFishId >= 0)
+            {
+                _monitor.Log($"Returning fish to player records:{_trackedFishId}");
+                Game1.player.fishCaught[_trackedFishId] = _trackedFishStats;
+            }
+        }
+
+        
         private static void Player_InventoryChanged(object sender, StardewModdingAPI.Events.InventoryChangedEventArgs e)
         {
-            if (!_fishingStarted)
-                return;
+            if (!_fishingStarted) return;
+
+            if (e.Added == null) return;
 
             _fishingStarted = false;
 
-            foreach (Item i in e?.Added)
+            foreach (Item i in e.Added)
             {
                 if (!(i is Object obj)) return;
 
-                if (!_trackedFish.ContainsKey(obj.ParentSheetIndex))
+                if (_trackedFishId != obj.ParentSheetIndex)
                     return;
 
                 obj.Price = 0;
             }
 
-            _trackedFish.Clear();
+            _trackedFishId = -1;
 
         }
 
@@ -87,59 +192,14 @@ namespace StardewAquarium.Patches
                 __result = true;
         }
 
-        public static bool getFish_prefix()
-        {
-            if (!ModEntry.RecatchLegends)
-                return true;
-
-            //saves any fishdata we want to recatch so that the game doesn't know it's already been caught
-            _trackedFish = new Dictionary<int, int[]>();
-            foreach (int fishId in LegendaryFish.Keys)
-            {
-                //if the player has caught this legendary before
-                if (Game1.player.fishCaught.ContainsKey(fishId)
-                    && Game1.player.fishCaught.TryGetValue(fishId, out int[] freshValues)
-                    && !Utils.PlayerInventoryContains(fishId)) //if the player doesn't have the fish in their inventory
-                {
-                    string fishname = LegendaryFish[fishId];
-                    //only saving state of fish if it has not yet been donated
-                    if (Utils.IsUnDonatedFish(fishname))
-                    {
-                        //save stats of fish and remove it from player's records
-                        _trackedFish.Add(fishId, freshValues);
-                        Game1.player.fishCaught.Remove(fishId);
-                    }
-                }
-            }
-
-            if (_trackedFish.Count > 0)
-            {
-                _fishingStarted = true;
-                _monitor.Log($"Allowing recatch of legendaries:{_trackedFish.Keys}");
-            }
-
-            return true;
-        }
-
-        public static void getFish_PostFix(GameLocation __instance, Farmer who, ref Object __result)
+        public static bool GameLocation_getFish_Prefix(GameLocation __instance, Farmer who, ref Object __result)
         {
             //checks if player should get pufferchick
             var puff = GetFishPufferchick(__instance, who);
-            if (puff != null)
-                __result = puff;
+            if (puff == null) return true;
 
-            if (_trackedFish?.Count == 0) return;
-            _monitor.Log($"Returning fish to player records:{_trackedFish.Keys}");
-
-            //if the fish is one we're tracking, change its sell price to 0
-            if (_trackedFish.ContainsKey(__result.ParentSheetIndex))
-                __result.Price = 0;
-
-            foreach (var fishID in _trackedFish.Keys)
-            {
-                int[] stashedData = _trackedFish[fishID];
-                Game1.player.fishCaught[fishID] = stashedData;
-            }
+            __result = puff;
+            return false;
 
         }
 
@@ -154,11 +214,24 @@ namespace StardewAquarium.Patches
             if (who.stats.ChickenEggsLayed == 0) //has had a chicken lay at least one egg
                 return null;
 
-            //base of 1% and an additional 5% per fish donated
-            if (Game1.random.NextDouble() > 0.01 + 0.005 * Utils.GetNumDonatedFish())
+            //base of 1% and an additional 0.5% per fish donated
+            double pufferChance = 0.01 + 0.005 * Utils.GetNumDonatedFish();
+            
+            if (Game1.random.NextDouble() > pufferChance)
                 return null;
 
             int id = PufferChickID;
+
+            if (ModEntry.RecatchLegends 
+                && who.fishCaught.ContainsKey(id) 
+                && Game1.player.fishCaught.TryGetValue(id, out int[] freshValues) 
+                && !Utils.PlayerInventoryContains(id))
+            {
+                _fishingStarted = true;
+                _trackedFishId = id;
+                return new Object(id, 1, price: 0);
+
+            }
 
             if (who.fishCaught.ContainsKey(id)) return null;
 

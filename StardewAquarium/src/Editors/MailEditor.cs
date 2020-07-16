@@ -20,10 +20,10 @@ namespace StardewAquarium.Editors
             if (Game1.player.hasOrWillReceiveMail(AquariumOpenAfterLandslide) || Game1.player.hasOrWillReceiveMail(AquariumOpenLater))
                 return;
 
-            if (Game1.Date.TotalDays == 31)
+            if (Game1.Date.TotalDays == 30)
                 Game1.player.mailbox.Add(AquariumOpenAfterLandslide);
 
-            if (Game1.Date.TotalDays > 31)
+            if (Game1.Date.TotalDays > 30)
                 Game1.player.mailbox.Add(AquariumOpenLater);
         }
 
