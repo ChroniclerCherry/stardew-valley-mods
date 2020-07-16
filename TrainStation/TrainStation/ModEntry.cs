@@ -58,9 +58,9 @@ namespace TrainStation
 
             //draw the ticket station
             buildingsLayer.Tiles[Config.TicketStationX, Config.TicketStationY] =
-                new StaticTile(buildingsLayer, tilesheet, BlendMode.Alpha, tileIndex: TicketStationBottomTile);
+                new StaticTile(buildingsLayer, tilesheet, BlendMode.Alpha, TicketStationBottomTile);
             buildingsLayer.Tiles[Config.TicketStationX, Config.TicketStationY - 1] =
-                new StaticTile(frontLayer, tilesheet, BlendMode.Alpha, tileIndex: TicketStationTopTile);
+                new StaticTile(frontLayer, tilesheet, BlendMode.Alpha, TicketStationTopTile);
 
             //set the TrainStation property
             railway.setTileProperty(Config.TicketStationX, Config.TicketStationY, "Buildings", "Action", "TrainStation");
