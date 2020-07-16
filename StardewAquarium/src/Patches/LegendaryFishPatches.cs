@@ -56,6 +56,8 @@ namespace StardewAquarium.Patches
                 new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.GameLocation_getFish_Prefix))
             );
 
+            //don't patch these if we don't wanna enable recatch behaviour
+            if (!ModEntry.RecatchLegends) return;
             //makes crimsonfish recatchable
             harmony.Patch(
                 AccessTools.Method(typeof(Beach), nameof(GameLocation.getFish)),
