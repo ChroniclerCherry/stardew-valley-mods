@@ -38,7 +38,6 @@ namespace SlimeHutchLimit
             {
                 Monitor.Log($"Invalid input.");
             }
-            
         }
     }
 
