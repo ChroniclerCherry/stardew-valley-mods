@@ -50,8 +50,13 @@ namespace TrainStation
         private readonly int TicketStationBottomTile = 1057;
         private void DrawInTicketStation()
         {
-            //get references to all the stuff I need to edit the railroad map
+            
             GameLocation railway = Game1.getLocationFromName("Railroad");
+
+            //set the TrainStation property
+            railway.setTileProperty(Config.TicketStationX, Config.TicketStationY, "Buildings", "Action", "TrainStation");
+
+            //get references to all the stuff I need to edit the railroad map
             Layer buildingsLayer = railway.map.GetLayer("Buildings");
             Layer frontLayer = railway.map.GetLayer("Front");
             TileSheet tilesheet = railway.map.TileSheets[OutdoorsTilesheetIndex];
@@ -61,9 +66,6 @@ namespace TrainStation
                 new StaticTile(buildingsLayer, tilesheet, BlendMode.Alpha, TicketStationBottomTile);
             buildingsLayer.Tiles[Config.TicketStationX, Config.TicketStationY - 1] =
                 new StaticTile(frontLayer, tilesheet, BlendMode.Alpha, TicketStationTopTile);
-
-            //set the TrainStation property
-            railway.setTileProperty(Config.TicketStationX, Config.TicketStationY, "Buildings", "Action", "TrainStation");
         }
 
         private void LoadContentPacks()
