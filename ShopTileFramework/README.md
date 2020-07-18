@@ -376,7 +376,7 @@ Command | Description
  `open_animal_shop <ShopName>` | Will open up the animal shop with the specified `ShopName`. Useful for testing without adding in a tile property / needing to go to the shop location
  `reset_shop <ShopName>` | Will reset the stock of the specified `ShopName`, which usually happens at the start of each day. Useful for checking that your conditions are applying / stock is randomizing as you'd like'
  `list_shops` | Lists all of the `ShopName`s registered with Shop Tile Framework
- 
+ `STFConditions <s: conditional string>` | Will run the given string through the conditions system and resolve to true or false
 ## Contact The Dev
 If you need to find me, the following methods are your best bets:
 - Bug reports can be made by submitting an issue on this repositiory, or use the [bugs tab](https://www.nexusmods.com/stardewvalley/mods/5005?tab=bugs) on the Nexus mod page. Please provide a [log](https://smapi.io/log/) with all bug reports and as much information about the circumstances of the bug as possible.
