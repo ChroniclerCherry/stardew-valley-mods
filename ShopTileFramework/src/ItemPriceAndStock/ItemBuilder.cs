@@ -36,7 +36,6 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// <returns></returns>
         public bool AddItemToStock(string itemName, double priceMultiplier = 1)
         {
-
             int id = ItemsUtil.GetIndexByName(itemName, _itemStock.ItemType);
             if (id < 0)
             {
@@ -63,6 +62,11 @@ namespace ShopTileFramework.ItemPriceAndStock
             {
                 ModEntry.monitor.Log($"{_itemStock.ItemType} of ID {itemId} could not be added to the Shop {_itemStock.ShopName}", LogLevel.Trace);
                 return false;
+            }
+
+            if (_itemStock.ItemType == "Seed" && _itemStock.FilterSeedsBySeason)
+            {
+                if (!ItemsUtil.IsInSeasonCrop(itemId)) return false;
             }
 
             var item = CreateItem(itemId);

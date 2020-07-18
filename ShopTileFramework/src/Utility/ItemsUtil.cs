@@ -243,5 +243,20 @@ namespace ShopTileFramework.Utility
             foreach (ISalable item in keysToRemove)
                 stock.Remove(item);
         }
+
+        public static bool IsInSeasonCrop(int itemId)
+        {
+            if (_cropData.ContainsKey(itemId))
+            {
+                return _cropData[itemId].Split('/')[1].Contains(Game1.currentSeason);
+            }
+
+            if (_fruitTreeData.ContainsKey(itemId))
+            {
+                return _fruitTreeData[itemId].Split('/')[1].Contains(Game1.currentSeason);
+            }
+
+            return false;
+        }
     }
 }
