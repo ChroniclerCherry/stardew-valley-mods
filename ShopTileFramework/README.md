@@ -196,6 +196,7 @@ Syntax | Description | Example
 `HasCookingRecipe [<s:recipe name>]` | Returns true if the player has learned all the listed recipes. **Note** spaces should be replaced with `-` | `HasCookingRecipe Fried-Egg Salad` will return true if the player knows how to cook both Fried Egg and salad
 `HasCraftingRecipe [<s:recipe name>]` | Returns true if the player has learned all the listed recipes. **Note** spaces should be replaced with `-` | `HasCookingRecipe Oil-Maker` will return true if the player knows how to craft Oil Makers
 `FarmHouseUpgradeLevel [<i:house upgrade levels>]` | Returns true if the player's current house levels matches any of the given numbers. Starter house is 0 and cellar is 3 | `FarmHouseUpgradeLevel 2 3` will return true if the player is on the final house upgrade and has the cellar
+`HasItem <s:item name>` | Returns true if the given item is in the player's inventory | `HasItem Pink Cake` would return true if any item named `Pink Cake` was found in the player inventory
 
 I am always taking requests for more conditions as they are needed! Open an issue any time
 

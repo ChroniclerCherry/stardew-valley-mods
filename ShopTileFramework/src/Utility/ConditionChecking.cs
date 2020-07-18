@@ -137,12 +137,26 @@ namespace ShopTileFramework.Utility
                 case "HasCraftingRecipe":
                     return CheckHasRecipe(conditionParams,Game1.player.craftingRecipes);
                 case "FarmHouseUpgradeLevel":
+                    return HasItem(conditionParams);
+                case "HasItem":
                     return CheckFarmHouseUpgrade(conditionParams);
                 default:
                     // Note: "-5005" is a random event id cause the vanilla method is for events and needs one ¯\_(ツ)_/¯
                     // so it's the negative mod id
                     return (VanillaPreconditionsMethod.Invoke<int>("-5005/" + con) != -1);
             }
+        }
+
+        private static bool HasItem(string[] conditionParams)
+        {
+            string itemName = conditionParams[1];
+
+            for (int i = 2; i < conditionParams.Length; i++)
+            {
+                itemName += $" {conditionParams[i]}";
+            }
+
+            return Game1.player.Items.Any(item => item?.Name == itemName);
         }
 
         private static bool CheckFarmHouseUpgrade(string[] conditionParams)
@@ -172,7 +186,7 @@ namespace ShopTileFramework.Utility
         }
 
 
-        public static bool CheckSeededRandom(string[] conditionParams)
+        private static bool CheckSeededRandom(string[] conditionParams)
         {
             int offset = Convert.ToInt32(conditionParams[1]);
             string timePeriod = conditionParams[2];
@@ -204,7 +218,7 @@ namespace ShopTileFramework.Utility
 
             if (interval != 0)
             {
-                interval = (int)((Game1.MasterPlayer.stats.daysPlayed-1) / interval);
+                interval = (int)((Game1.Date.TotalDays) / interval);
             }
             
 
