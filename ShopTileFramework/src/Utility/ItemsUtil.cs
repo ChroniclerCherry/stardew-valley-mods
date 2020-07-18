@@ -167,7 +167,6 @@ namespace ShopTileFramework.Utility
 
             foreach (string pack in _packsToRemove)
             {
-
                 var items = APIs.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
                 if (items != null)
                     _itemsToRemove.AddRange(items);
@@ -185,6 +184,26 @@ namespace ShopTileFramework.Utility
                 {
                     _itemsToRemove.AddRange(items);
                 }
+
+                var crops = APIs.JsonAssets.GetAllCropsFromContentPack(pack);
+
+                if (crops != null)
+                {
+                    foreach (int seedId in crops.Select(GetSeedId))
+                    {
+                        _itemsToRemove.Add(ObjectInfoSource["Object"][seedId].Split('/')[0]);
+                    }
+                }
+
+                var trees = APIs.JsonAssets.GetAllFruitTreesFromContentPack(pack);
+                if (trees != null)
+                {
+                    foreach (int saplingID in trees.Select(GetSeedId))
+                    {
+                        _itemsToRemove.Add(ObjectInfoSource["Object"][saplingID].Split('/')[0]);
+                    }
+                }
+
 
                 items = APIs.JsonAssets.GetAllWeaponsFromContentPack(pack);
                 if (items != null)
