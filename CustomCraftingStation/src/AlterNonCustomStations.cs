@@ -13,9 +13,13 @@ namespace CustomCraftingStation
         public List<string> ReducedCookingRecipes { get; set; }
         public List<string> ReducedCraftingRecipes { get; set; }
 
+        public static bool MenuOverride = true;
+
         private bool _openedNonCustomMenu;
         private void Display_RenderingActiveMenu(object sender, StardewModdingAPI.Events.RenderingActiveMenuEventArgs e)
         {
+            if (!MenuOverride) return;
+
             if (!Context.IsWorldReady)
                 return;
 
@@ -38,7 +42,7 @@ namespace CustomCraftingStation
                 instance = activeMenu;
             else if (activeMenu is GameMenu gameMenu)
                 instance = gameMenu.pages[GameMenu.craftingTab];
-            else if (activeMenu.GetType().Equals(CookingSkillMenu))
+            else if (activeMenu.GetType() == CookingSkillMenu)
                 instance = activeMenu;
             else
                 return;
@@ -70,7 +74,7 @@ namespace CustomCraftingStation
                 e.OldMenu is CustomCraftingMenu
                 || e.OldMenu is CraftingPage
                 || e.OldMenu is GameMenu
-                || e.OldMenu.GetType().Equals(CookingSkillMenu))
+                || e.OldMenu.GetType() == CookingSkillMenu)
             {
                 _openedNonCustomMenu = false;
             }

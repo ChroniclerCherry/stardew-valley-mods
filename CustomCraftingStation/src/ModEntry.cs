@@ -1,6 +1,8 @@
 ﻿using System;
 using StardewModdingAPI;
 using System.Collections.Generic;
+using CustomCraftingStation.src;
+using StardewValley;
 
 namespace CustomCraftingStation
 {
@@ -29,6 +31,11 @@ namespace CustomCraftingStation
 
             Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             Helper.Events.Input.ButtonPressed += Input_ButtonPressed;
+        }
+
+        public override object GetApi()
+        {
+            return new CCSApi();
         }
 
         public Type CookingSkillMenu;
