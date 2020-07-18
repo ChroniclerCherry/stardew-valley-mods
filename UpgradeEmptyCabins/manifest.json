@@ -1,7 +1,7 @@
 ﻿{
     "Name": "Upgrade Empty Cabins",
     "Author": "Cherry",
-    "Version": "1.0.2",
+    "Version": "1.0.3",
     "Description": "Lets you upgrade empty cabins and remove seed boxes",
     "UniqueID": "Cherry.UpgradeEmptyCabins",
     "EntryDll": "UpgradeEmptyCabins.dll",

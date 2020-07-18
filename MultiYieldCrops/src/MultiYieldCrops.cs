@@ -7,6 +7,7 @@ using StardewValley.Objects;
 using StardewValley.Tools;
 using System;
 using System.Collections.Generic;
+using MultiYieldCrops;
 
 namespace MultiYieldCrop
 {
@@ -85,7 +86,7 @@ namespace MultiYieldCrop
             int increaseMaxHarvest = 0;
             if (data.maxHarvestIncreasePerFarmingLevel > 0)
                 increaseMaxHarvest = (int)(Game1.player.FarmingLevel * data.maxHarvestIncreasePerFarmingLevel);
-            int quantity = random.Next(data.minHarvest, Math.Max(data.minHarvest, data.maxHarvest + increaseMaxHarvest));
+            int quantity = random.Next(data.minHarvest, Math.Max(data.minHarvest, data.maxHarvest + increaseMaxHarvest + 1));
 
             if (quantity < 0)
                 quantity = 0;

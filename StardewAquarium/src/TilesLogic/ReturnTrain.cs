@@ -1,13 +1,8 @@
 ﻿using StardewAquarium.Models;
 using StardewModdingAPI;
 using StardewValley;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace StardewAquarium.MenuAndTiles
+namespace StardewAquarium.TilesLogic
 {
     class ReturnTrain
     {
@@ -39,7 +34,7 @@ namespace StardewAquarium.MenuAndTiles
             if (!Context.IsWorldReady)
                 return;
 
-            if (Game1.currentLocation.Name != ModEntry.data.ExteriorMapName)
+            if (Game1.currentLocation?.Name != ModEntry.data.ExteriorMapName)
                 return;
 
             if (Game1.player.Position.Y > 32)

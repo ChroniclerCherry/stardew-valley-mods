@@ -4,27 +4,25 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Menus;
-using System.Collections.Generic;
 
-namespace StardewAquarium.MenuAndTiles
+namespace StardewAquarium.Menus
 {
     public class DonateFishMenu : InventoryMenu
     {
 
         private readonly ITranslationHelper _translation;
+        private readonly IMonitor _monitor;
         private bool _donated;
         private bool _achievementUnlock;
         private bool _pufferchickDonated;
 
         private static int PufferChickID { get => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName) ?? -1; }
 
-        public DonateFishMenu(ITranslationHelper translate) : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, true, null, Utils.IsUnDonatedFish, 36, 3)
+        public DonateFishMenu(ITranslationHelper translate,IMonitor monitor) : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, true, null, Utils.IsUnDonatedFish, 36, 3)
         {
-            //  UnlockAchievement();
-            //  TryAwardTrophy();
-
             showGrayedOutSlots = true;
             _translation = translate;
+            _monitor = monitor;
             exitFunction = () => Utils.DonationMenuExit(_achievementUnlock,_donated,_pufferchickDonated);
         }
 
@@ -55,15 +53,18 @@ namespace StardewAquarium.MenuAndTiles
 
         public override void draw(SpriteBatch b)
         {
+            base.draw(b);
             if (!Game1.options.showMenuBackground)
                 b.Draw(Game1.fadeToBlackRect, Game1.graphics.GraphicsDevice.Viewport.Bounds, Color.Black * 0.4f);
             else
                 base.drawBackground(b);
 
             string title = _translation.Get("DonationMenuTitle");
-            SpriteText.drawStringWithScrollCenteredAt(b, title, Game1.viewport.Width / 2, Game1.viewport.Height / 2 - 128, title, 1f, -1, 0, 0.88f, false);
+            SpriteText.drawStringWithScrollCenteredAt(b, title, Game1.viewport.Width / 2,
+                Game1.viewport.Height / 2 - 128, title, 1f, -1, 0, 0.88f, false);
 
-            Game1.drawDialogueBox(this.xPositionOnScreen- 64, this.yPositionOnScreen-160, this.width+128, this.height+ 192, false, true);
+            Game1.drawDialogueBox(this.xPositionOnScreen - 64, this.yPositionOnScreen - 160, this.width + 128,
+                this.height + 192, false, true);
 
             base.draw(b);
             base.drawMouse(b);

@@ -8,7 +8,7 @@ using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Menus;
 
-namespace StardewAquarium.MenuAndTiles
+namespace StardewAquarium.Menus
 {
     class AquariumCollectionMenu : IClickableMenu
     {
@@ -27,7 +27,10 @@ namespace StardewAquarium.MenuAndTiles
             height = (IsAndroid ? 550 : 600) + borderWidth * 2;
 
             if (IsAndroid)
+            {
                 initializeUpperRightCloseButton();
+            }
+                
 
             xPositionOnScreen = Game1.viewport.Width / 2 - (800 + borderWidth * 2) / 2;
             yPositionOnScreen = Game1.viewport.Height / 2 - (600 + borderWidth * 2) / 2;
@@ -88,6 +91,8 @@ namespace StardewAquarium.MenuAndTiles
                 textureComponentList.Add(textureComponent8);
                 index++;
             }
+
+            initializeUpperRightCloseButton();
         }
 
         protected override void customSnapBehavior(int direction, int oldRegion, int oldID)
@@ -125,6 +130,8 @@ namespace StardewAquarium.MenuAndTiles
 
         public override void receiveLeftClick(int x, int y, bool playSound = true)
         {
+            base.receiveLeftClick(x, y, true);
+
             if (currentPage > 0 && backButton.containsPoint(x, y))
             {
                 --currentPage;
@@ -189,6 +196,8 @@ namespace StardewAquarium.MenuAndTiles
                 b.Draw(Game1.fadeToBlackRect, Game1.graphics.GraphicsDevice.Viewport.Bounds, Color.Black * 0.4f);
             else
                 base.drawBackground(b);
+
+            base.draw(b);
 
             Game1.drawDialogueBox(xPositionOnScreen, yPositionOnScreen, width, height, false, true);
 

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using StardewAquarium.Editors;
+using StardewAquarium.Menus;
 using StardewModdingAPI;
 using StardewValley;
 
-namespace StardewAquarium.MenuAndTiles
+namespace StardewAquarium.TilesLogic
 {
     public class InteractionHandler
     {
@@ -96,15 +97,17 @@ namespace StardewAquarium.MenuAndTiles
 
         private void HandleResponse(Farmer who, string whichAnswer)
         {
-            if (whichAnswer == "OptionNo")
+            switch (whichAnswer)
             {
-                Game1.drawObjectDialogue(_helper.Translation.Get("DeclineToDonate"));
-                return;
-            }
-
-            if (whichAnswer == "OptionYes")
-            {
-                Game1.activeClickableMenu = new DonateFishMenu(_helper.Translation);
+                case "OptionNo":
+                    Game1.drawObjectDialogue(_helper.Translation.Get("DeclineToDonate"));
+                    return;
+                case "OptionYes" when Constants.TargetPlatform == GamePlatform.Android:
+                    Game1.activeClickableMenu = new DonateFishMenuAndroid(_helper, _monitor);
+                    break;
+                case "OptionYes":
+                    Game1.activeClickableMenu = new DonateFishMenu(_helper.Translation, _monitor);
+                    break;
             }
         }
     }

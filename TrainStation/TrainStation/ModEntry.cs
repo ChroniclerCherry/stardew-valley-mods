@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using xTile.Layers;
 using xTile.Tiles;
 using System.Linq;
+using System.Runtime.InteropServices;
 using StardewValley.Menus;
 
 namespace TrainStation
@@ -45,26 +46,33 @@ namespace TrainStation
             RemoveInvalidLocations();
         }
 
-        private readonly int OutdoorsTilesheetIndex = 1;
         private readonly int TicketStationTopTile = 1032;
         private readonly int TicketStationBottomTile = 1057;
+
         private void DrawInTicketStation()
         {
-            //get references to all the stuff I need to edit the railroad map
+            
             GameLocation railway = Game1.getLocationFromName("Railroad");
+
+            //get references to all the stuff I need to edit the railroad map
             Layer buildingsLayer = railway.map.GetLayer("Buildings");
             Layer frontLayer = railway.map.GetLayer("Front");
-            TileSheet tilesheet = railway.map.TileSheets[OutdoorsTilesheetIndex];
+
+            string tilesheetPath =$"Maps\\{Game1.currentSeason}_outdoorsTileSheet";
+            TileSheet outdoorsTilesheet = railway.map.TileSheets.FirstOrDefault(t => t.ImageSource == tilesheetPath);
 
             //draw the ticket station
             buildingsLayer.Tiles[Config.TicketStationX, Config.TicketStationY] =
-                new StaticTile(buildingsLayer, tilesheet, BlendMode.Alpha, tileIndex: TicketStationBottomTile);
-            buildingsLayer.Tiles[Config.TicketStationX, Config.TicketStationY - 1] =
-                new StaticTile(frontLayer, tilesheet, BlendMode.Alpha, tileIndex: TicketStationTopTile);
+                new StaticTile(buildingsLayer, outdoorsTilesheet, BlendMode.Alpha, TicketStationBottomTile);
+            frontLayer.Tiles[Config.TicketStationX, Config.TicketStationY - 1] =
+                new StaticTile(frontLayer, outdoorsTilesheet, BlendMode.Alpha, TicketStationTopTile);
 
             //set the TrainStation property
             railway.setTileProperty(Config.TicketStationX, Config.TicketStationY, "Buildings", "Action", "TrainStation");
+
+            railway.map.LoadTileSheets(Game1.mapDisplayDevice);
         }
+
 
         private void LoadContentPacks()
         {

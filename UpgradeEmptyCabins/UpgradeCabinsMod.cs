@@ -15,6 +15,8 @@ namespace UpgradeEmptyCabins
         private Config _config;
         public override void Entry(IModHelper h)
         {
+            _config = Helper.ReadConfig<Config>();
+
             Helper.ConsoleCommands.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", UpgradeCabinsCommand);
             Helper.ConsoleCommands.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", RemoveSeedBoxesCommand);
 
