@@ -13,7 +13,10 @@ namespace ShopTileFramework.ItemPriceAndStock
     /// </summary>
     class ItemStock : ItemStockModel
     {
-        private int _currencyObjectId;
+        internal int CurrencyObjectId;
+        internal double DefaultSellPriceMultiplier;
+        internal Dictionary<double, string[]> PriceMultiplierWhen;
+        internal string ShopName;
 
         private Dictionary<double, string[]> _priceMultiplierWhen;
 
@@ -31,6 +34,9 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// <param name="priceMultiplierWhen"></param>
         internal void Initialize(string shopName, int price, double defaultSellPriceMultiplier, Dictionary<double, string[]> priceMultiplierWhen)
         {
+            ShopName = shopName;
+            DefaultSellPriceMultiplier = defaultSellPriceMultiplier;
+            PriceMultiplierWhen = priceMultiplierWhen;
 
             if (Quality < 0 || Quality == 3 || Quality > 4)
             {
@@ -38,7 +44,7 @@ namespace ShopTileFramework.ItemPriceAndStock
                 ModEntry.monitor.Log("Item quality can only be 0,1,2, or 4. Defaulting to 0", LogLevel.Warn);
             }
 
-            _currencyObjectId = ItemsUtil.GetIndexByName(StockItemCurrency);
+            CurrencyObjectId = ItemsUtil.GetIndexByName(StockItemCurrency);
 
             //sets price to the store price if no stock price is given
             if (StockPrice == -1)
@@ -47,17 +53,10 @@ namespace ShopTileFramework.ItemPriceAndStock
             }
             this._priceMultiplierWhen = priceMultiplierWhen;
 
+            if (IsRecipe)
+                Stock = 1;
 
-            //initializes the builder with all the parameters of this itemstock
-            _builder = new ItemBuilder(itemType: ItemType,
-                                      isRecipe: IsRecipe,
-                                      price: StockPrice,
-                                      currencyItemId: _currencyObjectId,
-                                      currencyItemStack: StockCurrencyStack,
-                                      stock: Stock,
-                                      quality: Quality,
-                                      shopName: shopName,
-                                      defaultSellPriceMultiplier: defaultSellPriceMultiplier);
+            _builder = new ItemBuilder(this);
         }
 
         /// <summary>

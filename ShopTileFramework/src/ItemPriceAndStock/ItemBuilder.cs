@@ -14,48 +14,12 @@ namespace ShopTileFramework.ItemPriceAndStock
     /// </summary>
     class ItemBuilder
     {
-        //These are set for each stock
-        private readonly string _itemType;
-        private readonly bool _isRecipe;
-        private readonly int _stockPrice;
-        private readonly int _quality;
-        private readonly int _currencyItemId;
-        private readonly int _currencyItemStack;
-        private readonly int _stock;
-        private readonly double _defaultSellPriceMultiplier;
-        private readonly string _shopName;
         private Dictionary<ISalable, int[]> _itemPriceAndStock;
+        private readonly ItemStock _itemStock;
 
-        /// <summary>
-        /// Sets the global data for this item stock
-        /// </summary>
-        /// <param name="itemType">The string name of the item type</param>
-        /// <param name="isRecipe">If items are recipes or not</param>
-        /// <param name="price">The price of </param>
-        /// <param name="currencyItemId">the object ID of the currency item</param>
-        /// <param name="currencyItemStack">How many of the currency item is needed</param>
-        /// <param name="stock">how much of the item is available</param>
-        /// <param name="quality">The quality of the items</param>
-        /// <param name="shopName">Name of the shop, kept for logging purposes</param>
-        /// <param name="defaultSellPriceMultiplier"></param>
-        public ItemBuilder(string itemType,
-                           bool isRecipe,
-                           int price,
-                           int currencyItemId,
-                           int currencyItemStack,
-                           int stock,
-                           int quality,
-                           string shopName,
-                           double defaultSellPriceMultiplier) {
-            this._itemType = itemType;
-            this._isRecipe = isRecipe;
-            this._stockPrice = price;
-            this._currencyItemId = currencyItemId;
-            this._currencyItemStack = currencyItemStack;
-            this._stock = _isRecipe? 1 : stock; //recipes should sell only 1 max
-            this._quality = quality;
-            this._shopName = shopName;
-            this._defaultSellPriceMultiplier = defaultSellPriceMultiplier;
+        public ItemBuilder(ItemStock itemStock)
+        {
+            this._itemStock = itemStock;
         }
 
         /// <param name="itemPriceAndStock">the ItemPriceAndStock this builder will add items to</param>
@@ -73,10 +37,10 @@ namespace ShopTileFramework.ItemPriceAndStock
         public bool AddItemToStock(string itemName, double priceMultiplier = 1)
         {
 
-            int id = ItemsUtil.GetIndexByName(itemName,_itemType);
+            int id = ItemsUtil.GetIndexByName(itemName, _itemStock.ItemType);
             if (id < 0)
             {
-                ModEntry.monitor.Log($"{_itemType} named \"{itemName}\" could not be added to the Shop {_shopName}", LogLevel.Trace);
+                ModEntry.monitor.Log($"{_itemStock.ItemType} named \"{itemName}\" could not be added to the Shop {_itemStock.ShopName}", LogLevel.Trace);
                 return false;
             }
 
@@ -93,11 +57,11 @@ namespace ShopTileFramework.ItemPriceAndStock
         {
 
             if (ModEntry.VerboseLogging)
-                ModEntry.monitor.Log($"Adding item ID {itemId} to {_shopName}", LogLevel.Debug);
+                ModEntry.monitor.Log($"Adding item ID {itemId} to {_itemStock.ShopName}", LogLevel.Debug);
 
             if (itemId < 0)
             {
-                ModEntry.monitor.Log($"{_itemType} of ID {itemId} could not be added to the Shop {_shopName}", LogLevel.Trace);
+                ModEntry.monitor.Log($"{_itemStock.ItemType} of ID {itemId} could not be added to the Shop {_itemStock.ShopName}", LogLevel.Trace);
                 return false;
             }
 
@@ -107,7 +71,7 @@ namespace ShopTileFramework.ItemPriceAndStock
                 return false;
             }
 
-            if (_isRecipe)
+            if (_itemStock.IsRecipe)
             {
                 if (!ItemsUtil.RecipesList.Contains(item.Name))
                 {
@@ -129,13 +93,13 @@ namespace ShopTileFramework.ItemPriceAndStock
         /// <returns></returns>
         private ISalable CreateItem(int itemId)
         {
-            switch (_itemType)
+            switch (_itemStock.ItemType)
             {
                 case "Object":
                 case "Seed":
-                    return new Object(itemId, _stock, _isRecipe, quality: _quality);
+                    return new Object(itemId, _itemStock.Stock, _itemStock.IsRecipe, quality: _itemStock.Quality);
                 case "BigCraftable":
-                    return new Object(Vector2.Zero, itemId) { Stack = _isRecipe ? 1 : _stock, IsRecipe = _isRecipe };
+                    return new Object(Vector2.Zero, itemId) { Stack = _itemStock.Stock, IsRecipe = _itemStock.IsRecipe };
                 case "Clothing":
                     return new Clothing(itemId);
                 case "Ring":
@@ -163,20 +127,20 @@ namespace ShopTileFramework.ItemPriceAndStock
         {
             int[] priceStockCurrency;
             //if no price is provided, use the item's sale price multiplied by defaultSellPriceMultiplier
-            var price = (_stockPrice == -1) ? (int)(item.salePrice()*this._defaultSellPriceMultiplier) : _stockPrice;
+            var price = (_itemStock.StockPrice == -1) ? (int)(item.salePrice()* _itemStock.DefaultSellPriceMultiplier) : _itemStock.StockPrice;
             price = (int)(price*priceMultiplier);
 
-            if (_currencyItemId == -1) // no currency item
+            if (_itemStock.CurrencyObjectId == -1) // no currency item
             {
-                priceStockCurrency = new[] { price, _stock };
+                priceStockCurrency = new[] { price, _itemStock.Stock };
             }
-            else if (_currencyItemStack == -1) //no stack provided for currency item so defaults to 1
+            else if (_itemStock.StockCurrencyStack == -1) //no stack provided for currency item so defaults to 1
             {
-                priceStockCurrency = new[] { price, _stock, _currencyItemId };
+                priceStockCurrency = new[] { price, _itemStock.Stock, _itemStock.CurrencyObjectId };
             }
             else //both currency item and stack provided
             {
-                priceStockCurrency = new[] { price, _stock, _currencyItemId, _currencyItemStack };
+                priceStockCurrency = new[] { price, _itemStock.Stock, _itemStock.CurrencyObjectId, _itemStock.StockCurrencyStack };
             }
 
             return priceStockCurrency;

@@ -11,6 +11,7 @@
         public int[] ItemIDs { get; set; } = null;
         public string[] JAPacks { get; set; } = null;
         public string[] ItemNames { get; set; } = null;
+        public bool FilterSeedsBySeason { get; set; } = true;
         public int Stock { get; set; } = int.MaxValue;
         public int MaxNumItemsSoldInItemStock { get; set; } = int.MaxValue;
         public string[] When { get; set; } = null;
