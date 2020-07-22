@@ -10,7 +10,7 @@ namespace StardewAquarium.Menus
     public class DonateFishMenu : InventoryMenu
     {
 
-        private readonly ITranslationHelper _translation;
+        private readonly IModHelper _helper;
         private readonly IMonitor _monitor;
         private bool _donated;
         private bool _achievementUnlock;
@@ -18,10 +18,10 @@ namespace StardewAquarium.Menus
 
         private static int PufferChickID { get => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName) ?? -1; }
 
-        public DonateFishMenu(ITranslationHelper translate,IMonitor monitor) : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, true, null, Utils.IsUnDonatedFish, 36, 3)
+        public DonateFishMenu(IModHelper translate,IMonitor monitor) : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, true, null, Utils.IsUnDonatedFish, 36, 3)
         {
             showGrayedOutSlots = true;
-            _translation = translate;
+            _helper = translate;
             _monitor = monitor;
             exitFunction = () => Utils.DonationMenuExit(_achievementUnlock,_donated,_pufferchickDonated);
         }
@@ -46,7 +46,11 @@ namespace StardewAquarium.Menus
                     _pufferchickDonated = true;
                 }
 
-                _achievementUnlock = Utils.CheckAchievement();
+                var mp = _helper.Reflection.GetField<Multiplayer>(typeof(Game1), "multiplayer").GetValue();
+                mp.globalChatInfoMessage("StardewAquarium.FishDonated", new []{Game1.player.Name,item.Name});
+
+
+                    _achievementUnlock = Utils.CheckAchievement();
 
             }
         }
@@ -59,7 +63,7 @@ namespace StardewAquarium.Menus
             else
                 base.drawBackground(b);
 
-            string title = _translation.Get("DonationMenuTitle");
+            string title = _helper.Translation.Get("DonationMenuTitle");
             SpriteText.drawStringWithScrollCenteredAt(b, title, Game1.viewport.Width / 2,
                 Game1.viewport.Height / 2 - 128, title, 1f, -1, 0, 0.88f, false);
 

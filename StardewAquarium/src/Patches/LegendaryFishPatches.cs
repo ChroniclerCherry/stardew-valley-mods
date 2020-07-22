@@ -207,7 +207,7 @@ namespace StardewAquarium.Patches
 
         private static Object GetFishPufferchick(GameLocation loc, Farmer who)
         {
-            if (loc.Name != ModEntry.data.ExteriorMapName) //only happens on the exterior museum map
+            if (loc.Name != ModEntry.Data.ExteriorMapName) //only happens on the exterior museum map
                 return null;
 
             if (!who.fishCaught.ContainsKey(128)) //has caught a pufferfish before
@@ -232,7 +232,6 @@ namespace StardewAquarium.Patches
                 _fishingStarted = true;
                 _trackedFishId = id;
                 return new Object(id, 1, price: 0);
-
             }
 
             if (who.fishCaught.ContainsKey(id)) return null;

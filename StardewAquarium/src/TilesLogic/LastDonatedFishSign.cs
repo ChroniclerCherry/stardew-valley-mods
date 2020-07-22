@@ -13,7 +13,7 @@ namespace StardewAquarium.TilesLogic
     {
         private IModHelper _helper;
         private IMonitor _monitor;
-        private ModData _data { get => ModEntry.data; }
+        private ModData _data { get => ModEntry.Data; }
         public int LastDonatedFish { get; set; } = -1;
 
         private const string objTilesheetName = "z_objects";
@@ -117,7 +117,7 @@ namespace StardewAquarium.TilesLogic
             if (objectsTilesheet == null)
             {
                 string tilesheetPath = _helper.Content.GetActualAssetKey(@"Maps/springobjects", ContentSource.GameContent);
-                GameLocation location = Game1.getLocationFromName(ModEntry.data.ExteriorMapName);
+                GameLocation location = Game1.getLocationFromName(ModEntry.Data.ExteriorMapName);
 
                 // Add the tilesheet.
                 objectsTilesheet = new TileSheet(

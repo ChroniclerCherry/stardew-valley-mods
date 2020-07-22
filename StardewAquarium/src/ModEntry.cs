@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using StardewModdingAPI;
 using StardewAquarium.Models;
-using StardewAquarium.Tokens;
 using StardewValley;
 using Harmony;
 using StardewAquarium.Patches;
@@ -14,11 +13,11 @@ namespace StardewAquarium
 {
     public partial class ModEntry : Mod
     {
-        public static ModConfig config;
+        public static ModConfig Config;
         public static bool RecatchLegends;
-        public static ModData data;
+        public static ModData Data;
         public const string PufferChickName = "Pufferchick";
-        private readonly bool IsAndroid = Constants.TargetPlatform == GamePlatform.Android;
+        private readonly bool _isAndroid = Constants.TargetPlatform == GamePlatform.Android;
         public static HarmonyInstance harmony { get; } = HarmonyInstance.Create("Cherry.StardewAquarium");
 
         public static IJsonAssetsApi JsonAssets { get; set; }
@@ -33,7 +32,7 @@ namespace StardewAquarium
 
             LegendaryFishPatches.Initialize(Helper, Monitor);
 
-            if (IsAndroid)
+            if (_isAndroid)
             {
                 AndroidShopMenuPatch.Initialize(Helper, Monitor);
                 Helper.Events.Display.MenuChanged += AndroidPlsHaveMercyOnMe;
@@ -42,13 +41,13 @@ namespace StardewAquarium
             new ReturnTrain(Helper, Monitor);
             new InteractionHandler(Helper,Monitor);
 
-            config = Helper.ReadConfig<ModConfig>();
+            Config = Helper.ReadConfig<ModConfig>();
 
             string dataPath = Path.Combine("data", "data.json");
-            data = helper.Data.ReadJsonFile<ModData>(dataPath);
+            Data = helper.Data.ReadJsonFile<ModData>(dataPath);
 
             //disable if recatch legendary fish is installed
-            if (config.EnableRecatchWorthlessUndonatedLegends &&
+            if (Config.EnableRecatchWorthlessUndonatedLegends &&
                 !Helper.ModRegistry.IsLoaded("cantorsdust.RecatchLegendaryFish"))
             {
                 Monitor.Log("Enabling the recatch of legendaries...");
@@ -61,9 +60,9 @@ namespace StardewAquarium
             }
                 
             
-            if (config.EnableDebugCommands)
+            if (Config.EnableDebugCommands)
             {
-                if (IsAndroid)
+                if (_isAndroid)
                     Helper.ConsoleCommands.Add("donatefish", "", AndroidDonateFish);
                 else
                     Helper.ConsoleCommands.Add("donatefish", "", OpenDonationMenuCommand);
@@ -90,7 +89,7 @@ namespace StardewAquarium
         private void InitializeEditors()
         {
             Helper.Content.AssetEditors.Add(new AchievementEditor(Helper, Monitor));
-            Helper.Content.AssetEditors.Add(new LocationsEditor());
+            Helper.Content.AssetEditors.Add(new MiscEditor(Helper));
             Helper.Content.AssetEditors.Add(new FishEditor());
             Helper.Content.AssetEditors.Add(new MailEditor(Helper));
         }
@@ -117,14 +116,13 @@ namespace StardewAquarium
 
         private void OpenDonationMenuCommand(string arg1, string[] arg2)
         {
-            Game1.activeClickableMenu = new DonateFishMenu(Helper.Translation,Monitor);
+            Game1.activeClickableMenu = new DonateFishMenu(Helper,Monitor);
         }
 
         private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
             JsonAssets = Helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
             JsonAssets.LoadAssets(Path.Combine(Helper.DirectoryPath, "data"));
-            new TokenHandler(Helper,ModManifest).RegisterTokens();
         }
     }
 }

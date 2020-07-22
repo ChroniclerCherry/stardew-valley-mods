@@ -161,6 +161,10 @@ namespace StardewAquarium
             {
                 mainMessage = _helper.Translation.Get("AchievementCongratulations");
                 UnlockAchievement();
+
+                var mp = _helper.Reflection.GetField<Multiplayer>(typeof(Game1), "multiplayer").GetValue();
+                mp.globalChatInfoMessage("StardewAquarium.AchievementUnlocked");
+
             }
             else if (donated)
             {

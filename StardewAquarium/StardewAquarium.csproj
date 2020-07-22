@@ -24,10 +24,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="src\Tokens\IContentPatcherAPI.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <None Update="data\BigCraftables\Stardew Aquarium Trophy\big-craftable.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>

@@ -106,7 +106,7 @@ namespace StardewAquarium.TilesLogic
                     Game1.activeClickableMenu = new DonateFishMenuAndroid(_helper, _monitor);
                     break;
                 case "OptionYes":
-                    Game1.activeClickableMenu = new DonateFishMenu(_helper.Translation, _monitor);
+                    Game1.activeClickableMenu = new DonateFishMenu(_helper, _monitor);
                     break;
             }
         }
