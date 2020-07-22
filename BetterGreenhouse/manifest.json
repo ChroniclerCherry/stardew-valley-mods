@@ -1,0 +1,10 @@
+﻿{
+    "Name": "Better Greenhouse",
+    "Author": "Cherry",
+    "Version": "1.0.0",
+    "Description": "Allows the player to upgrade the greenhouse in a variety of ways",
+    "UniqueID": "Cherry.BetterGreenhouse",
+    "EntryDll": "BetterGreenhouse.dll",
+    "MinimumApiVersion": "3.5.0",
+    "UpdateKeys": []
+}

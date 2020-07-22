@@ -1,0 +1,6 @@
+﻿{
+    "SizeUpgrade.Name": "Size Upgrade",
+    "SizeUpgrade.Description": "Increases the size of the Greenhouse",
+    "AutoWaterUpgrade.Name": "Automatic Sprinkler System",
+    "AutoWaterUpgrade.Description": "Automatically waters the entire greenhouse at the start and end of each day"
+}
