@@ -8,7 +8,7 @@ using StardewValley.TerrainFeatures;
 
 namespace BetterGreenhouse.Upgrades
 {
-    class AutoWaterUpgrade : Upgrade
+    public class AutoWaterUpgrade : Upgrade
     {
         public override UpgradeTypes Type => UpgradeTypes.AutoWaterUpgrade;
         public override string Name { get; } = "AutoWaterUpgrade";

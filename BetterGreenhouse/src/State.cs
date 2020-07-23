@@ -18,8 +18,8 @@ namespace BetterGreenhouse
 
         public static int JunimoPoints;
 
-        private static string _upgradeForTonight;
-        public static bool IsThereUpgradeTonight => _upgradeForTonight != null;
+        public static string UpgradeForTonight { get; set; }
+        public static bool IsThereUpgradeTonight => UpgradeForTonight != null;
 
         private static IModHelper _helper;
         private static IMonitor _monitor;
@@ -40,10 +40,11 @@ namespace BetterGreenhouse
             {
                 case Consts.MultiplayerLoadKey:
                     ModData = e.ReadAs<Data.Data>();
+                    MapDataFromSave();
                     InitializeAllUpgrades();
                     break;
                 case Consts.MultiplayerUpdate:
-                    _upgradeForTonight = e.ReadAs<string>();
+                    UpgradeForTonight = e.ReadAs<string>();
                     break;
                 case Consts.MultiplayerJunimopointsKey:
                     JunimoPoints = e.ReadAs<int>();
@@ -123,28 +124,28 @@ namespace BetterGreenhouse
 
         public static void SetUpgradeForTonight(string upgradeName)
         {
-            _upgradeForTonight = upgradeName;
+            UpgradeForTonight = upgradeName;
             _helper.Multiplayer.SendMessage(upgradeName, Consts.MultiplayerUpdate, modIDs: new[] { Consts.ModUniqueID });
         }
 
         public static void PerformEndOfDayUpdate(bool save = true)
         {
-            if (_upgradeForTonight != null)
+            if (UpgradeForTonight != null)
             {
-                string translatedName = $"{_helper.Translation.Get(_upgradeForTonight+ ".Name")}";
+                string translatedName = $"{_helper.Translation.Get(UpgradeForTonight+ ".Name")}";
                 _monitor.Log($"Applying {translatedName}...", LogLevel.Info);
 
-                Upgrade upgrade = Upgrades.FirstOrDefault(u => u.Name == _upgradeForTonight);
+                Upgrade upgrade = Upgrades.FirstOrDefault(u => u.Name == UpgradeForTonight);
                 if (upgrade == null)
                 {
-                    _monitor.Log($"{_upgradeForTonight} not found. Upgrade aborted", LogLevel.Error);
-                    _upgradeForTonight = null;
+                    _monitor.Log($"{UpgradeForTonight} not found. Upgrade aborted", LogLevel.Error);
+                    UpgradeForTonight = null;
                     return;
                 }
 
                 upgrade.Active = true;
                 upgrade.Start();
-                _upgradeForTonight = null;
+                UpgradeForTonight = null;
             }
 
             if (save)

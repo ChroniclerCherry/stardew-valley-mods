@@ -5,7 +5,7 @@ using xTile;
 
 namespace BetterGreenhouse.Upgrades
 {
-    class SizeUpgrade : Upgrade, IAssetEditor
+    public class SizeUpgrade : Upgrade, IAssetEditor
     {
         public override UpgradeTypes Type => UpgradeTypes.SizeUpgrade;
         public override string Name { get; } = "SizeUpgrade";

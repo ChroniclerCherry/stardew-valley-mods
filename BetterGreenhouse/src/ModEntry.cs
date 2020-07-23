@@ -20,14 +20,39 @@ namespace BetterGreenhouse
 
         private void SummarizeAllUpgrades(string arg1, string[] arg2)
         {
-            string prtstr= "\n";
+            string activeUpgrades = "";
+            string inactiveUpgrades = "";
             foreach (var upgrade in State.Upgrades)
             {
-                prtstr += $"{upgrade.Name} " +
-                          $"\n\tTranslated: {upgrade.translatedName} " +
-                          $"\n\tDescription: {upgrade.translatedDescription} " +
-                          $"\n\tActive: {upgrade.Active} " +
-                          $"\n\tCost: {upgrade.Cost}\n";
+                if (upgrade.Active)
+                {
+                    activeUpgrades += $"- {upgrade.Name} : " +
+                                      $"\n\tTranslated: {upgrade.translatedName} " +
+                                      $"\n\tDescription: {upgrade.translatedDescription} " +
+                                      $"\n\tCost: {upgrade.Cost}\n";
+                }
+                else
+                {
+                    inactiveUpgrades += $"- {upgrade.Name} : " +
+                                        $"\n\tTranslated: {upgrade.translatedName} " +
+                                        $"\n\tDescription: {upgrade.translatedDescription} " +
+                                        $"\n\tCost: {upgrade.Cost}\n";
+
+                    if (State.UpgradeForTonight == upgrade.Name)
+                        inactiveUpgrades += "\t**Will be upgraded tonight\n";
+                }
+            }
+
+            var prtstr = "\n";
+
+            if (activeUpgrades.Length > 0)
+            {
+                prtstr += "Upgrades applied\n---------------------\n" + activeUpgrades + "\n";
+            }
+
+            if (inactiveUpgrades.Length > 0)
+            {
+                prtstr += "Upgrades not applied\n---------------------\n" + inactiveUpgrades;
             }
 
             Monitor.Log(prtstr,LogLevel.Info);
