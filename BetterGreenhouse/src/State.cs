@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BetterGreenhouse.data;
-using BetterGreenhouse.src;
-using BetterGreenhouse.src.data;
 using BetterGreenhouse.Upgrades;
 using StardewModdingAPI;
 using StardewValley;
@@ -11,22 +10,14 @@ namespace BetterGreenhouse
 {
     public static class State
     {
-        private static Data ModData { get; set; }
+        public static Config Config;
+        private static Data.Data ModData { get; set; }
         private static bool IsJojaRoute => Game1.MasterPlayer.mailReceived.Contains("JojaMember");
 
-        public static List<Upgrade> Upgrades
-        {
-            get => ModData.Upgrades;
-            set => ModData.Upgrades = value;
-        }
+        public static List<Upgrade> Upgrades;
 
-        public static int JunimoPoints
-        {
-            get => ModData.JunimoPoints;
-            set => ModData.JunimoPoints = value;
-        }
+        public static int JunimoPoints;
 
-        public static Config Config;
         private static string _upgradeForTonight;
         public static bool IsThereUpgradeTonight => _upgradeForTonight != null;
 
@@ -48,7 +39,7 @@ namespace BetterGreenhouse
             switch (e.Type)
             {
                 case Consts.MultiplayerLoadKey:
-                    ModData = e.ReadAs<Data>();
+                    ModData = e.ReadAs<Data.Data>();
                     InitializeAllUpgrades();
                     break;
                 case Consts.MultiplayerUpdate:
@@ -68,18 +59,48 @@ namespace BetterGreenhouse
 
             if (!Context.IsMainPlayer) return;
 
-            ModData = _helper.Data.ReadSaveData<Data>(Consts.SaveDataKey);
+            try
+            {
+                ModData = _helper.Data.ReadSaveData<Data.Data>(Consts.SaveDataKey);
+            }
+            catch (Exception e)
+            {
+                ModData = new Data.Data();
+                _helper.Data.WriteSaveData(Consts.SaveDataKey,ModData);
+                _monitor.Log($"Better Greenhouse save data has been corrupted and removed: {e.Message} + {e.StackTrace}",LogLevel.Error);
+            }
+            
             if (ModData == null)
             {
                 _monitor.Log("No previous mod data found on this save, generating new data", LogLevel.Info);
-                ModData = new Data();
+                ModData = new Data.Data();
             }
 
-            AddMissingUpgrades();
+            MapDataFromSave();
             InitializeAllUpgrades();
 
             _helper.Multiplayer.SendMessage(ModData, Consts.MultiplayerLoadKey, modIDs: new[] { Consts.ModUniqueID });
 
+        }
+
+        private static void MapDataFromSave()
+        {
+            JunimoPoints = ModData.JunimoPoints;
+            var activeData = ModData.UpgradesStatus;
+            Upgrades = new List<Upgrade>();
+
+            Upgrades.Add(new SizeUpgrade() { Active = activeData.ContainsKey(UpgradeTypes.SizeUpgrade) && activeData[UpgradeTypes.SizeUpgrade] });
+            Upgrades.Add(new AutoWaterUpgrade() { Active = activeData.ContainsKey(UpgradeTypes.AutoWaterUpgrade) && activeData[UpgradeTypes.AutoWaterUpgrade] });
+        }
+
+        private static void MapDataToSave()
+        {
+            ModData.JunimoPoints = JunimoPoints;
+            ModData.UpgradesStatus.Clear();
+            foreach (var upgrade in Upgrades)
+            {
+                ModData.UpgradesStatus.Add(upgrade.Type,upgrade.Active);
+            }
         }
 
         private static void InitializeAllUpgrades()
@@ -91,18 +112,12 @@ namespace BetterGreenhouse
             }
         }
 
-        private static void AddMissingUpgrades()
-        {
-            if (!Upgrades.Exists(u => u.UpgradeName == "SizeUpgrade"))
-                Upgrades.Add(new SizeUpgrade());
-
-            if (!Upgrades.Exists(u => u.UpgradeName == "AutoWaterUpgrade"))
-                Upgrades.Add(new AutoWaterUpgrade());
-        }
-
         public static void SaveData()
         {
+            if (!Context.IsMainPlayer) return;
+
             _monitor.Log("Saving mod data...");
+            MapDataToSave();
             _helper.Data.WriteSaveData(Consts.SaveDataKey, ModData);
         }
 
@@ -112,14 +127,14 @@ namespace BetterGreenhouse
             _helper.Multiplayer.SendMessage(upgradeName, Consts.MultiplayerUpdate, modIDs: new[] { Consts.ModUniqueID });
         }
 
-        public static void PerformEndOfDayUpdate()
+        public static void PerformEndOfDayUpdate(bool save = true)
         {
             if (_upgradeForTonight != null)
             {
-                string translatedName = $"{_helper.Translation.Get(_upgradeForTonight)}.Name";
+                string translatedName = $"{_helper.Translation.Get(_upgradeForTonight+ ".Name")}";
                 _monitor.Log($"Applying {translatedName}...", LogLevel.Info);
 
-                Upgrade upgrade = Upgrades.FirstOrDefault(u => u.UpgradeName == _upgradeForTonight);
+                Upgrade upgrade = Upgrades.FirstOrDefault(u => u.Name == _upgradeForTonight);
                 if (upgrade == null)
                 {
                     _monitor.Log($"{_upgradeForTonight} not found. Upgrade aborted", LogLevel.Error);
@@ -132,7 +147,8 @@ namespace BetterGreenhouse
                 _upgradeForTonight = null;
             }
 
-            SaveData();
+            if (save)
+                SaveData();
         }
     }
 }

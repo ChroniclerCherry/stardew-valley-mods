@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Newtonsoft.Json;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -9,7 +10,8 @@ namespace BetterGreenhouse.Upgrades
 {
     class AutoWaterUpgrade : Upgrade
     {
-        public override string UpgradeName { get; } = "AutoWaterUpgrade";
+        public override UpgradeTypes Type => UpgradeTypes.AutoWaterUpgrade;
+        public override string Name { get; } = "AutoWaterUpgrade";
         public override bool Active { get; set; } = false;
         public override bool DisableOnFarmhand { get; set; } = true;
         public override int Cost => State.Config.AutoWaterUpgradeCost;

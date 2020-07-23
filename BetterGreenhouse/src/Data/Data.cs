@@ -1,15 +1,12 @@
-﻿using System;
+﻿using BetterGreenhouse.Upgrades;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BetterGreenhouse.Upgrades;
+using Newtonsoft.Json;
 
-namespace BetterGreenhouse.src.data
+namespace BetterGreenhouse.Data
 {
-    public class Data
+    class Data
     {
-        public int JunimoPoints { get; set; } = 0;
-        public List<Upgrade> Upgrades { get; set; } = new List<Upgrade>();
+        public Dictionary<UpgradeTypes, bool> UpgradesStatus { get; set; } = new Dictionary<UpgradeTypes, bool>();
+        public int JunimoPoints { get; set; }
     }
 }
