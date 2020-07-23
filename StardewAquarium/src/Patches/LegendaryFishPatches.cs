@@ -175,7 +175,7 @@ namespace StardewAquarium.Patches
 
                 if (_trackedFishId != obj.ParentSheetIndex)
                     return;
-
+                Game1.drawObjectDialogue(_helper.Translation.Get("DuplicateLegendaryCaught"));
                 obj.Price = 0;
             }
 
