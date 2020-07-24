@@ -74,11 +74,14 @@ namespace BetterGreenhouse.Interaction
                     //if there's more options
                     if (index < State.Upgrades.Count - 1)
                         ResponsesThisPage.Add(new Response("More", "More"));
-                    ResponsesThisPage.Add(new Response("Exit", "More"));
+                    ResponsesThisPage.Add(new Response("Exit", "Exit"));
                     ResponsePages.Add(ResponsesThisPage.ToArray());
                     ResponsesThisPage = new List<Response>();
                 }
             }
+
+            ResponsesThisPage.Add(new Response("Exit", "Exit"));
+            ResponsePages.Add(ResponsesThisPage.ToArray());
         }
     }
 }
