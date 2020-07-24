@@ -10,37 +10,39 @@ namespace BetterGreenhouse.Upgrades
         public override UpgradeTypes Type => UpgradeTypes.SizeUpgrade;
         public override string Name { get; } = "SizeUpgrade";
         public override bool Active { get; set; } = false;
+        public override bool Unlocked { get; set; } = false;
         public override bool DisableOnFarmhand { get; set; } = false;
         public override int Cost => State.Config.SizeUpgradeCost;
 
         private readonly string[] _mapExtensions = { ".xnb",".tbin",".tmx" };
 
-        public override void Start()
+        public override void Initialize(IModHelper helper, IMonitor monitor)
         {
-            if (_helper.Content.AssetEditors.Contains(this))
-            {
-                _monitor.Log("Tried to add SizeUpgrade twice?");
-                return;
-            }
-
-            if (Active)
-                _helper.Content.AssetEditors.Add(this);
+            base.Initialize(helper,monitor);
+            _helper.Content.AssetEditors.Add(this);
         }
 
-        public new void Stop()
+        public override void Start()
+        {
+            if (!Unlocked) return;
+            _helper.Content.InvalidateCache(Consts.GreenhouseMapPath);
+            Active = true;
+        }
+
+        public override void Stop()
         {
             Active = false;
-            _helper.Content.AssetEditors.Remove(this);
+            _helper.Content.InvalidateCache(Consts.GreenhouseMapPath);
         }
 
         public bool CanEdit<T>(IAssetInfo asset)
         {
-            return Active && asset.AssetNameEquals(Consts.GreenhouseMapPath);
+            return Unlocked && Active && asset.AssetNameEquals(Consts.GreenhouseMapPath);
         }
 
         public void Edit<T>(IAssetData asset)
         {
-            if (!Active || !asset.AssetNameEquals(Consts.GreenhouseMapPath)) return;
+            if (!Unlocked || !Active || !asset.AssetNameEquals(Consts.GreenhouseMapPath)) return;
 
             var mapEditor = asset.AsMap();
             string assetKey = null;
@@ -49,12 +51,11 @@ namespace BetterGreenhouse.Upgrades
             foreach (var extension in _mapExtensions)
             {
                 assetKey = Path.Combine(_helper.DirectoryPath, Consts.GreenhouseUpgradePath + extension);
-                if (File.Exists(assetKey))
-                {
-                    assetKey = Consts.GreenhouseUpgradePath + extension; //gets rid of absolute pathing for smapi
-                    fileExists = true;
-                    break;
-                }
+                if (!File.Exists(assetKey)) continue;
+
+                assetKey = Consts.GreenhouseUpgradePath + extension; //gets rid of absolute pathing for smapi
+                fileExists = true;
+                break;
             }
 
             if (!fileExists)

@@ -13,5 +13,6 @@
         public const string MultiplayerLoadKey = "Multiplayer.Load";
         public const string MultiplayerUpdate = "Multiplayer.Update";
         public const string MultiplayerJunimopointsKey = "Multiplayer.JunimoPoints";
+
     }
 }

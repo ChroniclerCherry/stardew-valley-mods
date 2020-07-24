@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BetterGreenhouse.data;
+using BetterGreenhouse.Data;
 using BetterGreenhouse.Upgrades;
 using StardewModdingAPI;
 using StardewValley;
@@ -12,7 +13,7 @@ namespace BetterGreenhouse
     {
         public static Config Config;
         private static Data.Data ModData { get; set; }
-        private static bool IsJojaRoute => Game1.MasterPlayer.mailReceived.Contains("JojaMember");
+        public static bool IsJojaRoute => Game1.MasterPlayer.mailReceived.Contains("JojaMember");
 
         public static List<Upgrade> Upgrades;
 
@@ -28,6 +29,8 @@ namespace BetterGreenhouse
         {
             _helper = helper;
             _monitor = monitor;
+
+            Config = _helper.ReadConfig<Config>();
 
             _helper.Events.Multiplayer.ModMessageReceived += Multiplayer_ModMessageReceived;
         }
@@ -54,8 +57,6 @@ namespace BetterGreenhouse
 
         public static void LoadData()
         {
-            Config = _helper.ReadConfig<Config>();
-
             _monitor.Log("Loading mod data...");
 
             if (!Context.IsMainPlayer) return;
@@ -88,10 +89,24 @@ namespace BetterGreenhouse
         {
             JunimoPoints = ModData.JunimoPoints;
             var activeData = ModData.UpgradesStatus;
-            Upgrades = new List<Upgrade>();
+            Upgrades = new List<Upgrade>
+            {
+                new SizeUpgrade()
+                {
+                    Active = activeData.ContainsKey(UpgradeTypes.SizeUpgrade) &&
+                             activeData[UpgradeTypes.SizeUpgrade].Active,
+                                 Unlocked = activeData.ContainsKey(UpgradeTypes.SizeUpgrade) &&
+                                            activeData[UpgradeTypes.SizeUpgrade].Unlocked
+                },
+                new AutoWaterUpgrade()
+                {
+                    Active = activeData.ContainsKey(UpgradeTypes.AutoWaterUpgrade) &&
+                             activeData[UpgradeTypes.AutoWaterUpgrade].Active,
+                    Unlocked = activeData.ContainsKey(UpgradeTypes.AutoWaterUpgrade) &&
+                             activeData[UpgradeTypes.AutoWaterUpgrade].Unlocked
+                }
+            };
 
-            Upgrades.Add(new SizeUpgrade() { Active = activeData.ContainsKey(UpgradeTypes.SizeUpgrade) && activeData[UpgradeTypes.SizeUpgrade] });
-            Upgrades.Add(new AutoWaterUpgrade() { Active = activeData.ContainsKey(UpgradeTypes.AutoWaterUpgrade) && activeData[UpgradeTypes.AutoWaterUpgrade] });
         }
 
         private static void MapDataToSave()
@@ -100,7 +115,11 @@ namespace BetterGreenhouse
             ModData.UpgradesStatus.Clear();
             foreach (var upgrade in Upgrades)
             {
-                ModData.UpgradesStatus.Add(upgrade.Type,upgrade.Active);
+                ModData.UpgradesStatus.Add(upgrade.Type,new UpgradeData()
+                {
+                    Active = upgrade.Active, 
+                    Unlocked = upgrade.Unlocked
+                });
             }
         }
 
@@ -143,7 +162,7 @@ namespace BetterGreenhouse
                     return;
                 }
 
-                upgrade.Active = true;
+                upgrade.Unlocked = true;
                 upgrade.Start();
                 UpgradeForTonight = null;
             }

@@ -1,6 +1,8 @@
 ﻿using StardewModdingAPI;
 using System;
 using System.Linq;
+using BetterGreenhouse.Interaction;
+using BetterGreenhouse.src;
 
 namespace BetterGreenhouse
 {
@@ -13,9 +15,15 @@ namespace BetterGreenhouse
             Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             Helper.Events.GameLoop.DayEnding += GameLoop_DayEnding;
 
+            new InteractionDetection(Helper, Monitor);
+
             Helper.ConsoleCommands.Add("bgsummary", "Lists all upgrades and their current status", SummarizeAllUpgrades);
-            Helper.ConsoleCommands.Add("bgupgrade", "Instantly applies an upgrade", ApplyUpgradeCommand);
-            Helper.ConsoleCommands.Add("bgremove", "Removes a current upgrade", RemoveUpgradeCommand);
+            if (!State.Config.EnableDebugging) return;
+            Helper.ConsoleCommands.Add("bgupgrade", "Instantly applies an upgrade", AddUpgradeCommand);
+            Helper.ConsoleCommands.Add("bgremove", "Stops a current upgrade", RemoveUpgradeCommand);
+            Helper.ConsoleCommands.Add("bgstart", "Starts a current upgrade", StartUpgradeCommand);
+            Helper.ConsoleCommands.Add("bgstop", "Stops a current upgrade", StopUpgradeCommand);
+
         }
 
         private void SummarizeAllUpgrades(string arg1, string[] arg2)
@@ -24,9 +32,10 @@ namespace BetterGreenhouse
             string inactiveUpgrades = "";
             foreach (var upgrade in State.Upgrades)
             {
-                if (upgrade.Active)
+                if (upgrade.Unlocked)
                 {
                     activeUpgrades += $"- {upgrade.Name} : " +
+                                      $"\n\tActive: {upgrade.Active}" +
                                       $"\n\tTranslated: {upgrade.translatedName} " +
                                       $"\n\tDescription: {upgrade.translatedDescription} " +
                                       $"\n\tCost: {upgrade.Cost}\n";
@@ -34,6 +43,7 @@ namespace BetterGreenhouse
                 else
                 {
                     inactiveUpgrades += $"- {upgrade.Name} : " +
+                                        $"\n\tActive: {upgrade.Active}" +
                                         $"\n\tTranslated: {upgrade.translatedName} " +
                                         $"\n\tDescription: {upgrade.translatedDescription} " +
                                         $"\n\tCost: {upgrade.Cost}\n";
@@ -47,21 +57,45 @@ namespace BetterGreenhouse
 
             if (activeUpgrades.Length > 0)
             {
-                prtstr += "Upgrades applied\n---------------------\n" + activeUpgrades + "\n";
+                prtstr += "Unlocked Upgrades\n---------------------\n" + activeUpgrades + "\n";
             }
 
             if (inactiveUpgrades.Length > 0)
             {
-                prtstr += "Upgrades not applied\n---------------------\n" + inactiveUpgrades;
+                prtstr += "Locked Upgrades\n---------------------\n" + inactiveUpgrades;
             }
 
             Monitor.Log(prtstr,LogLevel.Info);
 
         }
 
-        private void RemoveUpgradeCommand(string arg1, string[] arg2)
+        private void StartUpgradeCommand(string arg1, string[] arg2)
         {
-            var upgrade = State.Upgrades.FirstOrDefault(u => u.Name == arg2[0]);
+            var upgrade = Utils.GetUpgradeByName(arg2[0]);
+
+            if (upgrade == null)
+            {
+                Monitor.Log("Upgrade not found", LogLevel.Warn);
+                return;
+            }
+
+            if (!upgrade.Unlocked)
+            {
+                Monitor.Log("Upgrade not unlocked", LogLevel.Warn);
+                return;
+            }
+
+            if (upgrade.Active)
+            {
+                Monitor.Log("Upgrade is already active", LogLevel.Warn);
+                return;
+            }
+
+            upgrade.Start();
+        }
+        private void StopUpgradeCommand(string arg1, string[] arg2)
+        {
+            var upgrade = Utils.GetUpgradeByName(arg2[0]);
 
             if (upgrade == null)
             {
@@ -69,13 +103,39 @@ namespace BetterGreenhouse
                 return;
             }
 
+            if (!upgrade.Active)
+            {
+                Monitor.Log("Upgrade is not active", LogLevel.Warn);
+                return;
+            }
+
             upgrade.Stop();
         }
 
-        private void ApplyUpgradeCommand(string arg1, string[] arg2)
+        private void AddUpgradeCommand(string arg1, string[] arg2)
         {
             State.SetUpgradeForTonight(arg2[0]);
             State.PerformEndOfDayUpdate(false);
+        }
+
+        private void RemoveUpgradeCommand(string arg1, string[] arg2)
+        {
+            var upgrade = Utils.GetUpgradeByName(arg2[0]);
+
+            if (upgrade == null)
+            {
+                Monitor.Log("Upgrade not found", LogLevel.Warn);
+                return;
+            }
+
+            if (!upgrade.Unlocked)
+            {
+                Monitor.Log("Upgrade not unlocked", LogLevel.Warn);
+                return;
+            }
+
+            upgrade.Stop();
+            upgrade.Unlocked = false;
         }
 
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)

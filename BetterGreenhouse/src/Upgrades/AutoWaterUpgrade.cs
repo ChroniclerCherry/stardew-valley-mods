@@ -12,23 +12,26 @@ namespace BetterGreenhouse.Upgrades
     {
         public override UpgradeTypes Type => UpgradeTypes.AutoWaterUpgrade;
         public override string Name { get; } = "AutoWaterUpgrade";
-        public override bool Active { get; set; } = false;
+        public override bool Active { get; set; }
+        public override bool Unlocked { get; set; } = false;
         public override bool DisableOnFarmhand { get; set; } = true;
         public override int Cost => State.Config.AutoWaterUpgradeCost;
 
         public override void Start()
         {
             if (!Context.IsMainPlayer && DisableOnFarmhand) return;
-            if (!Active) return;
+            if (!Unlocked) return;
 
+            Active = true;
             _helper.Events.GameLoop.DayStarted += WaterAllGreenhouseDayStart;
             _helper.Events.GameLoop.DayEnding += WaterAllGreenhouseDayEnd;
         }
 
-        public new void Stop()
+        public override void Stop()
         {
-            base.Stop();
+            Active = false;
             _helper.Events.GameLoop.DayStarted -= WaterAllGreenhouseDayStart;
+            _helper.Events.GameLoop.DayEnding -= WaterAllGreenhouseDayEnd;
         }
 
         private void WaterAllGreenhouseDayStart(object sender, DayStartedEventArgs e)
@@ -43,7 +46,7 @@ namespace BetterGreenhouse.Upgrades
 
         private void WaterGreenhouse()
         {
-            if (!Active) return;
+            if (!Unlocked || !Active) return;
             _monitor.Log($"{translatedName} : Watering the greenhouse");
 
             var greenhouse = Game1.getLocationFromName(Consts.GreenhouseMapName);

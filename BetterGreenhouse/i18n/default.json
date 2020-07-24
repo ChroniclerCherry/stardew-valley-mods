@@ -1,4 +1,15 @@
 ﻿{
+    "JojaUpgradeMenu": "Which Greenhouse upgrade do you want?",
+    "JojaUpgradeAccept": "Our team of workers will have everything ready by morning!",
+
+
+    "JunimoUpgradeMenu": "You have {{JunimoPoints}} Junimo Points. What would you like to upgrade?",
+    "JunimoOffering": "You have earned {{JunimoPoints}} Junimo Points",
+    "JunimoUpgradeAccept": "You sense that the Junimo are happy to help, maybe you should check your Greenhouse in the morning?", 
+
+    "MenuMore": "More",
+    "MenuExit": "Exit", 
+
     "SizeUpgrade.Name": "Size Upgrade",
     "SizeUpgrade.Description": "Increases the size of the Greenhouse",
     "AutoWaterUpgrade.Name": "Automatic Sprinkler System",
