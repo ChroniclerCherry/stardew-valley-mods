@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Locations;
 
 namespace BetterGreenhouse.Interaction
 {
@@ -14,20 +15,23 @@ namespace BetterGreenhouse.Interaction
             _helper = helper;
             _monitor = monitor;
 
-            _helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
+            _helper.Events.Player.Warped += Player_Warped;
             _helper.Events.Input.ButtonPressed += Input_ButtonPressed;
         }
 
-        private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
+        private void Player_Warped(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
         {
-            //adds empty action tiles so that they appear interactable when hovered over
-            var jojaMart = Game1.getLocationFromName("JojaMart");
-            jojaMart.setTileProperty((int)State.Config.JojaMartUpgradeCoordinates.X,
-                (int)State.Config.JojaMartUpgradeCoordinates.Y,"Buildings", "Action", "");
+            if (Game1.currentLocation.Name == "JojaMart")
+            {
+                Game1.currentLocation.setTileProperty((int)State.Config.JojaMartUpgradeCoordinates.X,
+                    (int)State.Config.JojaMartUpgradeCoordinates.Y, "Buildings", "Action", "");
+            }
 
-            var communityCenter = Game1.getLocationFromName("CommunityCenter");
-            jojaMart.setTileProperty((int)State.Config.CommunityCenterUpgradeCoordinates.X,
-                (int)State.Config.CommunityCenterUpgradeCoordinates.Y, "Buildings", "Action", "");
+            if (Game1.currentLocation.Name == "CommunityCenter")
+            {
+                Game1.currentLocation.setTileProperty((int)State.Config.CommunityCenterUpgradeCoordinates.X,
+                    (int)State.Config.CommunityCenterUpgradeCoordinates.Y, "Buildings", "Action", "");
+            }
         }
 
         private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
