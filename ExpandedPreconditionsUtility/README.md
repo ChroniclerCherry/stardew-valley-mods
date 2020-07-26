@@ -4,7 +4,7 @@ Event preconditions is a commonly used conditions system across SMAPI mods due t
 ## Syntax
 EPU takes conditions in the same syntax as event preconditions do. Each condition is seperated by `/` in a string. EPU also allows you to check the opposite of any individual condition by adding a `!` at the very start
 
-For example: `d Mon Fri/HasItem Pink Cake/!JojaMartComplete/!w rainy` checks that it is Monday or Friday, that the user has a Pink Cake in their inventory, that the Jojamart is not complete, and that it is not rainy. Vanilla preconditions and custom conditions can be freely mixed in any order
+For example: `d Mon Fri/HasItem Pink Cake/!JojaMartComplete/!w rainy` checks that it is not Monday or Friday, that the user has a Pink Cake in their inventory, that the Jojamart is not complete, and that it is not rainy. Vanilla preconditions and custom conditions can be freely mixed in any order
 
 Depending on the mod that uses EPU, conditions may be given as a single string like the above, or as an array of strings. When it is an array of strings, more flexibility is allowed as you can check OR conditions. For example:
 ```cs
