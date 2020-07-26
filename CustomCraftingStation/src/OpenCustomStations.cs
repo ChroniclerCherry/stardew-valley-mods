@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using CustomCraftingStation.src;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
+using StardewValley.Network;
 using StardewValley.Objects;
 
 namespace CustomCraftingStation
@@ -24,7 +26,7 @@ namespace CustomCraftingStation
             {
                 if (_craftableCraftingStations.ContainsKey(obj.Name))
                 {
-                    OpenCraftingMenu(_craftableCraftingStations[obj.Name]);
+                    OpenCraftingMenu(_craftableCraftingStations[obj.Name], e.Cursor.GrabTile);
                     Helper.Input.Suppress(e.Button);
                     return;
                 }
@@ -42,23 +44,71 @@ namespace CustomCraftingStation
 
             if (_tileCraftingStations.ContainsKey(properties[1]))
             {
-                OpenCraftingMenu(_tileCraftingStations[properties[1]]);
+                OpenCraftingMenu(_tileCraftingStations[properties[1]], e.Cursor.GrabTile);
                 Helper.Input.Suppress(e.Button);
             }
         }
 
-        public void OpenCraftingMenu(CraftingStation station)
+        public void OpenCraftingMenu(CraftingStation station,Vector2 grabTile)
         {
+            List<Chest> Chests = GetChests(grabTile);
+
             Vector2 centeringOnScreen =
                 Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2,
                     600 + IClickableMenu.borderWidth * 2);
 
             var menu = new CustomCraftingMenu((int) centeringOnScreen.X, (int) centeringOnScreen.Y,
-                800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, new List<Chest>(), station.CraftingRecipes, station.CookingRecipes);
+                800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, Chests, station.CraftingRecipes, station.CookingRecipes);
 
             Game1.activeClickableMenu = menu;
         }
 
-        
+        public readonly NetMutex mutex = new NetMutex();
+
+        public List<Chest> GetChests(Vector2 grabTile)
+        {
+            List<Chest> chests = new List<Chest>();
+            int radius = _config.CraftingFromChestsRadius;
+            if (radius == 0 && !_config.GlobalCraftFromChest)
+                return chests;
+
+            IEnumerable<GameLocation> locs;
+            locs = Context.IsMainPlayer ? Game1.locations : Helper.Multiplayer.GetActiveLocations();
+
+            if (_config.GlobalCraftFromChest)
+            {
+                foreach (var location in locs)
+                {
+                    foreach (var objs in location.objects)
+                    {
+                        foreach (var obj in objs)
+                        {
+                            if (obj.Value is Chest chest)
+                                chests.Add(chest);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                var loc = Game1.currentLocation;
+
+                for (int i = -radius; i < radius; i++)
+                {
+                    for (int j = -radius; j < radius; j++)
+                    {
+                        var tile = new Vector2(grabTile.X + i, grabTile.Y + j);
+                        if (!loc.objects.ContainsKey(tile)) continue;
+
+                        var obj = loc.objects[tile];
+                        if (obj != null && obj is Chest chest)
+                            chests.Add(chest);
+                    }
+                }
+            }
+
+            return chests;
+
+        }
     }
 }

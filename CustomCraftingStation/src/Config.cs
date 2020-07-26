@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using StardewModdingAPI;
-using StardewValley;
 
 namespace CustomCraftingStation.src
 {
-    static class APIs
+    public class Config
     {
-        
+        public bool GlobalCraftFromChest { get; set; } = false;
+        public int CraftingFromChestsRadius { get; set; } = 0;
     }
 }

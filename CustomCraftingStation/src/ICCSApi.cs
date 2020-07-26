@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CustomCraftingStation.src
+﻿namespace CustomCraftingStation
 {
     public interface ICCSApi
     {
-        public void SetCCSCraftingMenuOverride(bool menuOverride);
+        void SetCCSCraftingMenuOverride(bool menuOverride);
     }
 
     public class CCSApi : ICCSApi

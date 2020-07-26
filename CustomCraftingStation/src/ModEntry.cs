@@ -14,6 +14,8 @@ namespace CustomCraftingStation
         private List<string> _cookingRecipesToRemove;
         private List<string> _craftingRecipesToRemove;
 
+        private Config _config;
+
         //private IRemoteFridgeApi remoteFridgeApi { get; set; }
 
         public override void Entry(IModHelper helper)
@@ -23,6 +25,8 @@ namespace CustomCraftingStation
                 Monitor.Log("Custom Crafting Stations does not currently support Android.",LogLevel.Error);
                 return;
             }
+
+            _config = Helper.ReadConfig<Config>();
 
             Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
 
