@@ -3,6 +3,7 @@ using CustomCraftingStation.src;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Locations;
 using StardewValley.Menus;
 using StardewValley.Network;
 using StardewValley.Objects;
@@ -75,8 +76,15 @@ namespace CustomCraftingStation
             IEnumerable<GameLocation> locs;
             locs = Context.IsMainPlayer ? Game1.locations : Helper.Multiplayer.GetActiveLocations();
 
+            if (_config.CraftFromFridgeWhenInHouse)
+                if (Game1.currentLocation is FarmHouse house)
+                    chests.Add(house.fridge.Value);
+
             if (_config.GlobalCraftFromChest)
             {
+                if (!_config.CraftFromFridgeWhenInHouse) //so we dont add this twice
+                    chests.Add((Game1.getLocationFromName("FarmHouse") as FarmHouse)?.fridge.Value);
+
                 foreach (var location in locs)
                 {
                     foreach (var objs in location.objects)
