@@ -41,7 +41,7 @@ namespace ExpandedPreconditionsUtility
             if (conditions == null)
                 return true;
             
-            //using the farm because it should be available for every player at any point in the game
+            //using the farm because it should be available for every player at any point in the game. Current location sometimes doesn't exist for farmhands
             VanillaPreconditionsMethod = _helper.Reflection.GetMethod(Game1.getFarm(), "checkEventPrecondition");
 
             //if someone somewhow marked this fake ID as seen, 
@@ -57,18 +57,18 @@ namespace ExpandedPreconditionsUtility
             foreach (var con in conditions)
             {
                 if (_verboseLogging)
-                    _monitor.Log($"{_uniqueId} / Checking condition string: \"{con}\"", LogLevel.Debug);
+                    _monitor.Log($"{_uniqueId}: Checking condition string: \"{con}\"", LogLevel.Debug);
 
                 if (CheckIndividualConditions(con.Split('/')))
                 {
                     if (_verboseLogging)
-                        _monitor.Log($"\t{_uniqueId} / Player met the conditions: \"{con}\"", LogLevel.Debug);
+                        _monitor.Log($"-{_uniqueId}: Player met the conditions: \"{con}\"", LogLevel.Debug);
                     return true;
                 }
             }
 
             if (_verboseLogging)
-                _monitor.Log($"{_uniqueId} / No conditions were met", LogLevel.Debug);
+                _monitor.Log($"-{_uniqueId}: No conditions were met", LogLevel.Debug);
 
             //if no conditions are met, return false
             return false;
@@ -85,21 +85,21 @@ namespace ExpandedPreconditionsUtility
             foreach (var condition in conditions)
             {
                 if (_verboseLogging)
-                    _monitor.Log($"\t\t{_uniqueId} / Checking individual condition: {condition}", LogLevel.Debug);
+                    _monitor.Log($"--{_uniqueId} / Checking individual condition: {condition}", LogLevel.Debug);
                 //if condition starts with a ! return false if condition checking is true
                 if (condition[0] == '!')
                 {
                     if (CheckCustomConditions(condition.Substring(1)))
                     {
                         if (_verboseLogging)
-                            _monitor.Log($"\t\t{_uniqueId} / Failed individual condition: {condition}", LogLevel.Debug);
+                            _monitor.Log($"--{_uniqueId} / Failed individual condition: {condition}", LogLevel.Debug);
                         return false;
                     }
                 }
                 else if (!CheckCustomConditions(condition))
                 {
                     if (_verboseLogging)
-                        _monitor.Log($"\t\t{_uniqueId} / Failed individual condition: {condition}", LogLevel.Debug);
+                        _monitor.Log($"--{_uniqueId} / Failed individual condition: {condition}", LogLevel.Debug);
 
                     return false;
                 }
@@ -107,7 +107,7 @@ namespace ExpandedPreconditionsUtility
             }
 
             if (_verboseLogging)
-                _monitor.Log($"\t\t{_uniqueId} / Passed all conditions: {conditions}", LogLevel.Debug);
+                _monitor.Log($"--{_uniqueId} / Passed all conditions: {conditions}", LogLevel.Debug);
             //passed all conditions
             return true;
 

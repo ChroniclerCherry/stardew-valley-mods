@@ -6,15 +6,15 @@ EPU takes conditions in the same syntax as event preconditions do. Each conditio
 
 For example: `d Mon Fri/HasItem Pink Cake/!JojaMartComplete/!w rainy` checks that it is Monday or Friday, that the user has a Pink Cake in their inventory, that the Jojamart is not complete, and that it is not rainy. Vanilla preconditions and custom conditions can be freely mixed in any order
 
-Depending on the mod that uses EPU, conditions may be given as a single string like the above, or as an array of strings. When it is an array of strings, more flexibility is allows as you can check OR conditions. For example:
+Depending on the mod that uses EPU, conditions may be given as a single string like the above, or as an array of strings. When it is an array of strings, more flexibility is allowed as you can check OR conditions. For example:
 ```cs
 [
-        "!z spring/t 600 1000", //open if it's `During Spring` AND `The time is between 6AM to 10AM`
+        "!z spring/t 600 1000", //true if it's `During Spring` AND `The time is between 6AM to 10AM`
         //OR
-        "f Linus 1000/w rainy/z spring" //opens if `Player has at least 1000 friendship points with Linus' AND 'It is rainy` AND `It's not Spring`,
+        "f Linus 1000/w rainy/z spring" //true if `Player has at least 1000 friendship points with Linus' AND 'It is rainy` AND `It's not Spring`,
         //OR
-        "f Linus 2500" //opens if `Player has at least 2500 friendship points with Linus`
-        ],
+        "f Linus 2500" //true if `Player has at least 2500 friendship points with Linus`
+]
 ```
 
 ## Available Conditions
@@ -37,12 +37,12 @@ Syntax | Description | Example
 # Using EPU in your project
 **This section is for programmers looking to add EPU to their SMAPI mod, not users writing conditions for a content pack.**
 
-Copy the [ExpandedPreconditionsUtility](#ExpandedPreconditionsUtility.cs) interface into your project, and then in SMAPI's GameLaunched event, register and initialize the API.
+Copy the [IConditionsChecker](#/IConditionsChecker.cs) interface into your project, and then in SMAPI's GameLaunched event, register and initialize the API.
 
 ```cs
-            IExpandedPreconditionsUtility EPUApi = Helper.ModRegistry.GetApi<IExpandedPreconditionsUtility>("Cherry.ExpandedPreconditionsUtility");
+            IConditionsChecker ConditionsApi = Helper.ModRegistry.GetApi<IConditionsChecker>("Cherry.ExpandedPreconditionsUtility");
             bool verboseMode = true; //reconmended you tie this to a config, or turn it to false upon release to prevent console spam
-            EPUApi.Initialize(verboseMode, this.ModManifest.UniqueID);
+            ConditionsApi.Initialize(verboseMode, this.ModManifest.UniqueID);
 ```
 After that, you're set to go. The API provides two ways to check conditions.
 

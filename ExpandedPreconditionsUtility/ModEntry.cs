@@ -14,7 +14,7 @@ namespace ExpandedPreconditionsUtility
 
         public override object GetApi()
         {
-            return new ExpandedPreconditionsUtility(_monitor,_helper);
+            return new ConditionsChecker(_monitor,_helper);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace ExpandedPreconditionsUtility
 {
-    public interface IExpandedPreconditionsUtility
+    public interface IConditionsChecker
     {
         /// <summary>
         /// Must be called before any condition checking is done. Verbose mode will turn on logging for every step of the condition checking process
@@ -26,13 +26,13 @@ namespace ExpandedPreconditionsUtility
         bool CheckConditions(string conditions);
     }
 
-    class ExpandedPreconditionsUtility : IExpandedPreconditionsUtility
+    public class ConditionsChecker : IConditionsChecker
     {
         private ConditionChecker _conditionChecker;
 
         private readonly IModHelper _helper;
         private readonly IMonitor _monitor;
-        internal ExpandedPreconditionsUtility(IMonitor monitor, IModHelper helper)
+        internal ConditionsChecker(IMonitor monitor, IModHelper helper)
         {
             _helper = helper;
             _monitor = monitor;
