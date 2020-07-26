@@ -42,7 +42,7 @@ The same with BFAV animals-- if the specific animals ( or the BFAV mod ) are not
 ## Create a content pack
 To make a content pack for Shop Tile Framework, add `Cherry.ShopTileFramework` to the `ContentPackFor` section of your mod's [manifest file](https://stardewvalleywiki.com/Modding:Modder_Guide/APIs/Manifest).
 
-Then from there, you need to make a `shops.json` file to define the properties of your shops. You can find an example [here](#adding-store-to-the-game), and each field is described below:
+Then from there, you need to make a `shops.json` file to define the properties of your shops. You can find an example [here](#adding-shops-to-the-game), and each field is described below:
 
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
@@ -225,7 +225,7 @@ YourMod
 The result would be for spring, fall, and winter, `Bob.png` will be the portrait used, but during summer, `Bob_summer.png` will be used instead
 
 ## Example
-There is a full template found [here](TEMPLATE.md)
+There is a full template found [here](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/master/ShopTileFramework/TEMPLATE.md)
 
 The below example still works but is outdated in that it's missing newer features
 Example shops.json:
