@@ -6,5 +6,5 @@
     "UniqueID": "Cherry.ExpandedPreconditionsUtility",
     "EntryDll": "ExpandedPreconditionsUtility.dll",
     "MinimumApiVersion": "3.5.0",
-    "UpdateKeys": [ "" ]
+    "UpdateKeys": [ "Nexus:6529" ]
 }

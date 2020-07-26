@@ -46,11 +46,11 @@ namespace ExpandedPreconditionsUtility
 
             //if someone somewhow marked this fake ID as seen, 
             //unmark it so condition checking will actually work
-            if (Game1.player.eventsSeen.Contains(-5005))
+            if (Game1.player.eventsSeen.Contains(-6529))
             {
-                _monitor.Log($"{_uniqueId} / Expanded Preconditions Utility uses the fake event ID of -5005 in order to use vanilla preconditions." +
+                _monitor.Log($"{_uniqueId} / Expanded Preconditions Utility uses the fake event ID of -6529 in order to use vanilla preconditions." +
                     " Somehow your save has marked this ID as seen. Expanded Preconditions is freeing it back up.", LogLevel.Warn);
-                Game1.player.eventsSeen.Remove(-5005);
+                Game1.player.eventsSeen.Remove(-6529);
             }
 
             //if any of the conditions are met, return true
