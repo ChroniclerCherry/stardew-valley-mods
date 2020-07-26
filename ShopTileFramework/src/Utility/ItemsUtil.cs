@@ -118,11 +118,11 @@ namespace ShopTileFramework.Utility
         public static int GetSeedId(string cropName)
         {
             //int cropID = ModEntry.JsonAssets.GetCropId(cropName);
-            int cropId = GetIndexByName(cropName);
+            int cropId = APIs.JsonAssets.GetCropId(cropName);
             foreach (KeyValuePair<int, string> kvp in _cropData)
             {
                 //find the tree id in crops information to get seed id
-                Int32.TryParse(kvp.Value.Split('/')[3], out int id);
+                Int32.TryParse(kvp.Value.Split('/')[2], out int id);
                 if (cropId == id)
                     return kvp.Key;
             }
@@ -136,11 +136,11 @@ namespace ShopTileFramework.Utility
         /// <returns>The ID of the sapling object if found, -1 if not</returns>
         public static int GetSaplingId(string treeName)
         {
-            int treeId = GetIndexByName(treeName);
+            int treeId = APIs.JsonAssets.GetFruitTreeId(treeName);
             foreach (KeyValuePair<int, string> kvp in _fruitTreeData)
             {
                 //find the tree id in fruitTrees information to get sapling id
-                Int32.TryParse(kvp.Value.Split('/')[2], out int id);
+                Int32.TryParse(kvp.Value.Split('/')[0], out int id);
                 if (treeId == id)
                     return kvp.Key;
             }
@@ -198,9 +198,8 @@ namespace ShopTileFramework.Utility
                 var trees = APIs.JsonAssets.GetAllFruitTreesFromContentPack(pack);
                 if (trees != null)
                 {
-                    foreach (int saplingID in trees.Select(GetSeedId))
-                    {
-                        _itemsToRemove.Add(ObjectInfoSource["Object"][saplingID].Split('/')[0]);
+                    foreach (int saplingID in trees.Select(GetSaplingId))
+                    {_itemsToRemove.Add(ObjectInfoSource["Object"][saplingID].Split('/')[0]);
                     }
                 }
 

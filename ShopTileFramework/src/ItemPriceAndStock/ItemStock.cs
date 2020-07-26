@@ -67,7 +67,7 @@ namespace ShopTileFramework.ItemPriceAndStock
         {
 
 
-            if (When != null && !ConditionChecking.CheckConditions(When))
+            if (When != null && !APIs.Conditions.CheckConditions(When))
                 return null; //did not pass conditions
 
             if (!ItemsUtil.CheckItemType(ItemType)) //check that itemtype is valid
@@ -85,7 +85,7 @@ namespace ShopTileFramework.ItemPriceAndStock
             {
                 foreach (KeyValuePair<double,string[]> kvp in _priceMultiplierWhen)
                 {
-                    if (ConditionChecking.CheckConditions(kvp.Value))
+                    if (APIs.Conditions.CheckConditions(kvp.Value))
                     {
                         pricemultiplier = kvp.Key;
                         break;

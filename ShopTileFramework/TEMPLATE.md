@@ -53,6 +53,7 @@ Please refer to the README to learn the function of each of these fields and whi
           "Quality": 1,
           "ItemIDs": [1,2,3],
           "JAPacks":  ["JAPack.UniqueID1","JAPack.UniqueID2"],
+          "FilterSeedsBySeason":false, //only for Seed itemtypes
           "ItemNames": ["Item1","Item2"],
           "Stock": 2147483647,
           "MaxNumItemsSoldInItemStock": 2147483647,
@@ -122,6 +123,7 @@ Please refer to the README to learn the function of each of these fields and whi
           "Quality": 1,
           "ItemIDs": [1,2,3],
           "JAPacks":  ["JAPack.UniqueID1","JAPack.UniqueID2"],
+          "FilterSeedsBySeason":false, //only for Seed itemtypes
           "ItemNames": ["Item1","Item2"],
           "Stock": 2147483647,
           "MaxNumItemsSoldInItemStock": 2147483647,

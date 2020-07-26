@@ -1,4 +1,5 @@
-﻿using ShopTileFramework.Shop;
+﻿using ShopTileFramework.API;
+using ShopTileFramework.Shop;
 using StardewModdingAPI;
 
 namespace ShopTileFramework.Utility
@@ -45,7 +46,7 @@ namespace ShopTileFramework.Utility
         private void ConditionCheck(string arg1, string[] arg2)
         {
             string[] condition = { string.Join(" ",arg2)};
-            ModEntry.monitor.Log($"Expression resolved as: {ConditionChecking.CheckConditions(condition)}",LogLevel.Info);
+            ModEntry.monitor.Log($"Expression resolved as: {APIs.Conditions.CheckConditions(condition)}",LogLevel.Info);
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using StardewModdingAPI;
+﻿using ShopTileFramework.src.API;
+using StardewModdingAPI;
 
 namespace ShopTileFramework.API
 {
@@ -10,6 +11,7 @@ namespace ShopTileFramework.API
     {
         internal static IJsonAssetsApi JsonAssets;
         internal static IBFAVApi BFAV;
+        internal static IConditionsApi Conditions;
 
         /// <summary>
         /// Register the API for Json Assets
@@ -45,6 +47,24 @@ namespace ShopTileFramework.API
                 ModEntry.monitor.Log("BFAV is installed but not enabled. Custom farm animals will not be added to animal shops.",
                     LogLevel.Info);
             }
+        }
+
+        /// <summary>
+        /// Register the API for Expanded Preconditions Utility
+        /// </summary>
+        public static void RegisterExpandedPreconditionsUtility()
+        {
+            Conditions = ModEntry.helper.ModRegistry.GetApi<IConditionsApi>("Cherry.ExpandedPreconditionsUtility");
+
+            if (Conditions == null)
+            {
+                ModEntry.monitor.Log("Expanded Preconditions Utility API not detected. Something went wrong, please check that your installation of Expanded Preconditions Utility is valid",
+                    LogLevel.Error);
+                return;
+            }
+
+            Conditions.Initialize(ModEntry.VerboseLogging, "Cherry.ShopTileFramework");
+
         }
 
         public static void RegisterFAVR()

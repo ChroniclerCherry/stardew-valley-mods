@@ -169,6 +169,7 @@ namespace ShopTileFramework
             if (APIs.JsonAssets!= null)
                 APIs.JsonAssets.AddedItemsToShop += JsonAssets_AddedItemsToShop;
 
+            APIs.RegisterExpandedPreconditionsUtility();
             APIs.RegisterBFAV();
             APIs.RegisterFAVR();
         }

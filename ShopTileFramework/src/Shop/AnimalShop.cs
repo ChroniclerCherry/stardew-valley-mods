@@ -3,6 +3,7 @@ using ShopTileFramework.Utility;
 using StardewValley;
 using StardewValley.Menus;
 using System.Collections.Generic;
+using ShopTileFramework.API;
 
 namespace ShopTileFramework.Shop
 {
@@ -46,7 +47,7 @@ namespace ShopTileFramework.Shop
         public void DisplayShop(bool debug = false)
         {
             //skip condition checking if called from console commands
-            if (debug || ConditionChecking.CheckConditions(When))
+            if (debug || APIs.Conditions.CheckConditions(When))
             {
                 //get animal stock each time to refresh requirement checks
                 UpdateShopAnimalStock();
