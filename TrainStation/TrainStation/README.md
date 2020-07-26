@@ -28,11 +28,12 @@ To add a destination to the train stops menu, make a content pack with a `TrainS
       "TargetY": 10, //the Y of where the player willl be warped to
       "Cost": 500, //how much gold it costs to buy this ticket
       "FacingDirectionAfterWarp":-2, //Direction the player faces when they arrived. 0 is up, 1 is right, 2 is down, 3 is left. Defaults to 2
-      "Conditions": "z winter/e 100"; //Conditions for the destination to be available using event preconditions
+      "Conditions": ["z winter/e 100","HasMod ACoolMod.UniqueID"]; //Conditions for the destination to be available using Expanded Preconditions Utility
     },
   ]
 }
 ```
+Condition system runs on [Expanded Preconditions Utility](#/)
 
 You can have have multiple trainstops definied in each `TrainStops.json`. To see vailable event preconditions, check out the [wiki](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions)
 

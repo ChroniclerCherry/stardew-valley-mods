@@ -16,15 +16,31 @@ namespace TrainStation
         public static ModEntry Instance;
 
         private List<TrainStop> TrainStops;
+        private IConditionsChecker ConditionsApi;
 
         public override void Entry(IModHelper helper)
         {
             Config = helper.ReadConfig<ModConfig>();
             Instance = this;
 
+            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
             helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
             helper.Events.Display.MenuChanged += Display_MenuChanged;
+        }
+
+        private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+        {
+            ConditionsApi = Helper.ModRegistry.GetApi<IConditionsChecker>("Cherry.ExpandedPreconditionsUtility");
+            if (ConditionsApi == null)
+            {
+                Monitor.Log("Expanded Preconditions Utility API not detected. Something went wrong, please check that your installation of Expanded Preconditions Utility is valid", LogLevel.Error);
+                return;
+            }
+                
+            
+            ConditionsApi.Initialize(false, this.ModManifest.UniqueID);
+            
         }
 
         public override object GetApi()
@@ -180,7 +196,7 @@ namespace TrainStation
                 if (stop.TargetMapName == Game1.currentLocation.Name) //remove stops to the current map
                     continue;
 
-                if (!CheckConditions(stop.Conditions)) //remove stops that don't meet conditions
+                if (!ConditionsApi.CheckConditions(stop.Conditions)) //remove stops that don't meet conditions
                     continue;
 
                 string displayName = $"{stop.TranslatedName}";
@@ -337,7 +353,7 @@ namespace TrainStation
         public int TargetY { get; set; }
         public int Cost { get; set; } = 0;
         public int FacingDirectionAfterWarp { get; set; } = 2;
-        public string Conditions { get; set; }
+        public string[] Conditions { get; set; }
 
         internal string StopID; //assigned by the mod's uniqueID and the number of stops from that pack
         internal string TranslatedName;
@@ -354,5 +370,29 @@ namespace TrainStation
         {
             ModEntry.Instance.OpenTrainMenu();
         }
+    }
+
+    public interface IConditionsChecker
+    {
+        /// <summary>
+        /// Must be called before any condition checking is done. Verbose mode will turn on logging for every step of the condition checking process
+        /// </summary>
+        /// <param name="verbose">Turning verbose mode true will log every step of the condition checking process. Useful for debugging but spams the debug log. It is recommended to have this false during release, or provided in a config set to a default of false.</param>
+        /// <param name="uniqueId">The unique ID of your mod. Will be prepended to all logs so it is clear which mod called the condition checking</param>
+        void Initialize(bool verbose, string uniqueId);
+
+        /// <summary>
+        /// Checks an array of condition strings. Each string will be evaluated as true if every single condition provided is true. All the strings together will evaluate as true if any string is true
+        /// </summary>
+        /// <param name="conditions">An array of condition strings.</param>
+        /// <returns></returns>
+        bool CheckConditions(string[] conditions);
+
+        /// <summary>
+        /// Checks a single condition string. The string will be evaluated as true if every single condition provided is true.
+        /// </summary>
+        /// <param name="conditions"></param>
+        /// <returns></returns>
+        bool CheckConditions(string conditions);
     }
 }

@@ -1,10 +1,16 @@
 ﻿{
-  "Name": "Train Station",
-  "Author": "Cherry",
-  "Version": "1.0.2",
-  "Description": "Allows mods to add destinations at the train station",
-  "UniqueID": "Cherry.TrainStation",
-  "EntryDll": "TrainStation.dll",
-  "MinimumApiVersion": "3.0.0",
-    "UpdateKeys": [ "Nexus:6183" ]
+    "Name": "Train Station",
+    "Author": "Cherry",
+    "Version": "1.0.3",
+    "Description": "Allows mods to add destinations at the train station",
+    "UniqueID": "Cherry.TrainStation",
+    "EntryDll": "TrainStation.dll",
+    "MinimumApiVersion": "3.0.0",
+    "UpdateKeys": [ "Nexus:6183" ],
+    "Dependencies": [
+        {
+            "UniqueID": "Cherry.ExpandedPreconditionsUtility",
+            "MinimumVersion": "1.0.0"
+        }
+    ]
 }
