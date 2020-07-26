@@ -184,7 +184,7 @@ When multiple fields are provided, the condition will work if _any_ of the strin
 ```
 #### Available Conditions
 
-The condition checking system is provided by Expanded Preconditions Utility, and you can see a list of its available conditions at the README()
+The condition checking system is provided by Expanded Preconditions Utility, and you can see a list of its available conditions at the [README](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/Develop/ExpandedPreconditionsUtility/README.md)
 
 ##### Some useful vanilla preconditions of note ( taken directly from the Wiki ):
 

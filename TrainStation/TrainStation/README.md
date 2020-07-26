@@ -33,7 +33,7 @@ To add a destination to the train stops menu, make a content pack with a `TrainS
   ]
 }
 ```
-Condition system runs on [Expanded Preconditions Utility](#/)
+Condition system runs on [Expanded Preconditions Utility](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/Develop/ExpandedPreconditionsUtility/README.md)
 
 You can have have multiple trainstops definied in each `TrainStops.json`. To see vailable event preconditions, check out the [wiki](https://stardewvalleywiki.com/Modding:Event_data#Event_preconditions)
 
