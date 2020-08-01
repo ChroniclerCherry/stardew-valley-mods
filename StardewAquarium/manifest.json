@@ -1,10 +1,10 @@
 ﻿{
   "Name": "Stardew Aquarium Code",
   "Author": "Cherry",
-  "Version": "1.0.0-multiplayer-messages",
+  "Version": "1.0.0-fixed-recatching-fish",
   "Description": "The coding portion of the Stardew Aquarium mod",
   "UniqueID": "Cherry.StardewAquarium",
   "EntryDll": "StardewAquarium.dll",
   "MinimumApiVersion": "3.5.0",
-  "UpdateKeys": []
+    "UpdateKeys": [ "Nexus:6372" ]
 }

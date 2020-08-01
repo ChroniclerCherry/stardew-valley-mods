@@ -30,8 +30,6 @@ namespace StardewAquarium
 
             InitializeEditors();
 
-            LegendaryFishPatches.Initialize(Helper, Monitor);
-
             if (_isAndroid)
             {
                 AndroidShopMenuPatch.Initialize(Helper, Monitor);
@@ -58,8 +56,10 @@ namespace StardewAquarium
                 Monitor.Log("Disabling the recatch of legendaries from this mod. (if cantorsdust.RecatchLegendaryFish is installed, behaviour will default to that mod's)");
                 RecatchLegends = false;
             }
-                
-            
+
+            LegendaryFishPatches.Initialize(Helper, Monitor);
+
+
             if (Config.EnableDebugCommands)
             {
                 if (_isAndroid)

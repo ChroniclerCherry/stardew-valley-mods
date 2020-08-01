@@ -218,7 +218,7 @@ namespace StardewAquarium.Patches
 
             //base of 1% and an additional 0.5% per fish donated
             double pufferChance = 0.01 + 0.005 * Utils.GetNumDonatedFish();
-            
+
             if (Game1.random.NextDouble() > pufferChance)
                 return null;
 
