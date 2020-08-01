@@ -22,7 +22,7 @@ namespace ShopTileFramework.API
 
             if (JsonAssets == null)
             {
-                ModEntry.monitor.Log("Json Assets API not detected. Custom JA items will not be added to shops.",
+                ModEntry.monitor.Log("Json Assets API not detected. This is only an issue if you're using cystom Json Assets items and shops trying to sell them, as custom items will not appear in shops.",
                     LogLevel.Info);
             }
 
@@ -38,13 +38,13 @@ namespace ShopTileFramework.API
 
             if (BFAV == null)
             {
-                ModEntry.monitor.Log("BFAV API not detected. Custom farm animals will not be added to animal shops.",
+                ModEntry.monitor.Log("BFAV API not detected. This is only an issue if you're using custom BFAV animals and a custom shop that's supposed to sell them, as custom animals will not appear in those shops.",
                     LogLevel.Info);
             }
             else if (!BFAV.IsEnabled())
             {
                 BFAV = null;
-                ModEntry.monitor.Log("BFAV is installed but not enabled. Custom farm animals will not be added to animal shops.",
+                ModEntry.monitor.Log("BFAV is installed but not enabled. This is only an issue if you're using custom BFAV animals and a custom shop that's supposed to sell them, as custom animals will not appear in those shops",
                     LogLevel.Info);
             }
         }
