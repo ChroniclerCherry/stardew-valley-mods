@@ -93,8 +93,21 @@ namespace ShopTileFramework.ItemPriceAndStock
                 }
             }
 
-            AddById(pricemultiplier);
-            AddByName(pricemultiplier);
+            if (ItemType != "Seed")
+            {
+                AddById(pricemultiplier);
+                AddByName(pricemultiplier);
+            }
+            else
+            {
+                if (ItemIDs != null)
+                    ModEntry.monitor.Log(
+                        "ItemType of \"Seed\" is a special itemtype used for parsing Seeds from JA Pack crops and trees and does not support input via ID. If adding seeds via ID, please use the ItemType \"Object\" instead to directly sell the seeds/saplings");
+                if (ItemNames != null)
+                    ModEntry.monitor.Log(
+                        "ItemType of \"Seed\" is a special itemtype used for parsing Seeds from JA Pack crops and trees and does not support input via Name. If adding seeds via Name, please use the ItemType \"Object\" instead to directly sell the seeds/saplings");
+            }
+
             AddByJAPack(pricemultiplier);
 
             ItemsUtil.RandomizeStock(_itemPriceAndStock, MaxNumItemsSoldInItemStock);
