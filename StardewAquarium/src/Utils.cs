@@ -13,7 +13,12 @@ namespace StardewAquarium
 {
     internal static class Utils
     {
-        private static NetStringList MasterPlayerMail => Game1.MasterPlayer.mailReceived;
+        private static NetStringList MasterPlayerMailCached { get; set; }
+
+        public static void RecacheMasterMail()
+        {
+            MasterPlayerMailCached = Game1.MasterPlayer.mailReceived;
+        }
 
         private static IModHelper _helper;
         private static IMonitor _monitor;
@@ -68,12 +73,12 @@ namespace StardewAquarium
             if (i?.Category != -4)
                 return false;
 
-            return !MasterPlayerMail.Contains(GetDonatedMailFlag(i));
+            return !MasterPlayerMailCached.Contains(GetDonatedMailFlag(i));
         }
 
         public static bool IsUnDonatedFish(string s)
         {
-            return !MasterPlayerMail.Contains($"AquariumDonated:{s}");
+            return !MasterPlayerMailCached.Contains($"AquariumDonated:{s}");
         }
 
         public static bool DonateFish(Item i)
@@ -81,10 +86,10 @@ namespace StardewAquarium
             if (!IsUnDonatedFish(i))
                 return false;
 
-            MasterPlayerMail.Add(GetDonatedMailFlag(i)); 
+            MasterPlayerMailCached.Add(GetDonatedMailFlag(i)); 
             string numDonated = $"AquariumFishDonated:{GetNumDonatedFish()}";
-            if (!MasterPlayerMail.Contains(numDonated))
-                MasterPlayerMail.Add(numDonated);
+            if (!MasterPlayerMailCached.Contains(numDonated))
+                MasterPlayerMailCached.Add(numDonated);
 
             _fishSign.UpdateLastDonatedFish(i);
 
@@ -126,7 +131,7 @@ namespace StardewAquarium
 
         public static int GetNumDonatedFish()
         {
-            return MasterPlayerMail.Count(flag => flag.StartsWith("AquariumDonated:"));
+            return MasterPlayerMailCached.Count(flag => flag.StartsWith("AquariumDonated:"));
         }
 
         public static string GetDonatedMailFlag(Item i)

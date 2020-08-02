@@ -1,16 +1,20 @@
 ﻿{
 	"Name": "Pufferchick",
-	"Price": 2000,
-	"Description": "Cries if you use xnb mods",
+	"Description": "Half chicken, half pufferfish.",
 	"Category": "Fish",
-	"Edibility": -300,
+	"Edibility": -200,
+	"EdibleIsDrink": false,
+	"EdibleBuffs": null,
+	"Price": 2000,
 	"IsColored": false,
-	"Recipe": null,
 	"ContextTags": 
 	[
 		"fish_legendary"
 	],
-
+	"GiftTastes":
+	{
+		/*gift tastes go here*/
+	},
 	"NameLocalization":
 	{
 		/*"es": "", //Spanish

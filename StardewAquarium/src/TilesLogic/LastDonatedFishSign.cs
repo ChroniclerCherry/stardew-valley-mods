@@ -33,6 +33,7 @@ namespace StardewAquarium.TilesLogic
 
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
         {
+            Utils.RecacheMasterMail();
             if (!Utils.CheckAchievement())
                 return;
 

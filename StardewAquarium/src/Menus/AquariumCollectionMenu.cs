@@ -22,6 +22,7 @@ namespace StardewAquarium.Menus
 
         public AquariumCollectionMenu(string title)
         {
+            Utils.RecacheMasterMail();
             _title = title;
             width = 700 + borderWidth * 2;
             height = (IsAndroid ? 550 : 600) + borderWidth * 2;
