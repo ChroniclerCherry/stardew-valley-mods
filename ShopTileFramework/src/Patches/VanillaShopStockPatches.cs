@@ -92,6 +92,12 @@ namespace ShopTileFramework.Patches
                original: AccessTools.Method(typeof(StardewValley.Utility), nameof(StardewValley.Utility.getQiShopStock)),
                postfix: new HarmonyMethod(typeof(VanillaShopStockPatches), nameof(VanillaShopStockPatches.Utility_getQiShopStock))
             );
+
+            harmony.Patch(
+                original: AccessTools.Method(typeof(StardewValley.Utility), nameof(StardewValley.Utility.getHatStock)),
+                postfix: new HarmonyMethod(typeof(VanillaShopStockPatches),
+                    nameof(VanillaShopStockPatches.Utility_getHatStock))
+            );
         }
 
         private static void EditShopStock(string shopName, ref Dictionary<ISalable, int[]> __result)
@@ -197,6 +203,9 @@ namespace ShopTileFramework.Patches
         {
             EditShopStock("QiShop", ref __result);
         }
-
+        public static void Utility_getHatStock(ref Dictionary<ISalable, int[]> __result)
+        {
+            EditShopStock("HatMouse", ref __result);
+        }
     }
 }

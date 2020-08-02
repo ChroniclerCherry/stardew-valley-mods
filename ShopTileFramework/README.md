@@ -127,7 +127,7 @@ Note that the shop-global fields used by custom ItemShops here will only affect 
 
 Field | Optional | Format | Description
 ------------ | ------------- | ------------- | -------------
-ShopName | Mandatory | string | The vanilla store this stock is targetting. Valid options are: `PierreShop`, `JojaShop`, `RobinShop`, `ClintShop`, `MarlonShop`, `MarnieShop`, `TravellingMerchant`, `HarveyShop`, `SandyShop`, `DesertTrader`, `KrobusShop`, `DwarfShop`, `GusShop`, `QiShop`, `WillyShop`
+ShopName | Mandatory | string | The vanilla store this stock is targetting. Valid options are: `PierreShop`, `JojaShop`, `RobinShop`, `ClintShop`, `MarlonShop`, `MarnieShop`, `TravellingMerchant`, `HarveyShop`, `SandyShop`, `DesertTrader`, `KrobusShop`, `DwarfShop`, `GusShop`, `QiShop`, `WillyShop`, `HatMouse`
 ReplaceInsteadOfAdd | Optional | boolean | Defaults to false. If true, the original vanilla stock will be removed.
 AddStockAboveVanilla | Optional | boolean | Defaults to false. If true, the custom stock will be added at the top of the shop menu rather than the bottom. This will affect all custom stocks for this vanilla shop, not just the current mod's
 ShopPrice | Optional | int | Sets the price of every item added to the store from this content pack
