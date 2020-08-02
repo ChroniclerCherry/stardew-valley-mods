@@ -102,37 +102,37 @@ namespace ShopTileFramework.Patches
 
         private static void EditShopStock(string shopName, ref Dictionary<ISalable, int[]> __result)
         {
-            if (ShopManager.VanillaShops.ContainsKey(shopName))
+            ModEntry.JustOpenedVanilla = true;
+
+            if (!ShopManager.VanillaShops.ContainsKey(shopName)) return;
+
+            var customStock = ShopManager.VanillaShops[shopName].ItemPriceAndStock;
+            ItemsUtil.RemoveSoldOutItems(customStock);
+            if (ShopManager.VanillaShops[shopName].ReplaceInsteadOfAdd)
             {
-                var customStock = ShopManager.VanillaShops[shopName].ItemPriceAndStock;
-                ItemsUtil.RemoveSoldOutItems(customStock);
-                if (ShopManager.VanillaShops[shopName].ReplaceInsteadOfAdd)
+                __result = customStock;
+            }
+            else
+            {
+                foreach (var key in customStock.Keys)
                 {
-                    __result = customStock;
+                    if (__result.ContainsKey(key))
+                        return;
+                }
+
+                if (ShopManager.VanillaShops[shopName].AddStockAboveVanilla)
+                {
+                    __result = customStock.Concat(__result).ToDictionary(x => x.Key, x => x.Value);
                 }
                 else
                 {
-                    foreach (var key in customStock.Keys)
-                    {
-                        if (__result.ContainsKey(key))
-                            return;
-                    }
-
-                    if (ShopManager.VanillaShops[shopName].AddStockAboveVanilla)
-                    {
-                        __result = customStock.Concat(__result).ToDictionary(x => x.Key, x => x.Value);
-                    }
-                    else
-                    {
-                        __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-                    }
+                    __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
                 }
             }
         }
 
         public static void SeedShop_shopStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.JustOpenedVanilla = true;
             EditShopStock("PierreShop", ref __result);
         }
         public static void Utility_getJojaStock(ref Dictionary<ISalable, int[]> __result)
@@ -141,22 +141,18 @@ namespace ShopTileFramework.Patches
         }
         public static void Utility_getCarpenterStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.JustOpenedVanilla = true;
             EditShopStock("RobinShop", ref __result);
         }
         public static void Utility_getBlacksmithStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.JustOpenedVanilla = true;
             EditShopStock("ClintShop", ref __result);
         }
         public static void Utility_getAdventureShopStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.JustOpenedVanilla = true;
             EditShopStock("MarlonShop", ref __result);
         }
         public static void Utility_getAnimalShopStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.JustOpenedVanilla = true;
             EditShopStock("MarnieShop", ref __result);
         }
         public static void Utility_getTravelingMerchantStock(ref Dictionary<ISalable, int[]> __result)
@@ -165,12 +161,10 @@ namespace ShopTileFramework.Patches
         }
         public static void Utility_getHospitalStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.JustOpenedVanilla = true;
             EditShopStock("HarveyShop", ref __result);
         }
         public static void GameLocation_sandyShopStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.JustOpenedVanilla = true;
             EditShopStock("SandyShop", ref __result);
         }
         public static void Desert_getDesertMerchantTradeStock(ref Dictionary<ISalable, int[]> __result)
@@ -179,23 +173,19 @@ namespace ShopTileFramework.Patches
         }
         public static void Sewer_getShadowShopStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.JustOpenedVanilla = true;
             EditShopStock("KrobusShop", ref __result);
         }
         public static void Utility_getDwarfShopStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.JustOpenedVanilla = true;
             EditShopStock("DwarfShop", ref __result);
         }
         public static void Utility_getSaloonStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.JustOpenedVanilla = true;
             EditShopStock("GusShop", ref __result);
         }
 
         public static void Utility_getFishShopStock(ref Dictionary<ISalable, int[]> __result)
         {
-            ModEntry.JustOpenedVanilla = true;
             EditShopStock("WillyShop", ref __result);
         }
 
