@@ -8,7 +8,7 @@ All my Mods can be found [on my Nexus account](https://www.nexusmods.com/stardew
 **Featured mods:**
 
 ## [Shop Tile Framework](tree/master/ShopTileFramework)
-[[Release](https://www.nexusmods.com/stardewvalley/mods/5005) | [README](blob/master/ShopTileFramework/README.md)]
+[[Release](https://www.nexusmods.com/stardewvalley/mods/5005) | [README](/ShopTileFramework/README.md)]
 
 A framework mod that allows modders to create new fully customizable shops and animal shops, and makes them interactable in game via tile properties.
 
@@ -35,8 +35,8 @@ A mod that removes the limits in the game preventing you from reaching 10 hearts
 
 [[Upgrade Empty Cabins](tree/master/UpgradeEmptyCabins) | [Release](https://www.nexusmods.com/stardewvalley/mods/5253)] Allows players to upgrade uninhabited cabins
 
-[[Multi Yield Crops](tree/master/MultiYieldCrops) | [Release](https://www.nexusmods.com/stardewvalley/mods/6069) | [README](blob/master/MultiYieldCrops/README.md) ] Allows crops to have more than a single item as its yield
+[[Multi Yield Crops](tree/master/MultiYieldCrops) | [Release](https://www.nexusmods.com/stardewvalley/mods/6069) | [README](MultiYieldCrops/README.md) ] Allows crops to have more than a single item as its yield
 
-[[Train Station](tree/master/TrainStation/TrainStation) | [Release](https://www.nexusmods.com/stardewvalley/mods/6183) | [README](blob/master/TrainStation/TrainStation/README.md) ] Allows crops to have more than a single item as its yield
+[[Train Station](tree/master/TrainStation/TrainStation) | [Release](https://www.nexusmods.com/stardewvalley/mods/6183) | [README](/TrainStation/TrainStation/README.md) ] Allows crops to have more than a single item as its yield
 
-[[Custom Crafting Stations](tree/master/CustomCraftingStation) | [Release](https://www.nexusmods.com/stardewvalley/mods/6293) | [README](blob/master/CustomCraftingStation/README.md) ] Allows modders to add specialized crafting stations to the game
+[[Custom Crafting Stations](tree/master/CustomCraftingStation) | [Release](https://www.nexusmods.com/stardewvalley/mods/6293) | [README](/CustomCraftingStation/README.md) ] Allows modders to add specialized crafting stations to the game
