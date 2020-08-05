@@ -1,5 +1,5 @@
 ﻿# Expanded Preconditions Utility
-Event preconditions is a commonly used conditions system across SMAPI mods due to the fact it already exists in game and thus allows a large number of conditions to be used with very little additional work. However, it can be limited in what it offers. This mod seeks to provide a conditions system in the same format as event preconditions, but with additional custom conditions. More will be added over time as people make requests
+Event preconditions is a commonly used conditions system across SMAPI mods due to the fact it already exists in game and thus allows a large number of conditions to be used with very little additional work. However, it can be limited in what it offers. This mod seeks to provide a conditions system in the same format as event preconditions, but with additional custom conditions. [More will be added over time as people make requests](https://github.com/ChroniclerCherry/stardew-valley-mods/issues/8)
 
 ## Syntax
 EPU takes conditions in the same syntax as event preconditions do. Each condition is seperated by `/` in a string. EPU also allows you to check the opposite of any individual condition by adding a `!` at the very start
@@ -30,7 +30,7 @@ Syntax | Description | Example
 `JojaMartComplete` | Returns true if the joja mart route was completed on this save file |
 `SeededRandom <i:offset> <i:timeInterval/s:timeInterval> <f:random lower bounds> <f: random upper bounds>`| Used to make synchronized random checks, which can be used across different checks/mods and remain constant over given periods of time | `SeededRandom 123 Season 0.5 1` [Find more detailed explanation here](#seeded-random)
 `HasCookingRecipe [<s:recipe name>]` | Returns true if the player has learned all the listed recipes. **Note** spaces should be replaced with `-` | `HasCookingRecipe Fried-Egg Salad` will return true if the player knows how to cook both Fried Egg and salad
-`HasCraftingRecipe [<s:recipe name>]` | Returns true if the player has learned all the listed recipes. **Note** spaces should be replaced with `-` | `HasCookingRecipe Oil-Maker` will return true if the player knows how to craft Oil Makers
+`HasCraftingRecipe [<s:recipe name>]` | Returns true if the player has learned all the listed recipes. **Note** spaces should be replaced with `-` | `HasCraftingRecipe Oil-Maker` will return true if the player knows how to craft Oil Makers
 `FarmHouseUpgradeLevel [<i:house upgrade levels>]` | Returns true if the player's current house levels matches any of the given numbers. Starter house is 0 and cellar is 3 | `FarmHouseUpgradeLevel 2 3` will return true if the player is on the final house upgrade and has the cellar
 `HasItem <s:item name>` | Returns true if the given item is in the player's inventory | `HasItem Pink Cake` would return true if any item named `Pink Cake` was found in the player inventory
 
