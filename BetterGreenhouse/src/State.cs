@@ -162,6 +162,7 @@ namespace BetterGreenhouse
                     return;
                 }
 
+
                 upgrade.Unlocked = true;
                 upgrade.Start();
                 UpgradeForTonight = null;

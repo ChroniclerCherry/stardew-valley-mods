@@ -5,7 +5,6 @@
         public static string ModUniqueID;
 
         public const string GreenhouseMapName = "Greenhouse";
-        public const string GreenhouseUpgradePath = "assets\\GreenhouseUpgrade";
         public const string GreenhouseMapPath = "Maps\\Greenhouse";
 
         public const string SaveDataKey = "SaveData.Version.1";

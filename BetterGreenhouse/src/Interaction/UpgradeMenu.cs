@@ -61,11 +61,11 @@ namespace BetterGreenhouse.Interaction
             for (var index = 0; index < State.Upgrades.Count; index++)
             {
                 var upgrade = State.Upgrades[index];
-                if (upgrade.Unlocked) continue;
+                if (upgrade.Unlocked) continue; 
                 string text;
                 
-                text = _isJoja ? $"{upgrade.translatedName} : {upgrade.Cost}$" 
-                    : $"{upgrade.translatedName} : {upgrade.Cost}";
+                text = _isJoja ? $"{upgrade.TranslatedName} : {upgrade.Cost}$" 
+                    : $"{upgrade.TranslatedName} : {upgrade.Cost}";
 
                 ResponsesThisPage.Add(new Response(upgrade.Name, text));
 

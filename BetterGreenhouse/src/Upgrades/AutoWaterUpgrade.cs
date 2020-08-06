@@ -47,7 +47,7 @@ namespace BetterGreenhouse.Upgrades
         private void WaterGreenhouse()
         {
             if (!Unlocked || !Active) return;
-            _monitor.Log($"{translatedName} : Watering the greenhouse");
+            _monitor.Log($"{TranslatedName} : Watering the greenhouse");
 
             var greenhouse = Game1.getLocationFromName(Consts.GreenhouseMapName);
             foreach (var feature in greenhouse.terrainFeatures.Values)

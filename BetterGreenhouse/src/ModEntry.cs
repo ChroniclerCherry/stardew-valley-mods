@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using BetterGreenhouse.Interaction;
 using BetterGreenhouse.src;
+using BetterGreenhouse.Upgrades;
 
 namespace BetterGreenhouse
 {
@@ -36,16 +37,16 @@ namespace BetterGreenhouse
                 {
                     activeUpgrades += $"- {upgrade.Name} : " +
                                       $"\n\tActive: {upgrade.Active}" +
-                                      $"\n\tTranslated: {upgrade.translatedName} " +
-                                      $"\n\tDescription: {upgrade.translatedDescription} " +
+                                      $"\n\tTranslated: {upgrade.TranslatedName} " +
+                                      $"\n\tDescription: {upgrade.TranslatedDescription} " +
                                       $"\n\tCost: {upgrade.Cost}\n";
                 }
                 else
                 {
                     inactiveUpgrades += $"- {upgrade.Name} : " +
                                         $"\n\tActive: {upgrade.Active}" +
-                                        $"\n\tTranslated: {upgrade.translatedName} " +
-                                        $"\n\tDescription: {upgrade.translatedDescription} " +
+                                        $"\n\tTranslated: {upgrade.TranslatedName} " +
+                                        $"\n\tDescription: {upgrade.TranslatedDescription} " +
                                         $"\n\tCost: {upgrade.Cost}\n";
 
                     if (State.UpgradeForTonight == upgrade.Name)
