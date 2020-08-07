@@ -11,18 +11,13 @@ namespace BetterGreenhouse.Upgrades
     public class AutoWaterUpgrade : Upgrade
     {
         public override UpgradeTypes Type => UpgradeTypes.AutoWaterUpgrade;
-        public override string Name { get; } = "AutoWaterUpgrade";
         public override bool Active { get; set; }
         public override bool Unlocked { get; set; } = false;
-        public override bool DisableOnFarmhand { get; set; } = true;
-        public override int Cost => State.Config.AutoWaterUpgradeCost;
+        public override bool DisableOnFarmhand { get; } = true;
 
         public override void Start()
         {
-            if (!Context.IsMainPlayer && DisableOnFarmhand) return;
-            if (!Unlocked) return;
-
-            Active = true;
+            base.Start();
             _helper.Events.GameLoop.DayStarted += WaterAllGreenhouseDayStart;
             _helper.Events.GameLoop.DayEnding += WaterAllGreenhouseDayEnd;
         }
@@ -49,23 +44,28 @@ namespace BetterGreenhouse.Upgrades
             if (!Unlocked || !Active) return;
             _monitor.Log($"{TranslatedName} : Watering the greenhouse");
 
-            var greenhouse = Game1.getLocationFromName(Consts.GreenhouseMapName);
-            foreach (var feature in greenhouse.terrainFeatures.Values)
+            foreach (var loc in Game1.locations)
             {
-                if (feature is HoeDirt dirt)
+                if (!loc.IsGreenhouse) continue;
+
+                foreach (var feature in loc.terrainFeatures.Values)
                 {
-                    dirt.state.Value = HoeDirt.watered;
+                    if (feature is HoeDirt dirt)
+                    {
+                        dirt.state.Value = HoeDirt.watered;
+                    }
                 }
-            }
 
-            //stole this from CJB cheats lol
-            foreach (var pot in greenhouse.objects.Values.OfType<IndoorPot>())
-            {
-                var dirt = pot.hoeDirt.Value;
-                if (dirt?.crop == null) continue;
+                //stole this from CJB cheats lol
+                foreach (var pot in loc.objects.Values.OfType<IndoorPot>())
+                {
+                    var dirt = pot.hoeDirt.Value;
+                    if (dirt?.crop == null) continue;
 
-                dirt.state.Value = HoeDirt.watered;
-                pot.showNextIndex.Value = true;
+                    dirt.state.Value = HoeDirt.watered;
+                    pot.showNextIndex.Value = true;
+                }
+
             }
         }
     }

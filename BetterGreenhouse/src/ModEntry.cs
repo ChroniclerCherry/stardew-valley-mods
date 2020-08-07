@@ -31,6 +31,7 @@ namespace BetterGreenhouse
         {
             string activeUpgrades = "";
             string inactiveUpgrades = "";
+
             foreach (var upgrade in State.Upgrades)
             {
                 if (upgrade.Unlocked)
@@ -55,6 +56,8 @@ namespace BetterGreenhouse
             }
 
             var prtstr = "\n";
+            if (State.UpgradeForTonight != null)
+                prtstr += $"Pending Upgrade tonight: {State.UpgradeForTonight}\n";
 
             if (activeUpgrades.Length > 0)
             {
@@ -146,6 +149,7 @@ namespace BetterGreenhouse
 
         private void GameLoop_DayEnding(object sender, StardewModdingAPI.Events.DayEndingEventArgs e)
         {
+            State.JunimoOfferingMade = false;
             State.PerformEndOfDayUpdate();
         }
     }

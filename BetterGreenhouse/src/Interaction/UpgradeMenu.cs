@@ -10,11 +10,11 @@ namespace BetterGreenhouse.Interaction
 {
     class UpgradeMenu
     {
-        private IModHelper _helper;
+        private readonly IModHelper _helper;
         private IMonitor _monitor;
-        private bool _isJoja;
+        private readonly bool _isJoja;
 
-        List<Response[]> ResponsePages;
+        List<Response[]> _responsePages;
         private int _currentPage = 0;
         public UpgradeMenu(IModHelper helper, IMonitor monitor, bool isJoja)
         {
@@ -23,7 +23,8 @@ namespace BetterGreenhouse.Interaction
             _isJoja = isJoja;
 
             BuildResponses();
-            Game1.currentLocation.createQuestionDialogue("", ResponsePages[_currentPage],ButtonSelected);
+            string dialogue = _helper.Translation.Get(_isJoja ? "JojaUpgradeMenu" : "JunimoUpgradeMenu");
+            Game1.currentLocation.createQuestionDialogue(dialogue, _responsePages[_currentPage],ButtonSelected);
         }
 
         private void ButtonSelected(Farmer who, string whichAnswer)
@@ -37,51 +38,72 @@ namespace BetterGreenhouse.Interaction
             {
                 Game1.activeClickableMenu = null;
                 _currentPage++;
-                Game1.currentLocation.createQuestionDialogue("", ResponsePages[_currentPage], ButtonSelected);
+                string dialogue = _helper.Translation.Get(_isJoja ? "JojaUpgradeMenu" : "JunimoUpgradeMenu", new { JunimoPoints = State.JunimoPoints });
+                Game1.currentLocation.createQuestionDialogue(dialogue, _responsePages[_currentPage], ButtonSelected);
                 return;
             }
 
-            State.UpgradeForTonight = whichAnswer;
+            ApplyUpgrades(who,Utils.GetUpgradeByName(whichAnswer));
+
+        }
+
+        private void ApplyUpgrades(Farmer who,Upgrade upgrade)
+        {
+            int cost = upgrade.Cost;
             if (_isJoja)
             {
+                if (who.Money < cost)
+                {
+                    Game1.drawObjectDialogue(_helper.Translation.Get("JojaNotEnoughMoney"));
+                    return;
+                }
+
                 Game1.drawObjectDialogue(_helper.Translation.Get("JojaUpgradeAccept"));
+                who.Money -= cost;
             }
             else
             {
+                if (State.JunimoPoints < cost)
+                {
+                    Game1.drawObjectDialogue(_helper.Translation.Get("JunimoNotEnoughPoints"));
+                    return;
+                }
+
                 Game1.drawObjectDialogue(_helper.Translation.Get("JunimoUpgradeAccept"));
+                State.JunimoPoints -= cost;
+                _helper.Multiplayer.SendMessage(State.JunimoPoints, Consts.MultiplayerJunimopointsKey, new[] { Consts.ModUniqueID });
             }
 
+            State.UpgradeForTonight = upgrade.Name;
+            _helper.Multiplayer.SendMessage(upgrade.Name, Consts.MultiplayerUpdate, new[] { Consts.ModUniqueID });
         }
 
         private void BuildResponses()
         {
-            ResponsePages = new List<Response[]>();
-            List<Response> ResponsesThisPage = new List<Response>();
+            _responsePages = new List<Response[]>();
+            var responsesThisPage = new List<Response>();
 
             for (var index = 0; index < State.Upgrades.Count; index++)
             {
                 var upgrade = State.Upgrades[index];
-                if (upgrade.Unlocked) continue; 
-                string text;
-                
-                text = _isJoja ? $"{upgrade.TranslatedName} : {upgrade.Cost}$" 
+                if (upgrade.Unlocked) continue;
+
+                string text = _isJoja ? $"{upgrade.TranslatedName} : {upgrade.Cost}$" 
                     : $"{upgrade.TranslatedName} : {upgrade.Cost}";
 
-                ResponsesThisPage.Add(new Response(upgrade.Name, text));
+                responsesThisPage.Add(new Response(upgrade.Name, text));
 
-                if (ResponsesThisPage.Count >= 3)
-                {
-                    //if there's more options
-                    if (index < State.Upgrades.Count - 1)
-                        ResponsesThisPage.Add(new Response("More", "More"));
-                    ResponsesThisPage.Add(new Response("Exit", "Exit"));
-                    ResponsePages.Add(ResponsesThisPage.ToArray());
-                    ResponsesThisPage = new List<Response>();
-                }
+                //Max of 3 options per page, with more pages added as needed
+                if (responsesThisPage.Count < 3) continue;
+                if (index < State.Upgrades.Count - 1)
+                    responsesThisPage.Add(new Response("More", "More"));
+                responsesThisPage.Add(new Response("Exit", "Exit"));
+                _responsePages.Add(responsesThisPage.ToArray());
+                responsesThisPage = new List<Response>();
             }
 
-            ResponsesThisPage.Add(new Response("Exit", "Exit"));
-            ResponsePages.Add(ResponsesThisPage.ToArray());
+            responsesThisPage.Add(new Response("Exit", "Exit"));
+            _responsePages.Add(responsesThisPage.ToArray());
         }
     }
 }

@@ -11,10 +11,8 @@ namespace BetterGreenhouse.Upgrades
     public class SizeUpgrade : Upgrade, IAssetEditor
     {
         public override UpgradeTypes Type => UpgradeTypes.SizeUpgrade;
-        public override string Name { get; } = "SizeUpgrade";
         public override bool Active { get; set; } = false;
         public override bool Unlocked { get; set; } = false;
-        public override int Cost => State.Config.SizeUpgradeCost;
         public override void Initialize(IModHelper helper, IMonitor monitor)
         {
             base.Initialize(helper,monitor);
@@ -23,8 +21,7 @@ namespace BetterGreenhouse.Upgrades
 
         public override void Start()
         {
-            if (!Unlocked) return;
-            Active = true;
+            base.Start();
             _helper.Content.InvalidateCache(Consts.GreenhouseMapPath);
 
         }

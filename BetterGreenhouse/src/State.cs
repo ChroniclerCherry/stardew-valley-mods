@@ -17,7 +17,9 @@ namespace BetterGreenhouse
 
         public static List<Upgrade> Upgrades;
 
-        public static int JunimoPoints;
+        public static int JunimoPoints { get; set; }
+
+        public static bool JunimoOfferingMade { get; set; }
 
         public static string UpgradeForTonight { get; set; }
         public static bool IsThereUpgradeTonight => UpgradeForTonight != null;
@@ -81,7 +83,7 @@ namespace BetterGreenhouse
             MapDataFromSave();
             InitializeAllUpgrades();
 
-            _helper.Multiplayer.SendMessage(ModData, Consts.MultiplayerLoadKey, modIDs: new[] { Consts.ModUniqueID });
+            _helper.Multiplayer.SendMessage(ModData, Consts.MultiplayerLoadKey, new[] { Consts.ModUniqueID });
 
         }
 
@@ -104,6 +106,13 @@ namespace BetterGreenhouse
                              activeData[UpgradeTypes.AutoWaterUpgrade].Active,
                     Unlocked = activeData.ContainsKey(UpgradeTypes.AutoWaterUpgrade) &&
                              activeData[UpgradeTypes.AutoWaterUpgrade].Unlocked
+                },
+                new AutoHarvestUpgrade()
+                {
+                    Active = activeData.ContainsKey(UpgradeTypes.AutoHarvestUpgrade) &&
+                             activeData[UpgradeTypes.AutoHarvestUpgrade].Active,
+                    Unlocked = activeData.ContainsKey(UpgradeTypes.AutoHarvestUpgrade) &&
+                               activeData[UpgradeTypes.AutoHarvestUpgrade].Unlocked
                 }
             };
 
@@ -144,7 +153,7 @@ namespace BetterGreenhouse
         public static void SetUpgradeForTonight(string upgradeName)
         {
             UpgradeForTonight = upgradeName;
-            _helper.Multiplayer.SendMessage(upgradeName, Consts.MultiplayerUpdate, modIDs: new[] { Consts.ModUniqueID });
+            _helper.Multiplayer.SendMessage(upgradeName, Consts.MultiplayerUpdate, new[] { Consts.ModUniqueID });
         }
 
         public static void PerformEndOfDayUpdate(bool save = true)
