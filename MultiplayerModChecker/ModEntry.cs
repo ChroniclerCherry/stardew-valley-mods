@@ -1,36 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Configuration;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewValley;
 
 namespace MultiplayerModChecker
 {
     public class ModEntry : Mod
     {
-        private IMultiplayerPeer _host;
         private List<MultiplayerReportData> _rawReports = new List<MultiplayerReportData>();
-        private List<string> _reports = new List<string>();
-        private Config Config;
+        private readonly List<string> _reports = new List<string>();
+        private Config _config;
         public override void Entry(IModHelper helper)
         {
-            Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
-            Helper.Events.Multiplayer.PeerContextReceived += Multiplayer_PeerContextReceived;
+            Helper.Events.Multiplayer.PeerContextReceived += PeerConnected;
             Helper.Events.Multiplayer.ModMessageReceived += Multiplayer_ModMessageReceived;
-            Config = Helper.ReadConfig<Config>();
+            _config = Helper.ReadConfig<Config>();
         }
 
-        private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
-        {
-            if (!Context.IsMultiplayer || !Context.IsMainPlayer) return;
-            _host = Helper.Multiplayer.GetConnectedPlayers().First(p => p.IsHost);
-        }
-
-        private void Multiplayer_PeerContextReceived(object sender, StardewModdingAPI.Events.PeerContextReceivedEventArgs e)
+        private void PeerConnected(object sender, PeerContextReceivedEventArgs e)
         {
             if (!Context.IsMainPlayer) return;
 
@@ -38,46 +32,58 @@ namespace MultiplayerModChecker
             report.TimeConnected = DateTime.Now;
 
             report.SmapiGameGameVersions.FarmhandHasSmapi = e.Peer.HasSmapi;
-            report.SmapiGameGameVersions.HostSmapiVersion = _host.ApiVersion;
-            report.SmapiGameGameVersions.HostGameVersion = _host.GameVersion;
-            report.SmapiGameGameVersions.FarmhandSmapiVersion = e.Peer.ApiVersion;
-            report.SmapiGameGameVersions.FarmhandGameVersion = e.Peer.GameVersion;
 
             report.FarmhandID = e.Peer.PlayerID;
-            report.FarmhandName = Game1.getFarmer(e.Peer.PlayerID).Name;
+            report.FarmhandName = Game1.getAllFarmers()
+                .FirstOrDefault(f => f.UniqueMultiplayerID == e.Peer.PlayerID)
+                ?.Name;
 
-            var allMods = _host.Mods.Union(e.Peer.Mods).Select(m => m.ID).Distinct();
-
-            foreach (var mod in allMods)
+            if (string.IsNullOrEmpty(report.FarmhandName))
             {
-                if (Config.IgnoredMods.Contains(mod)) continue;
+                report.FarmhandName = Helper.Translation.Get("UnnamedFarmhand");
+            }
 
-                var modVersionData = new ModVersions();
-                modVersionData.ModUniqueID = mod;
+            if (e.Peer.HasSmapi)
+            {
+                report.SmapiGameGameVersions.HostSmapiVersion = Constants.ApiVersion;
+                report.SmapiGameGameVersions.FarmhandSmapiVersion = e.Peer.ApiVersion;
 
-                var hostMod = _host.GetMod(mod);
-                if (hostMod != null)
+                var HostMods = Helper.ModRegistry.GetAll().Select(m => m.Manifest.UniqueID);
+                var farmHandMods = e.Peer.Mods.Select(m => m.ID);
+                var allMods = HostMods.Union(farmHandMods).Distinct();
+
+                foreach (var mod in allMods)
                 {
-                    modVersionData.DoesHostHave = true;
-                    modVersionData.HostModVersion = hostMod.Version;
+                    if (_config.IgnoredMods.Contains(mod)) continue;
+
+                    var modVersionData = new ModVersions();
+
+                    var hostMod = Helper.ModRegistry.Get(mod);
+                    if (hostMod != null)
+                    {
+                        modVersionData.DoesHostHave = true;
+                        modVersionData.HostModVersion = hostMod.Manifest.Version;
+                    }
+
+
+                    var farmhandMod = e.Peer.GetMod(mod);
+                    if (farmhandMod != null)
+                    {
+                        modVersionData.DoesFarmhandHave = true;
+                        modVersionData.FarmhandModVersion = farmhandMod.Version;
+                    }
+
+                    if (hostMod != null) modVersionData.ModName = hostMod.Manifest.Name;
+                    else if (farmhandMod != null) modVersionData.ModName = farmhandMod.Name;
+
+                    modVersionData.ModUniqueID = mod;
+                    report.Mods.Add(modVersionData);
                 }
-                
-
-                var farmhandMod = e.Peer.GetMod(mod);
-                if (farmhandMod != null)
-                {
-                    modVersionData.DoesFarmhandHave = true;
-                    modVersionData.FarmhandModVersion = farmhandMod.Version;
-                }
-
-                if (hostMod != null) modVersionData.ModName = hostMod.Name;
-                else if (farmhandMod != null) modVersionData.ModName = farmhandMod.Name;
-
-                report.Mods.Add(modVersionData);
             }
 
             _rawReports.Add(report);
-            Helper.Data.WriteJsonFile("MultiplayerModReportRaw", report);
+            Helper.Data.WriteJsonFile("LatestMultiplayerModReportRaw.json", _rawReports);
+            GenerateReport(report);
         }
 
         private void Multiplayer_ModMessageReceived(object sender, StardewModdingAPI.Events.ModMessageReceivedEventArgs e)
@@ -94,16 +100,11 @@ namespace MultiplayerModChecker
 
             if (!reportData.SmapiGameGameVersions.FarmhandHasSmapi)
             {
-                report.Add(Helper.Translation.Get("FarmhandMissingSMAPI"), LogLevel.Alert);
+                report.Add(Helper.Translation.Get("FarmhandMissingSMAPI", new { FarmhandID = reportData.FarmhandID, FarmHandName = reportData.FarmhandName, ConnectionTime = reportData.TimeConnected }), LogLevel.Alert);
             }
             else
             {
-                if (reportData.SmapiGameGameVersions.HostGameVersion != reportData.SmapiGameGameVersions.FarmhandGameVersion)
-                    report.Add(Helper.Translation.Get("GameVersionMismatch",
-                            new { HostVersion = reportData.SmapiGameGameVersions.HostGameVersion, FarmhandVersion = reportData.SmapiGameGameVersions.FarmhandGameVersion }),
-                        LogLevel.Warn);
-
-                if (reportData.SmapiGameGameVersions.HostSmapiVersion != reportData.SmapiGameGameVersions.FarmhandSmapiVersion)
+                if (!reportData.SmapiGameGameVersions.HostSmapiVersion.Equals(reportData.SmapiGameGameVersions.FarmhandSmapiVersion))
                     report.Add(Helper.Translation.Get("SMAPIVersionMismatch",
                             new { HostVersion = reportData.SmapiGameGameVersions.HostSmapiVersion, FarmhandVersion = reportData.SmapiGameGameVersions.FarmhandSmapiVersion }),
                         LogLevel.Warn);
@@ -118,7 +119,7 @@ namespace MultiplayerModChecker
                     } else if (!modData.DoesFarmhandHave)
                     {
                         report.Add(Helper.Translation.Get("ModMismatch.Farmhand", new { ModName = modData.ModName, ModID = modData.ModUniqueID }), LogLevel.Warn);
-                    } else if (modData.HostModVersion != modData.FarmhandModVersion)
+                    } else if (!modData.HostModVersion.Equals(modData.FarmhandModVersion))
                     {
                         report.Add(Helper.Translation.Get("ModMismatch.Version",
                             new { ModName = modData.ModName, ModID = modData.ModUniqueID, HostVersion = modData.HostModVersion, FarmhandVersion = modData.FarmhandModVersion }),
@@ -135,30 +136,34 @@ namespace MultiplayerModChecker
         {
             if (report.Count > 0)
             {
+                string preface = "";
                 if (reportData == null)
                 {
-                    Monitor.Log(Helper.Translation.Get("FarmhandReport"),
-                        Config.HideReportInTrace ? LogLevel.Trace : LogLevel.Warn);
+                    preface = Helper.Translation.Get("FarmhandReport");
+                    Monitor.Log(preface,
+                        _config.HideReportInTrace ? LogLevel.Trace : LogLevel.Warn);
                 }
                 else
                 {
-                    Monitor.Log( Helper.Translation.Get("HostReport",new { FarmhandID = reportData.FarmhandID, FarmhandName = reportData.FarmhandName, ConnectionTime = reportData.TimeConnected }),
-                        Config.HideReportInTrace ? LogLevel.Trace : LogLevel.Warn);
+                    preface = Helper.Translation.Get("HostReport", new { FarmhandID = reportData.FarmhandID, FarmhandName = reportData.FarmhandName, ConnectionTime = reportData.TimeConnected });
+                    Monitor.Log(preface,
+                        _config.HideReportInTrace ? LogLevel.Trace : LogLevel.Warn);
                 }
                 
                 foreach (var log in report)
                 {
-                    Monitor.Log(log.Key, Config.HideReportInTrace ? LogLevel.Trace : log.Value);
+                    Monitor.Log(log.Key, _config.HideReportInTrace ? LogLevel.Trace : log.Value);
                 }
 
-                _reports.Add(String.Join("\n", report.Keys));
-                Helper.Data.WriteJsonFile("MultiplayerModReports", _reports);
+                _reports.Add($"{preface}\n--------------------------------\n{string.Join("\n", report.Keys)}");
+                File.WriteAllText(Path.Combine(Helper.DirectoryPath, "LatestMultiplayerModReports.txt"), string.Join("\n\n", _reports));
             }
             else
             {
                 if (reportData == null)
                 {
-
+                    Monitor.Log(Helper.Translation.Get("SuccessfulConnectionFarmhandside"),
+                        LogLevel.Info);
                 }
                 else
                 {
@@ -172,7 +177,7 @@ namespace MultiplayerModChecker
 
     public class Config
     {
-        public String[] IgnoredMods { get; set; }
+        public String[] IgnoredMods { get; set; } = { "Cherry.MultiplayerModChecker" };
         public bool HideReportInTrace { get; set; } = false;
     }
 
@@ -193,8 +198,6 @@ namespace MultiplayerModChecker
         public ISemanticVersion HostSmapiVersion { get; set; }
         public ISemanticVersion FarmhandSmapiVersion { get; set; }
 
-        public ISemanticVersion HostGameVersion { get; set; }
-        public ISemanticVersion FarmhandGameVersion { get; set; }
     }
 
     public class ModVersions

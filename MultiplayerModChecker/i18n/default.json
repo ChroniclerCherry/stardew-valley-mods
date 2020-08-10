@@ -1,12 +1,12 @@
 ﻿{
-    "FarmhandReport": "Some potential problems were found with your mod loadout. Please review the following information to make sure there is no conflicts for a multiplayer game. Not all Mods need to be synced on both Host and Farmhand, and you can find more information at: https://stardewvalleywiki.com/Modding:Player_Guide/Getting_Started#Do_mods_work_in_multiplayer.3F. If a mod is reported on this report and you're sure it shouldn't be an issue, you can add it to the IgnoredMods list on the Host's version of Multiplayer Mod Checker",
-    "HostReport": "Some potential problems were found with Player {{FarmhandID}} {{FarmhandName}}'s mod loadout, connected at {{ConnectionTime}}. Please review the following information to make sure there is no conflicts for a multiplayer game. Not all Mods need to be synced on both Host and Farmhand, and you can find more information at: https://stardewvalleywiki.com/Modding:Player_Guide/Getting_Started#Do_mods_work_in_multiplayer.3F. If a mod is reported on this report and you're sure it shouldn't be an issue, you can add it to the IgnoredMods list on the Host's version of Multiplayer Mod Checker.",
-    "SuccessfulConnectionHostSide": "Player {{FarmhandID}} {{FarmhandName}} connected successfully with a fully synced mod list",
+    "FarmhandReport": "Some potential problems were found with your mod loadout. Please review the following information to make sure there is no conflicts for a multiplayer game. Not all Mods need to be synced on both Host and Farmhand, and you can find more information at: https://stardewvalleywiki.com/Modding:Player_Guide/Getting_Started#Do_mods_work_in_multiplayer.3F. If a mod is reported on this report and you're sure it shouldn't be an issue, you can ask the Host to add it to their IgnoredMods list",
+    "HostReport": "Some potential problems were found with Farmhand {{FarmhandID}} {{FarmhandName}}'s mod loadout, connected at {{ConnectionTime}}. Please review the following information to make sure there is no conflicts for a multiplayer game. Not all Mods need to be synced on both Host and Farmhand, and you can find more information at: https://stardewvalleywiki.com/Modding:Player_Guide/Getting_Started#Do_mods_work_in_multiplayer.3F. If a mod is reported on this report and you're sure it shouldn't be an issue, you can add it to the IgnoredMods list in the config.json file.",
+    "SuccessfulConnectionHostSide": "Farmhand {{FarmhandID}} {{FarmhandName}} connected successfully with a fully synced mod list",
     "SuccessfulConnectionFarmhandside": "You have connected with a fully synced mod list",
-    "FarmhandMissingSMAPI": "Farmhand does not have SMAPI",
-    "GameVersionMismatch": "Game Version Mismatch: Host Player is running Stardew Valley {{HostVersion}} while Farmhand is running Stardew Valley {{FarmhandVersion}}",
-    "SMAPIVersionMismatch": "API Version Mismatch: Host Player is running SMAPI {{HostVersion}} while Farmhand is running SMAPI {{FarmhandVersion}}",
+    "FarmhandMissingSMAPI": "Farmhand {{FarmhandID}} {{FarmhandName}} connected at {{ConnectionTime}}does not have SMAPI",
+    "SMAPIVersionMismatch": "API Version Mismatch: Host is running SMAPI {{HostVersion}} while Farmhand is running SMAPI {{FarmhandVersion}}",
     "ModMismatch.Host": "Installed Mod mismatch: {{ModName}} ({{ModID}}) is installed on the farmhand but not the host",
     "ModMismatch.Farmhand": "Installed Mod mismatch: {{ModName}} ({{ModID}}) is installed on the host but not the farmhand",
-    "ModMismatch.Version": "Mod version mismatch: {{ModName}} ({{ModID}}) is running version {{HostVersion}} on the host and {{FarmhandVersion}} on the farmhand"
+    "ModMismatch.Version": "Mod version mismatch: {{ModName}} ({{ModID}}) is running version {{HostVersion}} on the host and {{FarmhandVersion}} on the farmhand",
+    "UnnamedFarmhand": "Unnamed Farmhand" 
 }
