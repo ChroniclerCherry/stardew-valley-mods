@@ -212,6 +212,12 @@ namespace StardewAquarium
                 return;
 
             Game1.player.achievements.Add(id);
+            if (!MasterPlayerMailCached.Contains("AquariumCompleted"))
+            {
+                Game1.MasterPlayer.mailReceived.Add("AquariumCompleted");
+                RecacheMasterMail();
+            }
+
             Game1.addHUDMessage(new HUDMessage(_helper.Translation.Get("AchievementName"), true));
             Game1.playSound("achievement");
 
