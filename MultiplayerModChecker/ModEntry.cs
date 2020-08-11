@@ -82,7 +82,6 @@ namespace MultiplayerModChecker
             }
 
             _rawReports.Add(report);
-            Helper.Data.WriteJsonFile("LatestMultiplayerModReportRaw.json", _rawReports);
             GenerateReport(report);
         }
 
@@ -111,32 +110,38 @@ namespace MultiplayerModChecker
 
                 foreach (var modData in reportData.Mods)
                 {
-                    //Helper.Translation.Get("",new {})
-
                     if (!modData.DoesHostHave)
                     {
-                        report.Add(Helper.Translation.Get("ModMismatch.Host", new { ModName = modData.ModName, ModID = modData.ModUniqueID }), LogLevel.Warn);
+                        reportData.MissingOnHost.Add($"{modData.ModName} ({modData.ModUniqueID})");
                     } else if (!modData.DoesFarmhandHave)
                     {
-                        report.Add(Helper.Translation.Get("ModMismatch.Farmhand", new { ModName = modData.ModName, ModID = modData.ModUniqueID }), LogLevel.Warn);
+                        reportData.MissingOnFarmhand.Add($"{modData.ModName} ({modData.ModUniqueID})");
                     } else if (!modData.HostModVersion.Equals(modData.FarmhandModVersion))
                     {
-                        report.Add(Helper.Translation.Get("ModMismatch.Version",
-                            new { ModName = modData.ModName, ModID = modData.ModUniqueID, HostVersion = modData.HostModVersion, FarmhandVersion = modData.FarmhandModVersion }),
-                            LogLevel.Warn);
+                        reportData.VersionMismatch.Add(Helper.Translation.Get("ModMismatch.Version.Each", new { ModName = modData.ModName, ModID = modData.ModUniqueID, HostVersion = modData.HostModVersion, FarmhandVersion = modData.FarmhandModVersion }));
                     }
                 }
             }
 
+            if (reportData.MissingOnHost.Count > 0)
+                report.Add(Helper.Translation.Get("ModMismatch.Host",new { ModList = string.Join(",",reportData.MissingOnHost) }), LogLevel.Warn);
+
+            if (reportData.MissingOnFarmhand.Count > 0)
+                report.Add(Helper.Translation.Get("ModMismatch.Farmhand", new { ModList = string.Join(",", reportData.MissingOnFarmhand) }), LogLevel.Warn);
+
+            if (reportData.VersionMismatch.Count > 0)
+                report.Add(Helper.Translation.Get("ModMismatch.Version", new { ModList = string.Join(",", reportData.VersionMismatch) }), LogLevel.Warn);
+
             Helper.Multiplayer.SendMessage(report,"MultiplayerReport",new []{ModManifest.UniqueID},new []{reportData.FarmhandID});
+            Helper.Data.WriteJsonFile("LatestMultiplayerModReport-Host.json", _rawReports);
             PublishReport(reportData, report);
         }
 
         private void PublishReport(MultiplayerReportData reportData, Dictionary<string, LogLevel> report)
         {
+            string preface = "";
             if (report.Count > 0)
             {
-                string preface = "";
                 if (reportData == null)
                 {
                     preface = Helper.Translation.Get("FarmhandReport");
@@ -156,7 +161,7 @@ namespace MultiplayerModChecker
                 }
 
                 _reports.Add($"{preface}\n--------------------------------\n{string.Join("\n", report.Keys)}");
-                File.WriteAllText(Path.Combine(Helper.DirectoryPath, "LatestMultiplayerModReports.txt"), string.Join("\n\n", _reports));
+                File.WriteAllText(Path.Combine(Helper.DirectoryPath, reportData == null ? "LatestMultiplayerModReports-Farmhand.txt" : "LatestMultiplayerModReports-Host.txt"), string.Join("\n\n", _reports));
             }
             else
             {
@@ -189,7 +194,12 @@ namespace MultiplayerModChecker
 
         public SmapiGameVersionDifference SmapiGameGameVersions { get; set; } = new SmapiGameVersionDifference();
 
-        public List<ModVersions> Mods { get; set; } = new List<ModVersions>();
+        internal List<ModVersions> Mods { get; set; } = new List<ModVersions>();
+
+        public List<string> MissingOnHost { get; set; } = new List<string>();
+        public List<string> MissingOnFarmhand { get; set; } = new List<string>();
+
+        public List<string> VersionMismatch { get; set; } = new List<string>();
     }
 
     public class SmapiGameVersionDifference
