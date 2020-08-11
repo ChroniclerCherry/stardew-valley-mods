@@ -96,6 +96,7 @@ Quality | Optional | int | The quality of the sold items. 0  for normal, 1 for s
 ItemIDs | Optional | Array of ints | Adds a list of items by their IDS. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
 ItemNames | Optional | Array of strings | Adds a list of items by their internal names. One or more of `ItemIDs`,`ItemNames` or `JAPacks` is needed in order to add an item.
 JAPacks | Optional | Array of strings | Adds all items of `ItemType` from the specified JA Packs, identified by their `UniqueID`. Crops and Trees added through `JAPacks` specified with `Object` will sell the products, while `Seed` will sell the seeds/saplings.
+ExcludeFromJAPacks | Optional | Array of strings | Anything that should be excluded from loading via the given JAPacks. For the Seed itemtype, it takes the crop and fruit tree name, not the produce or the seed/saplings.
 FilterSeedsBySeason | Optional | boolean | Only applies to ItemType of Seed for JAPacks. When true, will filter seeds sold to only those that can be planted in the current season. Defaults to true
 Stock | Optional | int | How many of each item is available to buy per day. If not set, the stock is unlimited
 MaxNumItemsSoldInItemStock | Optional | int | The number of different items available from this ItemStock. If there are more items in this ItemStock than `MaxNumItemsSoldInItemStock` a random set will be picked per day. This is used to randomize the items listed in this `ItemStock`

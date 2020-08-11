@@ -4,6 +4,7 @@ using ShopTileFramework.Utility;
 using StardewModdingAPI;
 using StardewValley;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ShopTileFramework.ItemPriceAndStock
 {
@@ -169,6 +170,7 @@ namespace ShopTileFramework.ItemPriceAndStock
 
                         foreach (string crop in crops)
                         {
+                            if (ExcludeFromJAPacks != null && ExcludeFromJAPacks.Contains(crop)) continue;
                             int id = ItemsUtil.GetSeedId(crop);
                             if (id >0)
                                 _builder.AddItemToStock(id, pricemultiplier);
@@ -180,6 +182,7 @@ namespace ShopTileFramework.ItemPriceAndStock
 
                         foreach (string tree in trees)
                         {
+                            if (ExcludeFromJAPacks != null && ExcludeFromJAPacks.Contains(tree)) continue;
                             int id = ItemsUtil.GetSaplingId(tree);
                             if (id > 0)
                                 _builder.AddItemToStock(id, pricemultiplier);
@@ -198,6 +201,7 @@ namespace ShopTileFramework.ItemPriceAndStock
 
                 foreach (string itemName in packs)
                 {
+                    if (ExcludeFromJAPacks != null && ExcludeFromJAPacks.Contains(itemName)) continue;
                     _builder.AddItemToStock(itemName, pricemultiplier);
                 }
             }
