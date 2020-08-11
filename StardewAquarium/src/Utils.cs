@@ -89,7 +89,18 @@ namespace StardewAquarium
             MasterPlayerMailCached.Add(GetDonatedMailFlag(i)); 
             string numDonated = $"AquariumFishDonated:{GetNumDonatedFish()}";
             if (!MasterPlayerMailCached.Contains(numDonated))
-                MasterPlayerMailCached.Add(numDonated);
+            {
+                Game1.MasterPlayer.mailReceived.Add(numDonated);
+                RecacheMasterMail();
+            }
+
+            if (ModEntry.Data.ConversationTopicsOnDonate.Contains(i.Name))
+            {
+                foreach (var farmer in Game1.otherFarmers)
+                {
+                    farmer.Value.activeDialogueEvents.Add(GetDonatedMailFlag(i), 3);
+                }
+            }
 
             _fishSign.UpdateLastDonatedFish(i);
 

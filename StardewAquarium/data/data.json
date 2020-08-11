@@ -1,5 +1,6 @@
 ﻿{
     "LastDonatedFishCoordinateX": 31,
     "LastDonatedFishCoordinateY": 10,
-    "ExteriorMapName": "ExteriorMuseum"
+    "ExteriorMapName": "ExteriorMuseum",
+    "ConversationTopicsOnDonate": [ "CrimsonFish","Angler","LegendMutantCarp","GlacierFish","Pufferchick" ]
 }
