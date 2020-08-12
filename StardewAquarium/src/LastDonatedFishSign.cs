@@ -7,7 +7,7 @@ using StardewValley;
 using xTile.Layers;
 using xTile.Tiles;
 
-namespace StardewAquarium.TilesLogic
+namespace StardewAquarium
 {
     public class LastDonatedFishSign
     {

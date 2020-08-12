@@ -2,7 +2,7 @@
 using StardewModdingAPI;
 using StardewValley;
 
-namespace StardewAquarium.TilesLogic
+namespace StardewAquarium
 {
     class AquariumMessage
     {

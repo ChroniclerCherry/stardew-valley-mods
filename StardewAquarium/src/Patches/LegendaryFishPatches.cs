@@ -42,7 +42,7 @@ namespace StardewAquarium.Patches
             _helper = helper;
             _monitor = monitor;
 
-            HarmonyInstance harmony = ModEntry.harmony;
+            HarmonyInstance harmony = ModEntry.Harmony;
 
             //this patch returns the pufferchick as a legendary fish during the fishing minigame
             harmony.Patch(

@@ -1,13 +1,18 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using StardewModdingAPI;
 using StardewAquarium.Models;
 using StardewValley;
 using Harmony;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StardewAquarium.Patches;
 using StardewAquarium.Editors;
 using StardewAquarium.Menus;
-using StardewAquarium.TilesLogic;
 using StardewValley.Menus;
+using Object = StardewValley.Object;
 
 namespace StardewAquarium
 {
@@ -18,17 +23,17 @@ namespace StardewAquarium
         public static ModData Data;
         public const string PufferChickName = "Pufferchick";
         private readonly bool _isAndroid = Constants.TargetPlatform == GamePlatform.Android;
-        public static HarmonyInstance harmony { get; } = HarmonyInstance.Create("Cherry.StardewAquarium");
+        public static HarmonyInstance Harmony { get; } = HarmonyInstance.Create("Cherry.StardewAquarium");
 
         public static IJsonAssetsApi JsonAssets { get; set; }
+        public static ISpaceCoreAPI SpaceCore { get; set; }
         public override void Entry(IModHelper helper)
         {
             Utils.Initialize(Helper, Monitor,ModManifest);
 
             Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
             Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
-
-            InitializeEditors();
+            Helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked;
 
             if (_isAndroid)
             {
@@ -71,6 +76,48 @@ namespace StardewAquarium
                 Helper.ConsoleCommands.Add("removedonatedfish", "", RemoveDonatedFish);
             }
         }
+
+        private void GameLoop_UpdateTicked(object sender, StardewModdingAPI.Events.UpdateTickedEventArgs e)
+        {
+            if (Game1.currentLocation?.Name != Data.ExteriorMapName) return;
+
+            //This code was borrowed from East Scarpe
+
+            // Very rarely show the Sea Monster.
+            //if (Game1.eventUp || !(Game1.random.NextDouble() < Data.SeaMonsterChance))
+            if (Game1.eventUp || !(Game1.random.NextDouble() < 0.01))
+                return;
+
+            // Randomly find a starting position within the range.
+            Vector2 position = 64f * new Vector2
+            (Game1.random.Next(Data.SeaMonsterRange.Left,
+                    Data.SeaMonsterRange.Right + 1),
+                Game1.random.Next(Data.SeaMonsterRange.Top,
+                    Data.SeaMonsterRange.Bottom + 1));
+
+            var loc = Game1.currentLocation;
+            // Confirm the monster can swim to the ocean from there.
+            bool foundPosition = true;
+            int height = loc.map.Layers[0]?.LayerHeight ?? 0;
+            for (int y = (int)position.Y / 64; y < height; ++y)
+            {
+                if (loc.doesTileHaveProperty((int)position.X / 64, y, "Water", "Back") == null ||
+                    loc.doesTileHaveProperty((int)position.X / 64 - 1, y, "Water", "Back") == null ||
+                    loc.doesTileHaveProperty((int)position.X / 64 + 1, y, "Water", "Back") == null)
+                {
+                    foundPosition = false;
+                    break;
+                }
+            }
+
+            // Spawn if possible.
+            if (foundPosition)
+            {
+                loc.temporarySprites.Add(new DolphinAnimatedSprite (position, Helper.Content.Load<Texture2D>("data\\dolphin.png")));
+            }
+
+        }
+
         private void AndroidPlsHaveMercyOnMe(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
         {
             //don't ask me what the heck is going on here but its the only way to get it to work
@@ -123,6 +170,27 @@ namespace StardewAquarium
         {
             JsonAssets = Helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
             JsonAssets.LoadAssets(Path.Combine(Helper.DirectoryPath, "data"));
+
+            SpaceCore = Helper.ModRegistry.GetApi<ISpaceCoreAPI>("spacechase0.SpaceCore");
+            SpaceCore.AddEventCommand("GiveAquariumTrophy1", typeof(ModEntry).GetMethod(nameof(GiveAquariumTrophy1)));
+            SpaceCore.AddEventCommand("GiveAquariumTrophy2", typeof(ModEntry).GetMethod(nameof(GiveAquariumTrophy2)));
+        }
+
+        public static void GiveAquariumTrophy1(Event e, GameLocation loc, GameTime time, string[] args)
+        {
+            int id = JsonAssets.GetBigCraftableId("Stardew Aquarium Trophy");
+            Object trophy = new Object(Vector2.Zero, id);
+            e.farmer.holdUpItemThenMessage(trophy, true);
+            ++e.CurrentCommand;
+        }
+        public static void GiveAquariumTrophy2(Event e, GameLocation loc, GameTime time, string[] args)
+        {
+            int id = JsonAssets.GetBigCraftableId("Stardew Aquarium Trophy");
+            Object trophy = new Object(Vector2.Zero, id);
+            e.farmer.addItemByMenuIfNecessary(trophy);
+            if (Game1.activeClickableMenu == null)
+                ++e.CurrentCommand;
+            ++e.CurrentCommand;
         }
     }
 }

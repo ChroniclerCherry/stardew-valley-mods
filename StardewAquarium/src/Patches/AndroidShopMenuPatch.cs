@@ -19,7 +19,7 @@ namespace StardewAquarium.Patches
             _helper = helper;
             _monitor = monitor;
 
-            HarmonyInstance harmony = ModEntry.harmony;
+            HarmonyInstance harmony = ModEntry.Harmony;
             harmony.Patch(original: AccessTools.Method(typeof(DonateFishMenuAndroid), "tryToPurchaseItem"),
                 postfix: new HarmonyMethod(typeof(AndroidShopMenuPatch),nameof(tryToPurchaseItem_postfix))
             );

@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Netcode;
 using StardewAquarium.Editors;
-using StardewAquarium.TilesLogic;
 using StardewModdingAPI;
 using StardewValley;
 using Object = StardewValley.Object;
@@ -86,7 +85,7 @@ namespace StardewAquarium
             if (!IsUnDonatedFish(i))
                 return false;
 
-            MasterPlayerMailCached.Add(GetDonatedMailFlag(i)); 
+            MasterPlayerMailCached.Add(GetDonatedMailFlag(i));
             string numDonated = $"AquariumFishDonated:{GetNumDonatedFish()}";
             if (!MasterPlayerMailCached.Contains(numDonated))
             {
@@ -107,7 +106,7 @@ namespace StardewAquarium
             return true;
         }
 
-        internal static void TryAwardTrophy(bool puffDonated = false)
+        internal static void TryAwardTrophy()
         {
             if (Game1.player.freeSpotsInInventory() > 0)
             {
@@ -121,12 +120,6 @@ namespace StardewAquarium
             {
                 Game1.drawObjectDialogue(_helper.Translation.Get("NoInventorySpace"));
             }
-
-            if (puffDonated)
-                Game1.activeClickableMenu.exitFunction = () =>
-                {
-                    Game1.drawObjectDialogue(_helper.Translation.Get("PufferchickDonated"));
-                };
         }
 
         internal static bool PlayerInventoryContains(int fishId)
@@ -199,14 +192,7 @@ namespace StardewAquarium
                 var dialogues = dialoguesField.GetValue();
                 dialogues.Add(_helper.Translation.Get("PufferchickDonated"));
                 dialoguesField.SetValue(dialogues);
-                return;
             }
-
-            if (achievementUnlock)
-            {
-                TryAwardTrophy();
-            }
-
         }
 
 

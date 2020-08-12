@@ -2,5 +2,8 @@
     "LastDonatedFishCoordinateX": 31,
     "LastDonatedFishCoordinateY": 10,
     "ExteriorMapName": "ExteriorMuseum",
-    "ConversationTopicsOnDonate": [ "CrimsonFish","Angler","LegendMutantCarp","GlacierFish","Pufferchick" ]
+    "ConversationTopicsOnDonate": [ "CrimsonFish", "Angler", "LegendMutantCarp", "GlacierFish", "Pufferchick" ],
+    "SeaMonsterChance": 0.1,
+    "SeaMonsterRange": { "X": 74, "Y": 0, "Width": 10, "Height": 40 }
+
 }

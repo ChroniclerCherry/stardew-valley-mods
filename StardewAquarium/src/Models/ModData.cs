@@ -1,4 +1,6 @@
-﻿namespace StardewAquarium.Models
+﻿using Microsoft.Xna.Framework;
+
+namespace StardewAquarium.Models
 {
     public class ModData
     {
@@ -7,5 +9,10 @@
         public string ExteriorMapName { get; set; }
 
         public string[] ConversationTopicsOnDonate { get; set; }
+
+        public float SeaMonsterChance { get; set; }
+
+        public Rectangle SeaMonsterRange { get; set; }
+
     }
 }
