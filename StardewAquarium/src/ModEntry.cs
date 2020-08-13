@@ -124,12 +124,6 @@ namespace StardewAquarium
             //80% sure this is a DonateFishMenuAndroid but it won't work if i check for that but the harmony patch seems to work on it so idk
             if (!(e.NewMenu is ShopMenu menu)) return;
 
-            foreach (var button in menu.forSaleButtons)
-            {
-                button.label = "Donate!!!";
-                button.item.DisplayName = "AAAAAAAAAAAAAAAAAAA";
-            }
-
             menu.exitFunction = androidMenu.OnExit;
         }
 
