@@ -10,9 +10,11 @@ namespace StardewAquarium.Models
 
         public string[] ConversationTopicsOnDonate { get; set; }
 
-        public float SeaMonsterChance { get; set; }
+        public float DolphinChance { get; set; }
 
-        public Rectangle SeaMonsterRange { get; set; }
+        public Rectangle DolphinRange { get; set; }
+
+        public int DolphinAnimationFrames { get; set; }
 
     }
 }

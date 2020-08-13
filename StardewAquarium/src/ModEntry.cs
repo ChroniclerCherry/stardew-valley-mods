@@ -84,16 +84,15 @@ namespace StardewAquarium
             //This code was borrowed from East Scarpe
 
             // Very rarely show the Sea Monster.
-            //if (Game1.eventUp || !(Game1.random.NextDouble() < Data.SeaMonsterChance))
-            if (Game1.eventUp || !(Game1.random.NextDouble() < 0.01))
+            if (Game1.eventUp || !(Game1.random.NextDouble() < Data.DolphinChance))
                 return;
 
             // Randomly find a starting position within the range.
             Vector2 position = 64f * new Vector2
-            (Game1.random.Next(Data.SeaMonsterRange.Left,
-                    Data.SeaMonsterRange.Right + 1),
-                Game1.random.Next(Data.SeaMonsterRange.Top,
-                    Data.SeaMonsterRange.Bottom + 1));
+            (Game1.random.Next(Data.DolphinRange.Left,
+                    Data.DolphinRange.Right + 1),
+                Game1.random.Next(Data.DolphinRange.Top,
+                    Data.DolphinRange.Bottom + 1));
 
             var loc = Game1.currentLocation;
             // Confirm the monster can swim to the ocean from there.
@@ -124,6 +123,12 @@ namespace StardewAquarium
             if (!(e.OldMenu is DonateFishMenuAndroid androidMenu)) return;
             //80% sure this is a DonateFishMenuAndroid but it won't work if i check for that but the harmony patch seems to work on it so idk
             if (!(e.NewMenu is ShopMenu menu)) return;
+
+            foreach (var button in menu.forSaleButtons)
+            {
+                button.label = "Donate!!!";
+                button.item.DisplayName = "AAAAAAAAAAAAAAAAAAA";
+            }
 
             menu.exitFunction = androidMenu.OnExit;
         }
@@ -170,6 +175,8 @@ namespace StardewAquarium
         {
             JsonAssets = Helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
             JsonAssets.LoadAssets(Path.Combine(Helper.DirectoryPath, "data"));
+
+            InitializeEditors();
 
             SpaceCore = Helper.ModRegistry.GetApi<ISpaceCoreAPI>("spacechase0.SpaceCore");
             SpaceCore.AddEventCommand("GiveAquariumTrophy1", typeof(ModEntry).GetMethod(nameof(GiveAquariumTrophy1)));

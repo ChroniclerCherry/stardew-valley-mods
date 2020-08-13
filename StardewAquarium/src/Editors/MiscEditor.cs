@@ -10,7 +10,7 @@ namespace StardewAquarium.Editors
 
         public MiscEditor(IModHelper helper)
         {
-            this._helper = helper;
+            _helper = helper;
         }
 
         public bool CanEdit<T>(IAssetInfo asset)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Harmony;
 using StardewAquarium.Menus;
 using StardewModdingAPI;
@@ -23,6 +24,19 @@ namespace StardewAquarium.Patches
             harmony.Patch(original: AccessTools.Method(typeof(DonateFishMenuAndroid), "tryToPurchaseItem"),
                 postfix: new HarmonyMethod(typeof(AndroidShopMenuPatch),nameof(tryToPurchaseItem_postfix))
             );
+
+            harmony.Patch(original: AccessTools.Method(typeof(DonateFishMenuAndroid), "setCurrentItem"),
+                postfix: new HarmonyMethod(typeof(AndroidShopMenuPatch), nameof(setCurrentItem_postfix))
+            );
+        }
+
+        private static void setCurrentItem_postfix(ref DonateFishMenuAndroid __instance)
+        {
+            var nameItem =_helper.Reflection.GetField<string>(__instance,"nameItem");
+            var nameItemString = nameItem.GetValue();
+            nameItem.SetValue(_helper.Translation.Get("Donate") + nameItemString);
+
+            _helper.Reflection.GetField<string>(__instance, "descItem").SetValue(_helper.Translation.Get("DonateDescription"));
         }
 
         private static void tryToPurchaseItem_postfix(ref DonateFishMenuAndroid __instance, ref ISalable item)

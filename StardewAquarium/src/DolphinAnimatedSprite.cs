@@ -7,10 +7,9 @@ namespace StardewAquarium
 {
     class DolphinAnimatedSprite : TemporaryAnimatedSprite
     {
-        private int holdFrames = -1;
 
         public DolphinAnimatedSprite(Vector2 position, Texture2D tex)
-            : base(-666, 250, 16, 1, position, false, false)
+            : base(-666, 250, ModEntry.Data.DolphinAnimationFrames, 1, position, false, false)
         {
             texture = tex;
             Game1.playSound("pullItemFromWater");
@@ -31,11 +30,9 @@ namespace StardewAquarium
         {
             timer += time.ElapsedGameTime.Milliseconds;
 
-            if (timer > (double)interval)
-            {
-                ++currentParentTileIndex;
-                timer = 0.0f;
-            }
+            if (!(timer > (double) interval)) return false;
+            ++currentParentTileIndex;
+            timer = 0.0f;
 
             return false;
         }

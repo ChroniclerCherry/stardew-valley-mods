@@ -2,7 +2,7 @@
 	//Welcome message after the stardew aquarium has been completed
 	"AquariumWelcome": "Welcome to the Stardew Aquarium! We've now acquired a full collection. And it's all thanks to you!",
 
-    //Donation menu dialogue and options
+	//Donation menu dialogue and options
 	"DonationMenuTitle": "Select fish to donate",
 	"DonationQuestion": "Welcome to the Stardew Aquarium! Would you like to donate a fish today?",
 	"OptionYes": "Yes",
@@ -11,10 +11,12 @@
 	"NothingToDonate": "Welcome to the Stardew Aquarium! If you ever find a specimen we're missing, we'd be delighted if you would considering making a donation.",
 	"MenuCloseFishDonated": "Thank you so much for your contribution! Come back in a moment and I will have set it up!",
 	"MenuCloseNoFishDonated": "Please come back any time.",
+	"Donate": "Donate: ",
+	"DonateDescription": "Clicking the button below will donate this fish and remove it from your inventory",
 
 	//global messages in multiplayer
 	"FishDonatedMP": "{0} has donated {1} to the Aquarium",
-    "AchievementUnlockedMP": "The Stardew Aquarium has been completed!",
+	"AchievementUnlockedMP": "The Stardew Aquarium has been completed!",
 
 	//collections menu title
 	"CollectionsMenu": "Stardew Aquarium Collection",
@@ -124,7 +126,7 @@
 	"Tank_Butterfish": "The Butterfish is a freshwater fish, it can be found in different waters around Stardew Valley depending on the season.",
 
 	//npc dialogue such long
-	
+
 	"SPRINGNPC_1": "Tourist: What should I buy from the giftshop?",
 	"SPRINGNPC_2": "Tourist: Hi there, first time visiting the Aquarium?",
 	"SPRINGNPC_3": "*The woman doesn't notice you, she is busy.",
@@ -157,7 +159,7 @@
 	"SPRINGNPC_30": "Tourist: Hello, having a good day?",
 	"SPRINGNPC_31": "Tourist: I like the aquarium, but this beach is also nice.",
 	"SPRINGNPC_32": "Tourist: Hi, nice weather today. Don't you think?",
-	
+
 	"NPCSUMMER_1": "The man with glasses gives you a smug smile.",
 	"NPCSUMMER_2": "Tourist: Should I buy a new bikini top?",
 	"NPCSUMMER_3": "Tourist: Oh no! I forgot to bring my wallet.",
@@ -215,7 +217,7 @@
 	"NPCSUMMER_55": "Tourist: Hey, do we know each other?",
 	"NPCSUMMER_56": "Tourist: They sell snacks here, they are really cheap.",
 	"NPCSUMMER_57": "*The woman is ignoring you*",
-	
+
 	"FALLNPC_1": "*The woman is ignoring you*",
 	"FALLNPC_2": "*The man with glasses gives you a smug smile*",
 	"FALLNPC_3": "Tourist:Where is everyone? I guess fall isn't a very popular beach season.",
@@ -229,7 +231,14 @@
 	"FALLNPC_11": "Tourist: Cobbler is the best.",
 	"FALLNPC_12": "Tourist: Hello, are you hungry?",
 	"FALLNPC_13": "Tourist: Have you tried the meat?",
-	
+
+	"NPCWINTER_1": "Fisherman: Ye' can catch some mighty fine 'Squid' here at night.",
+	"NPCWINTER_2": "*The fisherman hums a nautical tune to himself*",
+	"NPCWINTER_3": "Fisherman: Come to do some fishing are ye'?",
+	"NPCWINTER_4": "Fisherman: Hmm? Oh hello, tight lines n' all that.",
+	"NPCWINTER_5": "Woman: Put that snowball down Simon.",
+	"NPCWINTER_6": "*Simon has a mischievous smile on his face*",
+
 	//achievement
 	"AchievementName": "Sleeping with the Fishies!",
 	"AchievementDescription": "Donated one of every fish to the Stardew Aquarium.",
