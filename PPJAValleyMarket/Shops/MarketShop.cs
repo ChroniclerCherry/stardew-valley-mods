@@ -27,7 +27,7 @@ namespace PPJAValleyMarket.Shops
             _monitor = monitor;
         }
 
-        public virtual ShopMenu Open()
+        public virtual ShopMenu CreateShopMenu()
         {
             var menu = new ShopMenu(ItemStockAndPrice);
             var npc = Game1.getCharacterFromName(Shopkeeper);

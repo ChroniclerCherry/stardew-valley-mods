@@ -86,7 +86,7 @@ namespace PPJAValleyMarket
             var shop = shops[property];
             if (shop.CanOpen())
             {
-                Game1.activeClickableMenu = shop.Open();
+                Game1.activeClickableMenu = shop.CreateShopMenu();
             }
             else
             {
