@@ -16,7 +16,7 @@ namespace ShopTileFramework
     /// Entry point of the Shop Tile Framework mod. This mod allows custom shops to be added to the game via data in
     /// json format, loaded via the Stardew Valley Modding API (SMAPI) as content packs
     /// </summary>
-    class ModEntry : Mod
+    public class ModEntry : Mod
     {
         //static copies of helper and monitor
         internal static IModHelper helper;
