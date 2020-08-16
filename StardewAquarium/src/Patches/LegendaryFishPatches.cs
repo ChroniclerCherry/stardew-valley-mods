@@ -29,11 +29,11 @@ namespace StardewAquarium.Patches
 
         private static Dictionary<int, string> LegendaryFish = new Dictionary<int, string>()
         {
-            {CrimsonFishId,"CrimsonFish"},
+            {CrimsonFishId,"Crimsonfish"},
             {AnglerId,"Angler"},
             {LegendId,"Legend"},
             {MutantCarpId,"MutantCarp"},
-            {GlacierFishId,"GlacierFish"}
+            {GlacierFishId,"Glacierfish"}
         };
 
         public static void Initialize(IModHelper helper, IMonitor monitor)
@@ -136,7 +136,6 @@ namespace StardewAquarium.Patches
                 && !Utils.PlayerInventoryContains(fishId)) //if the player doesn't have the fish in their inventory
             {
                 string fishname = LegendaryFish[fishId];
-
                 if (Utils.IsUnDonatedFish(fishname))
                 {
                     //save stats of fish and remove it from player's records
@@ -176,7 +175,11 @@ namespace StardewAquarium.Patches
 
                 if (_trackedFishId != obj.ParentSheetIndex)
                     return;
-                Game1.drawObjectDialogue(_helper.Translation.Get("DuplicateLegendaryCaught"));
+
+                if (obj.Name == "Pufferchick" &&
+                    _helper.ModRegistry.IsLoaded("cantorsdust.RecatchLegendaryFish")) return;
+
+                    Game1.drawObjectDialogue(_helper.Translation.Get("DuplicateLegendaryCaught"));
                 obj.Price = 0;
             }
 
@@ -227,7 +230,8 @@ namespace StardewAquarium.Patches
 
             int id = PufferChickID;
 
-            if (ModEntry.RecatchLegends 
+            if ((ModEntry.Config.EnableRecatchWorthlessUndonatedLegends ||
+                 _helper.ModRegistry.IsLoaded("cantorsdust.RecatchLegendaryFish")) //re wanna enable recatching if either the config is on or recatch legendaries is installed
                 && who.fishCaught.ContainsKey(id) 
                 && Game1.player.fishCaught.TryGetValue(id, out int[] freshValues) 
                 && !Utils.PlayerInventoryContains(id)

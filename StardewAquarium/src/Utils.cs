@@ -61,8 +61,8 @@ namespace StardewAquarium
                 if (info[3].Contains("-4"))
                 {
                     FishIDs.Add(kvp.Key);
-                    InternalNameToDonationName.Add(fishName, fishName.Replace(" ",String.Empty));
-                    FishDisplayNames.Add(fishName.Replace(" ", String.Empty),info[4]);
+                    InternalNameToDonationName.Add(fishName, fishName.Replace(" ",string.Empty));
+                    FishDisplayNames.Add(fishName.Replace(" ", string.Empty),info[4]);
                 }
             }
         }
@@ -93,6 +93,7 @@ namespace StardewAquarium
                 RecacheMasterMail();
             }
 
+            Game1.player.activeDialogueEvents.Add(GetDonatedMailFlag(i), 3);
             if (ModEntry.Data.ConversationTopicsOnDonate.Contains(i.Name))
             {
                 foreach (var farmer in Game1.otherFarmers)
@@ -211,8 +212,7 @@ namespace StardewAquarium
             Game1.player.achievements.Add(id);
             if (!MasterPlayerMailCached.Contains("AquariumCompleted"))
             {
-                Game1.MasterPlayer.mailReceived.Add("AquariumCompleted");
-                RecacheMasterMail();
+                _helper.Events.GameLoop.Saving += AddCompletionFlag;
             }
 
             Game1.addHUDMessage(new HUDMessage(_helper.Translation.Get("AchievementName"), true));
@@ -220,6 +220,14 @@ namespace StardewAquarium
 
             _helper.Multiplayer.SendMessage(true, AchievementMessageType, modIDs: new[] { _manifest.UniqueID });
 
+        }
+
+        private static void AddCompletionFlag(object sender, StardewModdingAPI.Events.SavingEventArgs e)
+        {
+            //adding this at the end of the day so that the event won't trigger until the next day
+            Game1.MasterPlayer.mailReceived.Add("AquariumCompleted");
+            RecacheMasterMail();
+            _helper.Events.GameLoop.Saving -= AddCompletionFlag;
         }
 
         private static void Multiplayer_ModMessageReceived(object sender, StardewModdingAPI.Events.ModMessageReceivedEventArgs e)

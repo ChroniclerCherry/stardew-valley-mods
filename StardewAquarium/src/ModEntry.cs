@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -12,6 +13,7 @@ using StardewAquarium.Patches;
 using StardewAquarium.Editors;
 using StardewAquarium.Menus;
 using StardewValley.Menus;
+using StardewValley.Objects;
 using Object = StardewValley.Object;
 
 namespace StardewAquarium
@@ -34,6 +36,7 @@ namespace StardewAquarium
             Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
             Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             Helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked;
+            Helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
 
             if (_isAndroid)
             {
@@ -77,9 +80,71 @@ namespace StardewAquarium
             }
         }
 
+        private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
+        {
+            if (!Context.IsMainPlayer) return; //we don't want this running for every single logged in player, so just the host can handle the logic
+
+            //all credit to kdau, i lifted this code from East Scarpe
+            var loc = Game1.getLocationFromName(Data.ExteriorMapName);
+            foreach (Object obj in loc.objects.Values)
+            {
+                // Must be a Crab Pot.
+                if (!(obj is CrabPot pot))
+                    continue;
+
+                // Must have a non-trash catch already.
+                if (pot.heldObject.Value == null ||
+                    pot.heldObject.Value.Category == Object.junkCategory)
+                    continue;
+
+                // Check for the Mariner profession.
+                Farmer player = (pot.owner.Value != 0L)
+                    ? Game1.getFarmer(pot.owner.Value) : Game1.player;
+                bool mariner = player?.professions?.Contains(Farmer.mariner) ?? false;
+
+                // Seed the RNG.
+                Random rng = new Random((int)Game1.stats.DaysPlayed +
+                                        (int)Game1.uniqueIDForThisGame / 2 +
+                                        (int)pot.TileLocation.X * 1000 +
+                                        (int)pot.TileLocation.Y);
+
+                // Search for suitable fish.
+                Dictionary<int, string> fishes =
+                    Helper.Content.Load<Dictionary<int, string>>("Data\\Fish",
+                        ContentSource.GameContent);
+                List<int> candidates = new List<int>();
+                foreach (KeyValuePair<int, string> fish in fishes)
+                {
+                    if (!fish.Value.Contains("trap"))
+                        continue;
+
+                    string[] fields = fish.Value.Split('/');
+                    if (fields[4].Equals("freshwater"))
+                        continue;
+
+                    candidates.Add(fish.Key);
+
+                    if (!mariner && rng.NextDouble() < Convert.ToDouble(fields[2]))
+                    {
+                        pot.heldObject.Value = new Object(fish.Key, 1);
+                        candidates.Clear();
+                        break;
+                    }
+                }
+
+                if (candidates.Count > 0)
+                {
+                    pot.heldObject.Value = new Object
+                        (candidates[rng.Next(candidates.Count)], 1);
+                }
+            }
+
+        }
+
         private void GameLoop_UpdateTicked(object sender, StardewModdingAPI.Events.UpdateTickedEventArgs e)
         {
             if (Game1.currentLocation?.Name != Data.ExteriorMapName) return;
+            if (Game1.isTimePaused) return;
 
             //This code was borrowed from East Scarpe
 
@@ -95,14 +160,15 @@ namespace StardewAquarium
                     Data.DolphinRange.Bottom + 1));
 
             var loc = Game1.currentLocation;
-            // Confirm the monster can swim to the ocean from there.
+
             bool foundPosition = true;
-            int height = loc.map.Layers[0]?.LayerHeight ?? 0;
-            for (int y = (int)position.Y / 64; y < height; ++y)
+
+            // Confirm there is water tiles in the 3x2 area the dolphin spawns in
+            Vector2[] tiles = new[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0),
+                new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1) };
+            foreach (var tile in tiles)
             {
-                if (loc.doesTileHaveProperty((int)position.X / 64, y, "Water", "Back") == null ||
-                    loc.doesTileHaveProperty((int)position.X / 64 - 1, y, "Water", "Back") == null ||
-                    loc.doesTileHaveProperty((int)position.X / 64 + 1, y, "Water", "Back") == null)
+                if (loc.doesTileHaveProperty((int) ((position.X / 64) + tile.X), (int) ((position.Y/64) + tile.Y), "Water", "Back") == null)
                 {
                     foundPosition = false;
                     break;
