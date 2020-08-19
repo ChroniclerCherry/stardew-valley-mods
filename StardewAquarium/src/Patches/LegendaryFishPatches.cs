@@ -129,7 +129,6 @@ namespace StardewAquarium.Patches
 
         private static bool HideFish(int fishId)
         {
-            Utils.RecacheMasterMail();
             _trackedFishId = -1;
             if (Game1.player.fishCaught.ContainsKey(fishId)
                 && Game1.player.fishCaught.TryGetValue(fishId, out int[] freshValues)
@@ -219,8 +218,6 @@ namespace StardewAquarium.Patches
 
             if (who.stats.ChickenEggsLayed == 0) //has had a chicken lay at least one egg
                 return null;
-
-            Utils.RecacheMasterMail();
 
             //base of 1% and an additional 0.5% per fish donated
             double pufferChance = 0.01 + 0.005 * Utils.GetNumDonatedFish();

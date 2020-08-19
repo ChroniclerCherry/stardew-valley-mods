@@ -27,7 +27,6 @@ namespace StardewAquarium.Menus
              * I'll come back and readdress this someday probably, when I have more sanity to spend. I'm all out atm
             */
 
-            Utils.RecacheMasterMail();
             List<int> fishes = Utils.GetUndonatedFishInInventory().Distinct().ToList();
             if (fishes.Count == 0)
                 return;

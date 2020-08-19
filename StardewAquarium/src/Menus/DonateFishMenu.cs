@@ -57,7 +57,6 @@ namespace StardewAquarium.Menus
 
         public override void draw(SpriteBatch b)
         {
-            Utils.RecacheMasterMail();
             base.draw(b);
             if (!Game1.options.showMenuBackground)
                 b.Draw(Game1.fadeToBlackRect, Game1.graphics.GraphicsDevice.Viewport.Bounds, Color.Black * 0.4f);

@@ -15,7 +15,6 @@ namespace StardewAquarium
 
         public AquariumMessage(string[] args)
         {
-            Utils.RecacheMasterMail();
             List<string> fishes = new List<string>();
             foreach (var str in args)
             {

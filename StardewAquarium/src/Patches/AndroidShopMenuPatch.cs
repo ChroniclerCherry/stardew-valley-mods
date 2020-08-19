@@ -43,7 +43,6 @@ namespace StardewAquarium.Patches
         {
             try
             {
-                Utils.RecacheMasterMail();
                 if (!(item is Item donatedFish)) return; //this shouldn't happen but /shrug
 
                 if (!Utils.DonateFish(donatedFish)) return; //this also shouldnt happen

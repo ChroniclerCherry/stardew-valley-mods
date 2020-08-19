@@ -72,7 +72,6 @@ namespace StardewAquarium
                 return;
             }
 
-            Utils.RecacheMasterMail();
             if (!Utils.DoesPlayerHaveDonatableFish())
             {
                 Game1.drawObjectDialogue(_helper.Translation.Get("NothingToDonate"));
