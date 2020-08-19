@@ -163,14 +163,16 @@ namespace StardewAquarium
             }
         }
 
-        public static void DonationMenuExit(bool achievementUnlock, bool donated, bool pufferchickDonated)
+        public static void DonationMenuExit(bool donated, bool pufferchickDonated)
         {
             string mainMessage;
 
-            if (achievementUnlock)
+            if (CheckAchievement())
             {
                 mainMessage = _helper.Translation.Get("AchievementCongratulations");
                 UnlockAchievement();
+                _helper.Multiplayer.SendMessage(true, AchievementMessageType, modIDs: new[] { _manifest.UniqueID });
+
 
                 var mp = _helper.Reflection.GetField<Multiplayer>(typeof(Game1), "multiplayer").GetValue();
                 mp.globalChatInfoMessage("StardewAquarium.AchievementUnlocked");
@@ -209,16 +211,15 @@ namespace StardewAquarium
             if (Game1.player.achievements.Contains(id))
                 return;
 
+            Game1.addHUDMessage(new HUDMessage(_helper.Translation.Get("AchievementName"), true));
+            Game1.playSound("achievement");
             Game1.player.achievements.Add(id);
+
+            if (!Context.IsMainPlayer) return;
             if (!MasterPlayerMail.Contains("AquariumCompleted"))
             {
                 _helper.Events.GameLoop.Saving += AddCompletionFlag;
             }
-
-            Game1.addHUDMessage(new HUDMessage(_helper.Translation.Get("AchievementName"), true));
-            Game1.playSound("achievement");
-
-            _helper.Multiplayer.SendMessage(true, AchievementMessageType, modIDs: new[] { _manifest.UniqueID });
 
         }
 

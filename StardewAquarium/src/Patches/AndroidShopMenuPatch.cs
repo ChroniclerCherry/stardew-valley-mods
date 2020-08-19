@@ -56,8 +56,6 @@ namespace StardewAquarium.Patches
                     DonateFishMenuAndroid.PufferchickDonated = true;
                 }
 
-                DonateFishMenuAndroid.AchievementUnlock = Utils.CheckAchievement();
-
             }
             catch (Exception e)
             {

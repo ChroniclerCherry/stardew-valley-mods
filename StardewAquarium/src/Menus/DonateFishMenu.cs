@@ -13,7 +13,6 @@ namespace StardewAquarium.Menus
         private readonly IModHelper _helper;
         private readonly IMonitor _monitor;
         private bool _donated;
-        private bool _achievementUnlock;
         private bool _pufferchickDonated;
 
         private static int PufferChickID { get => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName) ?? -1; }
@@ -23,7 +22,7 @@ namespace StardewAquarium.Menus
             showGrayedOutSlots = true;
             _helper = translate;
             _monitor = monitor;
-            exitFunction = () => Utils.DonationMenuExit(_achievementUnlock,_donated,_pufferchickDonated);
+            exitFunction = () => Utils.DonationMenuExit(_donated,_pufferchickDonated);
         }
 
         public override void receiveLeftClick(int x, int y, bool playSound = true)
@@ -48,10 +47,6 @@ namespace StardewAquarium.Menus
 
                 var mp = _helper.Reflection.GetField<Multiplayer>(typeof(Game1), "multiplayer").GetValue();
                 mp.globalChatInfoMessage("StardewAquarium.FishDonated", new []{Game1.player.Name,item.Name});
-
-
-                    _achievementUnlock = Utils.CheckAchievement();
-
             }
         }
 
