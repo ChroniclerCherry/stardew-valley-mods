@@ -28,6 +28,17 @@ namespace TrainStation
             helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
             helper.Events.Display.MenuChanged += Display_MenuChanged;
+            helper.Events.Player.Warped += Player_Warped;
+        }
+
+        private void Player_Warped(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
+        {
+            if (Game1.currentLocation.Name != "Railroad") return;
+
+            var property = Game1.currentLocation.doesTileHaveProperty(Config.TicketStationX, Config.TicketStationY,
+                "Action", "Buildings");
+            if (property != "TrainStation")
+                DrawInTicketStation();
         }
 
         private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
@@ -75,7 +86,6 @@ namespace TrainStation
             Layer buildingsLayer = railway.map.GetLayer("Buildings");
             Layer frontLayer = railway.map.GetLayer("Front");
 
-            string tilesheetPath =$"Maps\\{Game1.currentSeason}_outdoorsTileSheet";
             TileSheet outdoorsTilesheet = railway.map.TileSheets[1];
 
             try
