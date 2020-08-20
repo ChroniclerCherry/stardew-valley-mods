@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using System.Collections.Generic;
@@ -75,13 +76,27 @@ namespace TrainStation
             Layer frontLayer = railway.map.GetLayer("Front");
 
             string tilesheetPath =$"Maps\\{Game1.currentSeason}_outdoorsTileSheet";
-            TileSheet outdoorsTilesheet = railway.map.TileSheets.FirstOrDefault(t => t.ImageSource == tilesheetPath);
+            TileSheet outdoorsTilesheet = railway.map.TileSheets[1];
 
-            //draw the ticket station
-            buildingsLayer.Tiles[Config.TicketStationX, Config.TicketStationY] =
-                new StaticTile(buildingsLayer, outdoorsTilesheet, BlendMode.Alpha, TicketStationBottomTile);
-            frontLayer.Tiles[Config.TicketStationX, Config.TicketStationY - 1] =
-                new StaticTile(frontLayer, outdoorsTilesheet, BlendMode.Alpha, TicketStationTopTile);
+            try
+            {
+                //draw the ticket station
+                buildingsLayer.Tiles[Config.TicketStationX, Config.TicketStationY] =
+                    new StaticTile(buildingsLayer, outdoorsTilesheet, BlendMode.Alpha, TicketStationBottomTile);
+                frontLayer.Tiles[Config.TicketStationX, Config.TicketStationY - 1] =
+                    new StaticTile(frontLayer, outdoorsTilesheet, BlendMode.Alpha, TicketStationTopTile);
+            }
+            catch (Exception e)
+            {
+                Monitor.Log(e.ToString(),LogLevel.Error);
+                Monitor.Log("Train station has recovered from a crash and will continue to function, however the ticket station may be invisible or looked glitched. This is caused by the map mod you are using changing tilesheet orders through renaming vanilla tilesheets or not naming custom tilesheets properly. Please report this to the map mod you are using to fix this issue.",LogLevel.Alert);
+                //draw anything from the tilesheet
+                buildingsLayer.Tiles[Config.TicketStationX, Config.TicketStationY] =
+                    new StaticTile(buildingsLayer, outdoorsTilesheet, BlendMode.Alpha, 1);
+                frontLayer.Tiles[Config.TicketStationX, Config.TicketStationY - 1] =
+                    new StaticTile(frontLayer, outdoorsTilesheet, BlendMode.Alpha, 1);
+            }
+
 
             //set the TrainStation property
             railway.setTileProperty(Config.TicketStationX, Config.TicketStationY, "Buildings", "Action", "TrainStation");
