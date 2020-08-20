@@ -209,6 +209,8 @@ namespace StardewAquarium
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
             AquariumMessage.Initialize(Helper.Translation);
+            if (Utils.CheckAchievement())
+                Utils.UnlockAchievement();
         }
 
         private void RemoveDonatedFish(string arg1, string[] arg2)

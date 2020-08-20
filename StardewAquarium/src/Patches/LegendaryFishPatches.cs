@@ -47,13 +47,13 @@ namespace StardewAquarium.Patches
             //this patch returns the pufferchick as a legendary fish during the fishing minigame
             harmony.Patch(
                 AccessTools.Method(typeof(FishingRod), nameof(FishingRod.isFishBossFish)),
-                postfix: new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.isFishBossFish_AddPufferchick))
+                postfix: new HarmonyMethod(typeof(LegendaryFishPatches), nameof(isFishBossFish_AddPufferchick))
             );
 
             //patch handles making the pufferchick catchable
             harmony.Patch(
                 AccessTools.Method(typeof(GameLocation), nameof(GameLocation.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.GameLocation_getFish_Prefix))
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(GameLocation_getFish_Prefix))
             );
 
             //don't patch these if we don't wanna enable recatch behaviour
@@ -61,34 +61,34 @@ namespace StardewAquarium.Patches
             //makes crimsonfish recatchable
             harmony.Patch(
                 AccessTools.Method(typeof(Beach), nameof(GameLocation.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.Beach_getFish_prefix)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.ReturnFish))
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Beach_getFish_prefix)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(ReturnFish))
             );
 
             //makes Angler recatchable
             harmony.Patch(
                 AccessTools.Method(typeof(Town), nameof(GameLocation.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.Town_getFish_prefix)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.ReturnFish))
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Town_getFish_prefix)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(ReturnFish))
             );
 
             //makes Legend recatchable
             harmony.Patch(
                 AccessTools.Method(typeof(Mountain), nameof(GameLocation.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.Mountain_getFish_prefix)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.ReturnFish))
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Mountain_getFish_prefix)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(ReturnFish))
             );
             //makes MutantCarp recatchable
             harmony.Patch(
                 AccessTools.Method(typeof(Sewer), nameof(GameLocation.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.Sewer_getFish_prefix)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.ReturnFish))
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Sewer_getFish_prefix)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(ReturnFish))
             );
             //makes GlacierFish recatchable
             harmony.Patch(
                 AccessTools.Method(typeof(Forest), nameof(GameLocation.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.Forest_getFish_prefix)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(LegendaryFishPatches.ReturnFish))
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Forest_getFish_prefix)),
+                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(ReturnFish))
             );
 
             _helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;

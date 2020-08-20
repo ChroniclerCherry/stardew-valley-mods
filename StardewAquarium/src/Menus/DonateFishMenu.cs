@@ -62,11 +62,11 @@ namespace StardewAquarium.Menus
             SpriteText.drawStringWithScrollCenteredAt(b, title, Game1.viewport.Width / 2,
                 Game1.viewport.Height / 2 - 128, title, 1f, -1, 0, 0.88f, false);
 
-            Game1.drawDialogueBox(this.xPositionOnScreen - 64, this.yPositionOnScreen - 160, this.width + 128,
-                this.height + 192, false, true);
+            Game1.drawDialogueBox(xPositionOnScreen - 64, yPositionOnScreen - 160, width + 128,
+                height + 192, false, true);
 
             base.draw(b);
-            base.drawMouse(b);
+            drawMouse(b);
         }
 
     }

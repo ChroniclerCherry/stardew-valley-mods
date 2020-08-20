@@ -33,7 +33,7 @@ namespace StardewAquarium
 
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
         {
-            if (!Utils.CheckAchievement())
+            if (!MasterPlayerMail.Contains("AquariumCompleted"))
                 return;
 
             var random = new Random((int)Game1.uniqueIDForThisGame + Game1.Date.TotalDays);

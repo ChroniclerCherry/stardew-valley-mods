@@ -45,7 +45,7 @@ namespace StardewAquarium
             _fishSign = new LastDonatedFishSign(helper, monitor);
         }
 
-        private static void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
+        private static void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
         {
             //clear these dictionaries if 
             InternalNameToDonationName.Clear();
@@ -207,13 +207,12 @@ namespace StardewAquarium
 
         public static void UnlockAchievement()
         {
-            int id = AchievementEditor.AchievementId;
-            if (Game1.player.achievements.Contains(id))
+            if (Game1.player.achievements.Contains(AchievementEditor.AchievementId))
                 return;
 
             Game1.addHUDMessage(new HUDMessage(_helper.Translation.Get("AchievementName"), true));
             Game1.playSound("achievement");
-            Game1.player.achievements.Add(id);
+            Game1.player.achievements.Add(AchievementEditor.AchievementId);
 
             if (!Context.IsMainPlayer) return;
             if (!MasterPlayerMail.Contains("AquariumCompleted"))
@@ -223,14 +222,14 @@ namespace StardewAquarium
 
         }
 
-        private static void AddCompletionFlag(object sender, StardewModdingAPI.Events.SavingEventArgs e)
+        private static void AddCompletionFlag(object sender, SavingEventArgs e)
         {
             //adding this at the end of the day so that the event won't trigger until the next day
             MasterPlayerMail.Add("AquariumCompleted");
             _helper.Events.GameLoop.Saving -= AddCompletionFlag;
         }
 
-        private static void Multiplayer_ModMessageReceived(object sender, StardewModdingAPI.Events.ModMessageReceivedEventArgs e)
+        private static void Multiplayer_ModMessageReceived(object sender, ModMessageReceivedEventArgs e)
         {
             if (e.FromModID == _manifest.UniqueID)
             {
