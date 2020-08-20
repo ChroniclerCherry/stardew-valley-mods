@@ -3,8 +3,7 @@
 	"Price": 1,
 	"Description": "Rewarded for helping the Stardew Aquarium reach its full potential!",
 	"ProvidesLight": false,
-	"NameLocalization":
-	{
+	"NameLocalization": {
 		/*"es": "", //Spansih
 		"ko": "", //Korean
 		"de": "", //German
@@ -14,11 +13,10 @@
 		"ja": "", //Japanese
 		"pt": "", //Portuguese
 		"ru": "", //Russian
-		"tr": "", //Turkish
-		"zh": "农场布局器", //Chinese (Simplified)*/
+		"tr": "", //Turkish*/
+		"zh": "星露水族馆奖杯"
 	},
-	"DescriptionLocalization":
-	{
+	"DescriptionLocalization": {
 		/*"es": "", //Spansih
 		"ko": "", //Korean
 		"de": "", //German
@@ -28,7 +26,7 @@
 		"ja": "", //Japanese
 		"pt": "", //Portuguese
 		"ru": "", //Russian
-		"tr": "", //Turkish
-		"zh": "", //Chinese (Simplified)*/
+		"tr": "", //Turkish*/
+		"zh": "因协助水族馆而获得奖励"
 	}
 }

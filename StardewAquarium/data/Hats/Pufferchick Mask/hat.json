@@ -1,8 +1,33 @@
-{
+﻿{
 	"Name": "Pufferchick Mask",
 	"Description": "Mask of the legendary Pufferchick.",
 	"ShowHair": false,
 	"IgnoreHairstyleOffset": true,
-	"NameLocalization": {},
-  	"DescriptionLocalization": {},
+    "NameLocalization": {
+        /*"es": "", //Spansih
+        "ko": "", //Korean
+        "de": "", //German
+        "fr": "", //French
+        "hu": "", //Hungarian
+        "it": "", //Italian
+        "ja": "", //Japanese
+        "pt": "", //Portuguese
+        "ru": "", //Russian
+        "tr": "", //Turkish*/
+        "zh": "河豚鸡鱼帽子"
+    },
+    "DescriptionLocalization": {
+        /*"es": "", //Spansih
+        "ko": "", //Korean
+        "de": "", //German
+        "fr": "", //French
+        "hu": "", //Hungarian
+        "it": "", //Italian
+        "ja": "", //Japanese
+        "pt": "", //Portuguese
+        "ru": "", //Russian
+        "tr": "", //Turkish*/
+        "zh": "河豚鸡鱼帽子"
+    }
+
 }

@@ -7,8 +7,7 @@
 	"Edibility": -300,
 	"IsColored": false,
 	"Recipe": null,
-	"NameLocalization":
-	{
+	"NameLocalization": {
 		/*"es": "", //Spansih
 		"ko": "", //Korean
 		"de": "", //German
@@ -18,11 +17,10 @@
 		"ja": "", //Japanese
 		"pt": "", //Portuguese
 		"ru": "", //Russian
-		"tr": "", //Turkish
-		"zh": "农场布局器", //Chinese (Simplified)*/
+		"tr": "", //Turkish*/
+		"zh": "鱼缸"
 	},
-	"DescriptionLocalization":
-	{
+	"DescriptionLocalization": {
 		/*"es": "", //Spansih
 		"ko": "", //Korean
 		"de": "", //German
@@ -32,7 +30,7 @@
 		"ja": "", //Japanese
 		"pt": "", //Portuguese
 		"ru": "", //Russian
-		"tr": "", //Turkish
-		"zh": "", //Chinese (Simplified)*/
+		"tr": "", //Turkish*/
+		"zh": "鱼缸"
 	}
 }

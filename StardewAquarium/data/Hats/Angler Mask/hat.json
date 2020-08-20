@@ -1,8 +1,32 @@
-{
+﻿{
 	"Name": "Angler Mask",
 	"Description": "Mask of the legendary Angler.",
 	"ShowHair": false,
 	"IgnoreHairstyleOffset": true,
-	"NameLocalization": {},
-  	"DescriptionLocalization": {},
+    "NameLocalization": {
+        /*"es": "", //Spansih
+        "ko": "", //Korean
+        "de": "", //German
+        "fr": "", //French
+        "hu": "", //Hungarian
+        "it": "", //Italian
+        "ja": "", //Japanese
+        "pt": "", //Portuguese
+        "ru": "", //Russian
+        "tr": "", //Turkish*/
+        "zh": "鮟鱇鱼面具"
+    },
+    "DescriptionLocalization": {
+        /*"es": "", //Spansih
+        "ko": "", //Korean
+        "de": "", //German
+        "fr": "", //French
+        "hu": "", //Hungarian
+        "it": "", //Italian
+        "ja": "", //Japanese
+        "pt": "", //Portuguese
+        "ru": "", //Russian
+        "tr": "", //Turkish*/
+        "zh": "鮟鱇鱼面具"
+    }
 }

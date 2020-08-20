@@ -1,8 +1,32 @@
-{
+﻿{
 	"Name": "Crimsonfish Mask",
 	"Description": "Mask of the legendary Crimsonfish.",
 	"ShowHair": false,
 	"IgnoreHairstyleOffset": true,
-	"NameLocalization": {},
-  	"DescriptionLocalization": {},
+    "NameLocalization": {
+        /*"es": "", //Spansih
+        "ko": "", //Korean
+        "de": "", //German
+        "fr": "", //French
+        "hu": "", //Hungarian
+        "it": "", //Italian
+        "ja": "", //Japanese
+        "pt": "", //Portuguese
+        "ru": "", //Russian
+        "tr": "", //Turkish*/
+        "zh": "绯红鱼面具"
+    },
+    "DescriptionLocalization": {
+        /*"es": "", //Spansih
+        "ko": "", //Korean
+        "de": "", //German
+        "fr": "", //French
+        "hu": "", //Hungarian
+        "it": "", //Italian
+        "ja": "", //Japanese
+        "pt": "", //Portuguese
+        "ru": "", //Russian
+        "tr": "", //Turkish*/
+        "zh": "绯红鱼面具"
+    }
 }

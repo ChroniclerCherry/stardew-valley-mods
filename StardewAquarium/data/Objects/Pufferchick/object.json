@@ -7,16 +7,13 @@
 	"EdibleBuffs": null,
 	"Price": 2000,
 	"IsColored": false,
-	"ContextTags": 
-	[
+	"ContextTags": [
 		"fish_legendary"
 	],
-	"GiftTastes":
-	{
+	"GiftTastes": {
 		/*gift tastes go here*/
 	},
-	"NameLocalization":
-	{
+	"NameLocalization": {
 		/*"es": "", //Spanish
 		"ko": "", //Korean
 		"de": "", //German
@@ -26,11 +23,10 @@
 		"ja": "", //Japanese
 		"pt": "", //Portuguese
 		"ru": "", //Russian
-		"tr": "", //Turkish
-		"zh": "农场布局器", //Chinese (Simplified)*/
+		"tr": "", //Turkish*/
+		"zh": "河豚鸡鱼衬衫"
 	},
-	"DescriptionLocalization":
-	{
+	"DescriptionLocalization": {
 		/*"es": "", //Spanish
 		"ko": "", //Korean
 		"de": "", //German
@@ -40,7 +36,7 @@
 		"ja": "", //Japanese
 		"pt": "", //Portuguese
 		"ru": "", //Russian
-		"tr": "", //Turkish
-		"zh": "", //Chinese (Simplified)*/
+		"tr": "", //Turkish*/
+		"zh": "河豚鸡鱼衬衫"
 	}
 }

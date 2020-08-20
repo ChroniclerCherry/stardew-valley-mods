@@ -1,8 +1,32 @@
-{
+﻿{
 	"Name": "Mutant Carp Mask",
 	"Description": "Mask of the legendary Mutant Carp.",
 	"ShowHair": false,
 	"IgnoreHairstyleOffset": true,
-	"NameLocalization": {},
-  	"DescriptionLocalization": {},
+    "NameLocalization": {
+        /*"es": "", //Spansih
+        "ko": "", //Korean
+        "de": "", //German
+        "fr": "", //French
+        "hu": "", //Hungarian
+        "it": "", //Italian
+        "ja": "", //Japanese
+        "pt": "", //Portuguese
+        "ru": "", //Russian
+        "tr": "", //Turkish*/
+        "zh": "变种鲤鱼面具"
+    },
+    "DescriptionLocalization": {
+        /*"es": "", //Spansih
+        "ko": "", //Korean
+        "de": "", //German
+        "fr": "", //French
+        "hu": "", //Hungarian
+        "it": "", //Italian
+        "ja": "", //Japanese
+        "pt": "", //Portuguese
+        "ru": "", //Russian
+        "tr": "", //Turkish*/
+        "zh": "变种鲤鱼面具"
+    }
 }
