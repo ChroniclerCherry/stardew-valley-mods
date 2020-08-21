@@ -35,7 +35,7 @@ namespace TrainStation
         {
             if (Game1.currentLocation.Name != "Railroad") return;
 
-            var property = Game1.currentLocation.doesTileHaveProperty(Config.TicketStationX, Config.TicketStationY,
+            string property = Game1.currentLocation.doesTileHaveProperty(Config.TicketStationX, Config.TicketStationY,
                 "Action", "Buildings");
             if (property != "TrainStation")
                 DrawInTicketStation();
