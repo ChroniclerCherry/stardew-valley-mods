@@ -30,6 +30,13 @@ namespace StardewAquarium.Menus
             if (fishes.Count == 0)
                 return;
 
+            foreach (int fish in fishes)
+            {
+                Object display = new Object(fish, 1);
+                display.DisplayName = "Donate " + display.DisplayName;
+                donations.Add(display,new int[] {0,1,fish,1});
+            }
+
             setItemPriceAndStock(donations);
         }
 

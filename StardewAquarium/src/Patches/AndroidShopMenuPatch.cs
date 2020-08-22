@@ -43,6 +43,7 @@ namespace StardewAquarium.Patches
 
         private static void tryToPurchaseItem_postfix(ref DonateFishMenuAndroid __instance, ref ISalable item)
         {
+            if (Game1.currentLocation?.Name != "FishMuseum") return;
             try
             {
                 if (!(item is Item donatedFish)) return; //this shouldn't happen but /shrug
