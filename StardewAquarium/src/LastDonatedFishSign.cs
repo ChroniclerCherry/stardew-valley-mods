@@ -71,7 +71,16 @@ namespace StardewAquarium
 
             _monitor.Log($"The last donated fish is {i.Name}");
             LastDonatedFish = i.ParentSheetIndex;
-            _helper.Multiplayer.SendMessage(LastDonatedFish, "FishDonated", modIDs: new[] { "Cherry.StardewAquarium" });
+            try
+            {
+                _helper.Multiplayer.SendMessage(LastDonatedFish, "FishDonated",
+                    modIDs: new[] {"Cherry.StardewAquarium"});
+            }
+            catch
+            {
+                _monitor.Log("Something went wrong trying to sync data with other players. Not everyone may be able to see the sign outside the Aquarium updated with the current donation.");
+            }
+
             MasterPlayerMail.Add($"AquariumLastDonated:{i.Name}");
         }
 

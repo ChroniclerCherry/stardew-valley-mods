@@ -32,6 +32,8 @@ namespace StardewAquarium.Patches
 
         private static void setCurrentItem_postfix(ref DonateFishMenuAndroid __instance)
         {
+            if (Game1.currentLocation?.Name != "FishMuseum") return;
+
             var nameItem =_helper.Reflection.GetField<string>(__instance,"nameItem");
             var nameItemString = nameItem.GetValue();
             nameItem.SetValue(_helper.Translation.Get("Donate") + nameItemString);
