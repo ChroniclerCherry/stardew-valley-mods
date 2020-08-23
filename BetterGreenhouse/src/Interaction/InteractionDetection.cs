@@ -2,9 +2,8 @@
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
-using StardewValley.Locations;
 
-namespace BetterGreenhouse.Interaction
+namespace GreenhouseUpgrades.Interaction
 {
     class InteractionDetection
     {
@@ -23,14 +22,14 @@ namespace BetterGreenhouse.Interaction
         {
             if (Game1.currentLocation.Name == "JojaMart")
             {
-                Game1.currentLocation.setTileProperty((int)State.Config.JojaMartUpgradeCoordinates.X,
-                    (int)State.Config.JojaMartUpgradeCoordinates.Y, "Buildings", "Action", "");
+                Game1.currentLocation.setTileProperty((int)Main.Config.JojaMartUpgradeCoordinates.X,
+                    (int)Main.Config.JojaMartUpgradeCoordinates.Y, "Buildings", "Action", "");
             }
 
             if (Game1.currentLocation.Name == "CommunityCenter")
             {
-                Game1.currentLocation.setTileProperty((int)State.Config.CommunityCenterUpgradeCoordinates.X,
-                    (int)State.Config.CommunityCenterUpgradeCoordinates.Y, "Buildings", "Action", "");
+                Game1.currentLocation.setTileProperty((int)Main.Config.CommunityCenterUpgradeCoordinates.X,
+                    (int)Main.Config.CommunityCenterUpgradeCoordinates.Y, "Buildings", "Action", "");
             }
         }
 
@@ -53,19 +52,19 @@ namespace BetterGreenhouse.Interaction
 
             Vector2 grabTile = e.Cursor.GrabTile;
 
-            if (Game1.currentLocation.Name == "JojaMart" && State.IsJojaRoute)
+            if (Game1.currentLocation.Name == "JojaMart" && Main.IsJojaRoute)
             {
-                if (grabTile != State.Config.JojaMartUpgradeCoordinates) return;
-                if (State.IsThereUpgradeTonight)
+                if (grabTile != Main.Config.JojaMartUpgradeCoordinates) return;
+                if (Main.IsThereUpgradeTonight)
                 {
                     Game1.drawObjectDialogue(_helper.Translation.Get("JojaUpgradeInProgress"));
                     return;
                 }
                 new UpgradeMenu(_helper, _monitor,true);
 
-            } else if (Game1.currentLocation.Name == "CommunityCenter" && !State.IsJojaRoute)
+            } else if (Game1.currentLocation.Name == "CommunityCenter" && !Main.IsJojaRoute)
             {
-                if (grabTile != State.Config.CommunityCenterUpgradeCoordinates) return;
+                if (grabTile != Main.Config.CommunityCenterUpgradeCoordinates) return;
 
                 if (Game1.player.ActiveObject != null)
                 {
@@ -73,7 +72,7 @@ namespace BetterGreenhouse.Interaction
                 }
                 else
                 {
-                    if (State.IsThereUpgradeTonight)
+                    if (Main.IsThereUpgradeTonight)
                     {
                         Game1.drawObjectDialogue(_helper.Translation.Get("JunimoUpgradeInProgress"));
                         return;
@@ -86,19 +85,30 @@ namespace BetterGreenhouse.Interaction
 
         private void GiveJunimoOffering()
         {
-            if (State.JunimoOfferingMade)
+            if (Main.JunimoOfferingMade)
             {
                 Game1.drawObjectDialogue(_helper.Translation.Get("JunimoOfferingMade"));
                 return;
             }
+            else
+            {
+                Game1.currentLocation.createQuestionDialogue(_helper.Translation.Get("JunimoOffering", new {Item = Game1.player.ActiveObject}),
+                    Game1.currentLocation.createYesNoResponses(),
+                    JunimoOfferingResponse);
+            }
+
+        }
+
+        private void JunimoOfferingResponse(Farmer who, string whichanswer)
+        {
+            if (whichanswer == "No") return;
 
             int points = CalculateJunimoPoints(Game1.player.ActiveObject);
-            State.JunimoPoints += points;
-            State.JunimoOfferingMade = true;
-            _helper.Multiplayer.SendMessage(State.JunimoPoints, Consts.MultiplayerJunimopointsKey,
+            Main.JunimoPoints += points;
+            Main.JunimoOfferingMade = true;
+            _helper.Multiplayer.SendMessage(Main.JunimoPoints, Consts.MultiplayerJunimopointsKey,
                 new[] { Consts.ModUniqueID });
             Game1.drawObjectDialogue(_helper.Translation.Get("JunimoOffering", new { JunimoPoints = points }));
-
         }
 
         private int CalculateJunimoPoints(Object obj)
@@ -108,9 +118,9 @@ namespace BetterGreenhouse.Interaction
                 points += obj.Edibility; //add edibility
             points *= (obj.Quality+1); //multiply by quality
 
-            //multiply by 3 if it's a cooked dish
+            //multiply by a lot if it's a cooked dish
             if (CraftingRecipe.cookingRecipes.ContainsKey(obj.Name))
-                points *= 3;
+                points *= 30;
 
             if (obj.Stack > 1)
                 obj.Stack--;

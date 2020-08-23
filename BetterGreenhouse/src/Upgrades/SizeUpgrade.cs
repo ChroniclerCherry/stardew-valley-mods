@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IO;
 using Microsoft.Xna.Framework.Content;
-using Newtonsoft.Json;
 using StardewModdingAPI;
-using StardewValley;
 using xTile;
 
-namespace BetterGreenhouse.Upgrades
+namespace GreenhouseUpgrades.Upgrades
 {
     public class SizeUpgrade : Upgrade, IAssetEditor
     {
@@ -16,20 +13,20 @@ namespace BetterGreenhouse.Upgrades
         public override void Initialize(IModHelper helper, IMonitor monitor)
         {
             base.Initialize(helper,monitor);
-            _helper.Content.AssetEditors.Add(this);
+            Helper.Content.AssetEditors.Add(this);
         }
 
         public override void Start()
         {
             base.Start();
-            _helper.Content.InvalidateCache(Consts.GreenhouseMapPath);
+            Helper.Content.InvalidateCache(Consts.GreenhouseMapPath);
 
         }
 
         public override void Stop()
         {
             Active = false;
-            _helper.Content.InvalidateCache(Consts.GreenhouseMapPath);
+            Helper.Content.InvalidateCache(Consts.GreenhouseMapPath);
         }
 
         public bool CanEdit<T>(IAssetInfo asset)
@@ -42,8 +39,17 @@ namespace BetterGreenhouse.Upgrades
             if (!Unlocked || !Active || !asset.AssetNameEquals(Consts.GreenhouseMapPath)) return;
 
             var mapEditor = asset.AsMap();
-            var sourceMap = _helper.Content.Load<Map>($"{Consts.GreenhouseMapPath}_Upgrade", ContentSource.GameContent);
-            mapEditor.PatchMap(sourceMap);
+            try
+            {
+                var sourceMap =
+                    Helper.Content.Load<Map>($"{Consts.GreenhouseMapPath}_Upgrade", ContentSource.GameContent);
+                mapEditor.PatchMap(sourceMap);
+            }
+            catch (ContentLoadException)
+            {
+                Monitor.Log("No Upgraded Greenhouse map found. The Greenhouse Upgrades mod comes with a default upgrade map in a folder called [CP] Greenhouse Upgrade. Please reinstall it, or another mod that provides the map.",LogLevel.Error);
+            }
+
         }
 
     }

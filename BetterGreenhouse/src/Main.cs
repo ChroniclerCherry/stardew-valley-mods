@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BetterGreenhouse.data;
-using BetterGreenhouse.Data;
-using BetterGreenhouse.Upgrades;
+using GreenhouseUpgrades.Data;
+using GreenhouseUpgrades.Upgrades;
 using StardewModdingAPI;
 using StardewValley;
 
-namespace BetterGreenhouse
+namespace GreenhouseUpgrades
 {
-    public static class State
+    public class Main
     {
         public static Config Config;
         private static Data.Data ModData { get; set; }
@@ -35,6 +34,19 @@ namespace BetterGreenhouse
             Config = _helper.ReadConfig<Config>();
 
             _helper.Events.Multiplayer.ModMessageReceived += Multiplayer_ModMessageReceived;
+            _helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
+            _helper.Events.GameLoop.DayEnding += GameLoop_DayEnding;
+        }
+
+        private static void GameLoop_DayEnding(object sender, StardewModdingAPI.Events.DayEndingEventArgs e)
+        {
+            JunimoOfferingMade = false;
+            PerformEndOfDayUpdate();
+        }
+
+        private static void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
+        {
+            LoadData();
         }
 
         private static void Multiplayer_ModMessageReceived(object sender, StardewModdingAPI.Events.ModMessageReceivedEventArgs e)

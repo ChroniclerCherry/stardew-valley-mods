@@ -1,8 +1,11 @@
-﻿namespace BetterGreenhouse
+﻿using Harmony;
+
+namespace GreenhouseUpgrades
 {
     public static class Consts
     {
         public static string ModUniqueID;
+        public static HarmonyInstance Harmony;
 
         public const string GreenhouseMapName = "Greenhouse";
         public const string GreenhouseMapPath = "Maps\\Greenhouse";

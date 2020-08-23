@@ -1,12 +1,10 @@
 ﻿using System.Linq;
-using Newtonsoft.Json;
-using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Objects;
 using StardewValley.TerrainFeatures;
 
-namespace BetterGreenhouse.Upgrades
+namespace GreenhouseUpgrades.Upgrades
 {
     public class AutoWaterUpgrade : Upgrade
     {
@@ -18,15 +16,15 @@ namespace BetterGreenhouse.Upgrades
         public override void Start()
         {
             base.Start();
-            _helper.Events.GameLoop.DayStarted += WaterAllGreenhouseDayStart;
-            _helper.Events.GameLoop.DayEnding += WaterAllGreenhouseDayEnd;
+            Helper.Events.GameLoop.DayStarted += WaterAllGreenhouseDayStart;
+            Helper.Events.GameLoop.DayEnding += WaterAllGreenhouseDayEnd;
         }
 
         public override void Stop()
         {
             Active = false;
-            _helper.Events.GameLoop.DayStarted -= WaterAllGreenhouseDayStart;
-            _helper.Events.GameLoop.DayEnding -= WaterAllGreenhouseDayEnd;
+            Helper.Events.GameLoop.DayStarted -= WaterAllGreenhouseDayStart;
+            Helper.Events.GameLoop.DayEnding -= WaterAllGreenhouseDayEnd;
         }
 
         private void WaterAllGreenhouseDayStart(object sender, DayStartedEventArgs e)
@@ -42,7 +40,7 @@ namespace BetterGreenhouse.Upgrades
         private void WaterGreenhouse()
         {
             if (!Unlocked || !Active) return;
-            _monitor.Log($"{TranslatedName} : Watering the greenhouse");
+            Monitor.Log($"{TranslatedName} : Watering the greenhouse");
 
             foreach (var loc in Game1.locations)
             {

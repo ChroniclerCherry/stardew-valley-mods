@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using BetterGreenhouse.Upgrades;
+using GreenhouseUpgrades.Upgrades;
 using Microsoft.Xna.Framework;
 
-namespace BetterGreenhouse.data
+namespace GreenhouseUpgrades.Data
 {
     public class Config
     {

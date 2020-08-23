@@ -7,7 +7,8 @@
 
     //Junimo upgrade stuff
     "JunimoUpgradeMenu": "You have {{JunimoPoints}} Junimo Points. What would you like to upgrade?",
-    "JunimoOffering": "You have earned {{JunimoPoints}} Junimo Points",
+    "JunimoOffering": "You can make one offering to the Junimos a day. Would you like to offer {{Item}}?",
+    "JunimoConfirmation": "You have earned {{JunimoPoints}} Junimo Points",
     "JunimoOfferingMade": "The Junimo seem to be in great spirits. Maybe you should bring another offering tomorrow?",
     "JunimoUpgradeAccept": "You sense that the Junimo are happy to help, maybe you should check your Greenhouse in the morning?",
     "JunimoNotEnoughPoints": "You don't have enough Junimo points for this upgrade",

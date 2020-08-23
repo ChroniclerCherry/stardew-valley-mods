@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyName>BetterGreenhouse</AssemblyName>
-    <RootNamespace>BetterGreenhouse</RootNamespace>
+    <AssemblyName>GreenhouseUpgrades</AssemblyName>
+    <RootNamespace>GreenhouseUpgrades</RootNamespace>
     <Version>1.0.0</Version>
     <TargetFramework>net452</TargetFramework>
     <Platforms>x86</Platforms>
     <PlatformTarget>x86</PlatformTarget>
 
-    <EnableHarmony>false</EnableHarmony>
+    <EnableHarmony>true</EnableHarmony>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +26,6 @@
     </None>
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties _x005B_cp_x005D__x0020_better_x0020_greenhouse_4manifest_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 </Project>

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using BetterGreenhouse.src;
-using BetterGreenhouse.Upgrades;
+﻿using System.Collections.Generic;
+using GreenhouseUpgrades.Upgrades;
 using StardewModdingAPI;
 using StardewValley;
-using StardewValley.Menus;
 
-namespace BetterGreenhouse.Interaction
+namespace GreenhouseUpgrades.Interaction
 {
     class UpgradeMenu
     {
@@ -23,7 +20,7 @@ namespace BetterGreenhouse.Interaction
             _isJoja = isJoja;
 
             BuildResponses();
-            string dialogue = _helper.Translation.Get(_isJoja ? "JojaUpgradeMenu" : "JunimoUpgradeMenu");
+            string dialogue = _helper.Translation.Get(_isJoja ? "JojaUpgradeMenu" : "JunimoUpgradeMenu", new { JunimoPoints = Main.JunimoPoints });
             Game1.currentLocation.createQuestionDialogue(dialogue, _responsePages[_currentPage],ButtonSelected);
         }
 
@@ -38,7 +35,7 @@ namespace BetterGreenhouse.Interaction
             {
                 Game1.activeClickableMenu = null;
                 _currentPage++;
-                string dialogue = _helper.Translation.Get(_isJoja ? "JojaUpgradeMenu" : "JunimoUpgradeMenu", new { JunimoPoints = State.JunimoPoints });
+                string dialogue = _helper.Translation.Get(_isJoja ? "JojaUpgradeMenu" : "JunimoUpgradeMenu", new { JunimoPoints = Main.JunimoPoints });
                 Game1.currentLocation.createQuestionDialogue(dialogue, _responsePages[_currentPage], ButtonSelected);
                 return;
             }
@@ -63,18 +60,18 @@ namespace BetterGreenhouse.Interaction
             }
             else
             {
-                if (State.JunimoPoints < cost)
+                if (Main.JunimoPoints < cost)
                 {
                     Game1.drawObjectDialogue(_helper.Translation.Get("JunimoNotEnoughPoints"));
                     return;
                 }
 
                 Game1.drawObjectDialogue(_helper.Translation.Get("JunimoUpgradeAccept"));
-                State.JunimoPoints -= cost;
-                _helper.Multiplayer.SendMessage(State.JunimoPoints, Consts.MultiplayerJunimopointsKey, new[] { Consts.ModUniqueID });
+                Main.JunimoPoints -= cost;
+                _helper.Multiplayer.SendMessage(Main.JunimoPoints, Consts.MultiplayerJunimopointsKey, new[] { Consts.ModUniqueID });
             }
 
-            State.UpgradeForTonight = upgrade.Name;
+            Main.UpgradeForTonight = upgrade.Name;
             _helper.Multiplayer.SendMessage(upgrade.Name, Consts.MultiplayerUpdate, new[] { Consts.ModUniqueID });
         }
 
@@ -83,9 +80,9 @@ namespace BetterGreenhouse.Interaction
             _responsePages = new List<Response[]>();
             var responsesThisPage = new List<Response>();
 
-            for (var index = 0; index < State.Upgrades.Count; index++)
+            for (var index = 0; index < Main.Upgrades.Count; index++)
             {
-                var upgrade = State.Upgrades[index];
+                var upgrade = Main.Upgrades[index];
                 if (upgrade.Unlocked) continue;
 
                 string text = _isJoja ? $"{upgrade.TranslatedName} : {upgrade.Cost}$" 
@@ -95,7 +92,7 @@ namespace BetterGreenhouse.Interaction
 
                 //Max of 3 options per page, with more pages added as needed
                 if (responsesThisPage.Count < 3) continue;
-                if (index < State.Upgrades.Count - 1)
+                if (index < Main.Upgrades.Count - 1)
                     responsesThisPage.Add(new Response("More", "More"));
                 responsesThisPage.Add(new Response("Exit", "Exit"));
                 _responsePages.Add(responsesThisPage.ToArray());

@@ -1,9 +1,6 @@
-﻿using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using StardewModdingAPI;
+﻿using StardewModdingAPI;
 
-namespace BetterGreenhouse.Upgrades
+namespace GreenhouseUpgrades.Upgrades
 {
     public enum UpgradeTypes
     {
@@ -15,27 +12,33 @@ namespace BetterGreenhouse.Upgrades
         public virtual string Name => Type.ToString();
         public abstract bool Active { get; set; }
         public abstract bool Unlocked { get; set; }
-        public virtual int Cost => State.Config.UpgradeCosts[Type];
+        public virtual int Cost => Main.Config.UpgradeCosts[Type];
 
         public virtual bool DisableOnFarmhand { get; } = false;
+
+        internal virtual void Patch()
+        {
+            //most upgrades won't need a harmony patch
+        }
         public virtual void Start()
         {
             if (!Context.IsMainPlayer && DisableOnFarmhand) return;
             if (!Unlocked) return;
             Active = true;
+            Patch();
         }
         public abstract void Stop();
 
-        public string TranslatedName => _helper.Translation.Get($"{Name}.Name");
-        public string TranslatedDescription => _helper.Translation.Get($"{Name}.Description");
+        public string TranslatedName => Helper.Translation.Get($"{Name}.Name");
+        public string TranslatedDescription => Helper.Translation.Get($"{Name}.Description");
 
 
-        public IModHelper _helper;
-        public IMonitor _monitor;
+        public IModHelper Helper;
+        public IMonitor Monitor;
         public virtual void Initialize(IModHelper helper, IMonitor monitor)
         {
-            _helper = helper;
-            _monitor = monitor;
+            Helper = helper;
+            Monitor = monitor;
         }
     }
 
