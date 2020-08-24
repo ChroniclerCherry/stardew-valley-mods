@@ -233,8 +233,6 @@ namespace StardewAquarium
 
         private void OpenDonationMenuCommand(string arg1, string[] arg2)
         {
-            var a = Game1.player.activeDialogueEvents.Keys;
-            var b = Game1.getCharacterFromName("Curator");
             Game1.activeClickableMenu = new DonateFishMenu(Helper,Monitor);
         }
 
