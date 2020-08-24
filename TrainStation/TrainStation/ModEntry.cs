@@ -33,9 +33,9 @@ namespace TrainStation
 
         private void Player_Warped(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
         {
-            if (Game1.currentLocation.Name != "Railroad") return;
+            if (e.NewLocation.Name != "Railroad") return;
 
-            string property = Game1.currentLocation.doesTileHaveProperty(Config.TicketStationX, Config.TicketStationY,
+            string property = e.NewLocation.doesTileHaveProperty(Config.TicketStationX, Config.TicketStationY,
                 "Action", "Buildings");
             if (property != "TrainStation")
                 DrawInTicketStation();
