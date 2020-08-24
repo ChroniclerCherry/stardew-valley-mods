@@ -5,7 +5,7 @@ using xTile;
 
 namespace GreenhouseUpgrades.Upgrades
 {
-    public class SizeUpgrade : Upgrade, IAssetEditor
+    public class SizeUpgrade : Upgrade, IAssetEditor, IAssetLoader
     {
         public override UpgradeTypes Type => UpgradeTypes.SizeUpgrade;
         public override bool Active { get; set; } = false;
@@ -39,18 +39,20 @@ namespace GreenhouseUpgrades.Upgrades
             if (!Unlocked || !Active || !asset.AssetNameEquals(Consts.GreenhouseMapPath)) return;
 
             var mapEditor = asset.AsMap();
-            try
-            {
-                var sourceMap =
+            var sourceMap =
                     Helper.Content.Load<Map>($"{Consts.GreenhouseMapPath}_Upgrade", ContentSource.GameContent);
                 mapEditor.PatchMap(sourceMap);
-            }
-            catch (ContentLoadException)
-            {
-                Monitor.Log("No Upgraded Greenhouse map found. The Greenhouse Upgrades mod comes with a default upgrade map in a folder called [CP] Greenhouse Upgrade. Please reinstall it, or another mod that provides the map.",LogLevel.Error);
+
             }
 
+        public bool CanLoad<T>(IAssetInfo asset)
+        {
+            return asset.AssetNameEquals(Consts.GreenHouseSource);
         }
 
+        public T Load<T>(IAssetInfo asset)
+        {
+            return (T)(object)Helper.Content.Load<Map>(Consts.GreenHouseSource);
+        }
     }
 }

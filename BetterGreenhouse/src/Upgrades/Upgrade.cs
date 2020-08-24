@@ -15,17 +15,11 @@ namespace GreenhouseUpgrades.Upgrades
         public virtual int Cost => Main.Config.UpgradeCosts[Type];
 
         public virtual bool DisableOnFarmhand { get; } = false;
-
-        internal virtual void Patch()
-        {
-            //most upgrades won't need a harmony patch
-        }
         public virtual void Start()
         {
             if (!Context.IsMainPlayer && DisableOnFarmhand) return;
             if (!Unlocked) return;
             Active = true;
-            Patch();
         }
         public abstract void Stop();
 

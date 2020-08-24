@@ -92,7 +92,7 @@ namespace GreenhouseUpgrades.Interaction
             }
             else
             {
-                Game1.currentLocation.createQuestionDialogue(_helper.Translation.Get("JunimoOffering", new {Item = Game1.player.ActiveObject}),
+                Game1.currentLocation.createQuestionDialogue(_helper.Translation.Get("JunimoOffering", new {Item = Game1.player.ActiveObject.Name}),
                     Game1.currentLocation.createYesNoResponses(),
                     JunimoOfferingResponse);
             }
@@ -108,7 +108,7 @@ namespace GreenhouseUpgrades.Interaction
             Main.JunimoOfferingMade = true;
             _helper.Multiplayer.SendMessage(Main.JunimoPoints, Consts.MultiplayerJunimopointsKey,
                 new[] { Consts.ModUniqueID });
-            Game1.drawObjectDialogue(_helper.Translation.Get("JunimoOffering", new { JunimoPoints = points }));
+            Game1.drawObjectDialogue(_helper.Translation.Get("JunimoConfirmation", new { JunimoPoints = points }));
         }
 
         private int CalculateJunimoPoints(Object obj)

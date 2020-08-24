@@ -7,7 +7,7 @@ namespace GreenhouseUpgrades
         public static string ModUniqueID;
         public static HarmonyInstance Harmony;
 
-        public const string GreenhouseMapName = "Greenhouse";
+        public const string GreenHouseSource = "assets\\Greenhouse.tibn";
         public const string GreenhouseMapPath = "Maps\\Greenhouse";
 
         public const string SaveDataKey = "SaveData.Version.1";

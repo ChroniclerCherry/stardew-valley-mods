@@ -20,9 +20,13 @@ namespace GreenhouseUpgrades.Upgrades
 
         private static bool IsHarvesting = false;
 
-        internal override void Patch()
-        {
+        private static GameLocation currentHarvestingMap;
 
+        private static bool _patchesApplied = false;
+
+        private void Patch()
+        {
+            _patchesApplied = true;
             //this stops the 456342564256 harvests from spamming sound and new item notifications
             Consts.Harmony.Patch(
                 original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.playSound)),
@@ -35,11 +39,21 @@ namespace GreenhouseUpgrades.Upgrades
             Consts.Harmony.Patch(
                 original: AccessTools.Method(typeof(Game1), nameof(Game1.addHUDMessage)),
                 prefix: new HarmonyMethod(typeof(AutoHarvestUpgrade), nameof(AutoHarvestUpgrade.DisableWhenHarvesting)));
+
+            Consts.Harmony.Patch(
+                original: AccessTools.Method(typeof(Game1), nameof(Game1.createItemDebris)),
+                prefix: new HarmonyMethod(typeof(AutoHarvestUpgrade), nameof(AutoHarvestUpgrade.Game1_createItemDebris_prefix)));
+        }
+
+        public static void Game1_createItemDebris_prefix(ref GameLocation location)
+        {
+            if (!IsHarvesting) return;
+            location = currentHarvestingMap;
         }
 
         public static bool DisableWhenHarvesting()
         {
-            return IsHarvesting;
+            return !IsHarvesting;
         }
 
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
@@ -48,12 +62,14 @@ namespace GreenhouseUpgrades.Upgrades
             {
                 if (location.IsGreenhouse)
                     Harvest(location);
+
             }
         }
 
         private void Harvest(GameLocation greenhouse)
         {
             IsHarvesting = true;
+            currentHarvestingMap = greenhouse;
 
             try
             {
@@ -66,7 +82,7 @@ namespace GreenhouseUpgrades.Upgrades
                 }
 
                 var items = Game1.player.items;
-                int maxItems = Game1.player.maxItems;
+                int maxItems = Game1.player.MaxItems;
                 Game1.player.MaxItems = chests.Length * Chest.capacity;
                 var objects = new NetObjectList<Item>();
 
@@ -88,14 +104,16 @@ namespace GreenhouseUpgrades.Upgrades
                     }
                 }
 
-                CollectDebris(chests, greenhouse);
-
                 foreach (var item in objects)
                 {
                     AttemptToAddToChest(chests, item, greenhouse);
                 }
 
+                CollectDebris(chests, greenhouse);
+
+                Game1.player.MaxItems = maxItems;
                 Helper.Reflection.GetField<NetObjectList<Item>>(Game1.player, "items").SetValue(items);
+                CollectDebris(chests, greenhouse);
             }
             catch (Exception e)
             {
@@ -103,6 +121,7 @@ namespace GreenhouseUpgrades.Upgrades
             }
 
             IsHarvesting = false;
+            currentHarvestingMap = null;
         }
 
         private void AttemptHarvest(GameLocation greenhouse, HoeDirt dirt,
@@ -115,15 +134,13 @@ namespace GreenhouseUpgrades.Upgrades
 
         private void CollectDebris(Chest[] chests, GameLocation greenhouse)
         {
-            //collect any generated debris from harvests
-            //and harvest debris is generated on the farmer, so.
-            foreach (var obj in Game1.currentLocation.debris)
+            foreach (var obj in greenhouse.debris)
             {
-                AttemptToAddToChest(chests, obj.item, greenhouse);
+                AttemptToAddToChest(chests, obj.item.getOne(), greenhouse);
             }
         }
 
-        private void AttemptToAddToChest(Chest[] chests, Item item, GameLocation greenhouse)
+        private static void AttemptToAddToChest(Chest[] chests, Item item, GameLocation greenhouse)
         {
             if (item == null) return;
             Item tempItem = item;
@@ -136,7 +153,7 @@ namespace GreenhouseUpgrades.Upgrades
             Game1.createItemDebris(tempItem, chests.Last().TileLocation, 0, greenhouse);
         }
 
-        private IEnumerable<Chest> GetChests(GameLocation greenhouse)
+        private static IEnumerable<Chest> GetChests(GameLocation greenhouse)
         {
             foreach (var objects in greenhouse.Objects)
             {
@@ -154,13 +171,13 @@ namespace GreenhouseUpgrades.Upgrades
             if (!Unlocked) return;
             Active = true;
             Helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
+            if (!_patchesApplied)
+                Patch();
         }
-
 
         public override void Stop()
         {
             Active = false;
-            Helper.Events.GameLoop.DayStarted -= GameLoop_DayStarted;
         }
     }
 }
