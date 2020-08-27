@@ -4,29 +4,29 @@
 	"Description": "Rewarded for helping the Stardew Aquarium reach its full potential!",
 	"ProvidesLight": false,
 	"NameLocalization": {
-		/*"es": "", //Spansih
-		"ko": "", //Korean
-		"de": "", //German
-		"fr": "", //French
-		"hu": "", //Hungarian
-		"it": "", //Italian
-		"ja": "", //Japanese
-		"pt": "", //Portuguese
-		"ru": "", //Russian
-		"tr": "", //Turkish*/
+		//*"es": "", //Spansih
+		"ko": "별이슬 아쿠아리움 트로피",
+		//"de": "", //German
+		//"fr": "", //French
+		//"hu": "", //Hungarian
+		//"it": "", //Italian
+		//"ja": "", //Japanese
+		"pt": "Troféu Stardew Aquarium",
+		"ru": "Трофей Аквариума долины Стардью.",
+		//"tr": "", //Turkish*/
 		"zh": "星露水族馆奖杯"
 	},
 	"DescriptionLocalization": {
-		/*"es": "", //Spansih
-		"ko": "", //Korean
-		"de": "", //German
-		"fr": "", //French
-		"hu": "", //Hungarian
-		"it": "", //Italian
-		"ja": "", //Japanese
-		"pt": "", //Portuguese
-		"ru": "", //Russian
-		"tr": "", //Turkish*/
+		//"es": "", //Spansih
+		"ko": "별이슬 아쿠아리움이 그 잠재력을 최대한 발휘할 수 있도록 도와준 이에게 증여된 명예로운 보상!",
+		//"de": "", //German
+		//"fr": "", //French
+		//"hu": "", //Hungarian
+		//"it": "", //Italian
+		//"ja": "", //Japanese
+		"pt": "Recompensado por ajudar o Stardew Aquarium a atingir todo o seu potencial!",
+		"ru": "Награда за помощь в сборе рыб Аквариуму долины Стардью.",
+		//"tr": "", //Turkish*/
 		"zh": "因协助水族馆而获得奖励"
 	}
 }

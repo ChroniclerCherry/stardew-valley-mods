@@ -1,7 +1,7 @@
 ﻿{
     "Name": "Stardew Aquarium Code",
     "Author": "Cherry",
-    "Version": "1.0.2",
+    "Version": "1.0.3",
     "Description": "The coding portion of the Stardew Aquarium mod",
     "UniqueID": "Cherry.StardewAquarium",
     "EntryDll": "StardewAquarium.dll",
@@ -26,6 +26,9 @@
         {
             "UniqueID": "spacechase0.SpaceCore",
             "MinimumVersion": "1.4"
+        },
+        {
+            "UniqueID": "spacechase0.CustomNPCFixes"
         },
         {
             "UniqueID": "Cherry.TrainStation",

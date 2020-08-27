@@ -5,29 +5,29 @@
     "Price": 200,
     "Dyeable": false,
 	"NameLocalization": {
-		/*"es": "", //Spansih
-		"ko": "", //Korean
-		"de": "", //German
+		//"es": "", //Spansih
+		"ko": "복어닭 셔츠",
+		/*"de": "", //German
 		"fr": "", //French
 		"hu": "", //Hungarian
 		"it": "", //Italian
-		"ja": "", //Japanese
-		"pt": "", //Portuguese
-		"ru": "", //Russian
-		"tr": "", //Turkish*/
+		"ja": "", //Japanese*/
+		"pt": "Camiseta de Galiacu",
+		"ru": "Фугу-цыплячья рубашка",
+		//"tr": "", //Turkish
 		"zh": "河豚鸡鱼衬衫"
 	},
 	"DescriptionLocalization": {
-		/*"es": "", //Spansih
-		"ko": "", //Korean
-		"de": "", //German
+		//"es": "", //Spansih
+		"ko": "아쿠아리움에 갔노라, 물고기를 모았노라, 티셔츠를 얻었노라.",
+		/*"de": "", //German
 		"fr": "", //French
 		"hu": "", //Hungarian
 		"it": "", //Italian
-		"ja": "", //Japanese
-		"pt": "", //Portuguese
-		"ru": "", //Russian
-		"tr": "", //Turkish*/
+		"ja": "", //Japanese*/
+		"pt": "Galiacu!",
+		"ru": "Был там, сделал это - получил футболку.",
+		//"tr": "", //Turkish
 		"zh": "河豚鸡鱼衬衫"
 	}
 }

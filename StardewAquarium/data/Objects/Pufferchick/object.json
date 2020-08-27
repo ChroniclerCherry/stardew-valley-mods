@@ -14,29 +14,29 @@
 		/*gift tastes go here*/
 	},
 	"NameLocalization": {
-		/*"es": "", //Spanish
-		"ko": "", //Korean
-		"de": "", //German
+		//"es": "", //Spanish
+		"ko": "복어닭",
+		/*"de": "", //German
 		"fr": "", //French
 		"hu": "", //Hungarian
 		"it": "", //Italian
-		"ja": "", //Japanese
-		"pt": "", //Portuguese
-		"ru": "", //Russian
-		"tr": "", //Turkish*/
+		"ja": "", //Japanese*/
+		"pt": "Galiacu",
+		"ru": "Фугу-цыплёнок",
+		//"tr": "", //Turkish
 		"zh": "河豚鸡鱼衬衫"
 	},
 	"DescriptionLocalization": {
-		/*"es": "", //Spanish
-		"ko": "", //Korean
-		"de": "", //German
+		//"es": "", //Spanish
+		"ko": "반은 복어고 반은 닭입니다.",
+		/*"de": "", //German
 		"fr": "", //French
 		"hu": "", //Hungarian
 		"it": "", //Italian
-		"ja": "", //Japanese
-		"pt": "", //Portuguese
-		"ru": "", //Russian
-		"tr": "", //Turkish*/
+		"ja": "", //Japanese*/
+		"pt": "Meio frango, meio baiacu",
+		"ru": "Наполовину фугу, наполовину цыплёнок.",
+		//"tr": "", //Turkish
 		"zh": "河豚鸡鱼衬衫"
 	}
 }

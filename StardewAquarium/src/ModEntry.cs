@@ -14,7 +14,6 @@ using StardewAquarium.Editors;
 using StardewAquarium.Menus;
 using StardewValley.Menus;
 using StardewValley.Objects;
-using SuperAardvark.AntiSocial;
 using Object = StardewValley.Object;
 
 namespace StardewAquarium
@@ -44,8 +43,6 @@ namespace StardewAquarium
                 AndroidShopMenuPatch.Initialize(Helper, Monitor);
                 Helper.Events.Display.MenuChanged += AndroidPlsHaveMercyOnMe;
             }
-
-            AntiSocialManager.DoSetupIfNecessary(this);
 
             new ReturnTrain(Helper, Monitor);
             new InteractionHandler(Helper,Monitor);

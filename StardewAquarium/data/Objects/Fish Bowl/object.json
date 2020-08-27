@@ -8,29 +8,29 @@
 	"IsColored": false,
 	"Recipe": null,
 	"NameLocalization": {
-		/*"es": "", //Spansih
-		"ko": "", //Korean
-		"de": "", //German
+		//"es": "", //Spansih
+		"ko": "어항",
+		/*"de": "", //German
 		"fr": "", //French
 		"hu": "", //Hungarian
 		"it": "", //Italian
-		"ja": "", //Japanese
-		"pt": "", //Portuguese
-		"ru": "", //Russian
-		"tr": "", //Turkish*/
+		"ja": "", //Japanese*/
+		"pt": "Aquário",
+		"ru": "Небольшой аквариум",
+		//"tr": "", //Turkish
 		"zh": "鱼缸"
 	},
 	"DescriptionLocalization": {
-		/*"es": "", //Spansih
-		"ko": "", //Korean
-		"de": "", //German
+		//"es": "", //Spansih
+		"ko": "귀여운 물고기다!",
+		/*"de": "", //German
 		"fr": "", //French
 		"hu": "", //Hungarian
 		"it": "", //Italian
-		"ja": "", //Japanese
-		"pt": "", //Portuguese
-		"ru": "", //Russian
-		"tr": "", //Turkish*/
+		"ja": "", //Japanese*/
+		"pt": "Peixe fofo!",
+		"ru": "В нём плавает симпатичная рыбка !",
+		//"tr": "", //Turkish
 		"zh": "鱼缸"
 	}
 }

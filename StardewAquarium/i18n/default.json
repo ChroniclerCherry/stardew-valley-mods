@@ -46,7 +46,7 @@
 	"StayHydratedBois": "*drinking noises*",
 	"OutsideSign": "Welcome to the Stardew Aquarium! Enjoy your visit.",
 	"SewerTP": "Going down this grate will lead you to the sewers, where we keep a special fish which is found only in a dangerous place called a mutant bug lair.",
-	"SwampTP": "If you step on this magic circle you will be transported to an isolated part of the swamp, where we keep special 'void infused' specimens such as the void salmon.",
+	"SwampTP": "If you step on this magic circle you will be transported to an isolated part of the swamp, where we special 'void infused' specimens can thrive.",
 	"SVETP": "Step through this door to see our exhibit of some special fish.",
 	"ComingSoon": "Coming Soon!",
 	"SVEBookOpen": "This is a cooking book. It mentions something about a Butterfish...",
@@ -211,7 +211,7 @@
 	"NPCSUMMER_49": "Tourist: Is that coleslaw? I love coleslaw.",
 	"NPCSUMMER_50": "Tourist: This meat is delicious.",
 	"NPCSUMMER_51": "Tourist: I wonder what's in these tapas, they are yummy!",
-	"NPCSUMMER_52": "Tourist: What?! Someone the food on my plate. Oh wait, it was me.",
+	"NPCSUMMER_52": "Tourist: What?! Someone ate the food on my plate. Oh wait, it was me.",
 	"NPCSUMMER_53": "Tourist: There is so much food!",
 	"NPCSUMMER_54": "Tourist: Look we got Shrimp Cocktail, how fancy.",
 	"NPCSUMMER_55": "Tourist: Hey, do we know each other?",
@@ -237,7 +237,7 @@
 	"NPCWINTER_3": "Fisherman: Come to do some fishing are ye'?",
 	"NPCWINTER_4": "Fisherman: Hmm? Oh hello, tight lines n' all that.",
 	"NPCWINTER_5": "Lady: Put that snowball down Simon.",
-	"NPCWINTER_6": "Simon has a mischievous smile on his face",
+	"NPCWINTER_6": "Simon has a mischievous smile on his face.",
 
 	//achievement
 	"AchievementName": "Sleeping with the Fishies!",

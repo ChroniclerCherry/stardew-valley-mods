@@ -4,29 +4,29 @@
 	"ShowHair": false,
 	"IgnoreHairstyleOffset": true,
     "NameLocalization": {
-        /*"es": "", //Spansih
-        "ko": "", //Korean
-        "de": "", //German
+        //"es": "", //Spansih
+        "ko": "전설의 물고기 가면",
+        /*"de": "", //German
         "fr": "", //French
         "hu": "", //Hungarian
         "it": "", //Italian
-        "ja": "", //Japanese
-        "pt": "", //Portuguese
-        "ru": "", //Russian
-        "tr": "", //Turkish*/
+        "ja": "", //Japanese*/
+        "pt": "Máscara de Lenda",
+        "ru": "Маска Легенды",
+        //"tr": "", //Turkish*/
         "zh": "传说之鱼面具"
     },
     "DescriptionLocalization": {
-        /*"es": "", //Spansih
-        "ko": "", //Korean
-        "de": "", //German
+        //"es": "", //Spansih
+        "ko": "전설의 물고기 모양 가면.",
+        /*"de": "", //German
         "fr": "", //French
         "hu": "", //Hungarian
         "it": "", //Italian
-        "ja": "", //Japanese
-        "pt": "", //Portuguese
-        "ru": "", //Russian
-        "tr": "", //Turkish*/
+        "ja": "", //Japanese*/
+        "pt": "Máscara da primeira e única Lenda.",
+        "ru": "Маска единственной и неповторимой рыбы - Легенды.",
+        //"tr": "", //Turkish*/
         "zh": "传说之鱼面具"
     }
 }
