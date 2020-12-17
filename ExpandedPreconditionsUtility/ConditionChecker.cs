@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Netcode;
@@ -20,6 +21,7 @@ namespace ExpandedPreconditionsUtility
         private readonly IMonitor _monitor;
         private readonly bool _verboseLogging;
         private readonly string _uniqueId;
+        private readonly Dictionary<string, Func<string[], bool>> _customCheckers;
 
         public ConditionChecker(IModHelper helper, IMonitor monitor, bool verbose = false, string uniqueId = null)
         {
@@ -27,6 +29,7 @@ namespace ExpandedPreconditionsUtility
             _monitor = monitor;
             _verboseLogging = verbose;
             _uniqueId = uniqueId;
+            _customCheckers = new Dictionary<string, Func<string[], bool>>();
         }
 
         /// <summary>
@@ -75,6 +78,25 @@ namespace ExpandedPreconditionsUtility
         }
 
         /// <summary>
+        /// Register a checker for a custom condition
+        /// </summary>
+        /// <param name="conditionName">Name of the condition</param>
+        /// <param name="conditionChecker">Checker method</param>
+        /// <exception cref="ConditionCheckerException">
+        /// An exception raised when condition with this name is already registered
+        /// </exception>
+        internal void RegisterCustomCondition(string conditionName, Func<string[], bool> conditionChecker)
+        {
+            if (_verboseLogging)
+                _monitor.Log($"{_uniqueId} / Registering custom condition: {conditionName}", LogLevel.Debug);
+
+            if (_customCheckers.ContainsKey(conditionName))
+                throw new ConditionCheckerException($"Condition `{conditionName}` is already registered.");
+
+            _customCheckers.Add(conditionName, conditionChecker);
+        }
+
+        /// <summary>
         /// This method takes an array which was originally a single string condition, split at the '/' symbols
         /// If any of the conditions are false, then the entire expression evaluates as false
         /// If all conditions pass, then the whole expression evaluates as true
@@ -120,8 +142,14 @@ namespace ExpandedPreconditionsUtility
         private bool CheckCustomConditions(string con)
         {
             string[] conditionParams = con.Split(' ');
-            //the first parameter at 0 is the command of which condition to check
-            switch (conditionParams[0])
+            string condition = conditionParams[0]; // Param at 0 is the command of which condition to check
+
+            // Try find condition checker for current condition in custom conditions registry
+            if (_customCheckers.TryGetValue(condition, out Func<string[], bool> customChecker))
+                return customChecker(conditionParams);
+            
+            // Otherwise fallback on integrated condition checkers
+            switch (condition)
             {
                 case "NPCAt":
                     return CheckNPCAt(conditionParams);

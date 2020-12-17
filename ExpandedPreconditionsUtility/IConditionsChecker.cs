@@ -1,4 +1,5 @@
 ﻿using StardewModdingAPI;
+using System;
 
 namespace ExpandedPreconditionsUtility
 {
@@ -24,6 +25,13 @@ namespace ExpandedPreconditionsUtility
         /// <param name="conditions"></param>
         /// <returns></returns>
         bool CheckConditions(string conditions);
+
+        /// <summary>
+        /// Register a checker for a custom condition
+        /// </summary>
+        /// <param name="conditionName">Name of the condition</param>
+        /// <param name="conditionChecker">Checker method</param>
+        void RegisterCustomCondition(string conditionName, Func<string[], bool> conditionChecker);
     }
 
     public class ConditionsChecker : IConditionsChecker
@@ -50,6 +58,11 @@ namespace ExpandedPreconditionsUtility
         public bool CheckConditions(string conditions)
         {
             return _conditionChecker.CheckConditions(new[] { conditions });
+        }
+
+        public void RegisterCustomCondition(string conditionName, Func<string[], bool> conditionChecker)
+        {
+            _conditionChecker.RegisterCustomCondition(conditionName, conditionChecker);
         }
     }
 }
