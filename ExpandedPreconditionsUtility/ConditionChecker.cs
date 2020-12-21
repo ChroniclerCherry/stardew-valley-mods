@@ -140,9 +140,10 @@ namespace ExpandedPreconditionsUtility
                 case "HasCraftingRecipe":
                     return CheckHasRecipe(conditionParams, Game1.player.craftingRecipes);
                 case "FarmHouseUpgradeLevel":
-                    return HasItem(conditionParams);
-                case "HasItem":
                     return CheckFarmHouseUpgrade(conditionParams);
+                case "HasItem":
+                    return HasItem(conditionParams);
+                    
                 default:
                     // Note: "-5005" is a random event id cause the vanilla method is for events and needs one ¯\_(ツ)_/¯
                     // so it's the negative mod id
