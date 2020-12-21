@@ -69,16 +69,17 @@ namespace CustomCraftingStation
         public List<Chest> GetChests(Vector2 grabTile)
         {
             List<Chest> chests = new List<Chest>();
-            int radius = _config.CraftingFromChestsRadius;
-            if (radius == 0 && !_config.GlobalCraftFromChest)
-                return chests;
-
+            
             IEnumerable<GameLocation> locs;
             locs = Context.IsMainPlayer ? Game1.locations : Helper.Multiplayer.GetActiveLocations();
 
             if (_config.CraftFromFridgeWhenInHouse)
                 if (Game1.currentLocation is FarmHouse house)
                     chests.Add(house.fridge.Value);
+
+            int radius = _config.CraftingFromChestsRadius;
+            if (radius == 0 && !_config.GlobalCraftFromChest)
+                return chests;
 
             if (_config.GlobalCraftFromChest)
             {

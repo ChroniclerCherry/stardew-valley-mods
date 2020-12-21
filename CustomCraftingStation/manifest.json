@@ -1,10 +1,10 @@
 ﻿{
   "Name": "Custom Crafting Stations",
   "Author": "Cherry",
-  "Version": "1.1.1",
+  "Version": "1.1.2",
   "Description": "Allows modders to add specialized crafting stations",
   "UniqueID": "Cherry.CustomCraftingStations",
   "EntryDll": "CustomCraftingStation.dll",
-  "MinimumApiVersion": "3.5.0",
+  "MinimumApiVersion": "3.8.0",
   "UpdateKeys": ["Nexus:6293"]
 }
