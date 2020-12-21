@@ -312,7 +312,7 @@ namespace TrainStation
 
         private bool CheckConditions(string conditions)
         {
-            if (conditions == null || conditions.Length == 0)
+            if (string.IsNullOrEmpty(conditions))
                 return true;
 
             int result = VanillaPreconditionsMethod.Invoke<int>("-5005/" + conditions);
