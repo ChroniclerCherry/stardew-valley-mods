@@ -27,6 +27,7 @@ namespace StardewAquarium
         private readonly bool _isAndroid = Constants.TargetPlatform == GamePlatform.Android;
         public static HarmonyInstance Harmony { get; } = HarmonyInstance.Create("Cherry.StardewAquarium");
 
+        private static int GameTick = 0;
         public static IJsonAssetsApi JsonAssets { get; set; }
         public static ISpaceCoreAPI SpaceCore { get; set; }
         public override void Entry(IModHelper helper)
@@ -143,6 +144,15 @@ namespace StardewAquarium
 
         private void GameLoop_UpdateTicked(object sender, StardewModdingAPI.Events.UpdateTickedEventArgs e)
         {
+            if (GameTick < 2)
+            {
+                GameTick++;
+            }
+            else
+            {
+                InitializeEditors();
+            }
+
             if (Game1.currentLocation?.Name != Data.ExteriorMapName) return;
             if (Game1.isTimePaused) return;
 
@@ -237,8 +247,6 @@ namespace StardewAquarium
         {
             JsonAssets = Helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
             JsonAssets.LoadAssets(Path.Combine(Helper.DirectoryPath, "data"));
-
-            InitializeEditors();
 
             SpaceCore = Helper.ModRegistry.GetApi<ISpaceCoreAPI>("spacechase0.SpaceCore");
             SpaceCore.AddEventCommand("GiveAquariumTrophy1", typeof(ModEntry).GetMethod(nameof(GiveAquariumTrophy1)));
