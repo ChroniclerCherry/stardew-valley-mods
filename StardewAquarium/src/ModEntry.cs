@@ -148,9 +148,10 @@ namespace StardewAquarium
             {
                 GameTick++;
             }
-            else
+            else if (GameTick == 2)
             {
                 InitializeEditors();
+                GameTick++;
             }
 
             if (Game1.currentLocation?.Name != Data.ExteriorMapName) return;
