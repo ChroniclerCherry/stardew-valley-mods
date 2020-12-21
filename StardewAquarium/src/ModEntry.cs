@@ -38,6 +38,7 @@ namespace StardewAquarium
             Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             Helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked;
             Helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
+            Helper.Events.Input.ButtonPressed += Input_ButtonPressed;
 
             if (_isAndroid)
             {
@@ -78,6 +79,14 @@ namespace StardewAquarium
 
                 Helper.ConsoleCommands.Add("aquariumprogress", "", OpenAquariumCollectionMenu);
                 Helper.ConsoleCommands.Add("removedonatedfish", "", RemoveDonatedFish);
+            }
+        }
+
+        private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
+        {
+            if (Context.CanPlayerMove && Config.CheckDonationCollection == e.Button)
+            {
+                Game1.activeClickableMenu = new AquariumCollectionMenu(Helper.Translation.Get("CollectionsMenu"));
             }
         }
 
