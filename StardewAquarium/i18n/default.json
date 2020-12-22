@@ -7,6 +7,8 @@
 	"DonationQuestion": "Welcome to the Stardew Aquarium! Would you like to donate a fish today?",
 	"OptionYes": "Yes",
 	"OptionNo": "No",
+	"More": "More",
+	"Exit": "Exit",
 	"DeclineToDonate": "You are free to return anytime if you change your mind!",
 	"NothingToDonate": "Welcome to the Stardew Aquarium! If you ever find a specimen we're missing, we'd be delighted if you would considering making a donation.",
 	"MenuCloseFishDonated": "Thank you so much for your contribution! Come back in a moment and I will have set it up!",
@@ -124,6 +126,22 @@
 	"Tank_Minnow": "Minnow is a name for a number of small freshwater fish species. They can be found in most rivers and lakes.",
 	"Tank_Puppyfish": "The Puppyfish is possibly the most popular aquatic pet. But if you want to pet it, you would have to get your hands wet!",
 	"Tank_Butterfish": "The Butterfish is a freshwater fish, it can be found in different waters around Stardew Valley depending on the season.",
+
+	//1.1.0 fish descriptions
+
+	"Tank_DottedAbalone": "Abalone is a name for a group of molluscs. They are also known by other names, such as; Ear Shells, Sea Ears, Muttonfish, Muttonshells, Ormer, Perlemoen and Paua.",
+	"Tank_Scallop": "Scallop is a name for a wide variety of molluscs. They are closely related to another group of molluscs commonly called Oysters.",
+	"Tank_DewdropFish": "The Dewdrop Fish, it's waterdrop or rather dewdrop shape gives this fish it's unique name.",
+	"Tank_PurpleSpottedTrout": "The Purple Spotted Trout, is not native to Stardew Valley. It's origins is not known to most people.",
+	"Tank_Relicantlette": "The Relicantlette, is said to be a common fish found in ancient lakes. But finding an ancient lake is a rare thing.",
+	"Tank_Serafin": "The Serafin, it glides through the water with it's wing-like fins. An elegant fish to behold.",
+	"Tank_UmuwiCarp": "The Umuwi Carp, this magical fish seems to be surrounded by a strange sort of magic. Further research is required.",
+	"Tank_KingSalmon": "The King Salmon, this giant fish is the largest species of salmon. A highly prized fish for most anglers.",
+	"Tank_Frog": "Frogs belong to a large and diverse group of amphibians. Using their vocal cords, frogs can make a variety of croaking sounds.",
+
+	//1.1.0 dialogue boxes
+
+	"LASV_TP": "Stepping into these magical sparkles, will teleport you to a new magical world!",
 
 	//npc dialogue such long
 

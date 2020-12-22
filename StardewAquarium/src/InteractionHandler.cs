@@ -66,14 +66,15 @@ namespace StardewAquarium
 
         private void TryToOpenDonationMenu()
         {
-            if (Game1.MasterPlayer.achievements.Contains(AchievementEditor.AchievementId))
-            {
-                Game1.drawObjectDialogue(_helper.Translation.Get("AquariumWelcome"));
-                return;
-            }
 
             if (!Utils.DoesPlayerHaveDonatableFish())
             {
+                if (Game1.MasterPlayer.achievements.Contains(AchievementEditor.AchievementId))
+                {
+                    Game1.drawObjectDialogue(_helper.Translation.Get("AquariumWelcome"));
+                    return;
+                }
+
                 Game1.drawObjectDialogue(_helper.Translation.Get("NothingToDonate"));
                 return;
             }

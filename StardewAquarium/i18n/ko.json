@@ -7,6 +7,8 @@
 	"DonationQuestion": "별이슬 아쿠아리움에 어서오세요! 오늘은 물고기를 기부하시겠습니까?",
 	"OptionYes": "네",
 	"OptionNo": "아니오",
+	"More": "더",
+	"Exit": "닫기",
 	"DeclineToDonate": "마음이 바뀌면 언제든지 오세요!",
 	"NothingToDonate": "별이슬 아쿠아리움에 어서오세요! 혹시 저희에게 없는 표본을 발견하셔서 만약 기부해주시면 기쁘게 전시하도록 하겠습니다.",
 	"MenuCloseFishDonated": "기부에 정말 감사드립니다! 잠시 후 돌아오면 세팅되어 있을겁니다!",
@@ -100,7 +102,7 @@
 	"Tank_Woodskip": "숲고기는 숲속 깊은 웅덩이에서만 살 수 있는 매우 민감한 물고기입니다... 그래서 특별한 수조를 준비했습니다.",
 	"Tank_VoidSalmon": "공허의 연어는 공허 에너지에 의해 뒤틀렸습니다. 흑마법으로 인해 발생한 이 물고기에 대해 알려진 것은 많지 않습니다.",
 	"Tank_Slimejack": "슬라임잭은 겉이 슬라임 점액질로 뒤덮여 있습니다. 이 점액질은 포식자들로부터 몸을 보호하기 위한 방어 메커니즘으로 추측됩니다.",
-	"Tank_MidnightSquid": "자정오징어는 심해에 사는 오징어로, 다량의 잉어를 생산합니다.",
+	"Tank_MidnightSquid": "자정오징어는 심해에 사는 오징어로, 다량의 잉크를 생산합니다.",
 	"Tank_Blobfish": "블롭피쉬는 600~1200m의 깊은 수심에 사는 심해어입니다. 이 수심의 압력은 해수면보다 60배에서 120배까지 크기 때문에, 낚시로 수면에 올라오면 급격한 수압변화로 조직이 손상되어 본 모습을 잃어버립니다. 안심하세요, 이 수족관은 블롭피쉬가 살기 좋은 적당한 수압으로 유지되고 있습니다.",
 	"Tank_SpookFish": "통안어는 심해의 어둠 속에서도 희미한 실루엣을 감지할 수 있는 매우 효율적인 세 개의 눈을 가지고 있습니다.",
 	"Tank_Angler": "아귀는 이 지역의 전설적인 물고기로, 생물발광을 이용해서 먹이를 유인하는 점이 매우 특징적입니다.",
@@ -124,6 +126,22 @@
 	"Tank_Minnow": "Minnow is a name for a number of small freshwater fish species. They can be found in most rivers and lakes.",
 	"Tank_Puppyfish": "The Puppyfish is possibly the most popular aquatic pet. But if you want to pet it, you would have to get your hands wet!",
 	"Tank_Butterfish": "The Butterfish is a freshwater fish, it can be found in different waters around Stardew Valley depending on the season.",
+
+	//1.1.0 fish descriptions
+
+	"Tank_DottedAbalone": "전복은 연체동물 집단의 이름이다. 여러 문화권에서 다양한 이름으로 불리는데, 고급 식재료로 사용된다.",
+	"Tank_Scallop": "가리비는 다양한 연체동물의 이름이다. 그것들은 보통 굴이라고 불리는 다른 연체동물 그룹과 밀접한 관련이 있다.",
+	"Tank_DewdropFish": "이슬방울 물고기, 물방울 모양이 이 물고기에게 독특한 이름을 준다.",
+	"Tank_PurpleSpottedTrout": "보라색 점박이 송어는 스타듀 계곡에서 자생하지 않는다. 그것은 대부분의 사람들에게 알려지지 않았다.",
+	"Tank_Relicantlette": "렐리컨틀릿은 고대 호수에서 흔히 발견되는 물고기라고 한다. 하지만 고대 호수를 찾는 것은 드문 일이다.",
+	"Tank_Serafin": "세라핀은 날개 같은 지느러미로 물 속을 미끄러지듯 지나간다. 눈을 즐겁게 하는 우아한 물고기.",
+	"Tank_UmuwiCarp": "우무위 잉어는 이상한 종류의 마법에 둘러싸인 것 같다. 더 많은 연구가 필요하다.",
+	"Tank_KingSalmon": "대왕연어는 연어류 중에서 가장 큰 물고기입니다. 대부분의 낚시꾼들에게 매우 귀하게 여겨지는 물고기이죠.",
+	"Tank_Frog": "개구리는 크고 다양한 양서류에 속한다. 개구리들은 그들의 성대를 이용하여 다양한 울음소리를 낼 수 있다.",
+
+	//1.1.0 dialogue boxes
+
+	"LASV_TP": "이 마법의 불꽃에 발을 들여놓으면 새로운 마법의 세계로 이동하게 됩니다!",
 
 	//npc dialogue such long
 

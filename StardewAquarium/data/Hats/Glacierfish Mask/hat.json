@@ -4,29 +4,29 @@
 	"ShowHair": false,
 	"IgnoreHairstyleOffset": true,
     "NameLocalization": {
-        //"es": "", //Spansih
         "ko": "빙하고기 가면",
-        //"de": "", //German
-        //"fr": "", //French
-        //"hu": "", //Hungarian
-        //"it": "", //Italian
-        //"ja": "", //Japanese
+        "fr": "Masque de Poisson des Glaciers",
         "pt": "Máscara de Peixe-gelo",
         "ru": "Маска Ледорыба",
-        //"tr": "", //Turkish*/
-        "zh": "冰川鱼面具"
+        "zh": "冰川鱼面具",
+		"es": "Máscara del Pez Glacial",
+		"de": "Gletscherfisch Maske",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
     },
     "DescriptionLocalization": {
-        //"es": "", //Spansih
         "ko": "전설적인 물고기 빙하고기 모양 가면.",
-        //"de": "", //German
-        //"fr": "", //French
-        //"hu": "", //Hungarian
-        //"it": "", //Italian
-        //"ja": "", //Japanese
+        "fr": "Masque du Légendaire Poisson des Glaciers.",
         "pt": "Máscara do lendário Peixe-gelo.",
         "ru": "Маска легендарного Ледорыба.",
-        //"tr": "", //Turkish*/
-        "zh": "冰川鱼面具"
+        "zh": "传奇冰川鱼面具。",
+		"es": "Máscara del legendario Pez Glacial.",
+		"de": "Maske des legendären Gletscherfisches.",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
     }
 }

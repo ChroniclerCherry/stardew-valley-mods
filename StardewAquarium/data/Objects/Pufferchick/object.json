@@ -14,29 +14,29 @@
 		/*gift tastes go here*/
 	},
 	"NameLocalization": {
-		//"es": "", //Spanish
 		"ko": "복어닭",
-		/*"de": "", //German
-		"fr": "", //French
-		"hu": "", //Hungarian
-		"it": "", //Italian
-		"ja": "", //Japanese*/
+		"fr": "Poulet-Globe",
 		"pt": "Galiacu",
 		"ru": "Фугу-цыплёнок",
-		//"tr": "", //Turkish
-		"zh": "河豚鸡鱼衬衫"
+		"zh": "河豚鸡鱼",
+		"es": "Globo-Pollo",
+		"de": "Kugelhuhn",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
 	},
 	"DescriptionLocalization": {
-		//"es": "", //Spanish
 		"ko": "반은 복어고 반은 닭입니다.",
-		/*"de": "", //German
-		"fr": "", //French
-		"hu": "", //Hungarian
-		"it": "", //Italian
-		"ja": "", //Japanese*/
+		"fr": "Moitié poulet, moitié poisson-globe.",
 		"pt": "Meio frango, meio baiacu",
 		"ru": "Наполовину фугу, наполовину цыплёнок.",
-		//"tr": "", //Turkish
-		"zh": "河豚鸡鱼衬衫"
+		"zh": "一半是鸡，一半是河豚。",
+		"es": "Mitad pollo, mitad Pez Globo.",
+		"de": "Halb Huhn, halb Kugelfisch.",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
 	}
 }

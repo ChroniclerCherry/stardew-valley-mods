@@ -7,6 +7,8 @@ namespace StardewAquarium
     class AquariumMessage
     {
         private static ITranslationHelper _translation;
+        List<Response[]> _responsePages;
+        private int _currentPage = 0;
 
         public static  void Initialize(ITranslationHelper translation)
         {
@@ -34,19 +36,47 @@ namespace StardewAquarium
                 return;
             }
 
-            List<Response> responses = new List<Response>();
+            BuildResponse(fishes);
+            Game1.currentLocation.createQuestionDialogue(_translation.Get("WhichFishInfo"), _responsePages[_currentPage], displayFishInfo);
+        }
 
-            foreach (var fish in fishes)
+        private void BuildResponse(List<string> fishes)
+        {
+            _responsePages = new List<Response[]>();
+            var responsesThisPage = new List<Response>();
+
+            for (var index = 0; index < fishes.Count; index++)
             {
-                responses.Add(new Response(fish,Utils.FishDisplayNames[fish]));
+                responsesThisPage.Add(new Response(fishes[index], Utils.FishDisplayNames[fishes[index]]));
+
+                //Max of 3 options per page, with more pages added as needed
+                if (responsesThisPage.Count < 4) continue;
+                if (index < fishes.Count - 1)
+                    responsesThisPage.Add(new Response("More", _translation.Get("More")));
+                responsesThisPage.Add(new Response("Exit", _translation.Get("Exit")));
+                _responsePages.Add(responsesThisPage.ToArray());
+                responsesThisPage = new List<Response>();
             }
 
-            Game1.currentLocation.createQuestionDialogue(_translation.Get("WhichFishInfo"),
-                responses.ToArray(),displayFishInfo);
+            responsesThisPage.Add(new Response("Exit", _translation.Get("Exit")));
+            _responsePages.Add(responsesThisPage.ToArray());
+
         }
 
         private void displayFishInfo(Farmer who, string whichAnswer)
         {
+            if (whichAnswer == "Exit")
+            {
+                return;
+            }
+
+            if (whichAnswer == "More")
+            {
+                Game1.activeClickableMenu = null;
+                _currentPage++;
+                Game1.currentLocation.createQuestionDialogue(_translation.Get("WhichFishInfo"), _responsePages[_currentPage], displayFishInfo);
+                return;
+            }
             Game1.drawObjectDialogue(_translation.Get($"Tank_{whichAnswer}"));
         }
     }

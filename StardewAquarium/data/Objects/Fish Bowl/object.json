@@ -8,29 +8,29 @@
 	"IsColored": false,
 	"Recipe": null,
 	"NameLocalization": {
-		//"es": "", //Spansih
 		"ko": "어항",
-		/*"de": "", //German
-		"fr": "", //French
-		"hu": "", //Hungarian
-		"it": "", //Italian
-		"ja": "", //Japanese*/
+		"fr": "Bocal à Poisson",
 		"pt": "Aquário",
 		"ru": "Небольшой аквариум",
-		//"tr": "", //Turkish
-		"zh": "鱼缸"
+		"zh": "鱼缸",
+		"es": "Pecera",
+		"de": "Fischglas",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
 	},
 	"DescriptionLocalization": {
-		//"es": "", //Spansih
 		"ko": "귀여운 물고기다!",
-		/*"de": "", //German
-		"fr": "", //French
-		"hu": "", //Hungarian
-		"it": "", //Italian
-		"ja": "", //Japanese*/
+		"fr": "Poisson Mignon!",
 		"pt": "Peixe fofo!",
 		"ru": "В нём плавает симпатичная рыбка !",
-		//"tr": "", //Turkish
-		"zh": "鱼缸"
+		"zh": "鱼缸里有可爱的小鱼儿！",
+		"es": "¡Lindo pececito!",
+		"de": "Goldiges Fischlein!",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
 	}
 }

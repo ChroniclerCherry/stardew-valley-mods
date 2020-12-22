@@ -4,29 +4,29 @@
 	"ShowHair": false,
 	"IgnoreHairstyleOffset": true,
     "NameLocalization": {
-        //"es": "", //Spansih
         "ko": "아귀 가면",
-        //"de": "", //German
-        //"fr": "", //French
-        //"hu": "", //Hungarian
-        //"it": "", //Italian
-        //"ja": "", //Japanese
+        "fr": "Masque de Poisson-Pêcheur",
         "pt": "Máscara de Tamboril",
         "ru": "Маска Морского чёрта",
-        //"tr": "", //Turkish*/
-        "zh": "鮟鱇鱼面具"
+        "zh": "鮟鱇鱼面具",
+		"es": "Máscara de Rape",
+		"de": "Anglerfisch Maske",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
     },
     "DescriptionLocalization": {
-        //"es": "", //Spansih
         "ko": "전설적인 물고기 아귀 모양 가면.",
-        //"de": "", //German
-        //"fr": "", //French
-        //"hu": "", //Hungarian
-        //"it": "", //Italian
-        //"ja": "", //Japanese
+        "fr": "Masque du Légendaire Poisson-Pêcheur.",
         "pt": "Máscara do lendário Tamboril.",
         "ru": "Маска легендарного Морского чёрта.",
-        //"tr": "", //Turkish*/
-        "zh": "鮟鱇鱼面具"
+        "zh": "传奇鮟鱇鱼面具。",
+		"es": "Máscara del legendario Rape.",
+		"de": "Maske des legendären Anglerfisches.",
+		//"hu": "", Hungarian
+		//"it": "", Italian
+		//"ja": "", Japanese
+		//"tr": "", Turkish
     }
 }

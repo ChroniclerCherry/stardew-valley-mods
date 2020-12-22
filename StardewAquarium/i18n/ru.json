@@ -7,6 +7,8 @@
 	"DonationQuestion": "Добро пожаловать в Аквариум долины Стардью. Хотите отдать какую-нибудь рыбу ?",
 	"OptionYes": "Да",
 	"OptionNo": "Нет",
+	"More": "Больше",
+	"Exit": "Закрыть",
 	"DeclineToDonate": "Вы можете вернуться в любое время, если передумаете!",
 	"NothingToDonate": "Добро пожаловать в Аквариум долины Стардью! Если вы когда-нибудь найдете рыбу, которой у нас нет, мы будем рады, если Вы передатите её нам.",
 	"MenuCloseFishDonated": "Большое спасибо за ваш вклад! Вернитесь через мгновение, и я все настрою!",
@@ -125,6 +127,22 @@
 	"Tank_Puppyfish": "Паппифиш?, пожалуй, самый популярный водный питомец. Но если вы хотите погладить его, вам придется намочить руки!",
 	"Tank_Butterfish": "Масляная рыба - пресноводная рыба. Её можно найти в разных водах вокруг долины Стардью в зависимости от сезона.",
 
+	//1.1.0 fish descriptions
+	/*
+	"Tank_DottedAbalone": "Abalone is a name for a group of molluscs. They are also known by other names, such as; Ear Shells, Sea Ears, Muttonfish, Muttonshells, Ormer, Perlemoen and Paua.",
+	"Tank_Scallop": "Scallop is a name for a wide variety of molluscs. They are closely related to another group of molluscs commonly called Oysters.",
+	"Tank_DewdropFish": "The Dewdrop Fish, it's waterdrop or rather dewdrop shape gives this fish it's unique name.",
+	"Tank_PurpleSpottedTrout": "The Purple Spotted Trout, is not native to Stardew Valley. It's origins is not known to most people.",
+	"Tank_Relicantlette": "The Relicantlette, is said to be a common fish found in ancient lakes. But finding an ancient lake is a rare thing.",
+	"Tank_Serafin": "The Serafin, it glides through the water with it's wing-like fins. An elegant fish to behold.",
+	"Tank_UmuwiCarp": "The Umuwi Carp, this magical fish seems to be surrounded by a strange sort of magic. Further research is required.",
+	"Tank_KingSalmon": "The King Salmon, this giant fish is the largest species of salmon. A highly prized fish for most anglers.",
+	"Tank_Frog": "Frogs belong to a large and diverse group of amphibians. Using their vocal cords, frogs can make a variety of croaking sounds.",
+
+	//1.1.0 dialogue boxes
+	
+	"LASV_TP": "Stepping into these magical sparkles, will teleport you to a new magical world!",
+	*/
 	//npc dialogue such long
 
 	"SPRINGNPC_1": "Турист: Что же купить в сувенирном магазине?",
