@@ -222,7 +222,7 @@ namespace StardewAquarium
         {
             Helper.Content.AssetEditors.Add(new AchievementEditor(Helper, Monitor));
             Helper.Content.AssetEditors.Add(new MiscEditor(Helper));
-            Helper.Content.AssetEditors.Add(new FishEditor());
+            Helper.Content.AssetEditors.Add(new FishEditor(Helper));
             Helper.Content.AssetEditors.Add(new MailEditor(Helper));
         }
 
