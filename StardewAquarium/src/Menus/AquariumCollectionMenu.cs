@@ -54,14 +54,20 @@ namespace StardewAquarium.Menus
             foreach (KeyValuePair<int, string> keyValuePair in keyValuePairList)
             {
                 string str = keyValuePair.Value.Split('/')[3];
-                bool drawShadow = false;
+                bool drawColour = false;
+                bool drawColorFaded = false;
 
                 if (str.Contains("-4"))
                 {
                     string name = keyValuePair.Value.Split('/')[0];
                     if (!Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]))
                     {
-                        drawShadow = true;
+                        drawColour = true;
+                    }
+
+                    if (Game1.player.fishCaught.ContainsKey(keyValuePair.Key))
+                    {
+                        drawColorFaded = true;
                     }
                 }
                 else
@@ -79,7 +85,7 @@ namespace StardewAquarium.Menus
                 if (collections.Count == 0)
                     collections.Add(new List<ClickableTextureComponent>());
                 List<ClickableTextureComponent> textureComponentList = collections.Last();
-                ClickableTextureComponent textureComponent8 = new ClickableTextureComponent(keyValuePair.Key.ToString() + " " + drawShadow.ToString(), new Rectangle(x1, y1, 64, 64), null, "", Game1.objectSpriteSheet, Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, keyValuePair.Key, 16, 16), 4f, drawShadow)
+                ClickableTextureComponent textureComponent8 = new ClickableTextureComponent(keyValuePair.Key + " " + drawColour + " " + drawColorFaded, new Rectangle(x1, y1, 64, 64), null, "", Game1.objectSpriteSheet, Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, keyValuePair.Key, 16, 16), 4f, drawColour)
                 {
                     myID = collections.Last().Count,
                     rightNeighborID = (collections.Last().Count + 1) % num4 == 0 ? -1 : collections.Last().Count + 1,
@@ -183,7 +189,7 @@ namespace StardewAquarium.Menus
             string[] strArray = Game1.objectInformation[index].Split('/');
 
             string name = strArray[0];
-            if (Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]))
+            if (Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]) && !Game1.player.fishCaught.ContainsKey(index))
                 return "???";
 
             string returnStr = strArray[4] + Environment.NewLine + Environment.NewLine + Game1.parseText(strArray[5], Game1.smallFont, 256) + Environment.NewLine;
@@ -209,11 +215,17 @@ namespace StardewAquarium.Menus
             SpriteText.drawStringWithScrollCenteredAt(b, _title, Game1.viewport.Width / 2 - 50, Game1.viewport.Height / 2 - 310, _title, 1f, -1, 0, 0.88f, false);
 
             b.End();
-            b.Begin(SpriteSortMode.FrontToBack, BlendState.NonPremultiplied, SamplerState.PointClamp, null, null);
+            b.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
             foreach (ClickableTextureComponent textureComponent in collections[currentPage])
             {
-                bool boolean = Convert.ToBoolean(textureComponent.name.Split(' ')[1]);
-                textureComponent.draw(b, boolean ? Color.White : Color.Black * 0.2f, 0.86f, 0);
+                /*
+                 *bool drawColor = Convert.ToBoolean(c.name.Split(' ')[1]);
+                bool drawColorFaded = this.currentTab == 4 && Convert.ToBoolean(c.name.Split(' ')[2]);
+                c.draw(b, drawColorFaded ? (Color.DimGray * 0.4f) : (drawColor ? Color.White : (Color.Black * 0.2f)), 0.86f);
+                 */
+                bool drawColor = Convert.ToBoolean(textureComponent.name.Split(' ')[1]);
+                bool drawColorFaded = Convert.ToBoolean(textureComponent.name.Split(' ')[2]);
+                textureComponent.draw(b, drawColorFaded ? Color.DimGray * 0.4f : drawColor ? Color.White : Color.Black * 0.2f, drawColorFaded? 0 : 0.86f);
             }
             b.End();
             b.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
