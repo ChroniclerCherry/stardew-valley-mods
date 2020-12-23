@@ -11,6 +11,9 @@ An `Action` property with a value of `TrainStation` on the `Buildings` lair of t
 
 The menu will not show any destinations on the current map or those that do not meet the specified conditions
 
+### Adding a boat station
+The exact same thing applies for boat stations, with a property of `BoatTicket` on the Buildings layer
+
 ## Adding a destination
 
 To add a destination to the train stops menu, make a content pack with a `TrainStops.json` targetting `Cherry.TrainStation`
@@ -30,6 +33,9 @@ To add a destination to the train stops menu, make a content pack with a `TrainS
       "FacingDirectionAfterWarp":-2, //Direction the player faces when they arrived. 0 is up, 1 is right, 2 is down, 3 is left. Defaults to 2
       "Conditions": ["z winter/e 100","HasMod ACoolMod.UniqueID"]; //Conditions for the destination to be available using Expanded Preconditions Utility
     },
+  ],
+  "BoatStops": [
+    //takes the exact same fields as a train stop
   ]
 }
 ```

@@ -237,7 +237,7 @@ namespace TrainStation
             if (tileProperty == "TrainStation")
             {
                 OpenTrainMenu();
-            } else if (tileProperty == "BoatTicket" && Game1.MasterPlayer.hasOrWillReceiveMail("willyBoatFixed"))
+            } else if (BoatStops.Count > 0 && tileProperty == "BoatTicket" && Game1.MasterPlayer.hasOrWillReceiveMail("willyBoatFixed"))
             {
                 OpenBoatMenu();
                 Helper.Input.Suppress(e.Button);
