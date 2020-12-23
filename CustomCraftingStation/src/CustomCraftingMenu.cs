@@ -662,7 +662,7 @@ namespace StardewValley.Menus
                     -1,
                     hoverRecipe.DisplayName + (hoverRecipe.numberProducedPerCraft > 1 ? (" x" + hoverRecipe.numberProducedPerCraft) : ""),
                     -1,
-                    null,
+                    lastCookingHover != null && CraftingRecipe.cookingRecipes.ContainsKey(lastCookingHover.Name) && Game1.objectInformation[(lastCookingHover as Object).ParentSheetIndex].Split('/').Length > 7 ? Game1.objectInformation[(lastCookingHover as Object).ParentSheetIndex].Split('/')[7].Split(' ') : null,
                     lastCookingHover,
                     0,
                     -1,
