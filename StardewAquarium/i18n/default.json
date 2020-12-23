@@ -23,9 +23,6 @@
 	//collections menu title
 	"CollectionsMenu": "Stardew Aquarium Collection",
 
-	//message when a duplicate legendary is caught
-	"DuplicateLegendaryCaught": "Strange, you've caught this legendary fish before. It looks like the real thing... but a lot less valuable... Maybe you should donate it to the Aquarium?",
-
 	//tank messages
 	"WhichFishInfo": "Which fish would you like to know more about?",
 	"EmptyTank": "Just an empty tank...",

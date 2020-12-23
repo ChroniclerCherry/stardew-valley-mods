@@ -23,9 +23,6 @@
 	//collections menu title
 	"CollectionsMenu": "Коллекция Аквариума долины Стардью.",
 
-	//message when a duplicate legendary is caught
-	"DuplicateLegendaryCaught": "Странно, Вы раньше ловили эту легендарную рыбу. Похоже на настоящую... но гораздо менее ценную... может, Вам стоит отдать её в Аквариум?",
-
 	//tank messages
 	"WhichFishInfo": "О какой рыбе Вы хотели бы узнать больше?",
 	"EmptyTank": "Просто пустой резервуар...",

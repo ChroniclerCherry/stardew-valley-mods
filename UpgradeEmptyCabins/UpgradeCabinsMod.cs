@@ -19,10 +19,36 @@ namespace UpgradeEmptyCabins
 
             Helper.ConsoleCommands.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", UpgradeCabinsCommand);
             Helper.ConsoleCommands.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", RemoveSeedBoxesCommand);
+            Helper.ConsoleCommands.Add("remove_cabin_beds", "Removes beds from all unclaimed cabins.", RemoveCabinBedsCommand);
 
             Helper.Events.GameLoop.DayEnding += GameLoop_DayEnding;
             Helper.Events.Input.ButtonPressed += Input_ButtonPressed;
             Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
+        }
+
+        private void RemoveCabinBedsCommand(string arg1, string[] arg2)
+        {
+            foreach (var cab in ModUtility.GetCabins())
+            {
+                BedFurniture bed = null;
+                if (((Cabin)cab.indoors.Value).owner.Name != "")
+                    continue;
+                foreach (var furniture in ((Cabin)cab.indoors.Value).furniture)
+                {
+                    if (furniture is BedFurniture b)
+                    {
+                        bed = b;
+                        break;
+                    }
+                }
+
+                if (bed != null)
+                {
+                    ((Cabin)cab.indoors.Value).furniture.Remove(bed);
+                    Monitor.Log("Bed removed from " + cab.nameOfIndoors, LogLevel.Info);
+                }
+                    
+            }
         }
 
         private void RemoveSeedBoxesCommand(string arg1, string[] arg2)
@@ -39,7 +65,10 @@ namespace UpgradeEmptyCabins
                     if (!chest.giftbox.Value || chest.bigCraftable.Value)
                     {
                         continue;
-                    } ((Cabin)cab.indoors.Value).Objects.Remove(obj.Key);
+                    }
+                    
+                    ((Cabin)cab.indoors.Value).Objects.Remove(obj.Key);
+                    Monitor.Log("Seed box removed from " + cab.nameOfIndoors, LogLevel.Info);
                 }
             }
         }

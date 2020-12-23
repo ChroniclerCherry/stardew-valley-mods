@@ -23,9 +23,6 @@
 	//collections menu title
 	"CollectionsMenu": "별이슬 아쿠아리움 컬렉션",
 
-	//message when a duplicate legendary is caught
-	"DuplicateLegendaryCaught": "이상하네, 전에 이 전설적인 물고기를 잡았는데. 진짜인 것 같기는 한데...전보다 값이 덜 나갈 것같아... 아쿠아리움에 기부해야 할까?",
-
 	//tank messages
 	"WhichFishInfo": "어떤 물고기의 설명을 볼까요?",
 	"EmptyTank": "텅 빈 수조이다...",

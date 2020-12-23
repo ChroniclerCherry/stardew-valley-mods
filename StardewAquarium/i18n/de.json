@@ -22,11 +22,7 @@
 
 	//collections menu title
 	"CollectionsMenu": "Sternentau Aquarium Kollektion",
-
-	//message when a duplicate legendary is caught
-	"DuplicateLegendaryCaught": "Seltsam, du hast diesen legendären Fisch schon einmal gefangen. Er sieht aus wie der Erste ... ist aber viel weniger wert ... Vielleicht solltest du ihn dem Aquarium spenden?",
-
-	//tank messages
+    //tank messages
 	"WhichFishInfo": "Über welchen Fisch würdest Du gerne mehr wissen?",
 	"EmptyTank": "Nur ein leeres Becken...",
 

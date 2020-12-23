@@ -23,9 +23,6 @@
 	//collections menu title
 	"CollectionsMenu": "Stardew Aquarium Coleção",
 
-	//message when a duplicate legendary is caught
-	"DuplicateLegendaryCaught": "Estranho, você já pescou este peixe lendário antes. Parece real ... mas muito menos valioso ... Talvez você deva doar para o Aquarium?",
-
 	//tank messages
 	"WhichFishInfo": "Sobre quais peixes você gostaria de saber mais?",
 	"EmptyTank": "Apenas um tanque vazio...",

@@ -24,6 +24,7 @@ namespace StardewAquarium
         public static bool RecatchLegends;
         public static ModData Data;
         public const string PufferChickName = "Pufferchick";
+        public const string LegendaryBaitName = "Legendary Bait";
         private readonly bool _isAndroid = Constants.TargetPlatform == GamePlatform.Android;
         public static HarmonyInstance Harmony { get; } = HarmonyInstance.Create("Cherry.StardewAquarium");
 
@@ -54,18 +55,7 @@ namespace StardewAquarium
             string dataPath = Path.Combine("data", "data.json");
             Data = helper.Data.ReadJsonFile<ModData>(dataPath);
 
-            //disable if recatch legendary fish is installed
-            if (Config.EnableRecatchWorthlessUndonatedLegends &&
-                !Helper.ModRegistry.IsLoaded("cantorsdust.RecatchLegendaryFish"))
-            {
-                Monitor.Log("Enabling the recatch of legendaries...");
-                RecatchLegends = true;
-            }
-            else
-            {
-                Monitor.Log("Disabling the recatch of legendaries from this mod. (if cantorsdust.RecatchLegendaryFish is installed, behaviour will default to that mod's)");
-                RecatchLegends = false;
-            }
+            Monitor.Log("hello",LogLevel.Info);
 
             LegendaryFishPatches.Initialize(Helper, Monitor);
 
@@ -228,9 +218,11 @@ namespace StardewAquarium
 
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
+            Helper.Content.AssetEditors.Add(new ObjectEditor(Helper)); //editing JA items
             AquariumMessage.Initialize(Helper.Translation);
             if (Utils.CheckAchievement())
                 Utils.UnlockAchievement();
+
         }
 
         private void RemoveDonatedFish(string arg1, string[] arg2)

@@ -23,9 +23,6 @@
 	//collections menu title
 	"CollectionsMenu": "星露水族馆收藏",
 
-	//message when a duplicate legendary is caught
-	"DuplicateLegendaryCaught": "奇怪，你以前钓过这条传奇鱼。看起来像是真实的东西……但是价值低得多……也许你应该将其捐赠给水族馆？",
-
 	//tank messages
 	"WhichFishInfo": "你想进一步了解哪种鱼？",
 	"EmptyTank": "只是一个水箱...",

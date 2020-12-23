@@ -15,8 +15,11 @@ namespace StardewAquarium.Editors
         }
         public bool CanEdit<T>(IAssetInfo asset)
         {
-            return (asset.AssetNameEquals("Data\\Fish") || asset.AssetNameEquals("Data\\AquariumFish") || asset.AssetNameEquals("LooseSprites\\AquariumFish"))
-                   && ModEntry.JsonAssets != null; 
+            return ModEntry.JsonAssets != null &&
+                   (asset.AssetNameEquals("Data\\Fish")
+                    || asset.AssetNameEquals("Data\\AquariumFish")
+                    || asset.AssetNameEquals("LooseSprites\\AquariumFish")
+                    || asset.AssetNameEquals("Data\\Locations")); 
         }
 
         public void Edit<T>(IAssetData asset)
@@ -38,6 +41,10 @@ namespace StardewAquarium.Editors
 
                 Texture2D sourceImage = _helper.Content.Load<Texture2D>("data\\Objects\\Pufferchick\\object.png", ContentSource.ModFolder);
                 editor.PatchImage(sourceImage, targetArea: new Rectangle(4, 52, 16, 16));
+            } else if (asset.AssetNameEquals("Data\\Locations"))
+            {
+                var data = asset.AsDictionary<string, string>().Data;
+                data[ModEntry.Data.ExteriorMapName] = data["Beach"];
             }
 
         }
