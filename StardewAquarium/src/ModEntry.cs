@@ -21,7 +21,6 @@ namespace StardewAquarium
     public partial class ModEntry : Mod
     {
         public static ModConfig Config;
-        public static bool RecatchLegends;
         public static ModData Data;
         public const string PufferChickName = "Pufferchick";
         public const string LegendaryBaitName = "Legendary Bait";

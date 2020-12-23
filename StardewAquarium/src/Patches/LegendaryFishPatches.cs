@@ -54,8 +54,6 @@ namespace StardewAquarium.Patches
                 new HarmonyMethod(typeof(LegendaryFishPatches), nameof(GameLocation_getFish_Prefix))
             );
 
-            //don't patch these if we don't wanna enable recatch behaviour
-            if (!ModEntry.RecatchLegends) return;
             //makes crimsonfish recatchable
             harmony.Patch(
                 AccessTools.Method(typeof(Beach), nameof(GameLocation.getFish)),
@@ -96,7 +94,7 @@ namespace StardewAquarium.Patches
             return false;
 
         }
-        public static bool Sewer_getFish_prefix(int waterDepth, Farmer who, ref Object __result)
+        public static bool Sewer_getFish_prefix(Farmer who, ref Object __result)
         {
             if (Game1.player == null || !(Game1.player.CurrentTool is FishingRod rod) ||
                 rod.getBaitAttachmentIndex() != LegendaryBaitId) return true;
@@ -116,7 +114,7 @@ namespace StardewAquarium.Patches
 
         }
 
-        public static bool Town_getFish_prefix(int waterDepth, Farmer who, ref Object __result)
+        public static bool Town_getFish_prefix(Farmer who, ref Object __result)
         {
             if (Game1.player == null || !(Game1.player.CurrentTool is FishingRod rod) ||
                 rod.getBaitAttachmentIndex() != LegendaryBaitId) return true;

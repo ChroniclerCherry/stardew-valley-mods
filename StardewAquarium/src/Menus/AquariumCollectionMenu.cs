@@ -60,14 +60,15 @@ namespace StardewAquarium.Menus
                 if (str.Contains("-4"))
                 {
                     string name = keyValuePair.Value.Split('/')[0];
-                    if (!Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]))
-                    {
-                        drawColour = true;
-                    }
-
                     if (Game1.player.fishCaught.ContainsKey(keyValuePair.Key))
                     {
                         drawColorFaded = true;
+                    }
+
+                    if (!Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]))
+                    {
+                        drawColour = true;
+                        drawColorFaded = false;
                     }
                 }
                 else
