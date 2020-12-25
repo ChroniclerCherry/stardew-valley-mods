@@ -131,24 +131,21 @@ namespace ShopTileFramework.ItemPriceAndStock
         }
 
         /// <summary>
-        /// Add all items from the JA Packs listed in the JAPacks section
+        /// Add all items from the content packs listed in the JAPacks section
         /// </summary>
         private void AddByJAPack(double pricemultiplier)
         {
             if (JAPacks == null)
                 return;
 
-            if (APIs.JsonAssets == null)
-                return;
-
-            foreach (var JAPack in JAPacks)
+            foreach (var contentPack in JAPacks)
             {
-                ModEntry.monitor.Log($"Adding all {ItemType}s from {JAPack}", LogLevel.Debug);
+                ModEntry.monitor.Log($"Adding all {ItemType}s from {contentPack}", LogLevel.Debug);
 
                 if (ItemType == "Seed")
                 {
-                    var crops = APIs.JsonAssets.GetAllCropsFromContentPack(JAPack);
-                    var trees = APIs.JsonAssets.GetAllFruitTreesFromContentPack(JAPack);
+                    var crops = APIs.JsonAssets?.GetAllCropsFromContentPack(contentPack);
+                    var trees = APIs.JsonAssets?.GetAllFruitTreesFromContentPack(contentPack);
 
 
                     if (crops != null)
@@ -173,13 +170,13 @@ namespace ShopTileFramework.ItemPriceAndStock
                         }
                     }
 
-                    continue; //skip the rest of the loop so we don't also add the none-seed version
+                    continue; //skip the rest of the loop so we don't also add the non-seed version
                 }
 
-                var packs = GetJaItems(JAPack);
+                var packs = GetCpItemNames(contentPack);
                 if (packs == null)
                 {
-                    ModEntry.monitor.Log($"No {ItemType} from {JAPack} could be found", LogLevel.Trace);
+                    ModEntry.monitor.Log($"No {ItemType} from {contentPack} could be found", LogLevel.Trace);
                     continue;
                 }
 
@@ -191,26 +188,30 @@ namespace ShopTileFramework.ItemPriceAndStock
         }
 
         /// <summary>
-        /// Depending on the itemtype, returns a list of the names of all items of that type in a JA pack
+        /// Depending on the item type, returns a list of the names of all items of that type in a content pack.
+        /// JA and CF content packs are currently supported for this functionality.
         /// </summary>
-        /// <param name="JAPack">Unique ID of the pack</param>
-        /// <returns>A list of all the names of the items of the right item type in that pack</returns>
-        private List<string> GetJaItems(string JAPack)
+        /// <param name="cpUniqueId">Unique ID of the pack</param>
+        /// <returns>A list of all the names of the items of the right item
+        /// type in that pack</returns>
+        private List<string> GetCpItemNames(string cpUniqueId)
         {
             switch (ItemType)
             {
                 case "Object":
-                    return APIs.JsonAssets.GetAllObjectsFromContentPack(JAPack);
+                    return APIs.JsonAssets?.GetAllObjectsFromContentPack(cpUniqueId);
                 case "BigCraftable":
-                    return APIs.JsonAssets.GetAllBigCraftablesFromContentPack(JAPack);
+                    return APIs.JsonAssets?.GetAllBigCraftablesFromContentPack(cpUniqueId);
                 case "Clothing":
-                    return APIs.JsonAssets.GetAllClothingFromContentPack(JAPack);
+                    return APIs.JsonAssets?.GetAllClothingFromContentPack(cpUniqueId);
                 case "Ring":
-                    return APIs.JsonAssets.GetAllObjectsFromContentPack(JAPack);
+                    return APIs.JsonAssets?.GetAllObjectsFromContentPack(cpUniqueId);
                 case "Hat":
-                    return APIs.JsonAssets.GetAllHatsFromContentPack(JAPack);
+                    return APIs.JsonAssets?.GetAllHatsFromContentPack(cpUniqueId);
                 case "Weapon":
-                    return APIs.JsonAssets.GetAllWeaponsFromContentPack(JAPack);
+                    return APIs.JsonAssets?.GetAllWeaponsFromContentPack(cpUniqueId);
+                case "Furniture":
+                    return APIs.CustomFurniture?.GetAllFurnitureFromContentPack(cpUniqueId);
                 default:
                     return null;
             }

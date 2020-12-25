@@ -162,30 +162,32 @@ namespace ShopTileFramework.Utility
 
         public static void RegisterItemsToRemove()
         {
-            if (APIs.JsonAssets == null)
-                return;
-
             foreach (string pack in _packsToRemove)
             {
-                var items = APIs.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
+                var items = APIs.JsonAssets?.GetAllBigCraftablesFromContentPack(pack);
                 if (items != null)
                     _itemsToRemove.AddRange(items);
 
-                items = APIs.JsonAssets.GetAllClothingFromContentPack(pack);
+                items = APIs.JsonAssets?.GetAllClothingFromContentPack(pack);
                 if (items != null)
                     _itemsToRemove.AddRange(items);
 
-                items = APIs.JsonAssets.GetAllHatsFromContentPack(pack);
+                items = APIs.JsonAssets?.GetAllHatsFromContentPack(pack);
                 if (items != null)
                     _itemsToRemove.AddRange(items);
 
-                items = APIs.JsonAssets.GetAllObjectsFromContentPack(pack);
+                items = APIs.JsonAssets?.GetAllObjectsFromContentPack(pack);
+                if (items != null)
+                {
+                    _itemsToRemove.AddRange(items);
+                }
+                items = APIs.CustomFurniture?.GetAllFurnitureFromContentPack(pack);
                 if (items != null)
                 {
                     _itemsToRemove.AddRange(items);
                 }
 
-                var crops = APIs.JsonAssets.GetAllCropsFromContentPack(pack);
+                var crops = APIs.JsonAssets?.GetAllCropsFromContentPack(pack);
 
                 if (crops != null)
                 {
@@ -195,23 +197,24 @@ namespace ShopTileFramework.Utility
                     }
                 }
 
-                var trees = APIs.JsonAssets.GetAllFruitTreesFromContentPack(pack);
+                var trees = APIs.JsonAssets?.GetAllFruitTreesFromContentPack(pack);
                 if (trees != null)
                 {
                     foreach (int saplingID in trees.Select(GetSaplingId))
-                    {_itemsToRemove.Add(ObjectInfoSource["Object"][saplingID].Split('/')[0]);
+                    {
+                        _itemsToRemove.Add(ObjectInfoSource["Object"][saplingID].Split('/')[0]);
                     }
                 }
 
 
-                items = APIs.JsonAssets.GetAllWeaponsFromContentPack(pack);
+                items = APIs.JsonAssets?.GetAllWeaponsFromContentPack(pack);
                 if (items != null)
                     _itemsToRemove.AddRange(items);
             }
 
             foreach (string pack in _recipePacksToRemove)
             {
-                var items = APIs.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
+                var items = APIs.JsonAssets?.GetAllBigCraftablesFromContentPack(pack);
                 if (items != null)
                     _itemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
 

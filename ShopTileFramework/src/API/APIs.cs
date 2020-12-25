@@ -12,6 +12,7 @@ namespace ShopTileFramework.API
         internal static IJsonAssetsApi JsonAssets;
         internal static IBFAVApi BFAV;
         internal static IConditionsApi Conditions;
+        internal static ICustomFurnitureApi CustomFurniture;
 
         /// <summary>
         /// Register the API for Json Assets
@@ -64,6 +65,21 @@ namespace ShopTileFramework.API
             }
 
             Conditions.Initialize(ModEntry.VerboseLogging, "Cherry.ShopTileFramework");
+
+        }
+
+        /// <summary>
+        /// Register the API for Custom Furniture
+        /// </summary>
+        public static void RegisterCustomFurniture()
+        {
+            CustomFurniture = ModEntry.helper.ModRegistry.GetApi<ICustomFurnitureApi>("Platonymous.CustomFurniture");
+
+            if (CustomFurniture == null)
+            {
+                ModEntry.monitor.Log("Custom Furniture API not detected. Custom furniture will not be added to shops.",
+                    LogLevel.Info);
+            }
 
         }
 

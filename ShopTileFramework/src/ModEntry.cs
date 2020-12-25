@@ -127,15 +127,14 @@ namespace ShopTileFramework
                 Game1.player.position.Set(_playerPos);
             }
         }
-        /// <summary>
-        /// Returns an instance of this mod's api
-        /// </summary>
-        /// <returns></returns>
+
+        private STFApi ourApi;
         public override object GetApi()
         {
             //TODO: Test this
-            return new STFApi();
+            return ourApi ?? (ourApi = new STFApi());
         }
+
         /// <summary>
         /// On a save loaded, store the language for translation purposes. Done on save loaded in
         /// case it's changed between saves
@@ -171,6 +170,7 @@ namespace ShopTileFramework
 
             APIs.RegisterExpandedPreconditionsUtility();
             APIs.RegisterBFAV();
+            APIs.RegisterCustomFurniture();
             APIs.RegisterFAVR();
         }
 
