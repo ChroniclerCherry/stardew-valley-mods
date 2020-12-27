@@ -208,6 +208,8 @@ namespace ShopTileFramework.ItemPriceAndStock
                     return APIs.JsonAssets?.GetAllObjectsFromContentPack(cpUniqueId);
                 case "Hat":
                     return APIs.JsonAssets?.GetAllHatsFromContentPack(cpUniqueId);
+                case "Boot":
+                    return (APIs.JsonAssets as IJsonAssetsApiWithBoots)?.GetAllBootsFromContentPack(cpUniqueId);
                 case "Weapon":
                     return APIs.JsonAssets?.GetAllWeaponsFromContentPack(cpUniqueId);
                 case "Furniture":

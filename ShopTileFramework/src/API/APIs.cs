@@ -19,7 +19,16 @@ namespace ShopTileFramework.API
         /// </summary>
         public static void RegisterJsonAssets()
         {
-            JsonAssets = ModEntry.helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
+            // Boots were added to the JA API at the end of 2020, but we may not be dealing with that version.
+            // Use the older version of the API as a fall-back.
+            try
+            {
+                JsonAssets = ModEntry.helper.ModRegistry.GetApi<IJsonAssetsApiWithBoots>("spacechase0.JsonAssets");
+            }
+            catch
+            {
+                JsonAssets = ModEntry.helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
+            }
 
             if (JsonAssets == null)
             {

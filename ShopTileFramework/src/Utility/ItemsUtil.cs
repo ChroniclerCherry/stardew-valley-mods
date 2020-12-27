@@ -176,11 +176,18 @@ namespace ShopTileFramework.Utility
                 if (items != null)
                     _itemsToRemove.AddRange(items);
 
+                items = (APIs.JsonAssets as IJsonAssetsApiWithBoots)?.GetAllBootsFromContentPack(pack);
+                if (items != null)
+                {
+                    _itemsToRemove.AddRange(items);
+                }
+
                 items = APIs.JsonAssets?.GetAllObjectsFromContentPack(pack);
                 if (items != null)
                 {
                     _itemsToRemove.AddRange(items);
                 }
+
                 items = APIs.CustomFurniture?.GetAllFurnitureFromContentPack(pack);
                 if (items != null)
                 {
