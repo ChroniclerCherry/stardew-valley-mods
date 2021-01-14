@@ -1,10 +1,10 @@
 ﻿# Expanded Preconditions Utility
-Event preconditions is a commonly used conditions system across SMAPI mods due to the fact it already exists in game and thus allows a large number of conditions to be used with very little additional work. However, it can be limited in what it offers. This mod seeks to provide a conditions system in the same format as event preconditions, but with additional custom conditions. More will be added over time as people make requests
+Event preconditions is a commonly used conditions system across SMAPI mods due to the fact it already exists in game and thus allows a large number of conditions to be used with very little additional work. However, it can be limited in what it offers. This mod seeks to provide a conditions system in the same format as event preconditions, but with additional custom conditions. [More will be added over time as people make requests](https://github.com/ChroniclerCherry/stardew-valley-mods/issues/8)
 
 ## Syntax
 EPU takes conditions in the same syntax as event preconditions do. Each condition is seperated by `/` in a string. EPU also allows you to check the opposite of any individual condition by adding a `!` at the very start
 
-For example: `d Mon Fri/HasItem Pink Cake/!JojaMartComplete/!w rainy` checks that it is Monday or Friday, that the user has a Pink Cake in their inventory, that the Jojamart is not complete, and that it is not rainy. Vanilla preconditions and custom conditions can be freely mixed in any order
+For example: `d Mon Fri/HasItem Pink Cake/!JojaMartComplete/!w rainy` checks that it is not Monday or Friday, that the user has a Pink Cake in their inventory, that the Jojamart is not complete, and that it is not rainy. Vanilla preconditions and custom conditions can be freely mixed in any order
 
 Depending on the mod that uses EPU, conditions may be given as a single string like the above, or as an array of strings. When it is an array of strings, more flexibility is allowed as you can check OR conditions. For example:
 ```cs
@@ -25,12 +25,12 @@ Syntax | Description | Example
 ------------- | ------------- | -------------
 `NPCAt <s:NPCName> [<i:x> <i:y>]` | This will check if the named NPC is at the given tile coordinates on the current map. Multiple x/y coordinates can be given, and will return true if the NPC is at any of them. | `NPCAt Pierre 5 10 5 11 5 12` will check if Pierre is at (5,10) (5,11) or (5,12)
 `HasMod [<s:UniqueID>]` | This will check if the given Unique ID of certain mods is installed. Multiple can be supplied and will return true only if the player has all of them installed. | `HasMod Cherry.CustomizeAnywhere Cherry.PlatonicRelationships` returns true if both Customize Anywhere and Platonic Relationships are installed
-`SkillLevel [<s:SkillName> <i:SkillLevel>]` | This will check if the player has at least the given skill level for named skills. Multiple skill-level pairs can be provided, and returns true if all of them are matched. Valid skills are: `combat`, `farming`, `fishing`, `foraging`, `luck` (unsued in vanilla), and `mining` | `SkillLevel farming 5 fishing 3` Would return true if the player has at least level 5 farm and level 3 fishing
+`SkillLevel [<s:SkillName> <i:SkillLevel>]` | This will check if the player has at least the given skill level for named skills. Multiple skill-level pairs can be provided, and returns true if all of them are matched. Valid skills are: `combat`, `farming`, `fishing`, `foraging`, `luck` (unused in vanilla), and `mining` | `SkillLevel farming 5 fishing 3` Would return true if the player has at least level 5 farming and level 3 fishing
 `CommunityCenterComplete` | Returns true if the Community center is completed on this save file| 
 `JojaMartComplete` | Returns true if the joja mart route was completed on this save file |
-`SeededRandom <i:offset> <i:timeInterval/s:timeInterval> <f:random lower bounds> <f: random upper bounds>`| Used to make synchronized random checks, which can be used across different stocks/stores and remain constant over given periods of time | `SeededRandom 123 Season 0.5 1` [Find more detailed explanation here](#seeded-random)
+`SeededRandom <i:offset> <i:timeInterval/s:timeInterval> <f:random lower bounds> <f: random upper bounds>`| Used to make synchronized random checks, which can be used across different checks/mods and remain constant over given periods of time | `SeededRandom 123 Season 0.5 1` [Find more detailed explanation here](#seeded-random)
 `HasCookingRecipe [<s:recipe name>]` | Returns true if the player has learned all the listed recipes. **Note** spaces should be replaced with `-` | `HasCookingRecipe Fried-Egg Salad` will return true if the player knows how to cook both Fried Egg and salad
-`HasCraftingRecipe [<s:recipe name>]` | Returns true if the player has learned all the listed recipes. **Note** spaces should be replaced with `-` | `HasCookingRecipe Oil-Maker` will return true if the player knows how to craft Oil Makers
+`HasCraftingRecipe [<s:recipe name>]` | Returns true if the player has learned all the listed recipes. **Note** spaces should be replaced with `-` | `HasCraftingRecipe Oil-Maker` will return true if the player knows how to craft Oil Makers
 `FarmHouseUpgradeLevel [<i:house upgrade levels>]` | Returns true if the player's current house levels matches any of the given numbers. Starter house is 0 and cellar is 3 | `FarmHouseUpgradeLevel 2 3` will return true if the player is on the final house upgrade and has the cellar
 `HasItem <s:item name>` | Returns true if the given item is in the player's inventory | `HasItem Pink Cake` would return true if any item named `Pink Cake` was found in the player inventory
 
