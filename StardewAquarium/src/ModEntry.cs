@@ -54,8 +54,6 @@ namespace StardewAquarium
             string dataPath = Path.Combine("data", "data.json");
             Data = helper.Data.ReadJsonFile<ModData>(dataPath);
 
-            Monitor.Log("hello",LogLevel.Info);
-
             LegendaryFishPatches.Initialize(Helper, Monitor);
 
 
@@ -218,7 +216,7 @@ namespace StardewAquarium
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
             Helper.Content.AssetEditors.Add(new ObjectEditor(Helper)); //editing JA items
-            AquariumMessage.Initialize(Helper.Translation);
+            AquariumMessage.Initialize(Helper);
             if (Utils.CheckAchievement())
                 Utils.UnlockAchievement();
 

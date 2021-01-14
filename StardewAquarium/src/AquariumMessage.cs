@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewValley;
 
 namespace StardewAquarium
@@ -7,12 +8,14 @@ namespace StardewAquarium
     class AquariumMessage
     {
         private static ITranslationHelper _translation;
+        private static IModHelper _helper;
         List<Response[]> _responsePages;
         private int _currentPage = 0;
 
-        public static  void Initialize(ITranslationHelper translation)
+        public static  void Initialize(IModHelper helper)
         {
-            _translation = translation;
+            _helper = helper;
+            _translation = helper.Translation;
         }
 
         public AquariumMessage(string[] args)
@@ -73,11 +76,18 @@ namespace StardewAquarium
             if (whichAnswer == "More")
             {
                 Game1.activeClickableMenu = null;
+                Game1.currentLocation.afterQuestion = null;
                 _currentPage++;
-                Game1.currentLocation.createQuestionDialogue(_translation.Get("WhichFishInfo"), _responsePages[_currentPage], displayFishInfo);
+                _helper.Events.GameLoop.UpdateTicked += OpenNextPage;
                 return;
             }
             Game1.drawObjectDialogue(_translation.Get($"Tank_{whichAnswer}"));
+        }
+
+        private void OpenNextPage(object sender, UpdateTickedEventArgs e)
+        {
+            Game1.currentLocation.createQuestionDialogue(_translation.Get("WhichFishInfo"), _responsePages[_currentPage], displayFishInfo);
+            _helper.Events.GameLoop.UpdateTicked -= OpenNextPage;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using StardewAquarium.Patches;
 using StardewModdingAPI;
 
 namespace StardewAquarium.Editors
@@ -6,6 +7,7 @@ namespace StardewAquarium.Editors
     class MiscEditor : IAssetEditor
     {
         private const string UIPath = "Strings\\UI";
+        private const string NPCDispositions = "Data\\NPCDispositions";
         private readonly IModHelper _helper;
 
         public MiscEditor(IModHelper helper)

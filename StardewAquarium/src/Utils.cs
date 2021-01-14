@@ -47,7 +47,7 @@ namespace StardewAquarium
 
         private static void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
         {
-            //clear these dictionaries if 
+            //clear these dictionaries
             InternalNameToDonationName.Clear();
             FishDisplayNames.Clear();
 
@@ -69,7 +69,16 @@ namespace StardewAquarium
             if (i?.Category != -4)
                 return false;
 
-            return !MasterPlayerMail.Contains(GetDonatedMailFlag(i));
+            try
+            {
+                return !MasterPlayerMail.Contains(GetDonatedMailFlag(i));
+            }
+            catch
+            {
+                _monitor.Log($"An item in the inventory \"{i.Name}\" has a category of Fish but is not a valid fish object.", LogLevel.Error);
+                return false;
+            }
+            
         }
 
         public static bool IsUnDonatedFish(string s)
