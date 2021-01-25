@@ -83,7 +83,11 @@ namespace StardewAquarium
 
         public static bool IsUnDonatedFish(string s)
         {
-            return !MasterPlayerMail.Contains($"AquariumDonated:{s}");
+            if (InternalNameToDonationName.ContainsValue(s))
+            {
+                return !MasterPlayerMail.Contains($"AquariumDonated:{s}");
+            }
+            return false;
         }
 
         private const string DonateFishMessageType = "DonateFish";
