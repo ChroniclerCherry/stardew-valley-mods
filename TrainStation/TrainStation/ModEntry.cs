@@ -16,10 +16,10 @@ namespace TrainStation
     public class ModEntry : Mod
     {
         private ModConfig Config;
-        public static ModEntry Instance;
+        internal static ModEntry Instance;
 
-        private List<TrainStop> TrainStops;
-        private List<BoatStop> BoatStops;
+        internal List<TrainStop> TrainStops;
+        internal List<BoatStop> BoatStops;
         private IConditionsChecker ConditionsApi;
 
         public override void Entry(IModHelper helper)
@@ -531,6 +531,8 @@ namespace TrainStation
     {
         void OpenTrainMenu();
         void OpenBoatMenu();
+        void RegisterTrainStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName);
+        void RegisterBoatStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName);
     }
 
     public class Api : IApi
@@ -543,6 +545,46 @@ namespace TrainStation
         public void OpenBoatMenu()
         {
             ModEntry.Instance.OpenBoatMenu();
+        }
+
+        public void RegisterTrainStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName)
+        {
+            var stop = ModEntry.Instance.TrainStops.SingleOrDefault(s => s.StopID.Equals(stopId));
+            if (stop == null)
+            {
+                stop = new TrainStop();
+                ModEntry.Instance.TrainStops.Add(stop);
+            }
+
+            stop.StopID = stopId;
+            stop.TargetMapName = targetMapName;
+            stop.LocalizedDisplayName = localizedDisplayName;
+            stop.TargetX = targetX;
+            stop.TargetY = targetY;
+            stop.Cost = cost;
+            stop.FacingDirectionAfterWarp = facingDirectionAfterWarp;
+            stop.Conditions = conditions;
+            stop.TranslatedName = translatedName;
+        }
+
+        public void RegisterBoatStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName)
+        {
+            var stop = ModEntry.Instance.BoatStops.SingleOrDefault(s => s.StopID.Equals(stopId));
+            if (stop == null)
+            {
+                stop = new BoatStop();
+                ModEntry.Instance.BoatStops.Add(stop);
+            }
+
+            stop.StopID = stopId;
+            stop.TargetMapName = targetMapName;
+            stop.LocalizedDisplayName = localizedDisplayName;
+            stop.TargetX = targetX;
+            stop.TargetY = targetY;
+            stop.Cost = cost;
+            stop.FacingDirectionAfterWarp = facingDirectionAfterWarp;
+            stop.Conditions = conditions;
+            stop.TranslatedName = translatedName;
         }
     }
 
