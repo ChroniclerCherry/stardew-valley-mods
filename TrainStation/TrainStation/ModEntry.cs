@@ -233,7 +233,6 @@ namespace TrainStation
 
             string tileProperty = Game1.currentLocation.doesTileHaveProperty((int)grabTile.X, (int)grabTile.Y, "Action", "Buildings");
 
-            VanillaPreconditionsMethod = Helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition");
             if (tileProperty == "TrainStation")
             {
                 OpenTrainMenu();
@@ -435,17 +434,6 @@ namespace TrainStation
         **    Utility    **
         *******************/
 
-        public static IReflectedMethod VanillaPreconditionsMethod;
-
-        private bool CheckConditions(string conditions)
-        {
-            if (string.IsNullOrEmpty(conditions))
-                return true;
-
-            int result = VanillaPreconditionsMethod.Invoke<int>("-5005/" + conditions);
-            return result != -1;
-        }
-
         private bool TryToChargeMoney(int cost)
         {
             if (Game1.player.Money < cost)
@@ -607,12 +595,5 @@ namespace TrainStation
         /// <param name="conditions">An array of condition strings.</param>
         /// <returns></returns>
         bool CheckConditions(string[] conditions);
-
-        /// <summary>
-        /// Checks a single condition string. The string will be evaluated as true if every single condition provided is true.
-        /// </summary>
-        /// <param name="conditions"></param>
-        /// <returns></returns>
-        bool CheckConditions(string conditions);
     }
 }
