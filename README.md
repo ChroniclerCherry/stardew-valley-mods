@@ -12,6 +12,11 @@ All my Mods can be found [on my Nexus account](https://www.nexusmods.com/stardew
 
 A framework mod that allows modders to create new fully customizable shops and animal shops, and makes them interactable in game via tile properties. Also allows editing vanilla shops.
 
+## [Expanded Preconditions Utility](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/ExpandedPreconditionsUtility)
+[[Release](https://www.nexusmods.com/stardewvalley/mods/6529) | [README](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/master/ExpandedPreconditionsUtility/README.md)]
+
+A framework mod that uses the game's preconditions system and expands it with custom conditions in a way that is easily expandable as the need arises, with an easy API for other mods to use
+
 
 ## [Stardew Aquarium](https://github.com/ChroniclerCherry/stardew-valley-mods/tree/master/StardewAquarium)
 [[Release](https://www.nexusmods.com/stardewvalley/mods/6372)]
