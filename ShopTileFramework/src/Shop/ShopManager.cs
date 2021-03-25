@@ -15,10 +15,10 @@ namespace ShopTileFramework.Shop
     /// </summary>
     class ShopManager : IAssetLoader, IAssetEditor
     {
-        private static Dictionary<string, ItemShop> ItemShops = new Dictionary<string, ItemShop>();
-        private static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
-        private static Dictionary<string, VanillaShop> VanillaShops = new Dictionary<string, VanillaShop>();
-        public static readonly string[] VanillaShopNames = {
+        private readonly Dictionary<string, ItemShop> ItemShops = new Dictionary<string, ItemShop>();
+        private readonly Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
+        private readonly Dictionary<string, VanillaShop> VanillaShops = new Dictionary<string, VanillaShop>();
+        private readonly string[] VanillaShopNames = {
             "PierreShop",
             "JojaShop",
             "RobinShop",
@@ -41,7 +41,7 @@ namespace ShopTileFramework.Shop
         /// <summary>
         /// Takes content packs and loads them as ItemShop and AnimalShop objects
         /// </summary>
-        public static void LoadContentPacks()
+        public void LoadContentPacks()
         {
             ModEntry.monitor.Log("Adding Content Packs...", LogLevel.Info);
             foreach (IContentPack contentPack in ModEntry.helper.ContentPacks.GetOwned())
@@ -77,7 +77,7 @@ namespace ShopTileFramework.Shop
         /// </summary>
         /// <param name="data"></param>
         /// <param name="contentPack"></param>
-        public static void RegisterShops(ContentPack data, IContentPack contentPack)
+        public void RegisterShops(ContentPack data, IContentPack contentPack)
         {
             ItemsUtil.RegisterPacksToRemove(data.RemovePacksFromVanilla, data.RemovePackRecipesFromVanilla, data.RemoveItemsFromVanilla);
 
@@ -147,7 +147,7 @@ namespace ShopTileFramework.Shop
         /// <summary>
         /// Update all trans;ations for each shop when a save file is loaded
         /// </summary>
-        public static void UpdateTranslations()
+        public void UpdateTranslations()
         {
             foreach (ItemShop itemShop in ItemShops.Values)
             {
@@ -163,7 +163,7 @@ namespace ShopTileFramework.Shop
         /// <summary>
         /// Initializes all shops once the game is loaded
         /// </summary>
-        public static void InitializeShops()
+        public void InitializeShops()
         {
             foreach (ItemShop itemShop in ItemShops.Values)
             {
@@ -174,7 +174,7 @@ namespace ShopTileFramework.Shop
         /// <summary>
         /// Initializes the stocks of each shop after the save file has loaded so that item IDs are available to generate items
         /// </summary>
-        public static void InitializeItemStocks()
+        public void InitializeItemStocks()
         {
             foreach (ItemShop itemShop in ItemShops.Values)
             {
@@ -191,7 +191,7 @@ namespace ShopTileFramework.Shop
         /// Updates the stock for all itemshops at the start of each day
         /// and updates their portraits too to match the current season
         /// </summary>
-        internal static void UpdateStock()
+        internal void UpdateStock()
         {
             if (ItemShops.Count > 0)
                 ModEntry.monitor.Log($"Refreshing stock for all custom shops...", LogLevel.Debug);
@@ -244,9 +244,9 @@ namespace ShopTileFramework.Shop
         /// </summary>
         public bool CanEdit<T>(IAssetInfo asset)
         {
-            return asset.AssetNameEquals("Mods/ShopTileFramework/ItemShops") 
-                   || asset.AssetNameEquals("Mods/ShopTileFramework/AnimalShops") 
-                   || asset.AssetNameEquals("Mods/ShopTileFramework/VanillaShops");
+            return asset.AssetNameEquals("Mods/ShopTileFramework/ItemShops.xnb") 
+                || asset.AssetNameEquals("Mods/ShopTileFramework/AnimalShops.xnb") 
+                || asset.AssetNameEquals("Mods/ShopTileFramework/VanillaShops.xnb");
         }
 
         /// <summary>
