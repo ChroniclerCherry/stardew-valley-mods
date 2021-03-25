@@ -105,7 +105,7 @@ namespace ShopTileFramework.Patches
         {
             ModEntry.JustOpenedVanilla = true;
 
-            Dictionary<string, VanillaShop> vanillaShops = ModEntry.helper.Content.Load<Dictionary<string, VanillaShop>>("Mods/ShopTileFramework/VanillaShops", ContentSource.GameContent);
+            Dictionary<string, VanillaShop> vanillaShops = Game1.content.Load<Dictionary<string, VanillaShop>>("Mods/ShopTileFramework/VanillaShops");
             if (!vanillaShops.ContainsKey(shopName)) return;
 
             var customStock = vanillaShops[shopName].ItemPriceAndStock;

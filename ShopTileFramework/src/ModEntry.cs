@@ -28,6 +28,7 @@ namespace ShopTileFramework
         private bool _changedMarnieStock;
         internal static GameLocation SourceLocation;
         private static Vector2 _playerPos = Vector2.Zero;
+        internal static ShopManager ShopManager;
 
         public static bool VerboseLogging;
 
@@ -60,7 +61,12 @@ namespace ShopTileFramework
             new ConsoleCommands().Register(helper);
 
             //get all the info from content packs
+            ShopManager = new ShopManager();
             ShopManager.LoadContentPacks();
+
+            //load data into game content
+            helper.Content.AssetLoaders.Add(ShopManager);
+            helper.Content.AssetEditors.Add(ShopManager);
 
             HarmonyInstance harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
             VanillaShopStockPatches.Apply(harmony);
@@ -275,7 +281,7 @@ namespace ShopTileFramework
                 else //no vanilla shop found
                 {
                     //Extract the tile property value
-                    Dictionary<string, ItemShop> itemShops = helper.Content.Load<Dictionary<string, ItemShop>>("Mods/ShopTileFramework/ItemShops", ContentSource.GameContent);
+                    Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>("Mods/ShopTileFramework/ItemShops");
                     string shopName = shopProperty.ToString();
 
                     if (itemShops.ContainsKey(shopName))
@@ -297,7 +303,8 @@ namespace ShopTileFramework
                 if (shopProperty != null) //no animal shop found
                 {
                     string shopName = shopProperty.ToString();
-                    Dictionary<string, AnimalShop> animalShops = helper.Content.Load<Dictionary<string, AnimalShop>>("Mods/ShopTileFramework/AnimalShops", ContentSource.GameContent);
+
+                    Dictionary<string, AnimalShop> animalShops = Game1.content.Load<Dictionary<string, AnimalShop>>("Mods/ShopTileFramework/AnimalShops");
                     if (animalShops.ContainsKey(shopName))
                     {
                         //stop the click action from going through after the menu has been opened
