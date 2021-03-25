@@ -1,4 +1,5 @@
-﻿using Harmony;
+﻿using System.Collections.Generic;
+using Harmony;
 using Microsoft.Xna.Framework;
 using ShopTileFramework.API;
 using ShopTileFramework.Patches;
@@ -274,13 +275,14 @@ namespace ShopTileFramework
                 else //no vanilla shop found
                 {
                     //Extract the tile property value
+                    Dictionary<string, ItemShop> itemShops = helper.Content.Load<Dictionary<string, ItemShop>>("Mods/ShopTileFramework/ItemShops", ContentSource.GameContent);
                     string shopName = shopProperty.ToString();
 
-                    if (ShopManager.ItemShops.ContainsKey(shopName))
+                    if (itemShops.ContainsKey(shopName))
                     {
                         //stop the click action from going through after the menu has been opened
                         helper.Input.Suppress(e.Button);
-                        ShopManager.ItemShops[shopName].DisplayShop();
+                        itemShops[shopName].DisplayShop();
                     }
                     else
                     {
@@ -295,11 +297,12 @@ namespace ShopTileFramework
                 if (shopProperty != null) //no animal shop found
                 {
                     string shopName = shopProperty.ToString();
-                    if (ShopManager.AnimalShops.ContainsKey(shopName))
+                    Dictionary<string, AnimalShop> animalShops = helper.Content.Load<Dictionary<string, AnimalShop>>("Mods/ShopTileFramework/AnimalShops", ContentSource.GameContent);
+                    if (animalShops.ContainsKey(shopName))
                     {
                         //stop the click action from going through after the menu has been opened
                         helper.Input.Suppress(e.Button);
-                        ShopManager.AnimalShops[shopName].DisplayShop();
+                        animalShops[shopName].DisplayShop();
                     }
                     else
                     {

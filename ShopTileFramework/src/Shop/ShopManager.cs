@@ -5,6 +5,7 @@ using StardewModdingAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StardewModdingAPI.Utilities;
 
 namespace ShopTileFramework.Shop
 {
@@ -12,11 +13,11 @@ namespace ShopTileFramework.Shop
     /// This class holds and manages all the shops, loading content packs to create shops
     /// And containing methods to update everything that needs to
     /// </summary>
-    class ShopManager
+    class ShopManager : IAssetLoader, IAssetEditor
     {
-        public static Dictionary<string, ItemShop> ItemShops = new Dictionary<string, ItemShop>();
-        public static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
-        public static Dictionary<string, VanillaShop> VanillaShops = new Dictionary<string, VanillaShop>();
+        private static Dictionary<string, ItemShop> ItemShops = new Dictionary<string, ItemShop>();
+        private static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
+        private static Dictionary<string, VanillaShop> VanillaShops = new Dictionary<string, VanillaShop>();
         public static readonly string[] VanillaShopNames = {
             "PierreShop",
             "JojaShop",
@@ -210,5 +211,77 @@ namespace ShopTileFramework.Shop
             }
         }
 
+        /// <summary>
+        /// Provide original versions of Game content loaded to Mods/ShopTileFramework/%
+        /// </summary>
+        public bool CanLoad<T>(IAssetInfo asset)
+        {
+            return asset.AssetNameEquals("Mods/ShopTileFramework/ItemShops") 
+                || asset.AssetNameEquals("Mods/ShopTileFramework/AnimalShops") 
+                || asset.AssetNameEquals("Mods/ShopTileFramework/VanillaShops");
+        }
+
+        /// <summary>
+        /// Initialize Shop Dictionary for Content Mod target
+        /// </summary>
+        public T Load<T>(IAssetInfo asset)
+        {
+            string shopType = PathUtilities.GetSegments(asset.AssetName).ElementAtOrDefault(2);
+            switch (shopType)
+            {
+                case "ItemShops":
+                    return (T) (object) new Dictionary<string, ItemShop>();
+                case "AnimalShops":
+                    return (T) (object) new Dictionary<string, AnimalShop>();
+                case "VanillaShops":
+                    return (T) (object) new Dictionary<string, VanillaShop>();
+            }
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Edit to add ItemShops/AnimalShops/VanillaShops
+        /// </summary>
+        public bool CanEdit<T>(IAssetInfo asset)
+        {
+            return asset.AssetNameEquals("Mods/ShopTileFramework/ItemShops") 
+                   || asset.AssetNameEquals("Mods/ShopTileFramework/AnimalShops") 
+                   || asset.AssetNameEquals("Mods/ShopTileFramework/VanillaShops");
+        }
+
+        /// <summary>
+        /// Load Shops from Content Pack data
+        /// </summary>
+        public void Edit<T>(IAssetData asset)
+        {
+            string shopType = PathUtilities.GetSegments(asset.AssetName).ElementAtOrDefault(2);
+            switch (shopType)
+            {
+                case "ItemShops":
+                    IDictionary<string, ItemShop> itemShops = asset.AsDictionary<string, ItemShop>().Data;
+                    foreach (var itemShop in ItemShops)
+                    {
+                        if (!itemShops.ContainsKey(itemShop.Key))
+                            itemShops.Add(itemShop.Key, itemShop.Value);
+                    }
+                    break;
+                case "AnimalShops":
+                    IDictionary<string, AnimalShop> animalShops = asset.AsDictionary<string, AnimalShop>().Data;
+                    foreach (var animalShop in AnimalShops)
+                    {
+                        if (!animalShops.ContainsKey(animalShop.Key))
+                            animalShops.Add(animalShop.Key, animalShop.Value);
+                    }
+                    break;
+                case "VanillaShops":
+                    IDictionary<string, VanillaShop> vanillaShops = asset.AsDictionary<string, VanillaShop>().Data;
+                    foreach (var vanillaShop in VanillaShops)
+                    {
+                        if (vanillaShops.ContainsKey(vanillaShop.Key))
+                            vanillaShops.Add(vanillaShop.Key, vanillaShop.Value);
+                    }
+                    break;
+            }
+        }
     }
 }

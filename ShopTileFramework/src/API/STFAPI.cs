@@ -3,6 +3,7 @@ using ShopTileFramework.Shop;
 using StardewValley;
 using System;
 using System.Collections.Generic;
+using StardewModdingAPI;
 
 namespace ShopTileFramework.API
 {
@@ -40,7 +41,8 @@ namespace ShopTileFramework.API
         public bool OpenItemShop(string shopName)
         {
             //opens up the shop of ShopName in-game
-            ShopManager.ItemShops.TryGetValue(shopName, out var shop);
+            Dictionary<string, ItemShop> itemShops = ModEntry.helper.Content.Load<Dictionary<string, ItemShop>>("Mods/ShopTileFramework/ItemShops", ContentSource.GameContent);
+            itemShops.TryGetValue(shopName, out var shop);
             if (shop == null)
             {
                 return false;
@@ -58,7 +60,8 @@ namespace ShopTileFramework.API
         public bool OpenAnimalShop(string shopName)
         {
             //opens up the shop of ShopName in-game
-            ShopManager.AnimalShops.TryGetValue(shopName, out var shop);
+            Dictionary<string, AnimalShop> animalShops = ModEntry.helper.Content.Load<Dictionary<string, AnimalShop>>("Mods/ShopTileFramework/AnimalShops", ContentSource.GameContent);
+            animalShops.TryGetValue(shopName, out var shop);
             if (shop == null)
             {
                 return false;
@@ -76,7 +79,8 @@ namespace ShopTileFramework.API
         public bool ResetShopStock(string shopName)
         {
             //resets the stock of the given ShopName
-            ShopManager.ItemShops.TryGetValue(shopName, out var shop);
+            Dictionary<string, ItemShop> itemShops = ModEntry.helper.Content.Load<Dictionary<string, ItemShop>>("Mods/ShopTileFramework/ItemShops", ContentSource.GameContent);
+            itemShops.TryGetValue(shopName, out var shop);
             if (shop == null)
             {
                 return false;
@@ -94,7 +98,8 @@ namespace ShopTileFramework.API
         public Dictionary<ISalable, int[]> GetItemPriceAndStock(string shopName)
         {
             //gets the ItemStockAndPrice of the given ShopName
-            ShopManager.ItemShops.TryGetValue(shopName, out var shop);
+            Dictionary<string, ItemShop> itemShops = ModEntry.helper.Content.Load<Dictionary<string, ItemShop>>("Mods/ShopTileFramework/ItemShops", ContentSource.GameContent);
+            itemShops.TryGetValue(shopName, out var shop);
             if (shop == null)
             {
                 return null;
