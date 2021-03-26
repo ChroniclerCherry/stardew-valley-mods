@@ -230,58 +230,46 @@ namespace ShopTileFramework.Shop
             switch (shopType)
             {
                 case "ItemShops":
-                    return (T) (object) new Dictionary<string, ItemShop>();
+                    return (T) (object) ItemShops;
                 case "AnimalShops":
-                    return (T) (object) new Dictionary<string, AnimalShop>();
+                    return (T) (object) AnimalShops;
                 case "VanillaShops":
-                    return (T) (object) new Dictionary<string, VanillaShop>();
+                    return (T) (object) VanillaShops;
             }
             throw new InvalidOperationException();
         }
 
         /// <summary>
-        /// Edit to add ItemShops/AnimalShops/VanillaShops
+        /// Refresh prices one tick after edit
         /// </summary>
         public bool CanEdit<T>(IAssetInfo asset)
         {
-            return asset.AssetNameEquals("Mods/ShopTileFramework/ItemShops") 
-                || asset.AssetNameEquals("Mods/ShopTileFramework/AnimalShops") 
-                || asset.AssetNameEquals("Mods/ShopTileFramework/VanillaShops");
+            if (asset.AssetNameEquals("Mods/ShopTileFramework/ItemShops")
+                || asset.AssetNameEquals("Mods/ShopTileFramework/AnimalShops")
+                || asset.AssetNameEquals("Mods/ShopTileFramework/VanillaShops"))
+            {
+                ModEntry.helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked;
+            }
+
+            return false;
         }
 
         /// <summary>
-        /// Load Shops from Content Pack data
+        /// Required, but this should never get called
         /// </summary>
         public void Edit<T>(IAssetData asset)
         {
-            string shopType = PathUtilities.GetSegments(asset.AssetName).ElementAtOrDefault(2);
-            switch (shopType)
-            {
-                case "ItemShops":
-                    IDictionary<string, ItemShop> itemShops = asset.AsDictionary<string, ItemShop>().Data;
-                    foreach (var itemShop in ItemShops)
-                    {
-                        if (!itemShops.ContainsKey(itemShop.Key))
-                            itemShops.Add(itemShop.Key, itemShop.Value);
-                    }
-                    break;
-                case "AnimalShops":
-                    IDictionary<string, AnimalShop> animalShops = asset.AsDictionary<string, AnimalShop>().Data;
-                    foreach (var animalShop in AnimalShops)
-                    {
-                        if (!animalShops.ContainsKey(animalShop.Key))
-                            animalShops.Add(animalShop.Key, animalShop.Value);
-                    }
-                    break;
-                case "VanillaShops":
-                    IDictionary<string, VanillaShop> vanillaShops = asset.AsDictionary<string, VanillaShop>().Data;
-                    foreach (var vanillaShop in VanillaShops)
-                    {
-                        if (vanillaShops.ContainsKey(vanillaShop.Key))
-                            vanillaShops.Add(vanillaShop.Key, vanillaShop.Value);
-                    }
-                    break;
-            }
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// Refresh all stock prices
+        /// </summary>
+        private void GameLoop_UpdateTicked(object sender, StardewModdingAPI.Events.UpdateTickedEventArgs e)
+        {
+            
+            ModEntry.helper.Events.GameLoop.UpdateTicked -= GameLoop_UpdateTicked;
+            UpdateStock();
         }
     }
 }
