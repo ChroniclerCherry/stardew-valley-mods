@@ -236,7 +236,7 @@ namespace ShopTileFramework.Shop
                 case "VanillaShops":
                     return (T) (object) new Dictionary<string, VanillaShop>();
             }
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
         /// <summary>
@@ -244,9 +244,9 @@ namespace ShopTileFramework.Shop
         /// </summary>
         public bool CanEdit<T>(IAssetInfo asset)
         {
-            return asset.AssetNameEquals("Mods/ShopTileFramework/ItemShops.xnb") 
-                || asset.AssetNameEquals("Mods/ShopTileFramework/AnimalShops.xnb") 
-                || asset.AssetNameEquals("Mods/ShopTileFramework/VanillaShops.xnb");
+            return asset.AssetNameEquals("Mods/ShopTileFramework/ItemShops") 
+                || asset.AssetNameEquals("Mods/ShopTileFramework/AnimalShops") 
+                || asset.AssetNameEquals("Mods/ShopTileFramework/VanillaShops");
         }
 
         /// <summary>
