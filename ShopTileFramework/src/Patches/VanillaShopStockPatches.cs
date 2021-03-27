@@ -6,6 +6,7 @@ using StardewValley.Locations;
 using System.Collections.Generic;
 using System.Linq;
 using StardewModdingAPI;
+using StardewModdingAPI.Utilities;
 
 namespace ShopTileFramework.Patches
 {
@@ -105,7 +106,7 @@ namespace ShopTileFramework.Patches
         {
             ModEntry.JustOpenedVanilla = true;
 
-            Dictionary<string, VanillaShop> vanillaShops = Game1.content.Load<Dictionary<string, VanillaShop>>("Mods/ShopTileFramework/VanillaShops");
+            Dictionary<string, VanillaShop> vanillaShops = Game1.content.Load<Dictionary<string, VanillaShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/VanillaShops"));
             if (!vanillaShops.ContainsKey(shopName)) return;
 
             var customStock = vanillaShops[shopName].ItemPriceAndStock;

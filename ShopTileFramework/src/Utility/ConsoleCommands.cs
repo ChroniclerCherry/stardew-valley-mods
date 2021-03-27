@@ -2,6 +2,7 @@
 using ShopTileFramework.API;
 using ShopTileFramework.Shop;
 using StardewModdingAPI;
+using StardewModdingAPI.Utilities;
 using StardewValley;
 
 namespace ShopTileFramework.Utility
@@ -64,7 +65,7 @@ namespace ShopTileFramework.Utility
                 return;
             }
 
-            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>("Mods/ShopTileFramework/ItemShops");
+            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/ItemShops"));
             itemShops.TryGetValue(args[0], out ItemShop value);
             if (value == null)
             {
@@ -95,7 +96,7 @@ namespace ShopTileFramework.Utility
                 return;
             }
 
-            Dictionary<string, AnimalShop> animalShops = Game1.content.Load<Dictionary<string, AnimalShop>>("Mods/ShopTileFramework/AnimalShops");
+            Dictionary<string, AnimalShop> animalShops = Game1.content.Load<Dictionary<string, AnimalShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/AnimalShops"));
             animalShops.TryGetValue(args[0], out AnimalShop value);
             if (value == null)
             {
@@ -126,7 +127,7 @@ namespace ShopTileFramework.Utility
                 return;
             }
 
-            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>("Mods/ShopTileFramework/ItemShops");
+            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/ItemShops"));
             itemShops.TryGetValue(args[0], out ItemShop shop);
             if (shop == null)
             {
@@ -148,8 +149,8 @@ namespace ShopTileFramework.Utility
         /// </summary>
         private void ListAllShops(string command, string[] args)
         {
-            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>("Mods/ShopTileFramework/ItemShops");
-            Dictionary<string, AnimalShop> animalShops = Game1.content.Load<Dictionary<string, AnimalShop>>("Mods/ShopTileFramework/AnimalShops");
+            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/ItemShops"));
+            Dictionary<string, AnimalShop> animalShops = Game1.content.Load<Dictionary<string, AnimalShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/AnimalShops"));
             if (itemShops.Count == 0)
             {
                 ModEntry.monitor.Log($"No shops were found", LogLevel.Debug);

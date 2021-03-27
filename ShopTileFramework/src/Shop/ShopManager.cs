@@ -194,7 +194,7 @@ namespace ShopTileFramework.Shop
         /// </summary>
         internal void UpdateStock()
         {
-            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>("Mods/ShopTileFramework/ItemShops");
+            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/ItemShops"));
             if (itemShops.Count > 0)
                 ModEntry.monitor.Log($"Refreshing stock for all custom shops...", LogLevel.Debug);
 
@@ -204,7 +204,7 @@ namespace ShopTileFramework.Shop
                 store.UpdatePortrait();
             }
 
-            Dictionary<string, VanillaShop> vanillaShops = Game1.content.Load<Dictionary<string, VanillaShop>>("Mods/ShopTileFramework/VanillaShops");
+            Dictionary<string, VanillaShop> vanillaShops = Game1.content.Load<Dictionary<string, VanillaShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/VanillaShops"));
             if (vanillaShops.Count > 0)
                 ModEntry.monitor.Log($"Refreshing stock for all Vanilla shops...", LogLevel.Debug);
 
@@ -219,9 +219,11 @@ namespace ShopTileFramework.Shop
         /// </summary>
         public bool CanLoad<T>(IAssetInfo asset)
         {
-            return asset.AssetNameEquals("Mods/ShopTileFramework/ItemShops") 
-                || asset.AssetNameEquals("Mods/ShopTileFramework/AnimalShops") 
-                || asset.AssetNameEquals("Mods/ShopTileFramework/VanillaShops");
+            var assetName = PathUtilities.NormalizePath(asset.AssetName);
+            var modPath = PathUtilities.NormalizePath("Mods/ShopTileFramework/");
+            return assetName.Equals($"{modPath}ItemShops")
+                || assetName.Equals($"{modPath}AnimalShops")
+                || assetName.Equals($"{modPath}VanillaShops");
         }
 
         /// <summary>
