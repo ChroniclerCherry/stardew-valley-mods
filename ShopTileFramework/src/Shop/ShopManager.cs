@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using StardewModdingAPI.Utilities;
+using StardewValley;
 
 namespace ShopTileFramework.Shop
 {
@@ -13,7 +14,7 @@ namespace ShopTileFramework.Shop
     /// This class holds and manages all the shops, loading content packs to create shops
     /// And containing methods to update everything that needs to
     /// </summary>
-    class ShopManager : IAssetLoader, IAssetEditor
+    class ShopManager : IAssetLoader
     {
         private readonly Dictionary<string, ItemShop> ItemShops = new Dictionary<string, ItemShop>();
         private readonly Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
@@ -193,19 +194,21 @@ namespace ShopTileFramework.Shop
         /// </summary>
         internal void UpdateStock()
         {
-            if (ItemShops.Count > 0)
+            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>("Mods/ShopTileFramework/ItemShops");
+            if (itemShops.Count > 0)
                 ModEntry.monitor.Log($"Refreshing stock for all custom shops...", LogLevel.Debug);
 
-            foreach (ItemShop store in ItemShops.Values)
+            foreach (ItemShop store in itemShops.Values)
             {
                 store.UpdateItemPriceAndStock();
                 store.UpdatePortrait();
             }
 
-            if (VanillaShops.Count > 0)
+            Dictionary<string, VanillaShop> vanillaShops = Game1.content.Load<Dictionary<string, VanillaShop>>("Mods/ShopTileFramework/VanillaShops");
+            if (vanillaShops.Count > 0)
                 ModEntry.monitor.Log($"Refreshing stock for all Vanilla shops...", LogLevel.Debug);
 
-            foreach (VanillaShop shop in VanillaShops.Values)
+            foreach (VanillaShop shop in vanillaShops.Values)
             {
                 shop.UpdateItemPriceAndStock();
             }
@@ -237,39 +240,6 @@ namespace ShopTileFramework.Shop
                     return (T) (object) VanillaShops;
             }
             throw new InvalidOperationException();
-        }
-
-        /// <summary>
-        /// Refresh prices one tick after edit
-        /// </summary>
-        public bool CanEdit<T>(IAssetInfo asset)
-        {
-            if (asset.AssetNameEquals("Mods/ShopTileFramework/ItemShops")
-                || asset.AssetNameEquals("Mods/ShopTileFramework/AnimalShops")
-                || asset.AssetNameEquals("Mods/ShopTileFramework/VanillaShops"))
-            {
-                ModEntry.helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Required, but this should never get called
-        /// </summary>
-        public void Edit<T>(IAssetData asset)
-        {
-            throw new InvalidOperationException();
-        }
-
-        /// <summary>
-        /// Refresh all stock prices
-        /// </summary>
-        private void GameLoop_UpdateTicked(object sender, StardewModdingAPI.Events.UpdateTickedEventArgs e)
-        {
-            
-            ModEntry.helper.Events.GameLoop.UpdateTicked -= GameLoop_UpdateTicked;
-            UpdateStock();
         }
     }
 }

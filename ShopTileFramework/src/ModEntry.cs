@@ -66,7 +66,6 @@ namespace ShopTileFramework
 
             //load data into game content
             helper.Content.AssetLoaders.Add(ShopManager);
-            helper.Content.AssetEditors.Add(ShopManager);
 
             HarmonyInstance harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
             VanillaShopStockPatches.Apply(harmony);
