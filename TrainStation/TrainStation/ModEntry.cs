@@ -134,7 +134,7 @@ namespace TrainStation
             //create stop in willy's boat room
             BoatStop BoatTunnelStop = new BoatStop()
             {
-                TargetMapName = "BoastTunnel",
+                TargetMapName = "BoatTunnel",
                 StopID = "Cherry.TrainStation",
                 TargetX = 4,
                 TargetY = 9,
