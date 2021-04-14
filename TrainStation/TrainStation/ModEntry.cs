@@ -16,10 +16,10 @@ namespace TrainStation
     public class ModEntry : Mod
     {
         private ModConfig Config;
-        public static ModEntry Instance;
+        internal static ModEntry Instance;
 
-        private List<TrainStop> TrainStops;
-        private List<BoatStop> BoatStops;
+        internal List<TrainStop> TrainStops;
+        internal List<BoatStop> BoatStops;
         private IConditionsChecker ConditionsApi;
 
         public override void Entry(IModHelper helper)
@@ -134,7 +134,7 @@ namespace TrainStation
             //create stop in willy's boat room
             BoatStop BoatTunnelStop = new BoatStop()
             {
-                TargetMapName = "BoastTunnel",
+                TargetMapName = "BoatTunnel",
                 StopID = "Cherry.TrainStation",
                 TargetX = 4,
                 TargetY = 9,
@@ -233,7 +233,6 @@ namespace TrainStation
 
             string tileProperty = Game1.currentLocation.doesTileHaveProperty((int)grabTile.X, (int)grabTile.Y, "Action", "Buildings");
 
-            VanillaPreconditionsMethod = Helper.Reflection.GetMethod(Game1.currentLocation, "checkEventPrecondition");
             if (tileProperty == "TrainStation")
             {
                 OpenTrainMenu();
@@ -435,17 +434,6 @@ namespace TrainStation
         **    Utility    **
         *******************/
 
-        public static IReflectedMethod VanillaPreconditionsMethod;
-
-        private bool CheckConditions(string conditions)
-        {
-            if (string.IsNullOrEmpty(conditions))
-                return true;
-
-            int result = VanillaPreconditionsMethod.Invoke<int>("-5005/" + conditions);
-            return result != -1;
-        }
-
         private bool TryToChargeMoney(int cost)
         {
             if (Game1.player.Money < cost)
@@ -531,6 +519,12 @@ namespace TrainStation
     {
         void OpenTrainMenu();
         void OpenBoatMenu();
+
+        //If the given StopId already exists, update it with the given data. Otherwise, create a new train stop with the given data
+        void RegisterTrainStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName);
+
+        //If the given StopId already exists, update it with the given data. Otherwise, create a new boat stop with the given data
+        void RegisterBoatStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName);
     }
 
     public class Api : IApi
@@ -543,6 +537,46 @@ namespace TrainStation
         public void OpenBoatMenu()
         {
             ModEntry.Instance.OpenBoatMenu();
+        }
+
+        public void RegisterTrainStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName)
+        {
+            var stop = ModEntry.Instance.TrainStops.SingleOrDefault(s => s.StopID.Equals(stopId));
+            if (stop == null)
+            {
+                stop = new TrainStop();
+                ModEntry.Instance.TrainStops.Add(stop);
+            }
+
+            stop.StopID = stopId;
+            stop.TargetMapName = targetMapName;
+            stop.LocalizedDisplayName = localizedDisplayName;
+            stop.TargetX = targetX;
+            stop.TargetY = targetY;
+            stop.Cost = cost;
+            stop.FacingDirectionAfterWarp = facingDirectionAfterWarp;
+            stop.Conditions = conditions;
+            stop.TranslatedName = translatedName;
+        }
+
+        public void RegisterBoatStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName)
+        {
+            var stop = ModEntry.Instance.BoatStops.SingleOrDefault(s => s.StopID.Equals(stopId));
+            if (stop == null)
+            {
+                stop = new BoatStop();
+                ModEntry.Instance.BoatStops.Add(stop);
+            }
+
+            stop.StopID = stopId;
+            stop.TargetMapName = targetMapName;
+            stop.LocalizedDisplayName = localizedDisplayName;
+            stop.TargetX = targetX;
+            stop.TargetY = targetY;
+            stop.Cost = cost;
+            stop.FacingDirectionAfterWarp = facingDirectionAfterWarp;
+            stop.Conditions = conditions;
+            stop.TranslatedName = translatedName;
         }
     }
 
@@ -561,12 +595,5 @@ namespace TrainStation
         /// <param name="conditions">An array of condition strings.</param>
         /// <returns></returns>
         bool CheckConditions(string[] conditions);
-
-        /// <summary>
-        /// Checks a single condition string. The string will be evaluated as true if every single condition provided is true.
-        /// </summary>
-        /// <param name="conditions"></param>
-        /// <returns></returns>
-        bool CheckConditions(string conditions);
     }
 }
