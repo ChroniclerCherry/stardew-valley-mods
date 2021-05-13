@@ -136,8 +136,8 @@ namespace TrainStation
             {
                 TargetMapName = "BoatTunnel",
                 StopID = "Cherry.TrainStation",
-                TargetX = 4,
-                TargetY = 9,
+                TargetX = Config.TunnelWarpX,
+                TargetY = Config.TunnelWarpY,
                 Cost = 0,
                 TranslatedName = Helper.Translation.Get("BoatStationDisplayName")
             };
@@ -477,6 +477,8 @@ namespace TrainStation
         public int TicketStationY = 40;
         public int RailroadWarpX = 32;
         public int RailroadWarpY = 42;
+        public int TunnelWarpX = 4;
+        public int TunnelWarpY = 10;
     }
 
     public class ContentPack
