@@ -1,8 +1,0 @@
-﻿{
-	"NotEnoughMoney":"Vous n'avez pas asser d'argent pour vous rendre à {{DestinationName}}",
-	"MenuCancelOption":"Annuler",
-	"NoDestinations":"Il n'y as pas de destionations disponibles.There are no available destinations",
-	"ChooseDestination":"Choisissez votre destination",
-	"TrainStationDisplayName":"Station de la Vallée des Rosées",
-	"ArrivalMessage":"Vous êtes arrivés à {{DestinationName}}"
-}
