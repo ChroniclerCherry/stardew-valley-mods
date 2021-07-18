@@ -45,6 +45,7 @@ namespace ShopTileFramework.ItemPriceAndStock
 
             return AddItemToStock(id, priceMultiplier);
         }
+
         /// <summary>
         /// Takes an item id, and adds that item to the stock
         /// </summary>
@@ -56,6 +57,7 @@ namespace ShopTileFramework.ItemPriceAndStock
 
             if (ModEntry.VerboseLogging)
                 ModEntry.monitor.Log($"Adding item ID {itemId} to {_itemStock.ShopName}", LogLevel.Debug);
+
             if (itemId < 0)
             {
                 ModEntry.monitor.Log($"{_itemStock.ItemType} of ID {itemId} could not be added to the Shop {_itemStock.ShopName}", LogLevel.Trace);
