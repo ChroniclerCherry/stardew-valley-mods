@@ -1,0 +1,10 @@
+﻿{
+    "Name": "Hay Bales as Silos",
+    "Author": "Cherry",
+    "Version": "1.0.5",
+    "Description": "Allows hay bales to behave as additional Silos on the farm",
+    "UniqueID": "Cherry.HayBalesSilo",
+    "EntryDll": "HayBalesSilo.dll",
+    "MinimumApiVersion": "3.0.0",
+    "UpdateKeys": [ "Nexus:5151" ]
+}

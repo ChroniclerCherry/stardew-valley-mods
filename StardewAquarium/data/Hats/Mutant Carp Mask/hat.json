@@ -1,0 +1,32 @@
+﻿{
+	"Name": "Mutant Carp Mask",
+	"Description": "Mask of the legendary Mutant Carp.",
+	"ShowHair": false,
+	"IgnoreHairstyleOffset": true,
+    "NameLocalization": {
+        "ko": "돌연변이 잉어 가면",
+        "fr": "Masque de Carpe Mutante",
+        "pt": "Máscara de Carpa Mutante",
+        "ru": "Маска Карпа-мутанта",
+        "zh": "变种鲤鱼面具",
+		"es": "Máscara de Carpa Mutante",
+		"de": "Mutantenkarpfen Maske",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
+    },
+    "DescriptionLocalization": {
+        "ko": "전설적인 물고기 돌연변이 잉어 모양 가면.",
+        "fr": "Masque de la Légendaire Carpe Mutante.",
+        "pt": "Máscara da lendária Carpa mutante.",
+        "ru": "Маска легендарного Карпа-мутанта.",
+        "zh": "传奇变种鲤鱼面具。",
+		"es": "Máscara del legendario Carpa Mutante.",
+		"de": "Maske des legendären Mutantenkarpfens.",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
+    }
+}

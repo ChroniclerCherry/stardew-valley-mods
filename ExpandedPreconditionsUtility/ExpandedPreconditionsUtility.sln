@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30320.27
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpandedPreconditionsUtility", "ExpandedPreconditionsUtility.csproj", "{B5F69C8D-893E-4ADB-BB60-C92E4E8EFD8B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5F69C8D-893E-4ADB-BB60-C92E4E8EFD8B}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{B5F69C8D-893E-4ADB-BB60-C92E4E8EFD8B}.Debug|Any CPU.Build.0 = Debug|x86
+		{B5F69C8D-893E-4ADB-BB60-C92E4E8EFD8B}.Release|Any CPU.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3DC02769-7EC5-46A8-B74F-4CAFD009F8AF}
+	EndGlobalSection
+EndGlobal

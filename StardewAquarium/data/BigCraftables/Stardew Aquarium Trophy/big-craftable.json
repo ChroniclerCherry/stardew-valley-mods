@@ -1,0 +1,32 @@
+﻿{
+	"Name": "Stardew Aquarium Trophy",
+	"Price": 1,
+	"Description": "Rewarded for helping the Stardew Aquarium reach its full potential!",
+	"ProvidesLight": false,
+	"NameLocalization": {
+		"ko": "별이슬 아쿠아리움 트로피",
+		"fr": "Trophée de l'Aquarium Stardew",
+		"pt": "Troféu Stardew Aquarium",
+		"ru": "Трофей Аквариума долины Стардью.",
+		"zh": "星露水族馆奖杯",
+		"es": "Trofeo del Acuario Stardew",
+		"de": "Sternentau Aquarium Pokal",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
+	},
+	"DescriptionLocalization": {
+		"ko": "별이슬 아쿠아리움이 그 잠재력을 최대한 발휘할 수 있도록 도와준 이에게 증여된 명예로운 보상!",
+		"fr": "Il vous fut récompensé pour avoir aider l'Aquarium Stardew à atteindre so potentiel maximal!",
+		"pt": "Recompensado por ajudar o Stardew Aquarium a atingir todo o seu potencial!",
+		"ru": "Награда за помощь в сборе рыб Аквариуму долины Стардью.",
+		"zh": "奖励帮助星露水族馆，使其充分发挥潜力的人！",
+		"es": "¡Recompensado por ayudar al Acuario Stardew a alcanzar su máximo potencial!",
+		"de": "verliehen für die Mithilfe, das Sternentau Aquarium zu seinem vollen Potential zu führen",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
+	}
+}

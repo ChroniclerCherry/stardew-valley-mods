@@ -1,0 +1,4 @@
+﻿{
+    "DisplayName": "건초 꾸러미",
+    "Description": "저장고의 용량을 {{capacity}} 만큼 추가합니다. 농장에서만 작동합니다."
+}

@@ -1,0 +1,10 @@
+﻿{
+    "Name": "Upgrade Empty Cabins",
+    "Author": "Cherry",
+    "Version": "1.0.4",
+    "Description": "Lets you upgrade empty cabins and remove seed boxes",
+    "UniqueID": "Cherry.UpgradeEmptyCabins",
+    "EntryDll": "UpgradeEmptyCabins.dll",
+    "MinimumApiVersion": "3.8.0",
+    "UpdateKeys": [ "Nexus:5253" ]
+}

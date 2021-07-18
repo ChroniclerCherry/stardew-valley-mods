@@ -1,0 +1,10 @@
+﻿{
+  "Name": "Customize Anywhere",
+  "Author": "Cherry",
+  "Version": "1.1.7",
+  "Description": "Open the customization menu from anywhere",
+  "UniqueID": "Cherry.CustomizeAnywhere",
+  "EntryDll": "CustomizeAnywhere.dll",
+  "MinimumApiVersion": "3.0.0",
+  "UpdateKeys": ["Nexus:4734"]
+}
