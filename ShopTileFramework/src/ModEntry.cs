@@ -92,7 +92,8 @@ namespace ShopTileFramework
         private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
         {
             //this block fixes marnie's portrait popping up after purchasing an animal
-            if (e.OldMenu is PurchaseAnimalsMenu && e.NewMenu is DialogueBox && SourceLocation != null)
+            if ((e.OldMenu is PurchaseAnimalsMenu || e.OldMenu?.GetType().FullName == "FarmAnimalVarietyRedux.Menus.CustomPurchaseAnimalsMenu")
+                && e.NewMenu is DialogueBox && SourceLocation != null)
             {
                 var animalPurchaseMessage = ((DialogueBox)e.NewMenu).getCurrentString();
 
@@ -105,8 +106,12 @@ namespace ShopTileFramework
 
             //TODO: deprecate this once FAVR is out
             //this is the vanilla Marnie menu for us to exclude animals from
+            var excludedAnimals = ShopManager.AnimalShops.Values
+                .SelectMany(animalShop => animalShop.ExcludeFromMarnies)
+                .Select(animalName => APIs.FAVR != null ? APIs.FAVR.GetInternalName(animalName) : animalName);
+
             if (e.NewMenu is PurchaseAnimalsMenu && SourceLocation == null &&
-                !_changedMarnieStock && AnimalShop.ExcludeFromMarnie.Count > 0)
+                !_changedMarnieStock && excludedAnimals.Count() > 0)
             {
                 //close the current menu to open our own	
                 Game1.exitActiveMenu();
@@ -115,7 +120,7 @@ namespace ShopTileFramework
 
                 //removes all animals on the exclusion list
                 var newAnimalStock = (from animal in allAnimalsStock
-                                      where !AnimalShop.ExcludeFromMarnie.Contains(animal.Name)
+                                      where !excludedAnimals.Contains(animal.Name)
                                       select animal).ToList();
                 Game1.activeClickableMenu = new PurchaseAnimalsMenu(newAnimalStock);
             }

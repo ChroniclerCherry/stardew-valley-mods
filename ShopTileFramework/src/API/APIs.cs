@@ -11,6 +11,7 @@ namespace ShopTileFramework.API
     {
         internal static IJsonAssetsApi JsonAssets;
         internal static IBFAVApi BFAV;
+        internal static IFAVRApi FAVR;
         internal static IConditionsApi Conditions;
 
         /// <summary>
@@ -67,10 +68,18 @@ namespace ShopTileFramework.API
 
         }
 
+        /// <summary>
+        /// Register the API for Farm Animal Variety Redux
+        /// </summary>
         public static void RegisterFAVR()
         {
-            //TODO: when FAVR is released, start deprecating support for BFAV
-        }
+            FAVR = ModEntry.helper.ModRegistry.GetApi<IFAVRApi>("Satozaki.FarmAnimalVarietyRedux");
 
+            if (FAVR == null)
+            {
+                ModEntry.monitor.Log("FAVR API not detected. This is only an issue if you're using custom FAVR animals and a custom shop that's supposed to sell them, as custom animals will not appear in those shops.",
+                    LogLevel.Info);
+            }
+        }
     }
 }

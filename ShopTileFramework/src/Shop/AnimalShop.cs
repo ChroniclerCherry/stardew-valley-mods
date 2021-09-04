@@ -4,6 +4,7 @@ using StardewValley;
 using StardewValley.Menus;
 using System.Collections.Generic;
 using ShopTileFramework.API;
+using System.Linq;
 
 namespace ShopTileFramework.Shop
 {
@@ -35,10 +36,11 @@ namespace ShopTileFramework.Shop
             //BFAV patches this anyways so it'll automatically work if installed
             _allAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock();
 
+            var animalStockNames = AnimalStock.Select(animalStockName => APIs.FAVR != null ? APIs.FAVR.GetInternalName(animalStockName) : animalStockName);
             _shopAnimalStock = new List<Object>();
             foreach (var animal in _allAnimalsStock)
             {
-                if (AnimalStock.Contains(animal.Name))
+                if (animalStockNames.Contains(animal.Name))
                 {
                     _shopAnimalStock.Add(animal);
                 }
