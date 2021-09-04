@@ -33,7 +33,7 @@ namespace ShopTileFramework.API
 
             if (JsonAssets == null)
             {
-                ModEntry.monitor.Log("Json Assets API not detected. This is only an issue if you're using cystom Json Assets items and shops trying to sell them, as custom items will not appear in shops.",
+                ModEntry.monitor.Log("Json Assets API not detected. This is only an issue if you're using custom Json Assets items and shops trying to sell them, as custom items will not appear in shops.",
                     LogLevel.Info);
             }
 

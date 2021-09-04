@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
-using HarmonyLib;
 using Microsoft.Xna.Framework;
 using ShopTileFramework.API;
 using ShopTileFramework.Patches;

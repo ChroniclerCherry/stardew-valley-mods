@@ -162,7 +162,7 @@ namespace ShopTileFramework.Utility
 
         public static void RegisterItemsToRemove()
         {
-            foreach (string pack in _packsToRemove)
+            foreach (string pack in PacksToRemove)
             {
                 var items = APIs.JsonAssets?.GetAllBigCraftablesFromContentPack(pack);
                 if (items != null)
@@ -185,13 +185,13 @@ namespace ShopTileFramework.Utility
                 items = APIs.JsonAssets?.GetAllObjectsFromContentPack(pack);
                 if (items != null)
                 {
-                    _itemsToRemove.AddRange(items);
+                    ItemsToRemove.AddRange(items);
                 }
 
                 items = APIs.CustomFurniture?.GetAllFurnitureFromContentPack(pack);
                 if (items != null)
                 {
-                    _itemsToRemove.AddRange(items);
+                    ItemsToRemove.AddRange(items);
                 }
 
                 var crops = APIs.JsonAssets?.GetAllCropsFromContentPack(pack);
@@ -209,7 +209,7 @@ namespace ShopTileFramework.Utility
                 {
                     foreach (int saplingID in trees.Select(GetSaplingId))
                     {
-                        _itemsToRemove.Add(ObjectInfoSource["Object"][saplingID].Split('/')[0]);
+                        ItemsToRemove.Add(ObjectInfoSource["Object"][saplingID].Split('/')[0]);
                     }
                 }
 
