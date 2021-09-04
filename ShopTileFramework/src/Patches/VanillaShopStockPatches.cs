@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using ShopTileFramework.Shop;
 using ShopTileFramework.Utility;
 using StardewValley;
@@ -13,7 +13,7 @@ namespace ShopTileFramework.Patches
     public class VanillaShopStockPatches
     {
 
-        public static void Apply(HarmonyInstance harmony)
+        public static void Apply(Harmony harmony)
         {
             harmony.Patch(
                original: AccessTools.Method(typeof(SeedShop), nameof(SeedShop.shopStock)),

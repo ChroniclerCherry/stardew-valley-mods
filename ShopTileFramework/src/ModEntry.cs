@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Harmony;
+using HarmonyLib;
+using HarmonyLib;
 using Microsoft.Xna.Framework;
 using ShopTileFramework.API;
 using ShopTileFramework.Patches;
@@ -70,7 +71,7 @@ namespace ShopTileFramework
             //load data into game content
             helper.Content.AssetLoaders.Add(ShopManager);
 
-            HarmonyInstance harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
+            Harmony harmony = new Harmony(this.ModManifest.UniqueID);
             VanillaShopStockPatches.Apply(harmony);
         }
         /// <summary>
@@ -113,7 +114,6 @@ namespace ShopTileFramework
                 Game1.activeClickableMenu = new DialogueBox(animalPurchaseMessage);
             }
 
-            //TODO: deprecate this once FAVR is out
             //this is the vanilla Marnie menu for us to exclude animals from
             var excludedAnimals = ShopManager.AnimalShops.Values
                 .SelectMany(animalShop => animalShop.ExcludeFromMarnies)

@@ -17,7 +17,7 @@ namespace ShopTileFramework.Shop
     class ShopManager : IAssetLoader
     {
         private readonly Dictionary<string, ItemShop> ItemShops = new Dictionary<string, ItemShop>();
-        private readonly Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
+        internal readonly Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
         private readonly Dictionary<string, VanillaShop> VanillaShops = new Dictionary<string, VanillaShop>();
         private readonly string[] VanillaShopNames = {
             "PierreShop",
