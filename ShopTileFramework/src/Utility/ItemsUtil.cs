@@ -107,7 +107,7 @@ namespace ShopTileFramework.Utility
         /// <returns>True if it's a valid type, false if not</returns>
         public static bool CheckItemType(string itemType)
         {
-            return (itemType == "Seed" || ObjectInfoSource.ContainsKey(itemType));
+            return (itemType == "Seed" || itemType == "Wallpaper" || itemType == "Floors" || ObjectInfoSource.ContainsKey(itemType));
         }
 
         /// <summary>
