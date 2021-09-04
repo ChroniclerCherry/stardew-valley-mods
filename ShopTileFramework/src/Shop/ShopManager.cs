@@ -5,6 +5,8 @@ using StardewModdingAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StardewModdingAPI.Utilities;
+using StardewValley;
 
 namespace ShopTileFramework.Shop
 {
@@ -12,12 +14,12 @@ namespace ShopTileFramework.Shop
     /// This class holds and manages all the shops, loading content packs to create shops
     /// And containing methods to update everything that needs to
     /// </summary>
-    class ShopManager
+    class ShopManager : IAssetLoader
     {
-        public static Dictionary<string, ItemShop> ItemShops = new Dictionary<string, ItemShop>();
-        public static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
-        public static Dictionary<string, VanillaShop> VanillaShops = new Dictionary<string, VanillaShop>();
-        public static readonly string[] VanillaShopNames = {
+        private readonly Dictionary<string, ItemShop> ItemShops = new Dictionary<string, ItemShop>();
+        private readonly Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
+        private readonly Dictionary<string, VanillaShop> VanillaShops = new Dictionary<string, VanillaShop>();
+        private readonly string[] VanillaShopNames = {
             "PierreShop",
             "JojaShop",
             "RobinShop",
@@ -40,7 +42,7 @@ namespace ShopTileFramework.Shop
         /// <summary>
         /// Takes content packs and loads them as ItemShop and AnimalShop objects
         /// </summary>
-        public static void LoadContentPacks()
+        public void LoadContentPacks()
         {
             ModEntry.monitor.Log("Adding Content Packs...", LogLevel.Info);
             foreach (IContentPack contentPack in ModEntry.helper.ContentPacks.GetOwned())
@@ -76,7 +78,7 @@ namespace ShopTileFramework.Shop
         /// </summary>
         /// <param name="data"></param>
         /// <param name="contentPack"></param>
-        public static void RegisterShops(ContentPack data, IContentPack contentPack)
+        public void RegisterShops(ContentPack data, IContentPack contentPack)
         {
             ItemsUtil.RegisterPacksToRemove(data.RemovePacksFromVanilla, data.RemovePackRecipesFromVanilla, data.RemoveItemsFromVanilla);
 
@@ -146,7 +148,7 @@ namespace ShopTileFramework.Shop
         /// <summary>
         /// Update all trans;ations for each shop when a save file is loaded
         /// </summary>
-        public static void UpdateTranslations()
+        public void UpdateTranslations()
         {
             foreach (ItemShop itemShop in ItemShops.Values)
             {
@@ -162,7 +164,7 @@ namespace ShopTileFramework.Shop
         /// <summary>
         /// Initializes all shops once the game is loaded
         /// </summary>
-        public static void InitializeShops()
+        public void InitializeShops()
         {
             foreach (ItemShop itemShop in ItemShops.Values)
             {
@@ -173,7 +175,7 @@ namespace ShopTileFramework.Shop
         /// <summary>
         /// Initializes the stocks of each shop after the save file has loaded so that item IDs are available to generate items
         /// </summary>
-        public static void InitializeItemStocks()
+        public void InitializeItemStocks()
         {
             foreach (ItemShop itemShop in ItemShops.Values)
             {
@@ -190,25 +192,56 @@ namespace ShopTileFramework.Shop
         /// Updates the stock for all itemshops at the start of each day
         /// and updates their portraits too to match the current season
         /// </summary>
-        internal static void UpdateStock()
+        internal void UpdateStock()
         {
-            if (ItemShops.Count > 0)
+            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/ItemShops"));
+            if (itemShops.Count > 0)
                 ModEntry.monitor.Log($"Refreshing stock for all custom shops...", LogLevel.Debug);
 
-            foreach (ItemShop store in ItemShops.Values)
+            foreach (ItemShop store in itemShops.Values)
             {
                 store.UpdateItemPriceAndStock();
                 store.UpdatePortrait();
             }
 
-            if (VanillaShops.Count > 0)
+            Dictionary<string, VanillaShop> vanillaShops = Game1.content.Load<Dictionary<string, VanillaShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/VanillaShops"));
+            if (vanillaShops.Count > 0)
                 ModEntry.monitor.Log($"Refreshing stock for all Vanilla shops...", LogLevel.Debug);
 
-            foreach (VanillaShop shop in VanillaShops.Values)
+            foreach (VanillaShop shop in vanillaShops.Values)
             {
                 shop.UpdateItemPriceAndStock();
             }
         }
 
+        /// <summary>
+        /// Provide original versions of Game content loaded to Mods/ShopTileFramework/%
+        /// </summary>
+        public bool CanLoad<T>(IAssetInfo asset)
+        {
+            var assetName = PathUtilities.NormalizePath(asset.AssetName);
+            var modPath = PathUtilities.NormalizePath("Mods/ShopTileFramework/");
+            return assetName.Equals($"{modPath}ItemShops")
+                || assetName.Equals($"{modPath}AnimalShops")
+                || assetName.Equals($"{modPath}VanillaShops");
+        }
+
+        /// <summary>
+        /// Initialize Shop Dictionary for Content Mod target
+        /// </summary>
+        public T Load<T>(IAssetInfo asset)
+        {
+            string shopType = PathUtilities.GetSegments(asset.AssetName).ElementAtOrDefault(2);
+            switch (shopType)
+            {
+                case "ItemShops":
+                    return (T) (object) ItemShops;
+                case "AnimalShops":
+                    return (T) (object) AnimalShops;
+                case "VanillaShops":
+                    return (T) (object) VanillaShops;
+            }
+            throw new InvalidOperationException();
+        }
     }
 }
