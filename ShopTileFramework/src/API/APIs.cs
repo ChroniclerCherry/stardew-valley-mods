@@ -13,13 +13,23 @@ namespace ShopTileFramework.API
         internal static IBFAVApi BFAV;
         internal static IFAVRApi FAVR;
         internal static IConditionsApi Conditions;
+        internal static ICustomFurnitureApi CustomFurniture;
 
         /// <summary>
         /// Register the API for Json Assets
         /// </summary>
         public static void RegisterJsonAssets()
         {
-            JsonAssets = ModEntry.helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
+            // Boots were added to the JA API at the end of 2020, but we may not be dealing with that version.
+            // Use the older version of the API as a fall-back.
+            try
+            {
+                JsonAssets = ModEntry.helper.ModRegistry.GetApi<IJsonAssetsApiWithBoots>("spacechase0.JsonAssets");
+            }
+            catch
+            {
+                JsonAssets = ModEntry.helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
+            }
 
             if (JsonAssets == null)
             {
@@ -69,6 +79,20 @@ namespace ShopTileFramework.API
         }
 
         /// <summary>
+        /// Register the API for Custom Furniture
+        /// </summary>
+        public static void RegisterCustomFurniture()
+        {
+            CustomFurniture = ModEntry.helper.ModRegistry.GetApi<ICustomFurnitureApi>("Platonymous.CustomFurniture");
+
+            if (CustomFurniture == null)
+            {
+                ModEntry.monitor.Log("Custom Furniture API not detected. Custom furniture will not be added to shops.",
+                    LogLevel.Info);
+            }
+
+        }
+
         /// Register the API for Farm Animal Variety Redux
         /// </summary>
         public static void RegisterFAVR()

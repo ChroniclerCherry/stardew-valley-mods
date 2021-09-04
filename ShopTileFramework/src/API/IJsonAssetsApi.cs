@@ -21,4 +21,12 @@ namespace ShopTileFramework.API
 
         event EventHandler AddedItemsToShop;
     }
+
+    /// <summary>
+    /// Boots added to JA API in Dec 2020.
+    /// </summary>
+    public interface IJsonAssetsApiWithBoots : IJsonAssetsApi
+    {
+        List<string> GetAllBootsFromContentPack(string cp);
+    }
 }
