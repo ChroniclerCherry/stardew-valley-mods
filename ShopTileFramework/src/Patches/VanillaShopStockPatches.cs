@@ -5,8 +5,6 @@ using StardewValley;
 using StardewValley.Locations;
 using System.Collections.Generic;
 using System.Linq;
-using StardewModdingAPI;
-using StardewModdingAPI.Utilities;
 
 namespace ShopTileFramework.Patches
 {
@@ -106,12 +104,11 @@ namespace ShopTileFramework.Patches
         {
             ModEntry.JustOpenedVanilla = true;
 
-            Dictionary<string, VanillaShop> vanillaShops = Game1.content.Load<Dictionary<string, VanillaShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/VanillaShops"));
-            if (!vanillaShops.ContainsKey(shopName)) return;
+            if (!ShopManager.VanillaShops.ContainsKey(shopName)) return;
 
-            var customStock = vanillaShops[shopName].ItemPriceAndStock;
+            var customStock = ShopManager.VanillaShops[shopName].ItemPriceAndStock;
             ItemsUtil.RemoveSoldOutItems(customStock);
-            if (vanillaShops[shopName].ReplaceInsteadOfAdd)
+            if (ShopManager.VanillaShops[shopName].ReplaceInsteadOfAdd)
             {
                 __result = customStock;
             }
@@ -123,7 +120,7 @@ namespace ShopTileFramework.Patches
                         return;
                 }
 
-                if (vanillaShops[shopName].AddStockAboveVanilla)
+                if (ShopManager.VanillaShops[shopName].AddStockAboveVanilla)
                 {
                     __result = customStock.Concat(__result).ToDictionary(x => x.Key, x => x.Value);
                 }
