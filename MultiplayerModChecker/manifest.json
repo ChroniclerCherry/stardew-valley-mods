@@ -1,0 +1,10 @@
+﻿{
+    "Name": "Multiplayer Mod Checker",
+    "Author": "Cherry",
+    "Version": "1.0.1",
+    "Description": "Lets players in a multiplayer game know if there are mismatched mods or mod versions.",
+    "UniqueID": "Cherry.MultiplayerModChecker",
+    "EntryDll": "MultiplayerModChecker.dll",
+    "MinimumApiVersion": "3.0.0",
+    "UpdateKeys": [ "Nexus:6609" ]
+}

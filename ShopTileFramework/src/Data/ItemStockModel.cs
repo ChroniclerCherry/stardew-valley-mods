@@ -10,6 +10,7 @@
         public int Quality { get; set; } = 0;
         public int[] ItemIDs { get; set; } = null;
         public string[] JAPacks { get; set; } = null;
+        public string[] ExcludeFromJAPacks { get; set; } = null;
         public string[] ItemNames { get; set; } = null;
         public bool FilterSeedsBySeason { get; set; } = true;
         public int Stock { get; set; } = int.MaxValue;

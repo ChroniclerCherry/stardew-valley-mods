@@ -1,10 +1,10 @@
 ﻿{
     "Name": "Expanded Preconditions Utility",
     "Author": "Cherry",
-    "Version": "1.0.0",
+    "Version": "1.0.2-beta",
     "Description": "A condition checking system designed for use by other mods, in the format of event preconditions",
     "UniqueID": "Cherry.ExpandedPreconditionsUtility",
     "EntryDll": "ExpandedPreconditionsUtility.dll",
-    "MinimumApiVersion": "3.5.0",
-    "UpdateKeys": [ "" ]
+    "MinimumApiVersion": "3.13.0-beta",
+    "UpdateKeys": [ "Nexus:6529" ]
 }

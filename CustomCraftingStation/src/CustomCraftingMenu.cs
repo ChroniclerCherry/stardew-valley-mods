@@ -4,97 +4,131 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Netcode;
-using StardewValley;
-using StardewValley.Menus;
 using StardewValley.Objects;
 
-namespace CustomCraftingStation
+namespace StardewValley.Menus
 {
     public class CustomCraftingMenu : IClickableMenu
     {
-        private string descriptionText = "";
-        private string hoverText = "";
-        protected List<Dictionary<ClickableTextureComponent, CraftingRecipe>> pagesOfCraftingRecipes = new List<Dictionary<ClickableTextureComponent, CraftingRecipe>>();
-        public List<ClickableComponent> currentPageClickableComponents = new List<ClickableComponent>();
-        private string hoverTitle = "";
         public const int howManyRecipesFitOnPage = 40;
+
         public const int numInRow = 10;
+
         public const int numInCol = 4;
+
         public const int region_upArrow = 88;
+
         public const int region_downArrow = 89;
+
         public const int region_craftingSelectionArea = 8000;
+
         public const int region_craftingModifier = 200;
+
+        private string descriptionText = "";
+
+        private string hoverText = "";
+
         private Item hoverItem;
+
         private Item lastCookingHover;
+
         public InventoryMenu inventory;
+
         private Item heldItem;
+
+        [SkipForClickableAggregation]
+        public List<Dictionary<ClickableTextureComponent, CraftingRecipe>> pagesOfCraftingRecipes = new List<Dictionary<ClickableTextureComponent, CraftingRecipe>>();
+
         private int currentCraftingPage;
+
         private CraftingRecipe hoverRecipe;
+
         public ClickableTextureComponent upButton;
+
         public ClickableTextureComponent downButton;
+
         public ClickableTextureComponent trashCan;
+
         public ClickableComponent dropItemInvisibleButton;
+
         public float trashCanLidRotation;
-        protected List<Chest> _materialContainers;
+
+        public List<Chest> _materialContainers;
+
         private int hoverAmount;
 
-        public CustomCraftingMenu(
-            int x,
-            int y,
-            int width,
-            int height,
-            List<Chest> material_containers, List<string> craftingRecipes, List<string> cookingRecipes)
-            : base(x, y, width, height, false)
-        {
+        public List<ClickableComponent> currentPageClickableComponents = new List<ClickableComponent>();
 
-            inventory = new InventoryMenu(xPositionOnScreen + spaceToClearSideBorder + borderWidth, yPositionOnScreen + spaceToClearTopBorder + borderWidth + 320 - 16, false, (IList<Item>)null, (InventoryMenu.highlightThisItem)null, -1, 3, 0, 0, true);
+        private string hoverTitle = "";
+
+        public CustomCraftingMenu(int x, int y, int width, int height,
+            List<Chest> material_containers,
+            List<string> craftingRecipes, List<string> cookingRecipes)
+            : base(x, y, width, height)
+        {
+            inventory = new InventoryMenu(xPositionOnScreen + spaceToClearSideBorder + borderWidth, yPositionOnScreen + spaceToClearTopBorder + borderWidth + 320 - 16, playerInventory: false);
             inventory.showGrayedOutSlots = true;
             currentPageClickableComponents = new List<ClickableComponent>();
-            foreach (ClickableComponent clickableComponent in inventory.GetBorder(InventoryMenu.BorderSide.Top))
-                clickableComponent.upNeighborID = -99998;
+            foreach (ClickableComponent item in inventory.GetBorder(InventoryMenu.BorderSide.Top))
+            {
+                item.upNeighborID = -99998;
+            }
             _materialContainers = material_containers;
-            List<Chest> materialContainers = _materialContainers;
+            _ = _materialContainers;
             initializeUpperRightCloseButton();
-            ClickableTextureComponent textureComponent1 = new ClickableTextureComponent(new Rectangle(xPositionOnScreen + width + 4, yPositionOnScreen + height - 192 - 32 - borderWidth - 104, 64, 104), Game1.mouseCursors, new Rectangle(564 + Game1.player.trashCanLevel * 18, 102, 18, 26), 4f, false);
-            textureComponent1.myID = 106;
-            trashCan = textureComponent1;
+            trashCan = new ClickableTextureComponent(new Rectangle(xPositionOnScreen + width + 4, yPositionOnScreen + height - 192 - 32 - borderWidth - 104, 64, 104), Game1.mouseCursors, new Rectangle(564 + Game1.player.trashCanLevel * 18, 102, 18, 26), 4f)
+            {
+                myID = 106
+            };
             dropItemInvisibleButton = new ClickableComponent(new Rectangle(xPositionOnScreen - borderWidth - spaceToClearSideBorder - 64, trashCan.bounds.Y, 64, 64), "")
             {
                 myID = 107,
                 rightNeighborID = 0
             };
-            
-                layoutRecipe(craftingRecipes, cookingRecipes);
+            List<string> playerRecipes = new List<string>();
+            Game1.playSound("bigSelect");
+            layoutRecipes(craftingRecipes,cookingRecipes);
             if (pagesOfCraftingRecipes.Count > 1)
             {
-                ClickableTextureComponent textureComponent2 = new ClickableTextureComponent(new Rectangle(xPositionOnScreen + 768 + 32, craftingPageY(), 64, 64), Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 12, -1, -1), 0.8f, false);
-                textureComponent2.myID = 88;
-                textureComponent2.downNeighborID = 89;
-                textureComponent2.rightNeighborID = 106;
-                textureComponent2.leftNeighborID = -99998;
-                upButton = textureComponent2;
-                ClickableTextureComponent textureComponent3 = new ClickableTextureComponent(new Rectangle(xPositionOnScreen + 768 + 32, craftingPageY() + 192 + 32, 64, 64), Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 11, -1, -1), 0.8f, false);
-                textureComponent3.myID = 89;
-                textureComponent3.upNeighborID = 88;
-                textureComponent3.rightNeighborID = 106;
-                textureComponent3.leftNeighborID = -99998;
-                downButton = textureComponent3;
+                upButton = new ClickableTextureComponent(new Rectangle(xPositionOnScreen + 768 + 32, craftingPageY(), 64, 64), Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 12), 0.8f)
+                {
+                    myID = 88,
+                    downNeighborID = 89,
+                    rightNeighborID = 106,
+                    leftNeighborID = -99998
+                };
+                downButton = new ClickableTextureComponent(new Rectangle(xPositionOnScreen + 768 + 32, craftingPageY() + 192 + 32, 64, 64), Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 11), 0.8f)
+                {
+                    myID = 89,
+                    upNeighborID = 88,
+                    rightNeighborID = 106,
+                    leftNeighborID = -99998
+                };
             }
             _UpdateCurrentPageButtons();
-            if (!Game1.options.SnappyMenus)
-                return;
-            snapToDefaultClickableComponent();
+            if (Game1.options.SnappyMenus)
+            {
+                snapToDefaultClickableComponent();
+            }
+        }
+
+        protected override void cleanupBeforeExit()
+        {
+            base.cleanupBeforeExit();
         }
 
         protected virtual IList<Item> getContainerContents()
         {
             if (_materialContainers == null)
-                return (IList<Item>)null;
-            List<Item> objList = new List<Item>();
-            for (int index = 0; index < _materialContainers.Count; ++index)
-                objList.AddRange((IEnumerable<Item>)_materialContainers[index].items);
-            return (IList<Item>)objList;
+            {
+                return null;
+            }
+            List<Item> items = new List<Item>();
+            for (int i = 0; i < _materialContainers.Count; i++)
+            {
+                items.AddRange(_materialContainers[i].items);
+            }
+            return items;
         }
 
         private int craftingPageY()
@@ -109,86 +143,82 @@ namespace CustomCraftingStation
 
         private Dictionary<ClickableTextureComponent, CraftingRecipe> createNewPage()
         {
-            Dictionary<ClickableTextureComponent, CraftingRecipe> dictionary = new Dictionary<ClickableTextureComponent, CraftingRecipe>();
-            pagesOfCraftingRecipes.Add(dictionary);
-            return dictionary;
+            Dictionary<ClickableTextureComponent, CraftingRecipe> page = new Dictionary<ClickableTextureComponent, CraftingRecipe>();
+            pagesOfCraftingRecipes.Add(page);
+            return page;
         }
 
-        private bool spaceOccupied(
-            ClickableTextureComponent[,] pageLayout,
-            int x,
-            int y,
-            CraftingRecipe recipe)
+        private bool spaceOccupied(ClickableTextureComponent[,] pageLayout, int x, int y, CraftingRecipe recipe)
         {
             if (pageLayout[x, y] != null)
+            {
                 return true;
+            }
             if (!recipe.bigCraftable)
+            {
                 return false;
-            return y + 1 >= 4 || pageLayout[x, y + 1] != null;
+            }
+            if (y + 1 < 4)
+            {
+                return pageLayout[x, y + 1] != null;
+            }
+            return true;
         }
 
-        private int? getNeighbor(
-            ClickableTextureComponent[,] pageLayout,
-            int x,
-            int y,
-            int dx,
-            int dy)
+        private int? getNeighbor(ClickableTextureComponent[,] pageLayout, int x, int y, int dx, int dy)
         {
-            if (x < 0 || y < 0 || (x >= pageLayout.GetLength(0) || y >= pageLayout.GetLength(1)))
-                return new int?();
-            ClickableTextureComponent textureComponent1 = pageLayout[x, y];
-            ClickableTextureComponent textureComponent2;
-            for (textureComponent2 = textureComponent1; textureComponent2 == textureComponent1; textureComponent2 = pageLayout[x, y])
+            if (x < 0 || y < 0 || x >= pageLayout.GetLength(0) || y >= pageLayout.GetLength(1))
+            {
+                return null;
+            }
+            ClickableTextureComponent currentElement = pageLayout[x, y];
+            ClickableTextureComponent neighborElement;
+            for (neighborElement = currentElement; neighborElement == currentElement; neighborElement = pageLayout[x, y])
             {
                 x += dx;
                 y += dy;
-                if (x < 0 || y < 0 || (x >= pageLayout.GetLength(0) || y >= pageLayout.GetLength(1)))
-                    return new int?();
+                if (x < 0 || y < 0 || x >= pageLayout.GetLength(0) || y >= pageLayout.GetLength(1))
+                {
+                    return null;
+                }
             }
-            return textureComponent2?.myID;
+            return neighborElement?.myID;
         }
-        private void layoutRecipe(List<string> craftingRecipes, List<string> cookingingRecipes)
-        {
 
+        private void layoutRecipes(List<string> craftingRecipes, List<string> cookingingRecipes)
+        {
             int craftingPageX = xPositionOnScreen + spaceToClearSideBorder + borderWidth - 16;
             int spaceBetweenCraftingIcons = 8;
-            var newPage = createNewPage();
+            Dictionary<ClickableTextureComponent, CraftingRecipe> currentPage = createNewPage();
             int x = 0;
             int y = 0;
-            int numRecipes = 0;
-            ClickableTextureComponent[,] newPageLayout = createNewPageLayout();
+            int i = 0;
+            ClickableTextureComponent[,] pageLayout = createNewPageLayout();
+            List<ClickableTextureComponent[,]> pageLayouts = new List<ClickableTextureComponent[,]>();
+            pageLayouts.Add(pageLayout);
             foreach (string playerRecipe in craftingRecipes)
             {
-                ++numRecipes;
+                i++;
                 CraftingRecipe recipe = new CraftingRecipe(playerRecipe, false);
-                while (spaceOccupied(newPageLayout, x, y, recipe))
+                while (spaceOccupied(pageLayout, x, y, recipe))
                 {
-                    ++x;
+                    x++;
                     if (x >= 10)
                     {
                         x = 0;
-                        ++y;
+                        y++;
                         if (y >= 4)
                         {
-                            newPage = createNewPage();
-                            newPageLayout = createNewPageLayout();
+                            currentPage = createNewPage();
+                            pageLayout = createNewPageLayout();
+                            pageLayouts.Add(pageLayout);
                             x = 0;
                             y = 0;
                         }
                     }
                 }
-
-                int id = 200 + numRecipes;
-                var textureComponent = new ClickableTextureComponent("",
-                    new Rectangle(craftingPageX + x * (64 + spaceBetweenCraftingIcons), craftingPageY() + y * 72, 64,
-                        recipe.bigCraftable ? 128 : 64), null,
-                    Game1.player.craftingRecipes.ContainsKey(recipe.name) ? "" : "ghosted",
-                    recipe.bigCraftable ? Game1.bigCraftableSpriteSheet : Game1.objectSpriteSheet,
-                    recipe.bigCraftable
-                        ? Game1.getArbitrarySourceRect(Game1.bigCraftableSpriteSheet, 16, 32,
-                            recipe.getIndexOfMenuView())
-                        : Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, recipe.getIndexOfMenuView(),
-                            16, 16), 4f)
+                int id = 200 + i;
+                ClickableTextureComponent component = new ClickableTextureComponent("", new Rectangle(craftingPageX + x * (64 + spaceBetweenCraftingIcons), craftingPageY() + y * 72, 64, recipe.bigCraftable ? 128 : 64), null, (!Game1.player.cookingRecipes.ContainsKey(recipe.name) && !Game1.player.craftingRecipes.ContainsKey(recipe.name)) ? "ghosted" : "", recipe.bigCraftable ? Game1.bigCraftableSpriteSheet : Game1.objectSpriteSheet, recipe.bigCraftable ? Game1.getArbitrarySourceRect(Game1.bigCraftableSpriteSheet, 16, 32, recipe.getIndexOfMenuView()) : Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, recipe.getIndexOfMenuView(), 16, 16), 4f)
                 {
                     myID = id,
                     rightNeighborID = -99998,
@@ -198,47 +228,39 @@ namespace CustomCraftingStation
                     fullyImmutable = true,
                     region = 8000
                 };
-                ClickableTextureComponent component = textureComponent;
-                newPage.Add(component, recipe);
-                newPageLayout[x, y] = component;
+                currentPage.Add(component, recipe);
+                pageLayout[x, y] = component;
                 if (recipe.bigCraftable)
-                    newPageLayout[x, y + 1] = component;
+                {
+                    pageLayout[x, y + 1] = component;
+                }
             }
 
             foreach (string playerRecipe in cookingingRecipes)
             {
-                ++numRecipes;
+                i++;
                 CraftingRecipe recipe = new CraftingRecipe(playerRecipe, true);
-                while (spaceOccupied(newPageLayout, x, y, recipe))
+                while (spaceOccupied(pageLayout, x, y, recipe))
                 {
-                    ++x;
+                    x++;
                     if (x >= 10)
                     {
                         x = 0;
-                        ++y;
+                        y++;
                         if (y >= 4)
                         {
-                            newPage = createNewPage();
-                            newPageLayout = createNewPageLayout();
+                            currentPage = createNewPage();
+                            pageLayout = createNewPageLayout();
+                            pageLayouts.Add(pageLayout);
                             x = 0;
                             y = 0;
                         }
                     }
                 }
-
-                int num5 = 200 + numRecipes;
-                var textureComponent = new ClickableTextureComponent("",
-                    new Rectangle(craftingPageX + x * (64 + spaceBetweenCraftingIcons), craftingPageY() + y * 72, 64,
-                        recipe.bigCraftable ? 128 : 64), null,
-                    Game1.player.cookingRecipes.ContainsKey(recipe.name) ? "" : "ghosted",
-                    recipe.bigCraftable ? Game1.bigCraftableSpriteSheet : Game1.objectSpriteSheet,
-                    recipe.bigCraftable
-                        ? Game1.getArbitrarySourceRect(Game1.bigCraftableSpriteSheet, 16, 32,
-                            recipe.getIndexOfMenuView())
-                        : Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, recipe.getIndexOfMenuView(),
-                            16, 16), 4f)
+                int id = 200 + i;
+                ClickableTextureComponent component = new ClickableTextureComponent("", new Rectangle(craftingPageX + x * (64 + spaceBetweenCraftingIcons), craftingPageY() + y * 72, 64, recipe.bigCraftable ? 128 : 64), null, (!Game1.player.cookingRecipes.ContainsKey(recipe.name) && !Game1.player.craftingRecipes.ContainsKey(recipe.name)) ? "ghosted" : "", recipe.bigCraftable ? Game1.bigCraftableSpriteSheet : Game1.objectSpriteSheet, recipe.bigCraftable ? Game1.getArbitrarySourceRect(Game1.bigCraftableSpriteSheet, 16, 32, recipe.getIndexOfMenuView()) : Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, recipe.getIndexOfMenuView(), 16, 16), 4f)
                 {
-                    myID = num5,
+                    myID = id,
                     rightNeighborID = -99998,
                     leftNeighborID = -99998,
                     upNeighborID = -99998,
@@ -246,26 +268,29 @@ namespace CustomCraftingStation
                     fullyImmutable = true,
                     region = 8000
                 };
-                ClickableTextureComponent key = textureComponent;
-                newPage.Add(key, recipe);
-                newPageLayout[x, y] = key;
+                currentPage.Add(component, recipe);
+                pageLayout[x, y] = component;
                 if (recipe.bigCraftable)
-                    newPageLayout[x, y + 1] = key;
+                {
+                    pageLayout[x, y + 1] = component;
+                }
             }
-
         }
+
+
         protected override void noSnappedComponentFound(int direction, int oldRegion, int oldID)
         {
             base.noSnappedComponentFound(direction, oldRegion, oldID);
-            if (oldRegion != 8000 || direction != 2)
-                return;
-            currentlySnappedComponent = getComponentWithID(oldID % 10);
-            currentlySnappedComponent.upNeighborID = oldID;
+            if (oldRegion == 8000 && direction == 2)
+            {
+                currentlySnappedComponent = getComponentWithID(oldID % 10);
+                currentlySnappedComponent.upNeighborID = oldID;
+            }
         }
 
         public override void snapToDefaultClickableComponent()
         {
-            currentlySnappedComponent = currentCraftingPage < pagesOfCraftingRecipes.Count ? (ClickableComponent)pagesOfCraftingRecipes[currentCraftingPage].First<KeyValuePair<ClickableTextureComponent, CraftingRecipe>>().Key : (ClickableComponent)null;
+            currentlySnappedComponent = ((currentCraftingPage < pagesOfCraftingRecipes.Count) ? pagesOfCraftingRecipes[currentCraftingPage].First().Key : null);
             snapCursorToCurrentSnappedComponent();
         }
 
@@ -273,21 +298,35 @@ namespace CustomCraftingStation
         {
             base.actionOnRegionChange(oldRegion, newRegion);
             if (newRegion != 9000 || oldRegion == 0)
-                return;
-            for (int index = 0; index < 10; ++index)
             {
-                if (inventory.inventory.Count > index)
-                    inventory.inventory[index].upNeighborID = currentlySnappedComponent.upNeighborID;
+                return;
             }
+            for (int i = 0; i < 10; i++)
+            {
+                if (inventory.inventory.Count > i)
+                {
+                    inventory.inventory[i].upNeighborID = currentlySnappedComponent.upNeighborID;
+                }
+            }
+        }
+
+        protected virtual bool checkHeldItem(Func<Item, bool> f = null)
+        {
+            return f?.Invoke(Game1.player.CursorSlotItem) ?? (Game1.player.CursorSlotItem != null);
         }
 
         public override void receiveKeyPress(Keys key)
         {
             base.receiveKeyPress(key);
-            if (!key.Equals((object)Keys.Delete) || heldItem == null || !heldItem.canBeTrashed())
-                return;
-            Utility.trashItem(heldItem);
-            heldItem = (Item)null;
+            if (key.Equals(Keys.Delete) && heldItem != null && heldItem.canBeTrashed())
+            {
+                Utility.trashItem(heldItem);
+                heldItem = null;
+            }
+            if (Game1.isAnyGamePadButtonBeingPressed() && Game1.options.doesInputListContain(Game1.options.menuButton, key) && heldItem != null)
+            {
+                Game1.setMousePosition(trashCan.bounds.Center);
+            }
         }
 
         public override void receiveScrollWheelAction(int direction)
@@ -295,32 +334,32 @@ namespace CustomCraftingStation
             base.receiveScrollWheelAction(direction);
             if (direction > 0 && currentCraftingPage > 0)
             {
-                --currentCraftingPage;
+                currentCraftingPage--;
                 _UpdateCurrentPageButtons();
                 Game1.playSound("shwip");
-                if (!Game1.options.SnappyMenus)
-                    return;
-                setCurrentlySnappedComponentTo(88);
-                snapCursorToCurrentSnappedComponent();
+                if (Game1.options.SnappyMenus)
+                {
+                    setCurrentlySnappedComponentTo(88);
+                    snapCursorToCurrentSnappedComponent();
+                }
             }
-            else
+            else if (direction < 0 && currentCraftingPage < pagesOfCraftingRecipes.Count - 1)
             {
-                if (direction >= 0 || currentCraftingPage >= pagesOfCraftingRecipes.Count - 1)
-                    return;
-                ++currentCraftingPage;
+                currentCraftingPage++;
                 _UpdateCurrentPageButtons();
                 Game1.playSound("shwip");
-                if (!Game1.options.SnappyMenus)
-                    return;
-                setCurrentlySnappedComponentTo(89);
-                snapCursorToCurrentSnappedComponent();
+                if (Game1.options.SnappyMenus)
+                {
+                    setCurrentlySnappedComponentTo(89);
+                    snapCursorToCurrentSnappedComponent();
+                }
             }
         }
 
         public override void receiveLeftClick(int x, int y, bool playSound = true)
         {
-            base.receiveLeftClick(x, y, true);
-            heldItem = inventory.leftClick(x, y, heldItem, true);
+            base.receiveLeftClick(x, y);
+            heldItem = inventory.leftClick(x, y, heldItem);
             if (upButton != null && upButton.containsPoint(x, y) && currentCraftingPage > 0)
             {
                 Game1.playSound("coin");
@@ -335,87 +374,127 @@ namespace CustomCraftingStation
                 _UpdateCurrentPageButtons();
                 downButton.scale = downButton.baseScale;
             }
-            foreach (ClickableTextureComponent key in pagesOfCraftingRecipes[currentCraftingPage].Keys)
+            foreach (ClickableTextureComponent c in pagesOfCraftingRecipes[currentCraftingPage].Keys)
             {
-                int num = Game1.oldKBState.IsKeyDown(Keys.LeftShift) ? 5 : 1;
-                for (int index = 0; index < num; ++index)
+                int times = (!Game1.oldKBState.IsKeyDown(Keys.LeftShift)) ? 1 : 5;
+                for (int i = 0; i < times; i++)
                 {
-                    if (key.containsPoint(x, y) && !key.hoverText.Equals("ghosted") && pagesOfCraftingRecipes[currentCraftingPage][key].doesFarmerHaveIngredientsInInventory(getContainerContents()))
-                        clickCraftingRecipe(key, index == 0);
+                    if (c.containsPoint(x, y) && !c.hoverText.Equals("ghosted") && pagesOfCraftingRecipes[currentCraftingPage][c].doesFarmerHaveIngredientsInInventory(getContainerContents()))
+                    {
+                        clickCraftingRecipe(c, i == 0);
+                    }
                 }
-                if (heldItem != null && Game1.oldKBState.IsKeyDown(Keys.LeftShift) && (heldItem.maximumStackSize() == 1 && Game1.player.couldInventoryAcceptThisItem(heldItem)))
+                if (heldItem != null && Game1.oldKBState.IsKeyDown(Keys.LeftShift) && heldItem.maximumStackSize() == 1 && Game1.player.couldInventoryAcceptThisItem(heldItem))
                 {
-                    Game1.player.addItemToInventoryBool(heldItem, false);
-                    heldItem = (Item)null;
+                    Game1.player.addItemToInventoryBool(heldItem);
+                    heldItem = null;
                 }
             }
-            if (trashCan != null && trashCan.containsPoint(x, y) && (heldItem != null && heldItem.canBeTrashed()))
+            if (trashCan != null && trashCan.containsPoint(x, y) && heldItem != null && heldItem.canBeTrashed())
             {
                 Utility.trashItem(heldItem);
-                heldItem = (Item)null;
+                heldItem = null;
             }
-            else
+            else if (heldItem != null && !isWithinBounds(x, y) && heldItem.canBeTrashed())
             {
-                if (heldItem == null || isWithinBounds(x, y) || !heldItem.canBeTrashed())
-                    return;
                 Game1.playSound("throwDownITem");
-                Game1.createItemDebris(heldItem, Game1.player.getStandingPosition(), Game1.player.FacingDirection, (GameLocation)null, -1);
-                heldItem = (Item)null;
+                Game1.createItemDebris(heldItem, Game1.player.getStandingPosition(), Game1.player.FacingDirection);
+                heldItem = null;
             }
         }
 
         protected void _UpdateCurrentPageButtons()
         {
             currentPageClickableComponents.Clear();
-            foreach (ClickableComponent key in pagesOfCraftingRecipes[currentCraftingPage].Keys)
-                currentPageClickableComponents.Add(key);
+            foreach (ClickableTextureComponent component in pagesOfCraftingRecipes[currentCraftingPage].Keys)
+            {
+                currentPageClickableComponents.Add(component);
+            }
             populateClickableComponentList();
         }
 
         private void clickCraftingRecipe(ClickableTextureComponent c, bool playSound = true)
         {
-            Item obj = pagesOfCraftingRecipes[currentCraftingPage][c].createItem();
+            Item crafted = pagesOfCraftingRecipes[currentCraftingPage][c].createItem();
+            List<KeyValuePair<int, int>> seasoning = null;
+            if (crafted is Object && (crafted as Object).Quality == 0)
+            {
+                seasoning = new List<KeyValuePair<int, int>>();
+                seasoning.Add(new KeyValuePair<int, int>(917, 1));
+                if (CraftingRecipe.DoesFarmerHaveAdditionalIngredientsInInventory(seasoning, getContainerContents()))
+                {
+                    (crafted as Object).Quality = 2;
+                }
+                else
+                {
+                    seasoning = null;
+                }
+            }
             if (heldItem == null)
             {
                 pagesOfCraftingRecipes[currentCraftingPage][c].consumeIngredients(_materialContainers);
-                heldItem = obj;
+                heldItem = crafted;
                 if (playSound)
+                {
                     Game1.playSound("coin");
+                }
             }
             else
             {
-                if (!heldItem.Name.Equals(obj.Name) || heldItem.Stack + pagesOfCraftingRecipes[currentCraftingPage][c].numberProducedPerCraft - 1 >= heldItem.maximumStackSize())
+                if (!heldItem.Name.Equals(crafted.Name) || !heldItem.getOne().canStackWith(crafted.getOne()) || heldItem.Stack + pagesOfCraftingRecipes[currentCraftingPage][c].numberProducedPerCraft - 1 >= heldItem.maximumStackSize())
+                {
                     return;
+                }
                 heldItem.Stack += pagesOfCraftingRecipes[currentCraftingPage][c].numberProducedPerCraft;
                 pagesOfCraftingRecipes[currentCraftingPage][c].consumeIngredients(_materialContainers);
                 if (playSound)
+                {
                     Game1.playSound("coin");
+                }
             }
-            Game1.player.checkForQuestComplete((NPC)null, -1, -1, obj, (string)null, 2, -1);
-
-            bool cooking = heldItem!= null && CraftingRecipe.cookingRecipes.ContainsKey(heldItem.Name);
-
-            if (!cooking && Game1.player.craftingRecipes.ContainsKey(pagesOfCraftingRecipes[currentCraftingPage][c].name))
+            if (seasoning != null)
+            {
+                if (playSound)
+                {
+                    Game1.playSound("breathin");
+                }
+                CraftingRecipe.ConsumeAdditionalIngredients(seasoning, _materialContainers);
+                if (!CraftingRecipe.DoesFarmerHaveAdditionalIngredientsInInventory(seasoning, getContainerContents()))
+                {
+                    Game1.showGlobalMessage(Game1.content.LoadString("Strings\\StringsFromCSFiles:Seasoning_UsedLast"));
+                }
+            }
+            Game1.player.checkForQuestComplete(null, -1, -1, crafted, null, 2);
+            if (Game1.player.craftingRecipes.ContainsKey(pagesOfCraftingRecipes[currentCraftingPage][c].name))
+            {
                 Game1.player.craftingRecipes[pagesOfCraftingRecipes[currentCraftingPage][c].name] += pagesOfCraftingRecipes[currentCraftingPage][c].numberProducedPerCraft;
-            if (cooking)
-                Game1.player.cookedRecipe(heldItem.ParentSheetIndex);
-            if (!cooking)
-                Game1.stats.checkForCraftingAchievements();
-            else
+            }
+            if (CraftingRecipe.cookingRecipes.ContainsKey(heldItem.Name))
+            {
+                
+                Game1.player.cookedRecipe(heldItem.parentSheetIndex);
                 Game1.stats.checkForCookingAchievements();
-            if (!Game1.options.gamepadControls || heldItem == null || !Game1.player.couldInventoryAcceptThisItem(heldItem))
-                return;
-            Game1.player.addItemToInventoryBool(heldItem, false);
-            heldItem = (Item)null;
+            }
+            else
+            {
+                Game1.stats.checkForCraftingAchievements();
+            }
+            if (Game1.options.gamepadControls && heldItem != null && Game1.player.couldInventoryAcceptThisItem(heldItem))
+            {
+                Game1.player.addItemToInventoryBool(heldItem);
+                heldItem = null;
+            }
         }
 
         public override void receiveRightClick(int x, int y, bool playSound = true)
         {
-            heldItem = inventory.rightClick(x, y, heldItem, true, false);
-            foreach (ClickableTextureComponent key in pagesOfCraftingRecipes[currentCraftingPage].Keys)
+            heldItem = inventory.rightClick(x, y, heldItem);
+            foreach (ClickableTextureComponent c in pagesOfCraftingRecipes[currentCraftingPage].Keys)
             {
-                if (key.containsPoint(x, y) && !key.hoverText.Equals("ghosted") && pagesOfCraftingRecipes[currentCraftingPage][key].doesFarmerHaveIngredientsInInventory(getContainerContents()))
-                    clickCraftingRecipe(key, true);
+                if (c.containsPoint(x, y) && !c.hoverText.Equals("ghosted") && pagesOfCraftingRecipes[currentCraftingPage][c].doesFarmerHaveIngredientsInInventory(getContainerContents()))
+                {
+                    clickCraftingRecipe(c);
+                }
             }
         }
 
@@ -425,7 +504,7 @@ namespace CustomCraftingStation
             hoverTitle = "";
             descriptionText = "";
             hoverText = "";
-            hoverRecipe = (CraftingRecipe)null;
+            hoverRecipe = null;
             hoverItem = inventory.hover(x, y, hoverItem);
             hoverAmount = -1;
             if (hoverItem != null)
@@ -433,53 +512,70 @@ namespace CustomCraftingStation
                 hoverTitle = inventory.hoverTitle;
                 hoverText = inventory.hoverText;
             }
-            foreach (ClickableTextureComponent key in pagesOfCraftingRecipes[currentCraftingPage].Keys)
+            foreach (ClickableTextureComponent c in pagesOfCraftingRecipes[currentCraftingPage].Keys)
             {
-                if (key.containsPoint(x, y))
+                if (c.containsPoint(x, y))
                 {
-                    if (key.hoverText.Equals("ghosted"))
+                    if (c.hoverText.Equals("ghosted"))
                     {
                         hoverText = "???";
+                        continue;
                     }
-                    else
+                    hoverRecipe = pagesOfCraftingRecipes[currentCraftingPage][c];
+                    if (lastCookingHover == null || !lastCookingHover.Name.Equals(hoverRecipe.name))
                     {
-                        hoverRecipe = pagesOfCraftingRecipes[currentCraftingPage][key];
-                        if (lastCookingHover == null || !lastCookingHover.Name.Equals(hoverRecipe.name))
-                            lastCookingHover = hoverRecipe.createItem();
-                        key.scale = Math.Min(key.scale + 0.02f, key.baseScale + 0.1f);
+                        lastCookingHover = hoverRecipe.createItem();
                     }
+                    c.scale = Math.Min(c.scale + 0.02f, c.baseScale + 0.1f);
                 }
                 else
-                    key.scale = Math.Max(key.scale - 0.02f, key.baseScale);
+                {
+                    c.scale = Math.Max(c.scale - 0.02f, c.baseScale);
+                }
             }
             if (upButton != null)
             {
                 if (upButton.containsPoint(x, y))
+                {
                     upButton.scale = Math.Min(upButton.scale + 0.02f, upButton.baseScale + 0.1f);
+                }
                 else
+                {
                     upButton.scale = Math.Max(upButton.scale - 0.02f, upButton.baseScale);
+                }
             }
             if (downButton != null)
             {
                 if (downButton.containsPoint(x, y))
+                {
                     downButton.scale = Math.Min(downButton.scale + 0.02f, downButton.baseScale + 0.1f);
+                }
                 else
+                {
                     downButton.scale = Math.Max(downButton.scale - 0.02f, downButton.baseScale);
+                }
             }
             if (trashCan == null)
+            {
                 return;
+            }
             if (trashCan.containsPoint(x, y))
             {
-                if ((double)trashCanLidRotation <= 0.0)
+                if (trashCanLidRotation <= 0f)
+                {
                     Game1.playSound("trashcanlid");
-                trashCanLidRotation = Math.Min(trashCanLidRotation + (float)Math.PI / 48f, 1.570796f);
-                if (heldItem == null || Utility.getTrashReclamationPrice(heldItem, Game1.player) <= 0)
-                    return;
-                hoverText = Game1.content.LoadString("Strings\\UI:TrashCanSale");
-                hoverAmount = Utility.getTrashReclamationPrice(heldItem, Game1.player);
+                }
+                trashCanLidRotation = Math.Min(trashCanLidRotation + (float)Math.PI / 48f, (float)Math.PI / 2f);
+                if (heldItem != null && Utility.getTrashReclamationPrice(heldItem, Game1.player) > 0)
+                {
+                    hoverText = Game1.content.LoadString("Strings\\UI:TrashCanSale");
+                    hoverAmount = Utility.getTrashReclamationPrice(heldItem, Game1.player);
+                }
             }
             else
-                trashCanLidRotation = Math.Max(trashCanLidRotation - (float)Math.PI / 48f, 0.0f);
+            {
+                trashCanLidRotation = Math.Max(trashCanLidRotation - (float)Math.PI / 48f, 0f);
+            }
         }
 
         public override bool readyToClose()
@@ -489,78 +585,94 @@ namespace CustomCraftingStation
 
         public override void draw(SpriteBatch b)
         {
-            Game1.drawDialogueBox(xPositionOnScreen, yPositionOnScreen, width, height, false, true, (string)null, false, true, -1, -1, -1);
-            drawHorizontalPartition(b, yPositionOnScreen + borderWidth + spaceToClearTopBorder + 256, false, -1, -1, -1);
+            Game1.drawDialogueBox(xPositionOnScreen, yPositionOnScreen, width, height, speaker: false, drawOnlyBox: true);
+            drawHorizontalPartition(b, yPositionOnScreen + borderWidth + spaceToClearTopBorder + 256);
             inventory.draw(b);
             if (trashCan != null)
             {
                 trashCan.draw(b);
-                b.Draw(Game1.mouseCursors, new Vector2((float)(trashCan.bounds.X + 60), (float)(trashCan.bounds.Y + 40)), new Rectangle?(new Rectangle(564 + Game1.player.trashCanLevel * 18, 129, 18, 10)), Color.White, trashCanLidRotation, new Vector2(16f, 10f), 4f, SpriteEffects.None, 0.86f);
+                b.Draw(Game1.mouseCursors, new Vector2(trashCan.bounds.X + 60, trashCan.bounds.Y + 40), new Rectangle(564 + Game1.player.trashCanLevel * 18, 129, 18, 10), Color.White, trashCanLidRotation, new Vector2(16f, 10f), 4f, SpriteEffects.None, 0.86f);
             }
             b.End();
-            b.Begin(SpriteSortMode.FrontToBack, BlendState.NonPremultiplied, SamplerState.PointClamp, (DepthStencilState)null, (RasterizerState)null);
-            foreach (ClickableTextureComponent key in pagesOfCraftingRecipes[currentCraftingPage].Keys)
+            b.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
+            foreach (ClickableTextureComponent c in pagesOfCraftingRecipes[currentCraftingPage].Keys)
             {
-                if (key.hoverText.Equals("ghosted"))
-                    key.draw(b, Color.Black * 0.35f, 0.89f, 0);
-                else if (!pagesOfCraftingRecipes[currentCraftingPage][key].doesFarmerHaveIngredientsInInventory(getContainerContents()))
+                if (c.hoverText.Equals("ghosted"))
                 {
-                    key.draw(b, Color.LightGray * 0.4f, 0.89f, 0);
-                    if (pagesOfCraftingRecipes[currentCraftingPage][key].numberProducedPerCraft > 1)
-                        NumberSprite.draw(pagesOfCraftingRecipes[currentCraftingPage][key].numberProducedPerCraft, b, new Vector2((float)(key.bounds.X + 64 - 2), (float)(key.bounds.Y + 64 - 2)), Color.LightGray * 0.75f, (float)(0.5 * ((double)key.scale / 4.0)), 0.97f, 1f, 0, 0);
+                    c.draw(b, Color.Black * 0.35f, 0.89f);
+                }
+                else if (!pagesOfCraftingRecipes[currentCraftingPage][c].doesFarmerHaveIngredientsInInventory(getContainerContents()))
+                {
+                    c.draw(b, Color.DimGray * 0.4f, 0.89f);
+                    if (pagesOfCraftingRecipes[currentCraftingPage][c].numberProducedPerCraft > 1)
+                    {
+                        NumberSprite.draw(pagesOfCraftingRecipes[currentCraftingPage][c].numberProducedPerCraft, b, new Vector2(c.bounds.X + 64 - 2, c.bounds.Y + 64 - 2), Color.LightGray * 0.75f, 0.5f * (c.scale / 4f), 0.97f, 1f, 0);
+                    }
                 }
                 else
                 {
-                    key.draw(b);
-                    if (pagesOfCraftingRecipes[currentCraftingPage][key].numberProducedPerCraft > 1)
-                        NumberSprite.draw(pagesOfCraftingRecipes[currentCraftingPage][key].numberProducedPerCraft, b, new Vector2((float)(key.bounds.X + 64 - 2), (float)(key.bounds.Y + 64 - 2)), Color.White, (float)(0.5 * ((double)key.scale / 4.0)), 0.97f, 1f, 0, 0);
+                    c.draw(b);
+                    if (pagesOfCraftingRecipes[currentCraftingPage][c].numberProducedPerCraft > 1)
+                    {
+                        NumberSprite.draw(pagesOfCraftingRecipes[currentCraftingPage][c].numberProducedPerCraft, b, new Vector2(c.bounds.X + 64 - 2, c.bounds.Y + 64 - 2), Color.White, 0.5f * (c.scale / 4f), 0.97f, 1f, 0);
+                    }
                 }
             }
             b.End();
-            b.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, (DepthStencilState)null, (RasterizerState)null);
+            b.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
             if (hoverItem != null)
-                drawToolTip(b, hoverText, hoverTitle, hoverItem, heldItem != null, -1, 0, -1, -1, (CraftingRecipe)null, -1);
+            {
+                drawToolTip(b, hoverText, hoverTitle, hoverItem, heldItem != null);
+            }
             else if (!string.IsNullOrEmpty(hoverText))
             {
                 if (hoverAmount > 0)
-                    drawToolTip(b, hoverText, hoverTitle, (Item)null, true, -1, 0, -1, -1, (CraftingRecipe)null, hoverAmount);
-                else
-                    drawHoverText(b, hoverText, Game1.smallFont, heldItem != null ? 64 : 0, heldItem != null ? 64 : 0, -1, (string)null, -1, (string[])null, (Item)null, 0, -1, -1, -1, -1, 1f, (CraftingRecipe)null, (IList<Item>)null);
-            }
-            if (heldItem != null)
-                heldItem.drawInMenu(b, new Vector2((float)(Game1.getOldMouseX() + 16), (float)(Game1.getOldMouseY() + 16)), 1f);
-            base.draw(b);
-            if (downButton != null && currentCraftingPage < pagesOfCraftingRecipes.Count - 1)
-                downButton.draw(b);
-            if (upButton != null && currentCraftingPage > 0)
-                upButton.draw(b);
-
-            Game1.mouseCursorTransparency = 1f;
-            drawMouse(b);
-            if (this.hoverRecipe == null)
-                return;
-            SpriteBatch b1 = b;
-            SpriteFont smallFont = Game1.smallFont;
-            int xOffset = heldItem != null ? 48 : 0;
-            int yOffset = heldItem != null ? 48 : 0;
-            string displayName = this.hoverRecipe.DisplayName;
-            string[] buffIconsToDisplay;
-            buffIconsToDisplay = (string[])null;
-
-            if (this.lastCookingHover != null && Game1.objectInformation.ContainsKey(
-                (this.lastCookingHover as StardewValley.Object)?.parentSheetIndex))
-            {
-                if (Game1.objectInformation[(this.lastCookingHover as StardewValley.Object).parentSheetIndex]?.Split('/').Length > 7)
                 {
-                    buffIconsToDisplay = Game1.objectInformation[(this.lastCookingHover as StardewValley.Object).parentSheetIndex].Split('/')[7].Split(' ');
+                    drawToolTip(b, hoverText, hoverTitle, null, heldItem: true, -1, 0, -1, -1, null, hoverAmount);
+                }
+                else
+                {
+                    drawHoverText(b, hoverText, Game1.smallFont, (heldItem != null) ? 64 : 0, (heldItem != null) ? 64 : 0);
                 }
             }
+            if (heldItem != null)
+            {
+                heldItem.drawInMenu(b, new Vector2(Game1.getOldMouseX() + 16, Game1.getOldMouseY() + 16), 1f);
+            }
+            base.draw(b);
+            if (downButton != null && currentCraftingPage < pagesOfCraftingRecipes.Count - 1)
+            {
+                downButton.draw(b);
+            }
+            if (upButton != null && currentCraftingPage > 0)
+            {
+                upButton.draw(b);
+            }
+            Game1.mouseCursorTransparency = 1f;
+                drawMouse(b);
+                if (hoverRecipe != null)
+                {
 
-
-            Item lastCookingHover = this.lastCookingHover;
-            CraftingRecipe hoverRecipe = this.hoverRecipe;
-            IList<Item> containerContents = getContainerContents();
-            drawHoverText(b1, " ", smallFont, xOffset, yOffset, -1, displayName, -1, buffIconsToDisplay, lastCookingHover, 0, -1, -1, -1, -1, 1f, hoverRecipe, containerContents);
+                    drawHoverText(
+                    b,
+                    " ",
+                    Game1.smallFont,
+                    heldItem != null ? 48 : 0,
+                    (heldItem != null) ? 48 : 0,
+                    -1,
+                    hoverRecipe.DisplayName + (hoverRecipe.numberProducedPerCraft > 1 ? (" x" + hoverRecipe.numberProducedPerCraft) : ""),
+                    -1,
+                    lastCookingHover != null && CraftingRecipe.cookingRecipes.ContainsKey(lastCookingHover.Name) && Game1.objectInformation[(lastCookingHover as Object).ParentSheetIndex].Split('/').Length > 7 ? Game1.objectInformation[(lastCookingHover as Object).ParentSheetIndex].Split('/')[7].Split(' ') : null,
+                    lastCookingHover,
+                    0,
+                    -1,
+                    -1,
+                    -1,
+                    -1,
+                    1f,
+                    hoverRecipe,
+                    getContainerContents());
+            }
         }
 
         protected override bool _ShouldAutoSnapPrioritizeAlignedElements()
@@ -568,12 +680,32 @@ namespace CustomCraftingStation
             return false;
         }
 
-        public override bool IsAutomaticSnapValid(
-            int direction,
-            ClickableComponent a,
-            ClickableComponent b)
+        public override bool IsAutomaticSnapValid(int direction, ClickableComponent a, ClickableComponent b)
         {
-            return (a != downButton && a != upButton || (direction != 3 || b.region == 8000)) && (a.region != 8000 || direction != 3 && direction != 1 || b.region != 9000) && (a.region != 8000 || direction != 2 || b != upButton && b != downButton) && base.IsAutomaticSnapValid(direction, a, b);
+            if ((a == downButton || a == upButton) && direction == 3 && b.region != 8000)
+            {
+                return false;
+            }
+            if (a.region == 8000 && (direction == 3 || direction == 1) && b.region == 9000)
+            {
+                return false;
+            }
+            if (a.region == 8000 && direction == 2 && (b == upButton || b == downButton))
+            {
+                return false;
+            }
+            return base.IsAutomaticSnapValid(direction, a, b);
+        }
+
+        public override void emergencyShutDown()
+        {
+            base.emergencyShutDown();
+            if (heldItem != null)
+            {
+                Item item = heldItem;
+                heldItem = null;
+                Utility.CollectOrDrop(item);
+            }
         }
     }
 }

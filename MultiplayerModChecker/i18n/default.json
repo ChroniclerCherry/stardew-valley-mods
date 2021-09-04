@@ -1,0 +1,13 @@
+﻿{
+    "FarmhandReport": "Some potential problems were found with your mod loadout.\nPlease review the following information to make sure there are no conflicts for a multiplayer game.\nNot all Mods need to be synced on both Host and Farmhand, and you can find more information at: https://stardewvalleywiki.com/Modding:Player_Guide/Getting_Started#Do_mods_work_in_multiplayer.3F \nIf a mod is listed here and you're sure it shouldn't be an issue, you can ask the Host to add it to their IgnoredMods list",
+    "HostReport": "Some potential problems were found with Farmhand {{FarmhandID}} {{FarmhandName}}'s mod loadout, connected at {{ConnectionTime}}.\nPlease review the following information to make sure there are no conflicts for a multiplayer game.\nNot all Mods need to be synced on both Host and Farmhand, and you can find more information at: https://stardewvalleywiki.com/Modding:Player_Guide/Getting_Started#Do_mods_work_in_multiplayer.3F \nIf a mod is listed here and you're sure it shouldn't be an issue, you can add it to the IgnoredMods list in the config.json file.",
+    "SuccessfulConnectionHostSide": "Farmhand {{FarmhandID}} {{FarmhandName}} connected successfully with a fully synced mod list",
+    "SuccessfulConnectionFarmhandside": "You have connected with a fully synced mod list",
+    "FarmhandMissingSMAPI": "Farmhand {{FarmhandID}} {{FarmhandName}} connected at {{ConnectionTime}}does not have SMAPI",
+    "SMAPIVersionMismatch": "API Version Mismatch: Host is running SMAPI {{HostVersion}} while Farmhand is running SMAPI {{FarmhandVersion}}",
+    "ModMismatch.Host": ">Installed Mods mismatch: The following list of mods are installed on the Farmhand but not the Host: [{{ModList}}]",
+    "ModMismatch.Farmhand": ">Installed Mods mismatch: The following list of mods are installed on the Host but not the Farmhand: [{{ModList}}]",
+    "ModMismatch.Version": ">Mod versions mismatch: The follow list of Mods different versions are installed on the Host and Farmhand: [{{ModList}}]",
+    "ModMismatch.Version.Each": "{{ModName}} ({{ModID}}) | Host : {{HostVersion}} | Farmhand : {{FarmhandVersion}}",
+    "UnnamedFarmhand": "Unnamed Farmhand"
+}

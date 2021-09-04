@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BetterGreenhouse.data;
-using BetterGreenhouse.Data;
-using BetterGreenhouse.Upgrades;
+using GreenhouseUpgrades.Data;
+using GreenhouseUpgrades.Upgrades;
 using StardewModdingAPI;
 using StardewValley;
 
-namespace BetterGreenhouse
+namespace GreenhouseUpgrades
 {
-    public static class State
+    public class Main
     {
         public static Config Config;
         private static Data.Data ModData { get; set; }
@@ -17,7 +16,9 @@ namespace BetterGreenhouse
 
         public static List<Upgrade> Upgrades;
 
-        public static int JunimoPoints;
+        public static int JunimoPoints { get; set; }
+
+        public static bool JunimoOfferingMade { get; set; }
 
         public static string UpgradeForTonight { get; set; }
         public static bool IsThereUpgradeTonight => UpgradeForTonight != null;
@@ -33,6 +34,19 @@ namespace BetterGreenhouse
             Config = _helper.ReadConfig<Config>();
 
             _helper.Events.Multiplayer.ModMessageReceived += Multiplayer_ModMessageReceived;
+            _helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
+            _helper.Events.GameLoop.DayEnding += GameLoop_DayEnding;
+        }
+
+        private static void GameLoop_DayEnding(object sender, StardewModdingAPI.Events.DayEndingEventArgs e)
+        {
+            JunimoOfferingMade = false;
+            PerformEndOfDayUpdate();
+        }
+
+        private static void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
+        {
+            LoadData();
         }
 
         private static void Multiplayer_ModMessageReceived(object sender, StardewModdingAPI.Events.ModMessageReceivedEventArgs e)
@@ -81,7 +95,7 @@ namespace BetterGreenhouse
             MapDataFromSave();
             InitializeAllUpgrades();
 
-            _helper.Multiplayer.SendMessage(ModData, Consts.MultiplayerLoadKey, modIDs: new[] { Consts.ModUniqueID });
+            _helper.Multiplayer.SendMessage(ModData, Consts.MultiplayerLoadKey, new[] { Consts.ModUniqueID });
 
         }
 
@@ -104,6 +118,13 @@ namespace BetterGreenhouse
                              activeData[UpgradeTypes.AutoWaterUpgrade].Active,
                     Unlocked = activeData.ContainsKey(UpgradeTypes.AutoWaterUpgrade) &&
                              activeData[UpgradeTypes.AutoWaterUpgrade].Unlocked
+                },
+                new AutoHarvestUpgrade()
+                {
+                    Active = activeData.ContainsKey(UpgradeTypes.AutoHarvestUpgrade) &&
+                             activeData[UpgradeTypes.AutoHarvestUpgrade].Active,
+                    Unlocked = activeData.ContainsKey(UpgradeTypes.AutoHarvestUpgrade) &&
+                               activeData[UpgradeTypes.AutoHarvestUpgrade].Unlocked
                 }
             };
 
@@ -144,7 +165,7 @@ namespace BetterGreenhouse
         public static void SetUpgradeForTonight(string upgradeName)
         {
             UpgradeForTonight = upgradeName;
-            _helper.Multiplayer.SendMessage(upgradeName, Consts.MultiplayerUpdate, modIDs: new[] { Consts.ModUniqueID });
+            _helper.Multiplayer.SendMessage(upgradeName, Consts.MultiplayerUpdate, new[] { Consts.ModUniqueID });
         }
 
         public static void PerformEndOfDayUpdate(bool save = true)
@@ -161,6 +182,7 @@ namespace BetterGreenhouse
                     UpgradeForTonight = null;
                     return;
                 }
+
 
                 upgrade.Unlocked = true;
                 upgrade.Start();

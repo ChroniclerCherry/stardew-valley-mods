@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Harmony;
 using StardewAquarium.Menus;
 using StardewModdingAPI;
@@ -19,14 +20,30 @@ namespace StardewAquarium.Patches
             _helper = helper;
             _monitor = monitor;
 
-            HarmonyInstance harmony = ModEntry.harmony;
+            HarmonyInstance harmony = ModEntry.Harmony;
             harmony.Patch(original: AccessTools.Method(typeof(DonateFishMenuAndroid), "tryToPurchaseItem"),
                 postfix: new HarmonyMethod(typeof(AndroidShopMenuPatch),nameof(tryToPurchaseItem_postfix))
             );
+
+            harmony.Patch(original: AccessTools.Method(typeof(DonateFishMenuAndroid), "setCurrentItem"),
+                postfix: new HarmonyMethod(typeof(AndroidShopMenuPatch), nameof(setCurrentItem_postfix))
+            );
+        }
+
+        private static void setCurrentItem_postfix(ref DonateFishMenuAndroid __instance)
+        {
+            if (Game1.currentLocation?.Name != "FishMuseum") return;
+
+            var nameItem =_helper.Reflection.GetField<string>(__instance,"nameItem");
+            var nameItemString = nameItem.GetValue();
+            nameItem.SetValue(_helper.Translation.Get("Donate") + nameItemString);
+
+            _helper.Reflection.GetField<string>(__instance, "descItem").SetValue(_helper.Translation.Get("DonateDescription"));
         }
 
         private static void tryToPurchaseItem_postfix(ref DonateFishMenuAndroid __instance, ref ISalable item)
         {
+            if (Game1.currentLocation?.Name != "FishMuseum") return;
             try
             {
                 if (!(item is Item donatedFish)) return; //this shouldn't happen but /shrug
@@ -41,8 +58,6 @@ namespace StardewAquarium.Patches
                     Game1.playSound("openChest");
                     DonateFishMenuAndroid.PufferchickDonated = true;
                 }
-
-                DonateFishMenuAndroid.AchievementUnlock = Utils.CheckAchievement();
 
             }
             catch (Exception e)

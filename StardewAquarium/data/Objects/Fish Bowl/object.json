@@ -7,32 +7,30 @@
 	"Edibility": -300,
 	"IsColored": false,
 	"Recipe": null,
-	"NameLocalization":
-	{
-		/*"es": "", //Spansih
-		"ko": "", //Korean
-		"de": "", //German
-		"fr": "", //French
-		"hu": "", //Hungarian
-		"it": "", //Italian
-		"ja": "", //Japanese
-		"pt": "", //Portuguese
-		"ru": "", //Russian
-		"tr": "", //Turkish
-		"zh": "农场布局器", //Chinese (Simplified)*/
+	"NameLocalization": {
+		"ko": "어항",
+		"fr": "Bocal à Poisson",
+		"pt": "Aquário",
+		"ru": "Небольшой аквариум",
+		"zh": "鱼缸",
+		"es": "Pecera",
+		"de": "Fischglas",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
 	},
-	"DescriptionLocalization":
-	{
-		/*"es": "", //Spansih
-		"ko": "", //Korean
-		"de": "", //German
-		"fr": "", //French
-		"hu": "", //Hungarian
-		"it": "", //Italian
-		"ja": "", //Japanese
-		"pt": "", //Portuguese
-		"ru": "", //Russian
-		"tr": "", //Turkish
-		"zh": "", //Chinese (Simplified)*/
+	"DescriptionLocalization": {
+		"ko": "귀여운 물고기다!",
+		"fr": "Poisson Mignon!",
+		"pt": "Peixe fofo!",
+		"ru": "В нём плавает симпатичная рыбка !",
+		"zh": "鱼缸里有可爱的小鱼儿！",
+		"es": "¡Lindo pececito!",
+		"de": "Goldiges Fischlein!",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
 	}
 }

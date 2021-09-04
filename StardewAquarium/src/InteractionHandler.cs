@@ -5,7 +5,7 @@ using StardewAquarium.Menus;
 using StardewModdingAPI;
 using StardewValley;
 
-namespace StardewAquarium.TilesLogic
+namespace StardewAquarium
 {
     public class InteractionHandler
     {
@@ -66,24 +66,18 @@ namespace StardewAquarium.TilesLogic
 
         private void TryToOpenDonationMenu()
         {
-            if (Game1.MasterPlayer.achievements.Contains(AchievementEditor.AchievementId))
-            {
-                if (!Game1.MasterPlayer.mailReceived.Contains("AquariumTrophyPickedUp"))
-                {
-                    Utils.TryAwardTrophy();
-                    return;
-                }
-
-                Game1.drawObjectDialogue(_helper.Translation.Get("AquariumWelcome"));
-                return;
-            }
 
             if (!Utils.DoesPlayerHaveDonatableFish())
             {
+                if (Game1.MasterPlayer.achievements.Contains(AchievementEditor.AchievementId))
+                {
+                    Game1.drawObjectDialogue(_helper.Translation.Get("AquariumWelcome"));
+                    return;
+                }
+
                 Game1.drawObjectDialogue(_helper.Translation.Get("NothingToDonate"));
                 return;
             }
-
 
             List<Response> options = new List<Response>
             {

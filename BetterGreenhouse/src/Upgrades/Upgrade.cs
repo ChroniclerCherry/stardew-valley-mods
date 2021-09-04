@@ -1,36 +1,38 @@
-﻿using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using StardewModdingAPI;
+﻿using StardewModdingAPI;
 
-namespace BetterGreenhouse.Upgrades
+namespace GreenhouseUpgrades.Upgrades
 {
     public enum UpgradeTypes
     {
-        AutoWaterUpgrade, SizeUpgrade
+        AutoWaterUpgrade, SizeUpgrade, AutoHarvestUpgrade
     }
     public abstract class Upgrade
     {
         public abstract UpgradeTypes Type { get; }
-        public abstract string Name { get; }
+        public virtual string Name => Type.ToString();
         public abstract bool Active { get; set; }
         public abstract bool Unlocked { get; set; }
-        public abstract bool DisableOnFarmhand { get; set; }
-        public abstract int Cost { get;}
+        public virtual int Cost => Main.Config.UpgradeCosts[Type];
 
-        public abstract void Start();
+        public virtual bool DisableOnFarmhand { get; } = false;
+        public virtual void Start()
+        {
+            if (!Context.IsMainPlayer && DisableOnFarmhand) return;
+            if (!Unlocked) return;
+            Active = true;
+        }
         public abstract void Stop();
 
-        public string translatedName => _helper.Translation.Get($"{Name}.Name");
-        public string translatedDescription => _helper.Translation.Get($"{Name}.Description");
+        public string TranslatedName => Helper.Translation.Get($"{Name}.Name");
+        public string TranslatedDescription => Helper.Translation.Get($"{Name}.Description");
 
 
-        public IModHelper _helper;
-        public IMonitor _monitor;
+        public IModHelper Helper;
+        public IMonitor Monitor;
         public virtual void Initialize(IModHelper helper, IMonitor monitor)
         {
-            _helper = helper;
-            _monitor = monitor;
+            Helper = helper;
+            Monitor = monitor;
         }
     }
 

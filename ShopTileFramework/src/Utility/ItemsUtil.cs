@@ -10,16 +10,16 @@ namespace ShopTileFramework.Utility
     /// <summary>
     /// This class contains static utility methods used to handle items
     /// </summary>
-    class ItemsUtil
+    public static class ItemsUtil
     {
         public static Dictionary<string, IDictionary<int, string>> ObjectInfoSource { get; set; }
         public static List<string> RecipesList;
         private static Dictionary<int, string> _fruitTreeData;
         private static Dictionary<int, string> _cropData;
 
-        private static List<string> _packsToRemove = new List<string>();
-        private static List<string> _recipePacksToRemove = new List<string>();
-        private static List<string> _itemsToRemove = new List<string>();
+        public static List<string> PacksToRemove = new List<string>();
+        public static List<string> RecipePacksToRemove = new List<string>();
+        public static List<string> ItemsToRemove = new List<string>();
 
         /// <summary>
         /// Loads up the onject information for all types, 
@@ -107,7 +107,7 @@ namespace ShopTileFramework.Utility
         /// <returns>True if it's a valid type, false if not</returns>
         public static bool CheckItemType(string itemType)
         {
-            return (itemType == "Seed" || ObjectInfoSource.ContainsKey(itemType));
+            return (itemType == "Seed" || itemType == "Wallpaper" || itemType == "Floors" || ObjectInfoSource.ContainsKey(itemType));
         }
 
         /// <summary>
@@ -151,13 +151,13 @@ namespace ShopTileFramework.Utility
         public static void RegisterPacksToRemove(string[] JApacks,string[] recipePacks, string[] itemNames)
         {
             if (JApacks != null)
-                _packsToRemove = _packsToRemove.Union(JApacks).ToList();
+                PacksToRemove = PacksToRemove.Union(JApacks).ToList();
 
             if (recipePacks != null)
-                _recipePacksToRemove = _recipePacksToRemove.Union(recipePacks).ToList();
+                RecipePacksToRemove = RecipePacksToRemove.Union(recipePacks).ToList();
 
             if (itemNames != null)
-                _itemsToRemove = _itemsToRemove.Union(itemNames).ToList();
+                ItemsToRemove = ItemsToRemove.Union(itemNames).ToList();
         }
 
         public static void RegisterItemsToRemove()
@@ -166,20 +166,20 @@ namespace ShopTileFramework.Utility
             {
                 var items = APIs.JsonAssets?.GetAllBigCraftablesFromContentPack(pack);
                 if (items != null)
-                    _itemsToRemove.AddRange(items);
+                    ItemsToRemove.AddRange(items);
 
                 items = APIs.JsonAssets?.GetAllClothingFromContentPack(pack);
                 if (items != null)
-                    _itemsToRemove.AddRange(items);
+                    ItemsToRemove.AddRange(items);
 
                 items = APIs.JsonAssets?.GetAllHatsFromContentPack(pack);
                 if (items != null)
-                    _itemsToRemove.AddRange(items);
+                    ItemsToRemove.AddRange(items);
 
                 items = (APIs.JsonAssets as IJsonAssetsApiWithBoots)?.GetAllBootsFromContentPack(pack);
                 if (items != null)
                 {
-                    _itemsToRemove.AddRange(items);
+                    ItemsToRemove.AddRange(items);
                 }
 
                 items = APIs.JsonAssets?.GetAllObjectsFromContentPack(pack);
@@ -200,7 +200,7 @@ namespace ShopTileFramework.Utility
                 {
                     foreach (int seedId in crops.Select(GetSeedId))
                     {
-                        _itemsToRemove.Add(ObjectInfoSource["Object"][seedId].Split('/')[0]);
+                        ItemsToRemove.Add(ObjectInfoSource["Object"][seedId].Split('/')[0]);
                     }
                 }
 
@@ -216,19 +216,19 @@ namespace ShopTileFramework.Utility
 
                 items = APIs.JsonAssets?.GetAllWeaponsFromContentPack(pack);
                 if (items != null)
-                    _itemsToRemove.AddRange(items);
+                    ItemsToRemove.AddRange(items);
             }
 
-            foreach (string pack in _recipePacksToRemove)
+            foreach (string pack in RecipePacksToRemove)
             {
                 var items = APIs.JsonAssets?.GetAllBigCraftablesFromContentPack(pack);
                 if (items != null)
-                    _itemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
+                    ItemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
 
                 items = APIs.JsonAssets.GetAllObjectsFromContentPack(pack);
                 if (items != null)
                 {
-                    _itemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
+                    ItemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
                 }
 
             }
@@ -236,7 +236,7 @@ namespace ShopTileFramework.Utility
 
         public static Dictionary<ISalable, int[]> RemoveSpecifiedJAPacks(Dictionary<ISalable, int[]> stock)
         {
-            List<ISalable> removeItems = (stock.Keys.Where(item => _itemsToRemove.Contains(item.Name))).ToList();
+            List<ISalable> removeItems = (stock.Keys.Where(item => ItemsToRemove.Contains(item.Name))).ToList();
             
             foreach (var item in removeItems)
             {

@@ -1,38 +1,32 @@
-﻿using System.IO;
-using Newtonsoft.Json;
+﻿using System;
+using Microsoft.Xna.Framework.Content;
 using StardewModdingAPI;
 using xTile;
 
-namespace BetterGreenhouse.Upgrades
+namespace GreenhouseUpgrades.Upgrades
 {
-    public class SizeUpgrade : Upgrade, IAssetEditor
+    public class SizeUpgrade : Upgrade, IAssetEditor, IAssetLoader
     {
         public override UpgradeTypes Type => UpgradeTypes.SizeUpgrade;
-        public override string Name { get; } = "SizeUpgrade";
         public override bool Active { get; set; } = false;
         public override bool Unlocked { get; set; } = false;
-        public override bool DisableOnFarmhand { get; set; } = false;
-        public override int Cost => State.Config.SizeUpgradeCost;
-
-        private readonly string[] _mapExtensions = { ".xnb",".tbin",".tmx" };
-
         public override void Initialize(IModHelper helper, IMonitor monitor)
         {
             base.Initialize(helper,monitor);
-            _helper.Content.AssetEditors.Add(this);
+            Helper.Content.AssetEditors.Add(this);
         }
 
         public override void Start()
         {
-            if (!Unlocked) return;
-            _helper.Content.InvalidateCache(Consts.GreenhouseMapPath);
-            Active = true;
+            base.Start();
+            Helper.Content.InvalidateCache(Consts.GreenhouseMapPath);
+
         }
 
         public override void Stop()
         {
             Active = false;
-            _helper.Content.InvalidateCache(Consts.GreenhouseMapPath);
+            Helper.Content.InvalidateCache(Consts.GreenhouseMapPath);
         }
 
         public bool CanEdit<T>(IAssetInfo asset)
@@ -45,27 +39,20 @@ namespace BetterGreenhouse.Upgrades
             if (!Unlocked || !Active || !asset.AssetNameEquals(Consts.GreenhouseMapPath)) return;
 
             var mapEditor = asset.AsMap();
-            string assetKey = null;
+            var sourceMap =
+                    Helper.Content.Load<Map>($"{Consts.GreenhouseMapPath}_Upgrade", ContentSource.GameContent);
+                mapEditor.PatchMap(sourceMap);
 
-            bool fileExists = false;
-            foreach (var extension in _mapExtensions)
-            {
-                assetKey = Path.Combine(_helper.DirectoryPath, Consts.GreenhouseUpgradePath + extension);
-                if (!File.Exists(assetKey)) continue;
-
-                assetKey = Consts.GreenhouseUpgradePath + extension; //gets rid of absolute pathing for smapi
-                fileExists = true;
-                break;
             }
 
-            if (!fileExists)
-            {
-                _monitor.Log("No map file was found. Please make sure there is a GreenhouseUpgrade map file in the assets folder. If there isn't, redownload this mod or follow instructions on the mod page for adding a custom greenhouse.", LogLevel.Error);
-                return;
-            }
-                
-            var sourceMap = _helper.Content.Load<Map>(assetKey, ContentSource.ModFolder);
-            mapEditor.PatchMap(sourceMap);
+        public bool CanLoad<T>(IAssetInfo asset)
+        {
+            return asset.AssetNameEquals(Consts.GreenHouseSource);
+        }
+
+        public T Load<T>(IAssetInfo asset)
+        {
+            return (T)(object)Helper.Content.Load<Map>(Consts.GreenHouseSource);
         }
     }
 }

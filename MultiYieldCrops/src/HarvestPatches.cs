@@ -18,20 +18,18 @@ namespace MultiYieldCrops
             Monitor = monitor;
         }
 
-        public static void CropHarvest_prefix(Crop __instance,out int __state)
+        public static void CropHarvest_prefix(Crop __instance,out bool __state)
         {
-            //dayOfCurrentPhase counts down how many days left before a reharvestable crop can be harvested again
-            __state = __instance.dayOfCurrentPhase.Value;
+            //checks if crop can be harvested
+            __state = ((int)__instance.currentPhase >= __instance.phaseDays.Count - 1 && (!__instance.fullyGrown || (int)__instance.dayOfCurrentPhase <= 0));
         }
 
         public static void CropHarvest_postfix(int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester,
-            Crop __instance, bool __result, int __state)
+            Crop __instance, bool __state)
         {
-            //__result is true is a crop was successfully harvested unless it's regrowable
-            if (!__result && __instance.regrowAfterHarvest.Value < 0) return;
 
-            //we reach this point if it's a regrowable crop and check its dayOfCurrentPhase from the prefix
-            if (__instance.regrowAfterHarvest.Value > 0 &&__state > 1) return;
+            if (!__state)
+                return;
 
             try
             {

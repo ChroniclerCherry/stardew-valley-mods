@@ -1,0 +1,10 @@
+﻿{
+	"NotEnoughMoney": "Nincs elég pénzed a {{DestinationName}} jegy megvásárlásához.",
+	"MenuCancelOption": "Mégsem",
+	"NoDestinations": "Nincs elérhető úti cél.",
+	"ChooseDestination": "Válaszd ki az úti célt.",
+	"TrainStationDisplayName": "Stardew Valley Állomás",
+	"BoatStationDisplayName": "Willy boltja",
+	"ArrivalMessage": "Megérkeztél ide {{DestinationName}}",
+	"GingerIsland": "Ginger sziget",
+}

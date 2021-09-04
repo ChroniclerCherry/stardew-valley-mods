@@ -1,0 +1,32 @@
+﻿{
+	"Name": "Crimsonfish Mask",
+	"Description": "Mask of the legendary Crimsonfish.",
+	"ShowHair": false,
+	"IgnoreHairstyleOffset": true,
+    "NameLocalization": {
+        "ko": "크림슨피쉬 가면",
+        "fr": "Masque de Poisson Écarlate",
+        "pt": "Máscara de Peixe-carmim",
+        "ru": "Маска Кримзонфиша",
+        "zh": "绯红鱼面具",
+		"es": "Máscara de Pez Carmesí",
+		"de": "Purpurfisch Maske",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
+    },
+    "DescriptionLocalization": {
+        "ko": "전설적인 물고기 크림슨피쉬 모양 가면.",
+        "fr": "Masque du Légendaire Poisson Écarlate.",
+        "pt": "Máscara do lendário Peixe-carmim.",
+        "ru": "Маска легендарного Кримзонфиша.",
+        "zh": "传奇绯红鱼面具。",
+		"es": "Máscara del legendario Pez Carmesí.",
+		"de": "Maske des legendären Purpurfisches.",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
+    }
+}

@@ -1,8 +1,7 @@
-﻿using BetterGreenhouse.Upgrades;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using GreenhouseUpgrades.Upgrades;
 
-namespace BetterGreenhouse.Data
+namespace GreenhouseUpgrades.Data
 {
     class Data
     {

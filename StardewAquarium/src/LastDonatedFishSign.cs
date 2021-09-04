@@ -7,7 +7,7 @@ using StardewValley;
 using xTile.Layers;
 using xTile.Tiles;
 
-namespace StardewAquarium.TilesLogic
+namespace StardewAquarium
 {
     public class LastDonatedFishSign
     {
@@ -33,7 +33,7 @@ namespace StardewAquarium.TilesLogic
 
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
         {
-            if (!Utils.CheckAchievement())
+            if (!MasterPlayerMail.Contains("AquariumCompleted"))
                 return;
 
             var random = new Random((int)Game1.uniqueIDForThisGame + Game1.Date.TotalDays);
@@ -71,7 +71,16 @@ namespace StardewAquarium.TilesLogic
 
             _monitor.Log($"The last donated fish is {i.Name}");
             LastDonatedFish = i.ParentSheetIndex;
-            _helper.Multiplayer.SendMessage(LastDonatedFish, "FishDonated", modIDs: new[] { "Cherry.StardewAquarium" });
+            try
+            {
+                _helper.Multiplayer.SendMessage(LastDonatedFish, "FishDonated",
+                    modIDs: new[] {"Cherry.StardewAquarium"});
+            }
+            catch
+            {
+                _monitor.Log("Something went wrong trying to sync data with other players. Not everyone may be able to see the sign outside the Aquarium updated with the current donation.");
+            }
+
             MasterPlayerMail.Add($"AquariumLastDonated:{i.Name}");
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Netcode;
@@ -20,6 +21,7 @@ namespace ExpandedPreconditionsUtility
         private readonly IMonitor _monitor;
         private readonly bool _verboseLogging;
         private readonly string _uniqueId;
+        private readonly Dictionary<string, Func<string[], bool>> _customCheckers;
 
         public ConditionChecker(IModHelper helper, IMonitor monitor, bool verbose = false, string uniqueId = null)
         {
@@ -27,6 +29,7 @@ namespace ExpandedPreconditionsUtility
             _monitor = monitor;
             _verboseLogging = verbose;
             _uniqueId = uniqueId;
+            _customCheckers = new Dictionary<string, Func<string[], bool>>();
         }
 
         /// <summary>
@@ -46,11 +49,11 @@ namespace ExpandedPreconditionsUtility
 
             //if someone somewhow marked this fake ID as seen, 
             //unmark it so condition checking will actually work
-            if (Game1.player.eventsSeen.Contains(-5005))
+            if (Game1.player.eventsSeen.Contains(-6529))
             {
-                _monitor.Log($"{_uniqueId} / Expanded Preconditions Utility uses the fake event ID of -5005 in order to use vanilla preconditions." +
+                _monitor.Log($"{_uniqueId} / Expanded Preconditions Utility uses the fake event ID of -6529 in order to use vanilla preconditions." +
                     " Somehow your save has marked this ID as seen. Expanded Preconditions is freeing it back up.", LogLevel.Warn);
-                Game1.player.eventsSeen.Remove(-5005);
+                Game1.player.eventsSeen.Remove(-6529);
             }
 
             //if any of the conditions are met, return true
@@ -72,6 +75,25 @@ namespace ExpandedPreconditionsUtility
 
             //if no conditions are met, return false
             return false;
+        }
+
+        /// <summary>
+        /// Register a checker for a custom condition
+        /// </summary>
+        /// <param name="conditionName">Name of the condition</param>
+        /// <param name="conditionChecker">Checker method</param>
+        /// <exception cref="ConditionCheckerException">
+        /// An exception raised when condition with this name is already registered
+        /// </exception>
+        internal void RegisterCustomCondition(string conditionName, Func<string[], bool> conditionChecker)
+        {
+            if (_verboseLogging)
+                _monitor.Log($"{_uniqueId} / Registering custom condition: {conditionName}", LogLevel.Debug);
+
+            if (_customCheckers.ContainsKey(conditionName))
+                throw new ConditionCheckerException($"Condition `{conditionName}` is already registered.");
+
+            _customCheckers.Add(conditionName, conditionChecker);
         }
 
         /// <summary>
@@ -120,8 +142,14 @@ namespace ExpandedPreconditionsUtility
         private bool CheckCustomConditions(string con)
         {
             string[] conditionParams = con.Split(' ');
-            //the first parameter at 0 is the command of which condition to check
-            switch (conditionParams[0])
+            string condition = conditionParams[0]; // Param at 0 is the command of which condition to check
+
+            // Try find condition checker for current condition in custom conditions registry
+            if (_customCheckers.TryGetValue(condition, out Func<string[], bool> customChecker))
+                return customChecker(conditionParams);
+            
+            // Otherwise fallback on integrated condition checkers
+            switch (condition)
             {
                 case "NPCAt":
                     return CheckNPCAt(conditionParams);
@@ -140,9 +168,10 @@ namespace ExpandedPreconditionsUtility
                 case "HasCraftingRecipe":
                     return CheckHasRecipe(conditionParams, Game1.player.craftingRecipes);
                 case "FarmHouseUpgradeLevel":
-                    return HasItem(conditionParams);
-                case "HasItem":
                     return CheckFarmHouseUpgrade(conditionParams);
+                case "HasItem":
+                    return HasItem(conditionParams);
+                    
                 default:
                     // Note: "-5005" is a random event id cause the vanilla method is for events and needs one ¯\_(ツ)_/¯
                     // so it's the negative mod id

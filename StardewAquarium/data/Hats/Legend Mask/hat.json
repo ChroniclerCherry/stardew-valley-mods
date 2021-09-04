@@ -1,0 +1,32 @@
+﻿{
+	"Name": "Legend Mask",
+	"Description": "Mask of the one and only Legend.",
+	"ShowHair": false,
+	"IgnoreHairstyleOffset": true,
+    "NameLocalization": {
+        "ko": "전설의 물고기 가면",
+        "fr": "Masque de Légende",
+        "pt": "Máscara de Lenda",
+        "ru": "Маска Легенды",
+        "zh": "传说之鱼面具",
+		"es": "Máscara de Leyenda",
+		"de": "Maske der Legende",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
+    },
+    "DescriptionLocalization": {
+        "ko": "전설의 물고기 모양 가면.",
+        "fr": "Masque du seul et unique Légende.",
+        "pt": "Máscara da primeira e única Lenda.",
+        "ru": "Маска единственной и неповторимой рыбы - Легенды.",
+        "zh": "独一无二的传说之鱼面具。",
+		"es": "Máscara del único Leyenda.",
+		"de": "Maske der einzig wahren Legende.",
+		//"hu": "", *Hungarian
+		//"it": "", *Italian
+		//"ja": "", *Japanese
+		//"tr": "", *Turkish
+    }
+}

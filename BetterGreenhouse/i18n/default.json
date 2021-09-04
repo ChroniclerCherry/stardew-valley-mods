@@ -1,17 +1,28 @@
 ﻿{
+    //Joja upgrade stuff
     "JojaUpgradeMenu": "Which Greenhouse upgrade do you want?",
     "JojaUpgradeAccept": "Our team of workers will have everything ready by morning!",
+    "JojaNotEnoughMoney": "You don't have enough money for this upgrade",
+    "JojaUpgradeInProgress": "Our team is still working on your upgrade, please come back tomorrow!",
 
-
+    //Junimo upgrade stuff
     "JunimoUpgradeMenu": "You have {{JunimoPoints}} Junimo Points. What would you like to upgrade?",
-    "JunimoOffering": "You have earned {{JunimoPoints}} Junimo Points",
-    "JunimoUpgradeAccept": "You sense that the Junimo are happy to help, maybe you should check your Greenhouse in the morning?", 
+    "JunimoOffering": "You can make one offering to the Junimos a day. Would you like to offer {{Item}}?",
+    "JunimoConfirmation": "You have earned {{JunimoPoints}} Junimo Points",
+    "JunimoOfferingMade": "The Junimo seem to be in great spirits. Maybe you should bring another offering tomorrow?",
+    "JunimoUpgradeAccept": "You sense that the Junimo are happy to help, maybe you should check your Greenhouse in the morning?",
+    "JunimoNotEnoughPoints": "You don't have enough Junimo points for this upgrade",
+    "JunimoUpgradeInProgress": "The Junimo are busy preparing something",
 
+    //menu stuff
     "MenuMore": "More",
-    "MenuExit": "Exit", 
+    "MenuExit": "Exit",
 
+    //upgrade stuff
     "SizeUpgrade.Name": "Size Upgrade",
     "SizeUpgrade.Description": "Increases the size of the Greenhouse",
     "AutoWaterUpgrade.Name": "Automatic Sprinkler System",
-    "AutoWaterUpgrade.Description": "Automatically waters the entire greenhouse at the start and end of each day"
+    "AutoWaterUpgrade.Description": "Automatically waters all greenhouses at the start and end of each day",
+    "AutoHarvestUpgrade.Name": "Auto Harvest Upgrade",
+    "AutoHarvestUpgrade.Description": "As long as there is space in existing chests on the map, crops and trees will be harvested and placed in those chests."
 }

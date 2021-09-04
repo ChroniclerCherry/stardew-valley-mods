@@ -18,7 +18,6 @@ namespace CustomCraftingStation
         private bool _openedNonCustomMenu;
         private void Display_RenderingActiveMenu(object sender, StardewModdingAPI.Events.RenderingActiveMenuEventArgs e)
         {
-            if (!MenuOverride) return;
 
             if (!Context.IsWorldReady)
                 return;
@@ -28,6 +27,7 @@ namespace CustomCraftingStation
                 return;
             }
 
+            if (!MenuOverride) return;
             _openedNonCustomMenu = true;
 
             var activeMenu = Game1.activeClickableMenu;
@@ -46,8 +46,6 @@ namespace CustomCraftingStation
                 instance = activeMenu;
             else
                 return;
-
-            
 
             OpenAndFixMenu(instance);
         }
@@ -77,6 +75,8 @@ namespace CustomCraftingStation
                 || e.OldMenu.GetType() == CookingSkillMenu)
             {
                 _openedNonCustomMenu = false;
+                if (e.NewMenu == null)
+                    MenuOverride = true;
             }
         }
     }

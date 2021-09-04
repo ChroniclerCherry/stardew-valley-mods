@@ -1,0 +1,33 @@
+﻿{
+    "Name": "Pufferchick Shirt",
+    "Description": "Been there, done that, got the T-shirt.",
+    "HasFemaleVariant": false,
+    "Price": 200,
+    "Dyeable": false,
+	"NameLocalization": {
+		"es": "Camiseta de Globo-Pollo",
+		"ko": "복어닭 셔츠",
+		"de": "Kugelhuhn Shirt",
+		"fr": "T-Shirt de Poulet-Globe",
+		//"hu": "", //Hungarian
+		//"it": "", //Italian
+		//"ja": "", //Japanese
+		"pt": "Camiseta de Galiacu",
+		"ru": "Фугу-цыплячья рубашка",
+		//"tr": "", //Turkish
+		"zh": "河豚鸡鱼T恤"
+	},
+	"DescriptionLocalization": {
+		"es": "He estado allí, he hecho eso, y ya tengo la camiseta.",
+		"ko": "아쿠아리움에 갔노라, 물고기를 모았노라, 티셔츠를 얻었노라.",
+		"de": "War da, hab alles gemacht und das T-Shirt bekommen.",
+		"fr": "J'étais là-bas, j'ai fait ça, j'ai eu le T-Shirt.",
+		//"hu": "", //Hungarian
+		//"it": "", //Italian
+		//"ja": "", //Japanese
+		"pt": "Galiacu!",
+		"ru": "Был там, сделал это - получил футболку.",
+		//"tr": "", //Turkish
+		"zh": "去了水族馆，捐赠了鱼，还买了件T恤。"
+	}
+}
