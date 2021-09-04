@@ -1,6 +1,9 @@
-﻿using ShopTileFramework.API;
+﻿using System.Collections.Generic;
+using ShopTileFramework.API;
 using ShopTileFramework.Shop;
 using StardewModdingAPI;
+using StardewModdingAPI.Utilities;
+using StardewValley;
 
 namespace ShopTileFramework.Utility
 {
@@ -62,7 +65,8 @@ namespace ShopTileFramework.Utility
                 return;
             }
 
-            ShopManager.ItemShops.TryGetValue(args[0], out ItemShop value);
+            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/ItemShops"));
+            itemShops.TryGetValue(args[0], out ItemShop value);
             if (value == null)
             {
                 ModEntry.monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
@@ -92,7 +96,8 @@ namespace ShopTileFramework.Utility
                 return;
             }
 
-            ShopManager.AnimalShops.TryGetValue(args[0], out AnimalShop value);
+            Dictionary<string, AnimalShop> animalShops = Game1.content.Load<Dictionary<string, AnimalShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/AnimalShops"));
+            animalShops.TryGetValue(args[0], out AnimalShop value);
             if (value == null)
             {
                 ModEntry.monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
@@ -122,7 +127,8 @@ namespace ShopTileFramework.Utility
                 return;
             }
 
-            ShopManager.ItemShops.TryGetValue(args[0], out ItemShop shop);
+            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/ItemShops"));
+            itemShops.TryGetValue(args[0], out ItemShop shop);
             if (shop == null)
             {
                 ModEntry.monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
@@ -143,19 +149,21 @@ namespace ShopTileFramework.Utility
         /// </summary>
         private void ListAllShops(string command, string[] args)
         {
-            if (ShopManager.ItemShops.Count == 0)
+            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/ItemShops"));
+            Dictionary<string, AnimalShop> animalShops = Game1.content.Load<Dictionary<string, AnimalShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/AnimalShops"));
+            if (itemShops.Count == 0)
             {
                 ModEntry.monitor.Log($"No shops were found", LogLevel.Debug);
             }
             else
             {
                 string temp = "";
-                foreach (string k in ShopManager.ItemShops.Keys)
+                foreach (string k in itemShops.Keys)
                 {
                     temp += "\nShop: " + k;
                 }
 
-                foreach (string k in ShopManager.AnimalShops.Keys)
+                foreach (string k in animalShops.Keys)
                 {
                     temp += "\nAnimalShop: " + k;
                 }
