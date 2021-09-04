@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using xTile.Layers;
 using xTile.Tiles;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using StardewValley.Locations;
 using StardewValley.Menus;
 
