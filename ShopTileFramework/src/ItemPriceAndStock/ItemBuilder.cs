@@ -116,6 +116,10 @@ namespace ShopTileFramework.ItemPriceAndStock
                     return new Furniture(itemId, Vector2.Zero);
                 case "Weapon":
                     return new MeleeWeapon(itemId);
+                case "Wallpaper":
+                    return new Wallpaper(itemId);
+                case "Floors":
+                    return new Wallpaper(itemId, true);
                 default: return null;
             }
         }
