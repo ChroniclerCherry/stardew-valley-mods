@@ -3,7 +3,6 @@ using ShopTileFramework.Shop;
 using StardewValley;
 using System;
 using System.Collections.Generic;
-using StardewModdingAPI.Utilities;
 
 namespace ShopTileFramework.API
 {
@@ -29,7 +28,7 @@ namespace ShopTileFramework.API
                 return false;
             }
 
-            ModEntry.ShopManager.RegisterShops(newShopModel, temp);
+            ShopManager.RegisterShops(newShopModel, temp);
             return true;
         }
 
@@ -41,8 +40,7 @@ namespace ShopTileFramework.API
         public bool OpenItemShop(string shopName)
         {
             //opens up the shop of ShopName in-game
-            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/ItemShops"));
-            itemShops.TryGetValue(shopName, out var shop);
+            ShopManager.ItemShops.TryGetValue(shopName, out var shop);
             if (shop == null)
             {
                 return false;
@@ -60,8 +58,7 @@ namespace ShopTileFramework.API
         public bool OpenAnimalShop(string shopName)
         {
             //opens up the shop of ShopName in-game
-            Dictionary<string, AnimalShop> animalShops = Game1.content.Load<Dictionary<string, AnimalShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/AnimalShops"));
-            animalShops.TryGetValue(shopName, out var shop);
+            ShopManager.AnimalShops.TryGetValue(shopName, out var shop);
             if (shop == null)
             {
                 return false;
@@ -79,8 +76,7 @@ namespace ShopTileFramework.API
         public bool ResetShopStock(string shopName)
         {
             //resets the stock of the given ShopName
-            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/ItemShops"));
-            itemShops.TryGetValue(shopName, out var shop);
+            ShopManager.ItemShops.TryGetValue(shopName, out var shop);
             if (shop == null)
             {
                 return false;
@@ -98,8 +94,7 @@ namespace ShopTileFramework.API
         public Dictionary<ISalable, int[]> GetItemPriceAndStock(string shopName)
         {
             //gets the ItemStockAndPrice of the given ShopName
-            Dictionary<string, ItemShop> itemShops = Game1.content.Load<Dictionary<string, ItemShop>>(PathUtilities.NormalizePath("Mods/ShopTileFramework/ItemShops"));
-            itemShops.TryGetValue(shopName, out var shop);
+            ShopManager.ItemShops.TryGetValue(shopName, out var shop);
             if (shop == null)
             {
                 return null;
