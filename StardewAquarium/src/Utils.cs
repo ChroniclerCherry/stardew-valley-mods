@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
+
 using Netcode;
+
 using StardewAquarium.Editors;
+
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+
 using StardewValley;
+
 using Object = StardewValley.Object;
 
 namespace StardewAquarium
@@ -23,13 +26,13 @@ namespace StardewAquarium
         /// Maps the InternalName of the fish to its internalname without spaces, eg. Rainbow Trout to RainbowTrout
         /// </summary>
         /// 
-        public static Dictionary<string, string> InternalNameToDonationName { get; set; } = new Dictionary<string, string>();
-        public static List<int> FishIDs = new List<int>();
+        public static Dictionary<string, string> InternalNameToDonationName { get; private set; } = new Dictionary<string, string>(64);
+        public static List<int> FishIDs { get; private set; } = new List<int>(64);
 
         /// <summary>
         /// Maps the internal name without spaces to its localized display name
         /// </summary>
-        public static Dictionary<string, string> FishDisplayNames { get; set; } = new Dictionary<string, string>();
+        public static Dictionary<string, string> FishDisplayNames { get; private set; } = new Dictionary<string, string>(64);
 
         private static LastDonatedFishSign _fishSign;
 
@@ -53,7 +56,7 @@ namespace StardewAquarium
 
             foreach (var kvp in Game1.objectInformation)
             {
-                var info = kvp.Value.Split('/');
+                var info = kvp.Value.Split('/', 6);
                 var fishName = info[0];
                 if (info[3].Contains("-4"))
                 {

@@ -1,44 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using StardewModdingAPI;
-using StardewAquarium.Models;
-using StardewValley;
-using Harmony;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using StardewAquarium.Models;
 using StardewAquarium.Patches;
 using StardewAquarium.Editors;
 using StardewAquarium.Menus;
-using StardewValley.Menus;
-using StardewValley.Objects;
 using Object = StardewValley.Object;
+using StardewModdingAPI;
+using HarmonyLib;
+using StardewValley;
+using StardewValley.Objects;
+using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StardewValley.Menus;
+using System.IO;
+using StardewModdingAPI.Events;
 
 namespace StardewAquarium
 {
     public partial class ModEntry : Mod
     {
+        private IAssetManager[] assetManagers = null!;
+
         public static ModConfig Config;
         public static ModData Data;
         public const string PufferChickName = "Pufferchick";
         public const string LegendaryBaitName = "Legendary Bait";
         private readonly bool _isAndroid = Constants.TargetPlatform == GamePlatform.Android;
-        public static HarmonyInstance Harmony { get; } = HarmonyInstance.Create("Cherry.StardewAquarium");
+        public static Harmony Harmony { get; } = new("Cherry.StardewAquarium");
 
-        private static int GameTick = 0;
-        public static IJsonAssetsApi JsonAssets { get; set; }
-        public static ISpaceCoreAPI SpaceCore { get; set; }
+        public static IJsonAssetsApi JsonAssets { get; private set; }
+        public static ISpaceCoreAPI SpaceCore { get; private set; }
         public override void Entry(IModHelper helper)
         {
             Utils.Initialize(Helper, Monitor,ModManifest);
 
-            Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
-            Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
-            Helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked;
-            Helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
-            Helper.Events.Input.ButtonPressed += Input_ButtonPressed;
+            this.InitializeEditors();
+
+            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
+            helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
+            helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked;
+            helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
+            helper.Events.Input.ButtonPressed += Input_ButtonPressed;
+            helper.Events.Content.AssetRequested += this.Content_AssetRequested;
 
             if (_isAndroid)
             {
@@ -69,7 +72,7 @@ namespace StardewAquarium
             }
         }
 
-        private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
+        private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
         {
             if (Context.CanPlayerMove && Config.CheckDonationCollection == e.Button)
             {
@@ -77,7 +80,7 @@ namespace StardewAquarium
             }
         }
 
-        private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
+        private void GameLoop_DayStarted(object sender, DayStartedEventArgs e)
         {
             if (!Context.IsMainPlayer) return; //we don't want this running for every single logged in player, so just the host can handle the logic
 
@@ -86,11 +89,11 @@ namespace StardewAquarium
             foreach (Object obj in loc.objects.Values)
             {
                 // Must be a Crab Pot.
-                if (!(obj is CrabPot pot))
+                if (obj is not CrabPot pot)
                     continue;
 
                 // Must have a non-trash catch already.
-                if (pot.heldObject.Value == null ||
+                if (pot.heldObject.Value is null ||
                     pot.heldObject.Value.Category == Object.junkCategory)
                     continue;
 
@@ -106,16 +109,14 @@ namespace StardewAquarium
                                         (int)pot.TileLocation.Y);
 
                 // Search for suitable fish.
-                Dictionary<int, string> fishes =
-                    Helper.Content.Load<Dictionary<int, string>>("Data\\Fish",
-                        ContentSource.GameContent);
+                Dictionary<int, string> fishes = Helper.GameContent.Load<Dictionary<int, string>>("Data\\Fish");
                 List<int> candidates = new List<int>();
                 foreach (KeyValuePair<int, string> fish in fishes)
                 {
                     if (!fish.Value.Contains("trap"))
                         continue;
 
-                    string[] fields = fish.Value.Split('/');
+                    string[] fields = fish.Value.Split('/', 6);
                     if (fields[4].Equals("freshwater"))
                         continue;
 
@@ -138,18 +139,8 @@ namespace StardewAquarium
 
         }
 
-        private void GameLoop_UpdateTicked(object sender, StardewModdingAPI.Events.UpdateTickedEventArgs e)
+        private void GameLoop_UpdateTicked(object sender, UpdateTickedEventArgs e)
         {
-            if (GameTick < 2)
-            {
-                GameTick++;
-            }
-            else if (GameTick == 2)
-            {
-                InitializeEditors();
-                GameTick++;
-            }
-
             if (Game1.currentLocation?.Name != Data.ExteriorMapName) return;
             if (Game1.isTimePaused) return;
 
@@ -168,29 +159,22 @@ namespace StardewAquarium
 
             var loc = Game1.currentLocation;
 
-            bool foundPosition = true;
-
             // Confirm there is water tiles in the 3x2 area the dolphin spawns in
             Vector2[] tiles = new[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0),
                 new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1) };
             foreach (var tile in tiles)
             {
-                if (loc.doesTileHaveProperty((int) ((position.X / 64) + tile.X), (int) ((position.Y/64) + tile.Y), "Water", "Back") == null)
+                if (loc.doesTileHaveProperty((int)((position.X / 64) + tile.X), (int)((position.Y / 64) + tile.Y), "Water", "Back") is null)
                 {
-                    foundPosition = false;
-                    break;
+                    return;
                 }
             }
 
             // Spawn if possible.
-            if (foundPosition)
-            {
-                loc.temporarySprites.Add(new DolphinAnimatedSprite (position, Helper.Content.Load<Texture2D>("data\\dolphin.png")));
-            }
-
+            loc.temporarySprites.Add(new DolphinAnimatedSprite(position, Helper.ModContent.Load<Texture2D>("data\\dolphin.png")));
         }
 
-        private void AndroidPlsHaveMercyOnMe(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
+        private void AndroidPlsHaveMercyOnMe(object sender, MenuChangedEventArgs e)
         {
             //don't ask me what the heck is going on here but its the only way to get it to work
             if (!(e.OldMenu is DonateFishMenuAndroid androidMenu)) return;
@@ -207,19 +191,27 @@ namespace StardewAquarium
 
         private void InitializeEditors()
         {
-            Helper.Content.AssetEditors.Add(new AchievementEditor(Helper, Monitor));
-            Helper.Content.AssetEditors.Add(new MiscEditor(Helper));
-            Helper.Content.AssetEditors.Add(new FishEditor(Helper));
-            Helper.Content.AssetEditors.Add(new MailEditor(Helper));
+            this.assetManagers = new IAssetManager[]
+            {
+                new AchievementEditor(this.Helper.Translation, this.Helper.GameContent),
+                new MiscEditor(this.Helper.Translation, this.Helper.GameContent),
+                new FishEditor(this.Helper),
+                new MailEditor(this.Helper),
+            };
         }
 
-        private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
+        private void Content_AssetRequested(object sender, AssetRequestedEventArgs e)
         {
-            Helper.Content.AssetEditors.Add(new ObjectEditor(Helper)); //editing JA items
+            foreach (var editor in this.assetManagers)
+                if (editor.TryHandleAsset(e))
+                    return;
+        }
+
+        private void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
+        {
             AquariumMessage.Initialize(Helper);
             if (Utils.CheckAchievement())
                 Utils.UnlockAchievement();
-
         }
 
         private void RemoveDonatedFish(string arg1, string[] arg2)
@@ -242,7 +234,7 @@ namespace StardewAquarium
             Game1.activeClickableMenu = new DonateFishMenu(Helper,Monitor);
         }
 
-        private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+        private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
         {
             JsonAssets = Helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
             JsonAssets.LoadAssets(Path.Combine(Helper.DirectoryPath, "data"));

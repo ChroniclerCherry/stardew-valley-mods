@@ -117,7 +117,7 @@ namespace StardewAquarium
 
             var map = Game1.getLocationFromName(_data.ExteriorMapName)?.Map;
 
-            if (map == null)
+            if (map is null)
                 return;
 
             Layer layer = map.GetLayer("Front");
@@ -125,14 +125,11 @@ namespace StardewAquarium
 
             if (objectsTilesheet == null)
             {
-                string tilesheetPath = _helper.Content.GetActualAssetKey(@"Maps/springobjects", ContentSource.GameContent);
-                GameLocation location = Game1.getLocationFromName(ModEntry.Data.ExteriorMapName);
-
                 // Add the tilesheet.
                 objectsTilesheet = new TileSheet(
-                   id: objTilesheetName, // a unique ID for the tilesheet
+                   id: objTilesheetName,
                    map: map,
-                   imageSource: tilesheetPath,
+                   imageSource: Game1.objectSpriteSheetName,
                    sheetSize: new xTile.Dimensions.Size(24, 4000), // the tile size of your tilesheet image.
                    tileSize: new xTile.Dimensions.Size(16, 16) // should always be 16x16 for maps
                 );

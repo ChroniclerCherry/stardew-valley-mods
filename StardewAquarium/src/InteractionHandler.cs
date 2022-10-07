@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
+
 using StardewAquarium.Editors;
 using StardewAquarium.Menus;
+
 using StardewModdingAPI;
+
 using StardewValley;
 
 namespace StardewAquarium

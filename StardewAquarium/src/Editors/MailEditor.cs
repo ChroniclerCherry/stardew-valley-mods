@@ -1,20 +1,26 @@
 ﻿using StardewModdingAPI;
+using StardewModdingAPI.Events;
+
 using StardewValley;
 
 namespace StardewAquarium.Editors
 {
-    class MailEditor : IAssetEditor
+    class MailEditor : IAssetManager
     {
-        private IModHelper _helper;
         private const string AquariumOpenAfterLandslide = "StardewAquarium.Open";
         private const string AquariumOpenLater = "StardewAquarium.OpenLater";
+
+        private readonly ITranslationHelper translations;
+        private readonly IAssetName mail;
+
         public MailEditor(IModHelper helper)
         {
-            _helper = helper;
-            _helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
+            this.translations = helper.Translation;
+            this.mail = helper.GameContent.ParseAssetName("Data\\mail");
+            helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
         }
 
-        private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
+        private void GameLoop_DayStarted(object sender, DayStartedEventArgs e)
         {
 
             if (Game1.player.hasOrWillReceiveMail(AquariumOpenAfterLandslide) || Game1.player.hasOrWillReceiveMail(AquariumOpenLater))
@@ -27,16 +33,23 @@ namespace StardewAquarium.Editors
                 Game1.player.mailbox.Add(AquariumOpenLater);
         }
 
-        public bool CanEdit<T>(IAssetInfo asset)
+        public bool TryHandleAsset(AssetRequestedEventArgs e)
         {
-            return asset.AssetNameEquals("Data\\mail");
+            if (e.Name.IsEquivalentTo(this.mail))
+            {
+                e.Edit(this.EditImpl);
+                return true;
+            }
+            return false;
         }
 
-        public void Edit<T>(IAssetData asset)
+        public void EditImpl(IAssetData asset)
         {
             var data = asset.AsDictionary<string, string>().Data;
-            data[AquariumOpenAfterLandslide] = _helper.Translation.Get("AquariumOpenLandslide");
-            data[AquariumOpenLater] = _helper.Translation.Get("AquariumOPenLater");
+            data[AquariumOpenAfterLandslide] = this.translations.Get("AquariumOpenLandslide");
+            data[AquariumOpenLater] = this.translations.Get("AquariumOPenLater");
         }
+
+
     }
 }

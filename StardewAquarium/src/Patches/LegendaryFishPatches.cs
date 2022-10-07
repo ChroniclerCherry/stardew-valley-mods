@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Tools;
@@ -40,7 +40,7 @@ namespace StardewAquarium.Patches
             _helper = helper;
             _monitor = monitor;
 
-            HarmonyInstance harmony = ModEntry.Harmony;
+            Harmony harmony = ModEntry.Harmony;
 
             //this patch returns the pufferchick as a legendary fish during the fishing minigame
             harmony.Patch(
@@ -89,7 +89,7 @@ namespace StardewAquarium.Patches
             if (who == null || !(who.CurrentTool is FishingRod rod) ||
                 rod.getBaitAttachmentIndex() != LegendaryBaitId) return true;
             if (who.getTileX() != 58 || who.getTileY() != 87 || who.FishingLevel < 6 || waterDepth < 3) return true;
-            if (!who.fishCaught.ContainsKey(GlacierFishId) || (!Game1.currentSeason.Equals("winter"))) return true;
+            if (!who.fishCaught.ContainsKey(GlacierFishId) || (!Game1.IsWinter)) return true;
             __result = new Object(GlacierFishId, 1);
             return false;
 
@@ -105,10 +105,10 @@ namespace StardewAquarium.Patches
         }
         public static bool Mountain_getFish_prefix(int waterDepth, Farmer who, ref Object __result)
         {
-            if (Game1.player == null || !(Game1.player.CurrentTool is FishingRod rod) ||
+            if (Game1.player?.CurrentTool is not FishingRod rod ||
                 rod.getBaitAttachmentIndex() != LegendaryBaitId) return true;
             if (!Game1.isRaining || who.FishingLevel < 10 || waterDepth < 4) return true;
-            if (!who.fishCaught.ContainsKey(LegendId) || (!Game1.currentSeason.Equals("spring"))) return true;
+            if (!who.fishCaught.ContainsKey(LegendId) || (!Game1.IsSpring)) return true;
             __result = new Object(LegendId, 1);
             return false;
 
@@ -119,7 +119,7 @@ namespace StardewAquarium.Patches
             if (Game1.player == null || !(Game1.player.CurrentTool is FishingRod rod) ||
                 rod.getBaitAttachmentIndex() != LegendaryBaitId) return true;
             if (!(who.getTileLocation().Y < 15f) || who.FishingLevel < 3) return true;
-            if (!who.fishCaught.ContainsKey(AnglerId) || (!Game1.currentSeason.Equals("fall"))) return true;
+            if (!who.fishCaught.ContainsKey(AnglerId) || (!Game1.IsFall)) return true;
             __result = new Object(AnglerId, 1);
             return false;
 
@@ -130,7 +130,7 @@ namespace StardewAquarium.Patches
             if (Game1.player == null || !(Game1.player.CurrentTool is FishingRod rod) ||
                 rod.getBaitAttachmentIndex() != LegendaryBaitId) return true;
             if (who.getTileX() < 82 || who.FishingLevel < 5 || waterDepth < 3) return true;
-            if (!who.fishCaught.ContainsKey(CrimsonFishId) || (!Game1.currentSeason.Equals("summer"))) return true;
+            if (!who.fishCaught.ContainsKey(CrimsonFishId) || (!Game1.IsSummer)) return true;
             __result = new Object(CrimsonFishId, 1);
             return false;
 
@@ -151,7 +151,7 @@ namespace StardewAquarium.Patches
         {
             //checks if player should get pufferchick
             var puff = GetFishPufferchick(__instance, who);
-            if (puff == null) return true;
+            if (puff is null) return true;
 
             __result = puff;
             return false;

@@ -1,33 +1,35 @@
-﻿using System.Linq;
-using StardewAquarium.Patches;
-using StardewModdingAPI;
+﻿using StardewModdingAPI;
+using StardewModdingAPI.Events;
 
 namespace StardewAquarium.Editors
 {
-    class MiscEditor : IAssetEditor
+    internal class MiscEditor : IAssetManager
     {
         private const string UIPath = "Strings\\UI";
-        private const string NPCDispositions = "Data\\NPCDispositions";
-        private readonly IModHelper _helper;
+        private readonly IAssetName uiPath;
+        private readonly ITranslationHelper translations;
 
-        public MiscEditor(IModHelper helper)
+        public MiscEditor(ITranslationHelper translations, IGameContentHelper parser)
         {
-            _helper = helper;
+            this.uiPath = parser.ParseAssetName(UIPath);
+            this.translations = translations;
         }
 
-        public bool CanEdit<T>(IAssetInfo asset)
+        public bool TryHandleAsset(AssetRequestedEventArgs e)
         {
-            return asset.AssetNameEquals(UIPath);
-        }
-
-        public void Edit<T>(IAssetData asset)
-        { 
-            if (asset.AssetNameEquals(UIPath))
+            if (e.NameWithoutLocale.IsEquivalentTo(uiPath))
             {
-                var data = asset.AsDictionary<string, string>().Data;
-                data.Add("Chat_StardewAquarium.FishDonated", _helper.Translation.Get("FishDonatedMP"));
-                data.Add("Chat_StardewAquarium.AchievementUnlocked", _helper.Translation.Get("AchievementUnlockedMP"));
+                e.Edit(this.EditImpl);
+                return true;
             }
+            return false;
+        }
+
+        private void EditImpl(IAssetData asset)
+        {
+            var data = asset.AsDictionary<string, string>().Data;
+            data.Add("Chat_StardewAquarium.FishDonated", this.translations.Get("FishDonatedMP"));
+            data.Add("Chat_StardewAquarium.AchievementUnlocked", this.translations.Get("AchievementUnlockedMP"));
         }
     }
 }

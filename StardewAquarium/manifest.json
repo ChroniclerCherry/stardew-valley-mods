@@ -18,17 +18,11 @@
             "UniqueID": "Cherry.ShopTileFramework"
         },
         {
-            "UniqueID": "Platonymous.TMXLoader"
-        },
-        {
             "UniqueID": "spacechase0.JsonAssets"
         },
         {
             "UniqueID": "spacechase0.SpaceCore",
             "MinimumVersion": "1.4"
-        },
-        {
-            "UniqueID": "spacechase0.CustomNPCFixes"
         },
         {
             "UniqueID": "Cherry.TrainStation",
