@@ -86,6 +86,8 @@ namespace StardewAquarium
 
             //all credit to kdau, i lifted this code from East Scarpe
             var loc = Game1.getLocationFromName(Data.ExteriorMapName);
+            if (loc is null)
+                return;
             foreach (Object obj in loc.objects.Values)
             {
                 // Must be a Crab Pot.
