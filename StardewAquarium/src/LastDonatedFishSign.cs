@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Linq;
+
+using Microsoft.Xna.Framework;
+
 using Netcode;
 using StardewAquarium.Models;
 using StardewModdingAPI;
@@ -53,7 +56,7 @@ namespace StardewAquarium
         private void Player_Warped(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
         {
             if (e?.NewLocation.Name == _data.ExteriorMapName)
-                UpdateLastDonatedFishSign();
+                UpdateLastDonatedFishSign(e.NewLocation);
         }
 
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
@@ -110,35 +113,29 @@ namespace StardewAquarium
             _monitor.Log($"The last donated fish on this file is {LastDonatedFish}");
         }
 
-        internal void UpdateLastDonatedFishSign()
+        internal void UpdateLastDonatedFishSign(GameLocation loc)
         {
             if (LastDonatedFish < 0)
                 return;
 
-            var map = Game1.getLocationFromName(_data.ExteriorMapName)?.Map;
+            var position = new Vector2(_data.LastDonatedFishCoordinateX * 64f, _data.LastDonatedFishCoordinateY * 64f);
+            var rect = Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, this.LastDonatedFish, 16, 16);
 
-            if (map is null)
-                return;
-
-            Layer layer = map.GetLayer("Front");
-            TileSheet objectsTilesheet = map.GetTileSheet(objTilesheetName);
-
-            if (objectsTilesheet == null)
+            var tas = new TemporaryAnimatedSprite
             {
-                // Add the tilesheet.
-                objectsTilesheet = new TileSheet(
-                   id: objTilesheetName,
-                   map: map,
-                   imageSource: Game1.objectSpriteSheetName,
-                   sheetSize: new xTile.Dimensions.Size(24, 4000), // the tile size of your tilesheet image.
-                   tileSize: new xTile.Dimensions.Size(16, 16) // should always be 16x16 for maps
-                );
+                texture = Game1.objectSpriteSheet,
+                sourceRect = rect,
+                animationLength = 1,
+                sourceRectStartingPos = new(rect.X, rect.Y),
+                interval = 50000f,
+                totalNumberOfLoops = 9999,
+                position = position,
+                scale = 4f,
+                layerDepth = (((position.Y) * Game1.tileSize) / 10000f) + 0.01f, // a little offset so it doesn't show up on the floor.
+                id = 777f,
+            };
 
-                map.AddTileSheet(objectsTilesheet);
-                map.LoadTileSheets(Game1.mapDisplayDevice);
-            }
-
-            layer.Tiles[_data.LastDonatedFishCoordinateX, _data.LastDonatedFishCoordinateY] = new StaticTile(layer, objectsTilesheet, BlendMode.Alpha, tileIndex: LastDonatedFish);
+            loc.temporarySprites.Add(tas);
         }
     }
 }
