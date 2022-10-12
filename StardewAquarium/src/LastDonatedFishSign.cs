@@ -104,10 +104,11 @@ namespace StardewAquarium
 
             foreach (var kvp in Game1.objectInformation)
             {
-                if (kvp.Value.Split('/')[0] != fish) continue;
-
-                LastDonatedFish = kvp.Key;
-                break;
+                if (kvp.Value.GetNthChunk('/', 0).Equals(fish, StringComparison.Ordinal))
+                {
+                    LastDonatedFish = kvp.Key;
+                    break;
+                }
             }
 
             _monitor.Log($"The last donated fish on this file is {LastDonatedFish}");
