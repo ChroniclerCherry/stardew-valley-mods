@@ -21,6 +21,9 @@ namespace UpgradeEmptyCabins
             this.Helper.ConsoleCommands.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", this.UpgradeCabinsCommand);
             this.Helper.ConsoleCommands.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", this.RemoveSeedBoxesCommand);
             this.Helper.ConsoleCommands.Add("remove_cabin_beds", "Removes beds from all unclaimed cabins.", this.RemoveCabinBedsCommand);
+            Helper.ConsoleCommands.Add("renovate_cabins", "Removes cribs and adds all the extra rooms to all unclaimed cabins.", RenovateCabinsCommand);
+            Helper.ConsoleCommands.Add("toggle_renovate", "Toggles a renovation for an unclaimed cabin.", ToggleRenovateCommand);
+            Helper.ConsoleCommands.Add("set_crib_style", "Sets the crib style for an unclaimed cabin.", SetCribStyleCommand);
 
             this.Helper.Events.GameLoop.DayEnding += this.GameLoop_DayEnding;
             this.Helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
@@ -36,6 +39,71 @@ namespace UpgradeEmptyCabins
 
             api.RegisterModConfig(this.ModManifest, () => this._config = new Config(), () => this.Helper.WriteConfig(this._config));
             api.RegisterSimpleOption(this.ModManifest, "Instance Build", "Whether cabins are instantly upgraded", () => this._config.InstantBuild, val => this._config.InstantBuild = val);
+        }
+
+        private void SetCribStyleCommand(string arg1, string[] arg2)
+        {
+            var cabin = arg2[0] + " Cabin"; //"Plank","Stone","Log"
+            int style = int.Parse(arg2[1]);
+
+            foreach (var cab in ModUtility.GetCabins())
+            {
+                if (((Cabin)cab.indoors.Value).owner.Name != "")
+                    continue;
+                if (cab.buildingType.ToString() == cabin)
+                {
+                    ((Cabin)cab.indoors.Value).cribStyle.Set(style);
+                    Monitor.Log("Cabin: " + cab.nameOfIndoors, LogLevel.Info);
+                    Monitor.Log("Cabin Type: " + cab.buildingType.ToString(), LogLevel.Info);
+                    Monitor.Log("cribStyle: " + ((Cabin)cab.indoors.Value).cribStyle.ToString(), LogLevel.Info);
+                }
+            }
+        }
+
+        private void ToggleRenovateCommand(string arg1, string[] arg2)
+        {
+            var cabin = arg2[0] + " Cabin"; //"Plank","Stone","Log"
+            var reno = arg2[1]; //"renovation_bedroom_open","renovation_southern_open","renovation_corner_open"
+
+            foreach (var cab in ModUtility.GetCabins())
+            {
+                if (((Cabin)cab.indoors.Value).owner.Name != "")
+                    continue;
+                if (cab.buildingType.ToString() == cabin)
+                {
+                    var mail = ((Cabin)cab.indoors.Value).owner.mailReceived;
+                    if (mail.Contains(reno))
+                        mail.Remove(reno);
+                    else
+                        mail.Add(reno);
+                    Monitor.Log("Cabin: " + cab.nameOfIndoors, LogLevel.Info);
+                    Monitor.Log("Cabin Type: " + cab.buildingType.ToString(), LogLevel.Info);
+                    Monitor.Log("Flags: " + mail.ToString(), LogLevel.Info);
+                }
+            }
+        }
+
+        private void RenovateCabinsCommand(string arg1, string[] arg2)
+        {
+            string[] renos = { "renovation_bedroom_open", "renovation_southern_open", "renovation_corner_open" };
+            foreach (var cab in ModUtility.GetCabins())
+            {
+                if (((Cabin)cab.indoors.Value).owner.Name != "")
+                    continue;
+                var mail = ((Cabin)cab.indoors.Value).owner.mailReceived;
+                foreach (var reno in renos)
+                {
+                    if (mail.Contains(reno))
+                        Monitor.Log("Renovation already done: " + reno + " " + cab.nameOfIndoors, LogLevel.Info);
+                    else
+                        mail.Add(reno);
+                }
+                ((Cabin)cab.indoors.Value).cribStyle.Set(0);
+                Monitor.Log("Cabin: " + cab.nameOfIndoors, LogLevel.Info);
+                Monitor.Log("   Type: " + cab.buildingType.ToString(), LogLevel.Info);
+                Monitor.Log("   cribStyle:  " + ((Cabin)cab.indoors.Value).cribStyle.ToString(), LogLevel.Info);
+                Monitor.Log("   flags: " + mail.ToString(), LogLevel.Info);
+            }
         }
 
         private void RemoveCabinBedsCommand(string arg1, string[] arg2)
