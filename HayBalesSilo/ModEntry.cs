@@ -34,6 +34,42 @@ namespace HayBalesSilo
             helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
         }
 
+        // Add GMCM compatibility
+        private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+        {
+            var gmcm = this.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
+            if (gmcm != null) return;
+
+            gmcm.Register(
+                mod: this.ModManifest,
+                reset: () => Config = new ModConfig(),
+                save: () => this.Helper.WriteConfig(Config)
+            );
+
+            gmcm.AddBoolOption(
+                mod: this.ModManifest,
+                name: () => "RequiresConstructedSilo",
+                tooltip: () => "Whether you need to construct at least one Silo for hay bales to work",
+                getValue: () => Config.RequiresConstructedSilo,
+                setValue: value => Config.RequiresConstructedSilo = value
+            );
+
+            gmcm.AddNumberOption(
+                mod: this.ModManifest,
+                name: () => "HayBaleEquivalentToHowManySilos",
+                tooltip: () => "How many silos is each hay bale equivalent to in terms of adding hay capacity",
+                getValue: () => Config.HayBaleEquivalentToHowManySilos,
+                setValue: value => Config.HayBaleEquivalentToHowManySilos = value
+            );
+
+            gmcm.AddNumberOption(
+                mod: this.ModManifest,
+                name: () => "HaybalePrice",
+                getValue: () => Config.HaybalePrice,
+                setValue: value => Config.HaybalePrice = value
+            );
+        }
+
         private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
         {
             //ignore input if the player isnt free to move aka world not loaded,
