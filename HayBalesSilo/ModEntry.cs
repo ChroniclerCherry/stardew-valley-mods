@@ -39,7 +39,7 @@ namespace HayBalesSilo
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
             var gmcm = this.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
-            if (gmcm != null) return;
+            if (gmcm is null) return;
 
             gmcm.Register(
                 mod: this.ModManifest,
