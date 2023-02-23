@@ -31,6 +31,7 @@ namespace HayBalesSilo
             );
 
             helper.Events.Content.AssetRequested += this.OnAssetRequested;
+            helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
             helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
         }
 
