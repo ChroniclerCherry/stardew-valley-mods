@@ -5,6 +5,7 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.GameData.BigCraftables;
 using StardewValley.GameData.Shops;
+using StardewValley.Menus;
 using StardewValley.TokenizableStrings;
 
 namespace CustomizeAnywhere.Framework
@@ -189,7 +190,7 @@ namespace CustomizeAnywhere.Framework
                     }
                     else if (obj.QualifiedItemId == MirrorQualifiedId)
                     {
-                        Game1.activeClickableMenu = new CustomizeAnywhereMenu();
+                        Game1.activeClickableMenu = new CharacterCustomization(CharacterCustomization.Source.Wizard);
                         Helper.Input.Suppress(e.Button);
                     }
                 }
