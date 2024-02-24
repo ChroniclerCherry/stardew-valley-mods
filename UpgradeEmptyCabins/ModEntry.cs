@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
@@ -11,7 +12,7 @@ using UpgradeEmptyCabins.Framework;
 
 namespace UpgradeEmptyCabins
 {
-    public partial class UpgradeCabins : Mod
+    public class UpgradeCabins : Mod
     {
         private Config _config;
         public override void Entry(IModHelper h)
@@ -25,6 +26,17 @@ namespace UpgradeEmptyCabins
             Helper.Events.GameLoop.DayEnding += GameLoop_DayEnding;
             Helper.Events.Input.ButtonPressed += Input_ButtonPressed;
             Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
+        }
+
+        private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+        {
+            var api = Helper.ModRegistry.GetApi<GenericModConfigMenuAPI>("spacechase0.GenericModConfigMenu");
+
+            if (api == null)
+                return;
+
+            api.RegisterModConfig(ModManifest, () => _config = new Config(), () => Helper.WriteConfig(_config));
+            api.RegisterSimpleOption(ModManifest, "Instance Build", "Whether cabins are instantly upgraded", () => _config.InstantBuild, val => _config.InstantBuild = val);
         }
 
         private void RemoveCabinBedsCommand(string arg1, string[] arg2)
@@ -251,6 +263,17 @@ namespace UpgradeEmptyCabins
                     Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\UI:NotEnoughMoney3"));
                     break;
             }
+        }
+
+        private class Config
+        {
+            public bool InstantBuild { get; set; } = false;
+        }
+
+        public interface GenericModConfigMenuAPI
+        {
+            void RegisterModConfig(IManifest mod, Action revertToDefault, Action saveToFile);
+            void RegisterSimpleOption(IManifest mod, string optionName, string optionDesc, Func<bool> optionGet, Action<bool> optionSet);
         }
     }
 }
