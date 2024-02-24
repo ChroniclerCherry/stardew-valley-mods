@@ -6,9 +6,7 @@
     <RepositoryUrl>https://github.com/ChroniclerCherry/stardew-valley-mods</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
 
-    <TargetFramework>net452</TargetFramework>
-    <Platforms>x86</Platforms>
-    <PlatformTarget>x86</PlatformTarget>
+    <TargetFramework>net6.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>

@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Configuration;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using MultiplayerModChecker.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
