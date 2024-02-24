@@ -152,35 +152,16 @@ namespace MultiYieldCrops
             //load up all the object information into a static dictionary
             ObjectInfoSource = new Dictionary<string, IDictionary<int, string>>
             {
-                { "Object", Game1.objectInformation },
-                { "BigCraftable", Game1.bigCraftablesInformation },
-                { "Clothing", Game1.clothingInformation },
-                { "Ring", Game1.objectInformation },
-                {
-                    "Hat",
-                    Helper.Content.Load<Dictionary<int, string>>
-                        (@"Data/hats", ContentSource.GameContent)
-                },
-                {
-                    "Boot",
-                    Helper.Content.Load<Dictionary<int, string>>
-                            (@"Data/Boots", ContentSource.GameContent)
-                },
-                {
-                    "Furniture",
-                    Helper.Content.Load<Dictionary<int, string>>
-                            (@"Data/Furniture", ContentSource.GameContent)
-                },
-                {
-                    "Weapon",
-                    Helper.Content.Load<Dictionary<int, string>>
-                            (@"Data/weapons", ContentSource.GameContent)
-                }
+                ["Object"] = Game1.objectInformation,
+                ["BigCraftable"] = Game1.bigCraftablesInformation,
+                ["Clothing"] = Game1.clothingInformation,
+                ["Ring"] = Game1.objectInformation,
+                ["Hat"] = Helper.GameContent.Load<Dictionary<int, string>>("Data/hats"),
+                ["Boot"] = Helper.GameContent.Load<Dictionary<int, string>>("Data/Boots"),
+                ["Furniture"] = Helper.GameContent.Load<Dictionary<int, string>>("Data/Furniture"),
+                ["Weapon"] = Helper.GameContent.Load<Dictionary<int, string>>("Data/weapons")
             };
-
         }
-
-
 
         private void InitializeHarvestRules()
         {

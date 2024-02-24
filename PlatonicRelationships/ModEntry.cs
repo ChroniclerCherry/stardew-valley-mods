@@ -4,20 +4,29 @@ using StardewValley.Menus;
 using System;
 using HarmonyLib;
 using PlatonicRelationships.Framework;
+using StardewModdingAPI.Events;
 
 namespace PlatonicRelationships
 {
     public class ModEntry : Mod
     {
         private ModConfig Config;
+        private readonly AddDatingPrereq Editor = new AddDatingPrereq();
+
         public override void Entry(IModHelper helper)
         {
             Config = this.Helper.ReadConfig<ModConfig>();
             if (Config.AddDatingRequirementToRomanticEvents)
-                helper.Content.AssetEditors.Add(new AddDatingPrereq());
+                helper.Events.Content.AssetRequested += OnAssetRequested;
 
             //apply harmony patches
             ApplyPatches();
+        }
+
+        private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+        {
+            if (Editor.CanEdit(e.NameWithoutLocale))
+                e.Edit(Editor.Edit);
         }
 
         public void ApplyPatches()

@@ -158,7 +158,7 @@ namespace TrainStation
                     continue;
                 }
 
-                ContentPack cp = pack.LoadAsset<ContentPack>("TrainStops.json");
+                ContentPack cp = pack.ModContent.Load<ContentPack>("TrainStops.json");
                 if (cp.TrainStops != null)
                 {
                     for (int i = 0; i < cp.TrainStops.Count; i++)

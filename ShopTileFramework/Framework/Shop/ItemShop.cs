@@ -49,12 +49,12 @@ namespace ShopTileFramework.Framework.Shop
                 //if the seasonal version exists, load it
                 if (ContentPack.HasFile(seasonalPath)) 
                 {
-                    _portrait = ContentPack.LoadAsset<Texture2D>(seasonalPath);
+                    _portrait = ContentPack.ModContent.Load<Texture2D>(seasonalPath);
                 }
                 //if the seasonal version doesn't exist, try to load the default
                 else if (ContentPack.HasFile(PortraitPath))
                 {
-                    _portrait = ContentPack.LoadAsset<Texture2D>(PortraitPath);
+                    _portrait = ContentPack.ModContent.Load<Texture2D>(PortraitPath);
                 }
             }
             catch (Exception ex) //couldn't load the image

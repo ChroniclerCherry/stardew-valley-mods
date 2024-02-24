@@ -1,5 +1,4 @@
 ﻿using ShopTileFramework.Framework.API;
-using StardewModdingAPI;
 using StardewValley;
 using System;
 using System.Collections.Generic;
@@ -30,42 +29,26 @@ namespace ShopTileFramework.Framework.Utility
             //load up all the object information into a static dictionary
             ObjectInfoSource = new Dictionary<string, IDictionary<int, string>>
             {
-                { "Object", Game1.objectInformation },
-                { "BigCraftable", Game1.bigCraftablesInformation },
-                { "Clothing", Game1.clothingInformation },
-                { "Ring", Game1.objectInformation },
-                {
-                    "Hat",
-                    ModEntry.helper.Content.Load<Dictionary<int, string>>
-                        (@"Data/hats", ContentSource.GameContent)
-                },
-                {
-                    "Boot",
-                    ModEntry.helper.Content.Load<Dictionary<int, string>>
-                            (@"Data/Boots", ContentSource.GameContent)
-                },
-                {
-                    "Furniture",
-                    ModEntry.helper.Content.Load<Dictionary<int, string>>
-                            (@"Data/Furniture", ContentSource.GameContent)
-                },
-                {
-                    "Weapon",
-                    ModEntry.helper.Content.Load<Dictionary<int, string>>
-                            (@"Data/weapons", ContentSource.GameContent)
-                }
+                ["Object"] = Game1.objectInformation,
+                ["BigCraftable"] = Game1.bigCraftablesInformation,
+                ["Clothing"] = Game1.clothingInformation,
+                ["Ring"] = Game1.objectInformation,
+                ["Hat"] = ModEntry.helper.GameContent.Load<Dictionary<int, string>>("Data/hats"),
+                ["Boot"] = ModEntry.helper.GameContent.Load<Dictionary<int, string>>("Data/Boots"),
+                ["Furniture"] = ModEntry.helper.GameContent.Load<Dictionary<int, string>>("Data/Furniture"),
+                ["Weapon"] = ModEntry.helper.GameContent.Load<Dictionary<int, string>>("Data/weapons")
             };
 
             //load up recipe information
-            RecipesList = ModEntry.helper.Content.Load<Dictionary<string, string>>(@"Data/CraftingRecipes", ContentSource.GameContent).Keys.ToList();
-            RecipesList.AddRange(ModEntry.helper.Content.Load<Dictionary<string, string>>(@"Data/CookingRecipes", ContentSource.GameContent).Keys.ToList());
+            RecipesList = ModEntry.helper.GameContent.Load<Dictionary<string, string>>("Data/CraftingRecipes").Keys.ToList();
+            RecipesList.AddRange(ModEntry.helper.GameContent.Load<Dictionary<string, string>>("Data/CookingRecipes").Keys.ToList());
 
             //add "recipe" to the end of every element
             RecipesList = RecipesList.Select(s => s + " Recipe").ToList();
 
             //load up tree and crop data
-            _fruitTreeData = ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/fruitTrees", ContentSource.GameContent);
-            _cropData = ModEntry.helper.Content.Load<Dictionary<int, string>>(@"Data/Crops", ContentSource.GameContent);
+            _fruitTreeData = ModEntry.helper.GameContent.Load<Dictionary<int, string>>("Data/fruitTrees");
+            _cropData = ModEntry.helper.GameContent.Load<Dictionary<int, string>>("Data/Crops");
         }
 
         /// <summary>

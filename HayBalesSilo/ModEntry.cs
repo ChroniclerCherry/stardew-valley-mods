@@ -12,7 +12,7 @@ using HayBalesSilo.Framework;
 
 namespace HayBalesSilo
 {
-    public class ModEntry : Mod, IAssetEditor
+    public class ModEntry : Mod
     {
         internal static IMonitor monitor;
         internal static ModConfig Config;
@@ -27,6 +27,7 @@ namespace HayBalesSilo
                 postfix: new HarmonyMethod(typeof(PatchNumSilos), nameof(PatchNumSilos.Postfix))
                 );
 
+            helper.Events.Content.AssetRequested += OnAssetRequested;
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
             helper.Events.Display.MenuChanged += Display_MenuChanged;
 
@@ -116,6 +117,26 @@ namespace HayBalesSilo
             }
         }
 
+        private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+        {
+            if (e.NameWithoutLocale.IsEquivalentTo("Data/BigCraftablesInformation"))
+            {
+                e.Edit(asset =>
+                {
+                    IDictionary<int, string> data = asset.AsDictionary<int, string>().Data;
+                    string[] fields = data[45].Split('/');
+
+                    fields[4] = Helper.Translation.Get("Description",
+                        new { capacity = 240 * Config.HayBaleEquivalentToHowManySilos }); //description
+                    fields[8] = Helper.Translation.Get("DisplayName"); //display name
+
+                    data[45] = string.Join("/", fields);
+                });
+            }
+
+            throw new System.NotImplementedException();
+        }
+
         internal static IEnumerable<GameLocation> GetAllAffectedMaps()
         {
             yield return Game1.getFarm();
@@ -143,27 +164,6 @@ namespace HayBalesSilo
             }
 
             return numHayBales;
-        }
-
-        public bool CanEdit<T>(IAssetInfo asset)
-        {
-            return asset.AssetNameEquals("Data/BigCraftablesInformation");
-        }
-
-        public void Edit<T>(IAssetData asset)
-        {
-
-            if (asset.AssetNameEquals("Data/BigCraftablesInformation"))
-            {
-                IDictionary<int, string> data = asset.AsDictionary<int, string>().Data;
-                string[] fields = data[45].Split('/');
-
-                fields[4] = Helper.Translation.Get("Description",
-                    new { capacity = 240 * Config.HayBaleEquivalentToHowManySilos }); //description
-                fields[8] = Helper.Translation.Get("DisplayName"); //display name
-
-                data[45] = string.Join("/", fields);
-            }
         }
     }
 }

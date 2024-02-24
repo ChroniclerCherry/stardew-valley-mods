@@ -7,74 +7,74 @@ namespace PlatonicRelationships.Framework
     /// Changes all the vanilla 10 heart events that doesn't have a "Dating" prerequisite to have one
     /// so that they don't play while platonically at 10 hearts
     /// </summary>
-    class AddDatingPrereq : IAssetEditor
+    class AddDatingPrereq
     {
-        public bool CanEdit<T>(IAssetInfo asset)
+        public bool CanEdit(IAssetName asset)
         {
             return (
-                asset.AssetNameEquals("Data/Events/Farm") ||
-                asset.AssetNameEquals("Data/Events/Beach") ||
-                asset.AssetNameEquals("Data/Events/Mine") ||
-                asset.AssetNameEquals("Data/Events/HaleyHouse") ||
-                asset.AssetNameEquals("Data/Events/Forest") ||
-                asset.AssetNameEquals("Data/Events/ScienceHouse") ||
-                asset.AssetNameEquals("Data/Events/Mountain")
-                );
+                asset.IsEquivalentTo("Data/Events/Farm") ||
+                asset.IsEquivalentTo("Data/Events/Beach") ||
+                asset.IsEquivalentTo("Data/Events/Mine") ||
+                asset.IsEquivalentTo("Data/Events/HaleyHouse") ||
+                asset.IsEquivalentTo("Data/Events/Forest") ||
+                asset.IsEquivalentTo("Data/Events/ScienceHouse") ||
+                asset.IsEquivalentTo("Data/Events/Mountain")
+            );
         }
 
-        public void Edit<T>(IAssetData asset)
+        public void Edit(IAssetData asset)
         {
             // TODO: add kill contexts for platonic versions of event ("/k <event id>")
             IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
-            if (asset.AssetNameEquals("Data/Events/Farm"))
+            if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/Farm"))
             {
                 changeMails(data);
             }
-            else if (asset.AssetNameEquals("Data/Events/Beach"))
+            else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/Beach"))
             {
-                if (data.ContainsKey("43/f Elliott 2500/w sunny/t 700 1300"))
+                if (data.TryGetValue("43/f Elliott 2500/w sunny/t 700 1300", out string oldScript))
                 {
-                    data.Add("43/f Elliott 2500 /D Elliott/w sunny /t 700 1300", data["43/f Elliott 2500/w sunny/t 700 1300"]);
+                    data.Add("43/f Elliott 2500 /D Elliott/w sunny /t 700 1300", oldScript);
                     data.Remove("43/f Elliott 2500/w sunny/t 700 1300");
                 }
             }
-            else if (asset.AssetNameEquals("Data/Events/Mine"))
+            else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/Mine"))
             {
-                if (data.ContainsKey("901756/f Abigail 2500/t 1700 2400/o Abigail"))
+                if (data.TryGetValue("901756/f Abigail 2500/t 1700 2400/o Abigail", out string oldScript))
                 {
-                    data.Add("901756/f Abigail 2500/D Abigail/t 1700 2400/o Abigail", data["901756/f Abigail 2500/t 1700 2400/o Abigail"]);
+                    data.Add("901756/f Abigail 2500/D Abigail/t 1700 2400/o Abigail", oldScript);
                     data.Remove("901756/f Abigail 2500/t 1700 2400/o Abigail");
                 }
             }
-            else if (asset.AssetNameEquals("Data/Events/HaleyHouse"))
+            else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/HaleyHouse"))
             {
-                if (data.ContainsKey("15/f Haley 2500/p Haley"))
+                if (data.TryGetValue("15/f Haley 2500/p Haley", out string oldScript))
                 {
-                    data.Add("15/f Haley 2500/D Haley/p Haley", data["15/f Haley 2500/p Haley"]);
+                    data.Add("15/f Haley 2500/D Haley/p Haley", oldScript);
                     data.Remove("15/f Haley 2500/p Haley");
                 }
             }
-            else if (asset.AssetNameEquals("Data/Events/Forest"))
+            else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/Forest"))
             {
-                if (data.ContainsKey("54/f Leah 2500/t 1100 1600/z winter"))
+                if (data.TryGetValue("54/f Leah 2500/t 1100 1600/z winter", out string oldScript))
                 {
-                    data.Add("54/f Leah 2500/D Leah/t 1100 1600/z winter", data["54/f Leah 2500/t 1100 1600/z winter"]);
+                    data.Add("54/f Leah 2500/D Leah/t 1100 1600/z winter", oldScript);
                     data.Remove("54/f Leah 2500/t 1100 1600/z winter");
                 }
             }
-            else if (asset.AssetNameEquals("Data/Events/ScienceHouse"))
+            else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/ScienceHouse"))
             {
-                if (data.ContainsKey("10/f Maru 2500/t 900 1600"))
+                if (data.TryGetValue("10/f Maru 2500/t 900 1600", out string oldScript))
                 {
-                    data.Add("10/f Maru 2500/D Maru/t 900 1600", data["10/f Maru 2500/t 900 1600"]);
+                    data.Add("10/f Maru 2500/D Maru/t 900 1600", oldScript);
                     data.Remove("10/f Maru 2500/t 900 1600");
                 }
             }
-            else if (asset.AssetNameEquals("Data/Events/Mountain"))
+            else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/Mountain"))
             {
-                if (data.ContainsKey("384882/f Sebastian 2500/t 2000 2400"))
+                if (data.TryGetValue("384882/f Sebastian 2500/t 2000 2400", out string oldScript))
                 {
-                    data.Add("384882/f Sebastian 2500/D Sebastian/t 2000 2400", data["384882/f Sebastian 2500/t 2000 2400"]);
+                    data.Add("384882/f Sebastian 2500/D Sebastian/t 2000 2400", oldScript);
                     data.Remove("384882/f Sebastian 2500/t 2000 2400");
                 }
             }
@@ -82,36 +82,20 @@ namespace PlatonicRelationships.Framework
 
         public void changeMails(IDictionary<string, string> data)
         {
-            if (data.ContainsKey("2346094/f Elliott 2502/x elliottBoat"))
-            {
-                data.Remove("2346094/f Elliott 2502/x elliottBoat");
+            if (data.Remove("2346094/f Elliott 2502/x elliottBoat"))
                 data.Add("2346094/f Elliott 2502/D Elliott/x elliottBoat", "null");
-            }
 
-            if (data.ContainsKey("2346093/f Harvey 2502/x harveyBalloon"))
-            {
-                data.Remove("2346093/f Harvey 2502/x harveyBalloon");
+            if (data.Remove("2346093/f Harvey 2502/x harveyBalloon"))
                 data.Add("2346093/f Harvey 2502/D Harvey/x harveyBalloon", "null");
-            }
 
-            if (data.ContainsKey("2346092/f Sam 2502/x samMessage"))
-            {
-                data.Remove("2346092/f Sam 2502/x samMessage");
+            if (data.Remove("2346092/f Sam 2502/x samMessage"))
                 data.Add("2346092/f Sam 2502/D Sam/x samMessage", "null");
-            }
 
-            if (data.ContainsKey("2346091/f Alex 2502/x joshMessage"))
-            {
-                data.Remove("2346091/f Alex 2502/x joshMessage");
+            if (data.Remove("2346091/f Alex 2502/x joshMessage"))
                 data.Add("2346091/f Alex 2502/D Alex/x joshMessage", "null");
-            }
 
-            if (data.ContainsKey("2346096/f Penny 2505/x pennySpa"))
-            {
-                data.Remove("2346096/f Penny 2505/x pennySpa");
+            if (data.Remove("2346096/f Penny 2505/x pennySpa"))
                 data.Add("2346096/f Penny 2505/D Penny/x pennySpa", "null");
-            }
         }
-
     }
 }

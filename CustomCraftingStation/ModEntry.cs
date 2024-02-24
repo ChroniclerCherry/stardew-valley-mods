@@ -180,7 +180,7 @@ namespace CustomCraftingStation
                     continue;
                 }
 
-                ContentPack contentPack = pack.LoadAsset<ContentPack>("content.json");
+                ContentPack contentPack = pack.ModContent.Load<ContentPack>("content.json");
 
                 RegisterCraftingStations(contentPack.CraftingStations);
             }

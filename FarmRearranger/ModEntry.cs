@@ -9,7 +9,7 @@ using xTile.Dimensions;
 
 namespace FarmRearranger
 {
-    class ModEntry : Mod, IAssetEditor
+    class ModEntry : Mod
     {
         private bool isArranging = false;
 
@@ -29,6 +29,7 @@ namespace FarmRearranger
             this.Config = this.Helper.ReadConfig<ModConfig>();
 
             //all the events
+            helper.Events.Content.AssetRequested += OnAssetRequested;
             helper.Events.GameLoop.UpdateTicking += GameLoop_UpdateTicking;
             helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
             helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
@@ -172,6 +173,18 @@ namespace FarmRearranger
             }
         }
 
+        private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+        {
+            if (e.NameWithoutLocale.IsEquivalentTo("Data/mail"))
+            {
+                e.Edit(asset =>
+                {
+                    var data = asset.AsDictionary<string, string>().Data;
+                    data["FarmRearrangerMail"] = Helper.Translation.Get("robinletter");
+                });
+            }
+        }
+
         /// <summary>
         /// Brings up the menu to move the building
         /// </summary>
@@ -202,28 +215,6 @@ namespace FarmRearranger
 
             Helper.Reflection.GetField<bool>(menu, "onFarm").SetValue(true);
             Helper.Reflection.GetField<bool>(menu, "moving").SetValue(true);
-        }
-
-        /// <summary>
-        /// We ony edit the mail
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="asset"></param>
-        /// <returns></returns>
-        public bool CanEdit<T>(IAssetInfo asset)
-        {
-            return asset.AssetNameEquals("Data\\mail");
-        }
-
-        /// <summary>
-        /// Adds the letter to mail.xnb from the i18n translations
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="asset"></param>
-        public void Edit<T>(IAssetData asset)
-        {
-            asset.AsDictionary<string, string>().Data["FarmRearrangerMail"]
-                = Helper.Translation.Get("robinletter"); ;
         }
     }
 }
