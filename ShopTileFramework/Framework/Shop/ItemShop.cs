@@ -103,25 +103,17 @@ namespace ShopTileFramework.Framework.Shop
                     break;
             }
 
-            var shopMenu = new ShopMenu(StockManager.ItemPriceAndStock, currency: currency);
+            string shopId = $"{this.ContentPack.Manifest.UniqueID}_{ShopName}";
+            var shopMenu = new ShopMenu(shopId, StockManager.ItemPriceAndStock, currency: currency)
+            {
+                portraitTexture = _portrait
+            };
 
             if (CategoriesToSellHere != null)
                 shopMenu.categoriesToSellHere = CategoriesToSellHere;
 
-            if (_portrait != null)
-            {
-                shopMenu.portraitPerson = new NPC();
-                //only add a shop name the first time store is open each day so that items added from JA's side are only added once
-                if (!_shopOpenedToday)
-                    shopMenu.portraitPerson.Name = "STF." + ShopName;
-
-                shopMenu.portraitPerson.Portrait = _portrait;
-            }
-
             if (Quote != null)
-            {
                 shopMenu.potraitPersonDialogue = Game1.parseText(Quote, Game1.dialogueFont, 304);
-            }
 
             Game1.activeClickableMenu = shopMenu;
             _shopOpenedToday = true;

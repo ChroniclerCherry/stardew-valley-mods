@@ -91,7 +91,7 @@ namespace ShopTileFramework.Framework.API
         /// </summary>
         /// <param name="shopName">The name of the shop</param>
         /// <returns>The ItemPriceAndStock of the given store if found, null otherwise</returns>
-        public Dictionary<ISalable, int[]> GetItemPriceAndStock(string shopName)
+        public Dictionary<ISalable, ItemStockInformation> GetItemPriceAndStock(string shopName)
         {
             //gets the ItemStockAndPrice of the given ShopName
             ShopManager.ItemShops.TryGetValue(shopName, out var shop);

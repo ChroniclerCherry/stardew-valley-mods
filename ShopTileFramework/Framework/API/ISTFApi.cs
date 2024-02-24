@@ -11,6 +11,6 @@ namespace ShopTileFramework.Framework.API
         bool RegisterShops(string dir);
         bool OpenItemShop(string shopName);
         bool ResetShopStock(string shopName);
-        Dictionary<ISalable, int[]> GetItemPriceAndStock(string shopName);
+        Dictionary<ISalable, ItemStockInformation> GetItemPriceAndStock(string shopName);
     }
 }

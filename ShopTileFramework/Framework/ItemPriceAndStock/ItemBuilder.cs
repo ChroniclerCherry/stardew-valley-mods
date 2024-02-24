@@ -1,10 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using ShopTileFramework.Framework.Utility;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Objects;
 using StardewValley.Tools;
 using System.Collections.Generic;
+using Object = StardewValley.Object;
 
 namespace ShopTileFramework.Framework.ItemPriceAndStock
 {
@@ -14,7 +16,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
     /// </summary>
     class ItemBuilder
     {
-        private Dictionary<ISalable, int[]> _itemPriceAndStock;
+        private Dictionary<ISalable, ItemStockInformation> _itemPriceAndStock;
         private readonly ItemStock _itemStock;
 
         public ItemBuilder(ItemStock itemStock)
@@ -23,7 +25,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         }
 
         /// <param name="itemPriceAndStock">the ItemPriceAndStock this builder will add items to</param>
-        public void SetItemPriceAndStock(Dictionary<ISalable, int[]> itemPriceAndStock)
+        public void SetItemPriceAndStock(Dictionary<ISalable, ItemStockInformation> itemPriceAndStock)
         {
             this._itemPriceAndStock = itemPriceAndStock;
         }
@@ -127,27 +129,19 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// <param name="item">An instance of the item</param>
         /// <param name="priceMultiplier"></param>
         /// <returns>The array that's the second parameter in ItemPriceAndStock</returns>
-        private int[] GetPriceStockAndCurrency(ISalable item, double priceMultiplier)
+        private ItemStockInformation GetPriceStockAndCurrency(ISalable item, double priceMultiplier)
         {
-            int[] priceStockCurrency;
             //if no price is provided, use the item's sale price multiplied by defaultSellPriceMultiplier
-            var price = (_itemStock.StockPrice == -1) ? (int)(item.salePrice()* _itemStock.DefaultSellPriceMultiplier) : _itemStock.StockPrice;
-            price = (int)(price*priceMultiplier);
+            int price = _itemStock.StockPrice == -1
+                ? (int)(item.salePrice() * _itemStock.DefaultSellPriceMultiplier)
+                : _itemStock.StockPrice;
+            price = (int)(price * priceMultiplier);
 
-            if (_itemStock.CurrencyObjectId == -1) // no currency item
-            {
-                priceStockCurrency = new[] { price, _itemStock.Stock };
-            }
-            else if (_itemStock.StockCurrencyStack == -1) //no stack provided for currency item so defaults to 1
-            {
-                priceStockCurrency = new[] { price, _itemStock.Stock, _itemStock.CurrencyObjectId };
-            }
-            else //both currency item and stack provided
-            {
-                priceStockCurrency = new[] { price, _itemStock.Stock, _itemStock.CurrencyObjectId, _itemStock.StockCurrencyStack };
-            }
+            int? currencyObjectStack = _itemStock.CurrencyObjectId != null
+                ? Math.Max(_itemStock.StockCurrencyStack, 1)
+                : null;
 
-            return priceStockCurrency;
+            return new ItemStockInformation(price, _itemStock.Stock, _itemStock.CurrencyObjectId, currencyObjectStack);
         }
     }
 }

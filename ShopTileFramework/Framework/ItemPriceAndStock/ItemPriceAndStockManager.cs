@@ -1,6 +1,5 @@
 ﻿using ShopTileFramework.Framework.Shop;
 using ShopTileFramework.Framework.Utility;
-using StardewModdingAPI;
 using StardewValley;
 using System.Collections.Generic;
 
@@ -11,7 +10,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
     /// </summary>
     class ItemPriceAndStockManager
     {
-        public Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
+        public Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock { get; set; }
         private readonly ItemStock[] _itemStocks;
         private readonly double _defaultSellPriceMultipler;
         private readonly Dictionary<double, string[]> _priceMultiplierWhen;
@@ -56,13 +55,13 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// </summary>
         public void Update()
         {
-            ItemPriceAndStock = new Dictionary<ISalable, int[]>();
+            ItemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
             ModEntry.monitor.Log($"Updating {_shopName}");
 
             foreach (ItemStock stock in _itemStocks)
             {
                 var priceAndStock = stock.Update();
-                //null is returned if conhditions aren't met, skip adding this stock
+                //null is returned if conditions aren't met, skip adding this stock
                 if (priceAndStock == null) 
                     continue;
 
@@ -78,7 +77,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// Adds the stock from each ItemStock to the overall inventory
         /// </summary>
         /// <param name="dict"></param>
-        private void Add(Dictionary<ISalable, int[]> dict)
+        private void Add(Dictionary<ISalable, ItemStockInformation> dict)
         {
             foreach (var kvp in dict)
             {

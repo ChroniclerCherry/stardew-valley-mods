@@ -205,13 +205,13 @@ namespace FarmRearranger
 
             //open the carpenter menu then do everything that is normally done
             //when the move buildings option is clicked
-            var menu = new CarpenterMenu();
+            var menu = new CarpenterMenu(Game1.builder_robin);
             Game1.activeClickableMenu = menu;
-            Game1.globalFadeToBlack(new Game1.afterFadeFunction(menu.setUpForBuildingPlacement), 0.02f);
+            Game1.globalFadeToBlack(menu.setUpForBuildingPlacement);
             Game1.playSound("smallSelect");
 
-            Helper.Reflection.GetField<bool>(menu, "onFarm").SetValue(true);
-            Helper.Reflection.GetField<bool>(menu, "moving").SetValue(true);
+            menu.onFarm = true;
+            menu.moving = true;
         }
     }
 }

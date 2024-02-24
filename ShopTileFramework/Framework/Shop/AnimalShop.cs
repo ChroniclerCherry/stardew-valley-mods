@@ -33,7 +33,7 @@ namespace ShopTileFramework.Framework.Shop
         private void UpdateShopAnimalStock()
         {
             //BFAV patches this anyways so it'll automatically work if installed
-            _allAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock();
+            _allAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock(Game1.getFarm());
 
             _shopAnimalStock = new List<Object>();
             foreach (var animal in _allAnimalsStock)

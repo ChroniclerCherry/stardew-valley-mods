@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HarmonyLib;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.Internal;
 using StardewValley.Tools;
 using ToolUpgradeCosts.Framework;
 
@@ -33,17 +33,9 @@ namespace ToolUpgradeCosts
             Harmony harmony = new Harmony(ModManifest.UniqueID);
 
 			harmony.Patch(
-                AccessTools.Method(typeof(Utility), "priceForToolUpgradeLevel"), 
-                new HarmonyMethod(typeof(ModEntry), nameof(Utility_priceForToolUpgradeLevel_prefix))
-                );
-			harmony.Patch(
-                AccessTools.Method(typeof(Utility), "indexOfExtraMaterialForToolUpgrade"), 
-                new HarmonyMethod(typeof(ModEntry), nameof(Utility_indexOfExtraMaterialForToolUpgrade_prefix))
-                );
-			harmony.Patch(
-                AccessTools.Method(typeof(Utility), "getBlacksmithUpgradeStock"),
-                postfix:new HarmonyMethod(typeof(ModEntry), nameof(Utility_getBlacksmithUpgradeStock_postfix))
-                );
+                AccessTools.Method(typeof(ShopBuilder), nameof(ShopBuilder.GetShopStock)),
+                postfix:new HarmonyMethod(typeof(ModEntry), nameof(ShopBuilder_GetShopStock_Postfix))
+            );
 		}
 
 		private void GetIndexes(object sender, SaveLoadedEventArgs e)
@@ -61,72 +53,40 @@ namespace ToolUpgradeCosts
 			}
 		}
 
-		public static bool Utility_priceForToolUpgradeLevel_prefix(int level, ref int __result)
+		public static void ShopBuilder_GetShopStock_Postfix(string shopId, ref Dictionary<ISalable, ItemStockInformation> __result)
 		{
-			try
-			{
-				if (Enum.IsDefined(typeof(UpgradeMaterials), level))
-				{
-					__result = _instance._config.UpgradeCosts[(UpgradeMaterials)level].Cost;
-					return false;
-				}
-				return true;
-			}
-			catch (Exception ex)
-			{
-				_instance.Monitor.Log($"Failed in {nameof(Utility_priceForToolUpgradeLevel_prefix)}:\n{ex}", (LogLevel)4);
-				return true;
-			}
-		}
+			if (shopId != Game1.shop_blacksmithUpgrades)
+				return;
 
-		public static bool Utility_indexOfExtraMaterialForToolUpgrade_prefix(int level, ref int __result)
-		{
 			try
 			{
-				if (Enum.IsDefined(typeof(UpgradeMaterials), level))
+				Dictionary<ISalable, ItemStockInformation> editedStock = new Dictionary<ISalable, ItemStockInformation>();
+				foreach ((ISalable item, ItemStockInformation stockInfo) in __result)
 				{
-					__result = _instance._config.UpgradeCosts[(UpgradeMaterials)level].MaterialIndex;
-					return false;
-				}
-				return true;
-			}
-			catch (Exception ex)
-			{
-                _instance.Monitor.Log($"Failed in {nameof(Utility_indexOfExtraMaterialForToolUpgrade_prefix)}:\n{ex}", (LogLevel)4);
-				return true;
-			}
-		}
-
-		public static void Utility_getBlacksmithUpgradeStock_postfix(ref Dictionary<ISalable, int[]> __result)
-		{
-			try
-			{
-				Dictionary<ISalable, int[]> editedStock = new Dictionary<ISalable, int[]>();
-				foreach (KeyValuePair<ISalable, int[]> kvp in __result)
-				{
-					ISalable key = kvp.Key;
-					Tool tool = key as Tool;
-					if (tool != null && Enum.IsDefined(typeof(UpgradeMaterials), tool.UpgradeLevel))
+					if (item is Tool tool && Enum.IsDefined(typeof(UpgradeMaterials), tool.UpgradeLevel))
 					{
-						int upgradeLvl = tool.UpgradeLevel;
-						List<int> stockAndPrice = kvp.Value.ToList();
+						UpgradeMaterials upgradeLevel = (UpgradeMaterials)tool.UpgradeLevel;
 						if (tool is GenericTool)
 						{
-							upgradeLvl++;
+							upgradeLevel++;
 						}
-						stockAndPrice.Add(_instance._config.UpgradeCosts[(UpgradeMaterials)upgradeLvl].MaterialStack);
-						editedStock.Add(kvp.Key, stockAndPrice.ToArray());
+						editedStock[tool] = stockInfo with
+						{
+							Price = _instance._config.UpgradeCosts[upgradeLevel].Cost,
+							TradeItem = _instance._config.UpgradeCosts[upgradeLevel].MaterialIndex,
+							TradeItemCount = _instance._config.UpgradeCosts[upgradeLevel].MaterialStack
+						};
 					}
 					else
 					{
-						editedStock.Add(kvp);
+						editedStock[item] = stockInfo;
 					}
 				}
 				__result = editedStock;
 			}
 			catch (Exception ex)
 			{
-                _instance.Monitor.Log($"Failed in {nameof(Utility_indexOfExtraMaterialForToolUpgrade_prefix)}:\n{ex}", (LogLevel)4);
+                _instance.Monitor.Log($"Failed in {nameof(ShopBuilder_GetShopStock_Postfix)}:\n{ex}", LogLevel.Error);
 			}
 		}
     }

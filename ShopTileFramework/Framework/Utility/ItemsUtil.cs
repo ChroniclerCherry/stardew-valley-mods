@@ -56,13 +56,12 @@ namespace ShopTileFramework.Framework.Utility
         /// </summary>
         /// <param name="inventory">the ItemPriceAndStock</param>
         /// <param name="maxNum">The maximum number of items we want for this stock</param>
-        public static void RandomizeStock(Dictionary<ISalable, int[]> inventory, int maxNum)
+        public static void RandomizeStock(Dictionary<ISalable, ItemStockInformation> inventory, int maxNum)
         {
             while (inventory.Count > maxNum)
             {
                 inventory.Remove(inventory.Keys.ElementAt(Game1.random.Next(inventory.Count)));
             }
-
         }
 
         /// <summary>
@@ -207,7 +206,7 @@ namespace ShopTileFramework.Framework.Utility
             }
         }
 
-        public static Dictionary<ISalable, int[]> RemoveSpecifiedJAPacks(Dictionary<ISalable, int[]> stock)
+        public static Dictionary<ISalable, ItemStockInformation> RemoveSpecifiedJAPacks(Dictionary<ISalable, ItemStockInformation> stock)
         {
             List<ISalable> removeItems = (stock.Keys.Where(item => ItemsToRemove.Contains(item.Name))).ToList();
             
@@ -219,9 +218,9 @@ namespace ShopTileFramework.Framework.Utility
             return stock;
         }
 
-        public static void RemoveSoldOutItems(Dictionary<ISalable, int[]> stock)
+        public static void RemoveSoldOutItems(Dictionary<ISalable, ItemStockInformation> stock)
         {
-            List<ISalable> keysToRemove = (stock.Where(kvp => kvp.Value[1] == 0).Select(kvp => kvp.Key)).ToList();
+            ISalable[] keysToRemove = stock.Where(kvp => kvp.Value.Stock == 0).Select(kvp => kvp.Key).ToArray();
             foreach (ISalable item in keysToRemove)
                 stock.Remove(item);
         }

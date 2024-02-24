@@ -14,7 +14,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
     /// </summary>
     class ItemStock : ItemStockModel
     {
-        internal int CurrencyObjectId;
+        internal string CurrencyObjectId;
         internal double DefaultSellPriceMultiplier;
         internal Dictionary<double, string[]> PriceMultiplierWhen;
         internal string ShopName;
@@ -22,7 +22,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         private Dictionary<double, string[]> _priceMultiplierWhen;
 
         private ItemBuilder _builder;
-        private Dictionary<ISalable, int[]> _itemPriceAndStock;
+        private Dictionary<ISalable, ItemStockInformation> _itemPriceAndStock;
 
         /// <summary>
         /// Initialize the ItemStock, doing error checking on the quality, and setting the price to the store price
@@ -64,10 +64,8 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// Resets the items of this item stock, with condition checks and randomization
         /// </summary>
         /// <returns></returns>
-        public Dictionary<ISalable, int[]> Update()
+        public Dictionary<ISalable, ItemStockInformation> Update()
         {
-
-
             if (When != null && !APIs.Conditions.CheckConditions(When))
                 return null; //did not pass conditions
 
@@ -78,7 +76,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
                 return null;
             }
 
-            _itemPriceAndStock = new Dictionary<ISalable, int[]>();
+            _itemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
             _builder.SetItemPriceAndStock(_itemPriceAndStock);
 
             double pricemultiplier = 1;

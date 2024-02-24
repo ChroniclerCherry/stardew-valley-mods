@@ -111,7 +111,7 @@ namespace ShopTileFramework
             {
                 //close the current menu to open our own	
                 Game1.exitActiveMenu();
-                var allAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock();
+                var allAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock(Game1.getFarm());
                 _changedMarnieStock = true;
 
                 //removes all animals on the exclusion list
@@ -258,8 +258,7 @@ namespace ShopTileFramework
             if (shopProperty != null) //There was a `Shop` property so attempt to open shop
             {
                 //check if the property is for a vanilla shop, and gets the shopmenu for that shop if it exists
-                IClickableMenu menu = TileUtility.CheckVanillaShop(shopProperty, out bool warpingShop);
-                if (menu != null)
+                if (TileUtility.TryOpenVanillaShop(shopProperty, out bool warpingShop))
                 {
                     if (warpingShop)
                     {
@@ -269,8 +268,6 @@ namespace ShopTileFramework
 
                     //stop the click action from going through after the menu has been opened
                     helper.Input.Suppress(e.Button);
-                    Game1.activeClickableMenu = menu;
-
                 }
                 else //no vanilla shop found
                 {
@@ -285,8 +282,7 @@ namespace ShopTileFramework
                     }
                     else
                     {
-                        Monitor.Log($"A Shop tile was clicked, but a shop by the name \"{shopName}\" " +
-                            $"was not found.", LogLevel.Debug);
+                        Monitor.Log($"A Shop tile was clicked, but a shop by the name \"{shopName}\" could not be opened.", LogLevel.Debug);
                     }
                 }
             }

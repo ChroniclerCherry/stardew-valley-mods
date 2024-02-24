@@ -3,14 +3,13 @@ using ShopTileFramework.Framework.ItemPriceAndStock;
 using StardewModdingAPI;
 using StardewValley;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ShopTileFramework.Framework.Shop
 {
     class VanillaShop : VanillaShopModel
     {
         public List<ItemPriceAndStockManager> StockManagers { get; set; }
-        public Dictionary<ISalable, int[]> ItemPriceAndStock { get; set; }
+        public Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock { get; set; }
         public IContentPack ContentPack { set; get; }
         public void Initialize()
         {
@@ -19,12 +18,14 @@ namespace ShopTileFramework.Framework.Shop
 
         public void UpdateItemPriceAndStock()
         {
-            ItemPriceAndStock = new Dictionary<ISalable, int[]>();
+            ItemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
             ModEntry.monitor.Log($"Generating stock for {ShopName}", LogLevel.Debug);
-            foreach(ItemPriceAndStockManager manager in StockManagers)
+            foreach (ItemPriceAndStockManager manager in StockManagers)
             {
                 manager.Update();
-                ItemPriceAndStock = ItemPriceAndStock.Concat(manager.ItemPriceAndStock).ToDictionary(x => x.Key, x => x.Value);
+
+                foreach ((ISalable item, ItemStockInformation stockInfo) in manager.ItemPriceAndStock)
+                    ItemPriceAndStock[item] = stockInfo;
             }
         }
     }

@@ -24,7 +24,7 @@ namespace CustomizeAnywhere.Framework
         public List<ISalable> forSale = new List<ISalable>();
         public List<ClickableComponent> forSaleButtons = new List<ClickableComponent>();
         public List<int> categoriesToSellHere = new List<int>();
-        public Dictionary<ISalable, int[]> itemPriceAndStock = new Dictionary<ISalable, int[]>();
+        public Dictionary<ISalable, ItemStockInformation> itemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
         private float sellPercentage = 1f;
         private List<TemporaryAnimatedSprite> animations = new List<TemporaryAnimatedSprite>();
         public int hoverPrice = -1;
@@ -113,20 +113,16 @@ namespace CustomizeAnywhere.Framework
             this.snapToDefaultClickableComponent();
         }
 
-        private Dictionary<ISalable, int[]> getClothingItems()
+        private Dictionary<ISalable, ItemStockInformation> getClothingItems()
         {
-            Dictionary<ISalable, int[]> itemPriceAndStock = new Dictionary<ISalable, int[]>();
+            Dictionary<ISalable, ItemStockInformation> itemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
 
             //add Clothing
             foreach (KeyValuePair<int, string> keyValuePair in (IEnumerable<KeyValuePair<int, string>>)Game1.clothingInformation)
             {
                 try
                 {
-                    itemPriceAndStock.Add((ISalable)new Clothing(keyValuePair.Key), new int[2]
-                    {
-                        0,
-                        int.MaxValue
-                    });
+                    itemPriceAndStock.Add(new Clothing(keyValuePair.Key), new ItemStockInformation(0, int.MaxValue));
                 }
                 catch (Exception ex)
                 {
@@ -139,11 +135,7 @@ namespace CustomizeAnywhere.Framework
             {
                 try
                 {
-                    itemPriceAndStock.Add((ISalable)new Hat(keyValuePair.Key), new int[2]
-                    {
-                  0,
-                  int.MaxValue
-                    });
+                    itemPriceAndStock.Add(new Hat(keyValuePair.Key), new ItemStockInformation(0, int.MaxValue));
                 }
                 catch (Exception ex)
                 {
@@ -437,7 +429,7 @@ namespace CustomizeAnywhere.Framework
                     int index2 = this.currentItemIndex + index1;
                     if (this.forSale[index2] != null)
                     {
-                        int numberToBuy = Math.Min(Game1.oldKBState.IsKeyDown(Keys.LeftShift) ? Math.Min(Math.Min(5, ShopMenu.getPlayerCurrencyAmount(Game1.player, this.currency) / Math.Max(1, this.itemPriceAndStock[this.forSale[index2]][0])), Math.Max(1, this.itemPriceAndStock[this.forSale[index2]][1])) : 1, this.forSale[index2].maximumStackSize());
+                        int numberToBuy = Math.Min(Game1.oldKBState.IsKeyDown(Keys.LeftShift) ? Math.Min(Math.Min(5, ShopMenu.getPlayerCurrencyAmount(Game1.player, this.currency) / Math.Max(1, this.itemPriceAndStock[this.forSale[index2]].Price)), Math.Max(1, this.itemPriceAndStock[this.forSale[index2]].Stock)) : 1, this.forSale[index2].maximumStackSize());
                         if (numberToBuy == -1)
                             numberToBuy = 1;
                         if (this.canPurchaseCheck != null && !this.canPurchaseCheck(index2))
@@ -452,7 +444,7 @@ namespace CustomizeAnywhere.Framework
                             Game1.dayTimeMoneyBox.moneyShakeTimer = 1000;
                             Game1.playSound("cancel");
                         }
-                        if (this.heldItem != null && (this._isStorageShop || Game1.options.SnappyMenus || Game1.oldKBState.IsKeyDown(Keys.LeftShift) && this.heldItem.maximumStackSize() == 1) && (Game1.activeClickableMenu != null && Game1.activeClickableMenu is ShopMenu && Game1.player.addItemToInventoryBool(this.heldItem as Item, false)))
+                        if (this.heldItem != null && (this._isStorageShop || Game1.options.SnappyMenus || Game1.oldKBState.IsKeyDown(Keys.LeftShift) && this.heldItem.maximumStackSize() == 1) && (Game1.activeClickableMenu is ShopMenu && Game1.player.addItemToInventoryBool(this.heldItem as Item, false)))
                         {
                             this.heldItem = (ISalable)null;
                             DelayedAction.playSoundAfterDelay("coin", 100, (GameLocation)null, -1);
@@ -576,28 +568,31 @@ namespace CustomizeAnywhere.Framework
         {
             if (held_item == null)
             {
-                if (this.itemPriceAndStock[item][1] == 0)
+                if (this.itemPriceAndStock[item].Stock == 0)
                 {
                     this.hoveredItem = (ISalable)null;
                     return true;
                 }
                 if (item.GetSalableInstance().maximumStackSize() < numberToBuy)
                     numberToBuy = Math.Max(1, item.GetSalableInstance().maximumStackSize());
-                int amount = this.itemPriceAndStock[item][0] * numberToBuy;
-                int num1 = -1;
-                int num2 = 5;
-                if (this.itemPriceAndStock[item].Length > 2)
-                {
-                    num1 = this.itemPriceAndStock[item][2];
-                    if (this.itemPriceAndStock[item].Length > 3)
-                        num2 = this.itemPriceAndStock[item][3];
-                    num2 *= numberToBuy;
-                }
-                if (ShopMenu.getPlayerCurrencyAmount(Game1.player, this.currency) >= amount && (num1 == -1 || Game1.player.hasItemInInventory(num1, num2, 0)))
+                int amount = this.itemPriceAndStock[item].Price * numberToBuy;
+
+                // this code broke in Stardew Valley 1.6, but it's redundant anyway since the
+                // dresser doesn't have item trade prices.
+                //int num1 = -1;
+                //int num2 = 5;
+                //if (this.itemPriceAndStock[item].Length > 2)
+                //{
+                //    num1 = this.itemPriceAndStock[item][2];
+                //    if (this.itemPriceAndStock[item].Length > 3)
+                //        num2 = this.itemPriceAndStock[item][3];
+                //    num2 *= numberToBuy;
+                //}
+                if (ShopMenu.getPlayerCurrencyAmount(Game1.player, this.currency) >= amount /*&& (num1 == -1 || Game1.player.hasItemInInventory(num1, num2, 0))*/)
                 {
                     this.heldItem = item.GetSalableInstance();
                     this.heldItem.Stack = numberToBuy;
-                    if (this.itemPriceAndStock[item][1] == int.MaxValue && item.Stack != int.MaxValue)
+                    if (this.itemPriceAndStock[item].Stock == int.MaxValue && item.Stack != int.MaxValue)
                         this.heldItem.Stack *= item.Stack;
                     if (!this.heldItem.CanBuyItem(Game1.player) && !item.IsInfiniteStock() && (!(this.heldItem is StardewValley.Object) || !(bool)((NetFieldBase<bool, NetBool>)(this.heldItem as StardewValley.Object).isRecipe)))
                     {
@@ -605,15 +600,16 @@ namespace CustomizeAnywhere.Framework
                         this.heldItem = (ISalable)null;
                         return false;
                     }
-                    if (this.itemPriceAndStock[item][1] != int.MaxValue && !item.IsInfiniteStock())
+                    if (this.itemPriceAndStock[item].Stock != int.MaxValue && !item.IsInfiniteStock())
                     {
-                        this.itemPriceAndStock[item][1] -= numberToBuy;
+                        var stockInfo = this.itemPriceAndStock[item];
+                        this.itemPriceAndStock[item] = stockInfo with { Stock = stockInfo.Stock - numberToBuy };
                         this.forSale[indexInForSaleList].Stack -= numberToBuy;
                     }
                     ShopMenu.chargePlayer(Game1.player, this.currency, amount);
-                    if (num1 != -1)
-                        Game1.player.removeItemsFromInventory(num1, num2);
-                    if (item.actionWhenPurchased())
+                    //if (num1 != -1)
+                    //    Game1.player.removeItemsFromInventory(num1, num2);
+                    if (item.actionWhenPurchased(GetShopMenuContext()))
                     {
                         if (this.heldItem is StardewValley.Object && (bool)((NetFieldBase<bool, NetBool>)(this.heldItem as StardewValley.Object).isRecipe))
                         {
@@ -654,16 +650,16 @@ namespace CustomizeAnywhere.Framework
                 numberToBuy = Math.Min(numberToBuy, held_item.maximumStackSize() - held_item.Stack);
                 if (numberToBuy > 0)
                 {
-                    int amount = this.itemPriceAndStock[item][0] * numberToBuy;
-                    int num1 = -1;
-                    int num2 = 5;
-                    if (this.itemPriceAndStock[item].Length > 2)
-                    {
-                        num1 = this.itemPriceAndStock[item][2];
-                        if (this.itemPriceAndStock[item].Length > 3)
-                            num2 = this.itemPriceAndStock[item][3];
-                        num2 *= numberToBuy;
-                    }
+                    int amount = this.itemPriceAndStock[item].Price * numberToBuy;
+                    //int num1 = -1;
+                    //int num2 = 5;
+                    //if (this.itemPriceAndStock[item].Length > 2)
+                    //{
+                    //    num1 = this.itemPriceAndStock[item][2];
+                    //    if (this.itemPriceAndStock[item].Length > 3)
+                    //        num2 = this.itemPriceAndStock[item][3];
+                    //    num2 *= numberToBuy;
+                    //}
                     int stack = item.Stack;
                     item.Stack = numberToBuy + this.heldItem.Stack;
                     if (!item.CanBuyItem(Game1.player))
@@ -673,15 +669,16 @@ namespace CustomizeAnywhere.Framework
                         return false;
                     }
                     item.Stack = stack;
-                    if (ShopMenu.getPlayerCurrencyAmount(Game1.player, this.currency) >= amount && (num1 == -1 || Game1.player.hasItemInInventory(num1, num2, 0)))
+                    if (ShopMenu.getPlayerCurrencyAmount(Game1.player, this.currency) >= amount /*&& (num1 == -1 || Game1.player.hasItemInInventory(num1, num2, 0))*/)
                     {
                         int num3 = numberToBuy;
-                        if (this.itemPriceAndStock[item][1] == int.MaxValue && item.Stack != int.MaxValue)
+                        if (this.itemPriceAndStock[item].Stock == int.MaxValue && item.Stack != int.MaxValue)
                             num3 *= item.Stack;
                         this.heldItem.Stack += num3;
-                        if (this.itemPriceAndStock[item][1] != int.MaxValue && !item.IsInfiniteStock())
+                        if (this.itemPriceAndStock[item].Stock != int.MaxValue && !item.IsInfiniteStock())
                         {
-                            this.itemPriceAndStock[item][1] -= numberToBuy;
+                            var stockInfo = this.itemPriceAndStock[item];
+                            this.itemPriceAndStock[item] = stockInfo with { Stock = stockInfo.Stock - numberToBuy };
                             this.forSale[indexInForSaleList].Stack -= numberToBuy;
                         }
                         ShopMenu.chargePlayer(Game1.player, this.currency, amount);
@@ -692,9 +689,9 @@ namespace CustomizeAnywhere.Framework
                         }
                         else if (this.purchaseSound != null)
                             Game1.playSound(this.purchaseSound);
-                        if (num1 != -1)
-                            Game1.player.removeItemsFromInventory(num1, num2);
-                        if (item.actionWhenPurchased())
+                        //if (num1 != -1)
+                        //    Game1.player.removeItemsFromInventory(num1, num2);
+                        if (item.actionWhenPurchased(GetShopMenuContext()))
                             this.heldItem = (ISalable)null;
                         if (this.onPurchase != null && this.onPurchase(item, Game1.player, numberToBuy))
                             this.exitThisMenu(true);
@@ -706,7 +703,7 @@ namespace CustomizeAnywhere.Framework
                     }
                 }
             }
-            if (this.itemPriceAndStock[item][1] > 0)
+            if (this.itemPriceAndStock[item].Stock > 0)
                 return false;
             this.hoveredItem = (ISalable)null;
             return true;
@@ -779,8 +776,8 @@ namespace CustomizeAnywhere.Framework
                     if (this.forSale[index2] == null)
                         break;
                     int numberToBuy = 1;
-                    if (this.itemPriceAndStock[this.forSale[index2]][0] > 0)
-                        numberToBuy = Game1.oldKBState.IsKeyDown(Keys.LeftShift) ? Math.Min(Math.Min(5, ShopMenu.getPlayerCurrencyAmount(Game1.player, this.currency) / this.itemPriceAndStock[this.forSale[index2]][0]), this.itemPriceAndStock[this.forSale[index2]][1]) : 1;
+                    if (this.itemPriceAndStock[this.forSale[index2]].Price > 0)
+                        numberToBuy = Game1.oldKBState.IsKeyDown(Keys.LeftShift) ? Math.Min(Math.Min(5, ShopMenu.getPlayerCurrencyAmount(Game1.player, this.currency) / this.itemPriceAndStock[this.forSale[index2]].Price), this.itemPriceAndStock[this.forSale[index2]].Stock) : 1;
                     if (this.canPurchaseCheck != null && !this.canPurchaseCheck(index2))
                         break;
                     if (numberToBuy > 0 && this.tryToPurchaseItem(this.forSale[index2], this.heldItem, numberToBuy, x, y, index2))
@@ -788,7 +785,7 @@ namespace CustomizeAnywhere.Framework
                         this.itemPriceAndStock.Remove(this.forSale[index2]);
                         this.forSale.RemoveAt(index2);
                     }
-                    if (this.heldItem != null && (this._isStorageShop || Game1.options.SnappyMenus) && (Game1.activeClickableMenu != null && Game1.activeClickableMenu is ShopMenu && Game1.player.addItemToInventoryBool(this.heldItem as Item, false)))
+                    if (this.heldItem != null && (this._isStorageShop || Game1.options.SnappyMenus) && (Game1.activeClickableMenu is ShopMenu && Game1.player.addItemToInventoryBool(this.heldItem as Item, false)))
                     {
                         this.heldItem = (ISalable)null;
                         DelayedAction.playSoundAfterDelay("coin", 100, (GameLocation)null, -1);
@@ -822,7 +819,7 @@ namespace CustomizeAnywhere.Framework
                         this.hoverText = key.getDescription();
                         this.boldTitleText = key.DisplayName;
                         if (!this._isStorageShop)
-                            this.hoverPrice = this.itemPriceAndStock == null || !this.itemPriceAndStock.ContainsKey(key) ? key.salePrice() : this.itemPriceAndStock[key][0];
+                            this.hoverPrice = this.itemPriceAndStock == null || !this.itemPriceAndStock.ContainsKey(key) ? key.salePrice() : this.itemPriceAndStock[key].Price;
                         this.hoveredItem = key;
                         this.forSaleButtons[index].scale = Math.Min(this.forSaleButtons[index].scale + 0.03f, 1.1f);
                     }
@@ -897,15 +894,15 @@ namespace CustomizeAnywhere.Framework
 
         private int getHoveredItemExtraItemIndex()
         {
-            if (this.itemPriceAndStock != null && this.hoveredItem != null && (this.itemPriceAndStock.ContainsKey(this.hoveredItem) && this.itemPriceAndStock[this.hoveredItem].Length > 2))
-                return this.itemPriceAndStock[this.hoveredItem][2];
+            //if (this.itemPriceAndStock != null && this.hoveredItem != null && (this.itemPriceAndStock.ContainsKey(this.hoveredItem) && this.itemPriceAndStock[this.hoveredItem].Length > 2))
+            //    return this.itemPriceAndStock[this.hoveredItem][2];
             return -1;
         }
 
         private int getHoveredItemExtraItemAmount()
         {
-            if (this.itemPriceAndStock != null && this.hoveredItem != null && (this.itemPriceAndStock.ContainsKey(this.hoveredItem) && this.itemPriceAndStock[this.hoveredItem].Length > 3))
-                return this.itemPriceAndStock[this.hoveredItem][3];
+            //if (this.itemPriceAndStock != null && this.hoveredItem != null && (this.itemPriceAndStock.ContainsKey(this.hoveredItem) && this.itemPriceAndStock[this.hoveredItem].Length > 3))
+            //    return this.itemPriceAndStock[this.hoveredItem][3];
             return 5;
         }
 
@@ -954,7 +951,7 @@ namespace CustomizeAnywhere.Framework
                 clickableComponent.upNeighborID = -99998;
         }
 
-        public void setItemPriceAndStock(Dictionary<ISalable, int[]> new_stock)
+        public void setItemPriceAndStock(Dictionary<ISalable, ItemStockInformation> new_stock)
         {
             this.itemPriceAndStock = new_stock;
             this.forSale = this.itemPriceAndStock.Keys.ToList<ISalable>();
@@ -978,9 +975,9 @@ namespace CustomizeAnywhere.Framework
                     IClickableMenu.drawTextureBox(b, Game1.mouseCursors, new Rectangle(384, 396, 15, 15), this.forSaleButtons[index1].bounds.X, this.forSaleButtons[index1].bounds.Y, this.forSaleButtons[index1].bounds.Width, this.forSaleButtons[index1].bounds.Height, !this.forSaleButtons[index1].containsPoint(Game1.getOldMouseX(), Game1.getOldMouseY()) || this.scrolling ? Color.White : Color.Wheat, 4f, false);
                     b.Draw(Game1.mouseCursors, new Vector2((float)(this.forSaleButtons[index1].bounds.X + 32 - 12), (float)(this.forSaleButtons[index1].bounds.Y + 24 - 4)), new Rectangle?(new Rectangle(296, 363, 18, 18)), Color.White, 0.0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
                     ISalable index2 = this.forSale[this.currentItemIndex + index1];
-                    int num1 = index2.Stack <= 1 || index2.Stack == int.MaxValue ? 0 : (this.itemPriceAndStock[index2][1] == int.MaxValue ? 1 : 0);
+                    int num1 = index2.Stack <= 1 || index2.Stack == int.MaxValue ? 0 : (this.itemPriceAndStock[index2].Stock == int.MaxValue ? 1 : 0);
                     StackDrawType drawStackNumber;
-                    if (this.itemPriceAndStock[index2][1] == int.MaxValue)
+                    if (this.itemPriceAndStock[index2].Stock == int.MaxValue)
                     {
                         drawStackNumber = StackDrawType.Hide;
                     }
@@ -995,24 +992,24 @@ namespace CustomizeAnywhere.Framework
                     if (num1 != 0)
                         s = s + " x" + (object)index2.Stack;
                     SpriteText.drawString(b, s, this.forSaleButtons[index1].bounds.X + 96 + 8, this.forSaleButtons[index1].bounds.Y + 28, 999999, -1, 999999, flag1 ? 0.5f : 1f, 0.88f, false, -1, "", -1, SpriteText.ScrollTextAlignment.Left);
-                    if (this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]][0] > 0)
+                    if (this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]].Price > 0)
                     {
-                        SpriteText.drawString(b, this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]][0].ToString() + " ", this.forSaleButtons[index1].bounds.Right - SpriteText.getWidthOfString(this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]][0].ToString() + " ", 999999) - 60, this.forSaleButtons[index1].bounds.Y + 28, 999999, -1, 999999, ShopMenu.getPlayerCurrencyAmount(Game1.player, this.currency) < this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]][0] || flag1 ? 0.5f : 1f, 0.88f, false, -1, "", -1, SpriteText.ScrollTextAlignment.Left);
+                        SpriteText.drawString(b, this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]].Price.ToString() + " ", this.forSaleButtons[index1].bounds.Right - SpriteText.getWidthOfString(this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]].Price.ToString() + " ", 999999) - 60, this.forSaleButtons[index1].bounds.Y + 28, 999999, -1, 999999, ShopMenu.getPlayerCurrencyAmount(Game1.player, this.currency) < this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]].Price || flag1 ? 0.5f : 1f, 0.88f, false, -1, "", -1, SpriteText.ScrollTextAlignment.Left);
                         Utility.drawWithShadow(b, Game1.mouseCursors, new Vector2((float)(this.forSaleButtons[index1].bounds.Right - 52), (float)(this.forSaleButtons[index1].bounds.Y + 40 - 4)), new Rectangle(193 + this.currency * 9, 373, 9, 10), Color.White * (!flag1 ? 1f : 0.25f), 0.0f, Vector2.Zero, 4f, false, 1f, -1, -1, !flag1 ? 0.35f : 0.0f);
                     }
-                    else if (this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]].Length > 2)
-                    {
-                        int quantity = 5;
-                        int num2 = this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]][2];
-                        if (this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]].Length > 3)
-                            quantity = this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]][3];
-                        bool flag2 = Game1.player.hasItemInInventory(num2, quantity, 0);
-                        if (this.canPurchaseCheck != null && !this.canPurchaseCheck(this.currentItemIndex + index1))
-                            flag2 = false;
-                        float widthOfString = (float)SpriteText.getWidthOfString("x" + (object)quantity, 999999);
-                        Utility.drawWithShadow(b, Game1.objectSpriteSheet, new Vector2((float)(this.forSaleButtons[index1].bounds.Right - 88) - widthOfString, (float)(this.forSaleButtons[index1].bounds.Y + 28 - 4)), Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, num2, 16, 16), Color.White * (flag2 ? 1f : 0.25f), 0.0f, Vector2.Zero, -1f, false, -1f, -1, -1, flag2 ? 0.35f : 0.0f);
-                        SpriteText.drawString(b, "x" + (object)quantity, this.forSaleButtons[index1].bounds.Right - (int)widthOfString - 16, this.forSaleButtons[index1].bounds.Y + 44, 999999, -1, 999999, flag2 ? 1f : 0.5f, 0.88f, false, -1, "", -1, SpriteText.ScrollTextAlignment.Left);
-                    }
+                    //else if (this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]].Length > 2)
+                    //{
+                    //    int quantity = 5;
+                    //    int num2 = this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]][2];
+                    //    if (this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]].Length > 3)
+                    //        quantity = this.itemPriceAndStock[this.forSale[this.currentItemIndex + index1]][3];
+                    //    bool flag2 = Game1.player.hasItemInInventory(num2, quantity, 0);
+                    //    if (this.canPurchaseCheck != null && !this.canPurchaseCheck(this.currentItemIndex + index1))
+                    //        flag2 = false;
+                    //    float widthOfString = (float)SpriteText.getWidthOfString("x" + (object)quantity, 999999);
+                    //    Utility.drawWithShadow(b, Game1.objectSpriteSheet, new Vector2((float)(this.forSaleButtons[index1].bounds.Right - 88) - widthOfString, (float)(this.forSaleButtons[index1].bounds.Y + 28 - 4)), Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, num2, 16, 16), Color.White * (flag2 ? 1f : 0.25f), 0.0f, Vector2.Zero, -1f, false, -1f, -1, -1, flag2 ? 0.35f : 0.0f);
+                    //    SpriteText.drawString(b, "x" + (object)quantity, this.forSaleButtons[index1].bounds.Right - (int)widthOfString - 16, this.forSaleButtons[index1].bounds.Y + 44, 999999, -1, 999999, flag2 ? 1f : 0.5f, 0.88f, false, -1, "", -1, SpriteText.ScrollTextAlignment.Left);
+                    //}
                 }
             }
             if (this.forSale.Count == 0 && !this._isStorageShop)
@@ -1058,6 +1055,11 @@ namespace CustomizeAnywhere.Framework
                 }
             }
             this.drawMouse(b);
+        }
+
+        public virtual string GetShopMenuContext()
+        {
+            return "Dresser";
         }
     }
 }

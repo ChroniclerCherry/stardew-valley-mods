@@ -1,9 +1,7 @@
-﻿using System;
-using CataloguesAnywhere.Framework;
+﻿using CataloguesAnywhere.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
-using StardewValley.Menus;
 
 namespace CataloguesAnywhere
 {
@@ -25,13 +23,9 @@ namespace CataloguesAnywhere
             if (input.IsDown(this.Config.ActivateButton))
             {
                 if (input.IsDown(this.Config.furnitureButton))
-                {
-                    Game1.activeClickableMenu = (IClickableMenu)new ShopMenu(Utility.getAllFurnituresForFree(), 0, (string)null, (Func<ISalable, Farmer, int, bool>)null, (Func<ISalable, bool>)null, "Furniture Catalogue");
-                }
+                    Utility.TryOpenShopMenu("Furniture Catalogue", null as string);
                 else if (input.IsDown(this.Config.WallpaperButton))
-                {
-                    Game1.activeClickableMenu = (IClickableMenu)new ShopMenu(Utility.getAllWallpapersAndFloorsForFree(), 0, (string)null, (Func<ISalable, Farmer, int, bool>)null, (Func<ISalable, bool>)null, "Catalogue");
-                }
+                    Utility.TryOpenShopMenu("Catalogue", null as string);
             }
         }
     }

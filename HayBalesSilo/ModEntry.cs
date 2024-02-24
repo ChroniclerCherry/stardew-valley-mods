@@ -35,24 +35,18 @@ namespace HayBalesSilo
 
         private void Display_MenuChanged(object sender, MenuChangedEventArgs e)
         {
-            //we don't care if it's not a shop menu
-            if (!(e.NewMenu is ShopMenu))
-                return;
-
-            var shop = (ShopMenu)e.NewMenu;
-
-            //we don't care if it's not Marnie's store
-            if (shop.portraitPerson == null || !(shop.portraitPerson.Name == "Marnie"))
+            //we don't care if it's not Marnie's shop
+            if (e.NewMenu is not ShopMenu { ShopId: Game1.shop_animalSupplies } shop)
                 return;
 
             //create the farm renderer object and add it to robin's stock
             var itemStock = shop.itemPriceAndStock;
 
-            foreach (var item in itemStock)
+            foreach ((ISalable item, ItemStockInformation stockInfo) in itemStock)
             {
-                if (item.Key.Name == "Ornamental Hay Bale")
+                if (item.QualifiedItemId == "(BC)45") // Ornamental Hay Bale
                 {
-                    item.Value[0] = Config.HaybalePrice; //change the price
+                    itemStock[item] = stockInfo with { Price = Config.HaybalePrice };
                     break;
                 }
             }
