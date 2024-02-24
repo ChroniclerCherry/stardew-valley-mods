@@ -3,83 +3,146 @@ using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
-using System;
-using System.IO;
+using StardewValley.GameData.BigCraftables;
+using StardewValley.GameData.Shops;
+using StardewValley.TokenizableStrings;
 
 namespace CustomizeAnywhere.Framework
 {
     class DresserAndMirror
     {
-        private IModHelper helper;
-        private IJsonAssetsApi JsonAssets;
-        private int ClothingCatalogueID = -1;
-        private int CustomizationMirrorID = -1;
+        private IModHelper Helper;
 
-        public DresserAndMirror(IModHelper helper)
+        private readonly string ModId;
+
+        private readonly string CatalogueId;
+        private readonly string MirrorId;
+
+        private readonly string CatalogueQualifiedId;
+        private readonly string MirrorQualifiedId;
+
+        public DresserAndMirror(IModHelper helper, string modId)
         {
-            this.helper = helper;
-            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
-            helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
+            ModId = modId;
+            CatalogueId = $"{modId}_Catalogue";
+            MirrorId = $"{modId}_Mirror";
+
+            CatalogueQualifiedId = ItemRegistry.type_bigCraftable + CatalogueId;
+            MirrorQualifiedId = ItemRegistry.type_bigCraftable + MirrorId;
+
+            this.Helper = helper;
+            helper.Events.Content.AssetRequested += OnAssetRequested;
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
+        }
+
+        private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+        {
+            // add objects
+            if (e.NameWithoutLocale.IsEquivalentTo("Data/BigCraftables"))
+            {
+                e.Edit(asset =>
+                {
+                    var data = asset.AsDictionary<string, BigCraftableData>().Data;
+
+                    data[CatalogueId] = new BigCraftableData
+                    {
+                        Name = CatalogueId,
+                        DisplayName = TokenStringBuilder.LocalizedText($"Strings/BigCraftables:{CatalogueId}_Name"),
+                        Description = TokenStringBuilder.LocalizedText($"Strings/BigCraftables:{CatalogueId}_Description"),
+                        Texture = $"LooseSprites/{CatalogueId}"
+                    };
+                    data[MirrorId] = new BigCraftableData
+                    {
+                        Name = CatalogueId,
+                        DisplayName = TokenStringBuilder.LocalizedText($"Strings/BigCraftables:{MirrorId}_Name"),
+                        Description = TokenStringBuilder.LocalizedText($"Strings/BigCraftables:{MirrorId}_Description"),
+                        Texture = $"LooseSprites/{MirrorId}"
+                    };
+                });
+            }
+
+            // add recipes
+            else if (e.NameWithoutLocale.IsEquivalentTo("Data/CraftingRecipes"))
+            {
+                e.Edit(asset =>
+                {
+                    var data = asset.AsDictionary<string, string>().Data;
+
+                    data[CatalogueId] = $"388 10/Field/{CatalogueId}/true/null/"; // 10 wood
+                    data[MirrorId] = $"388 10 338 2/Field/{MirrorId}/true/null/"; // 10 wood, 2 quartz
+                });
+            }
+
+            // add recipes to shop
+            else if (e.NameWithoutLocale.IsEquivalentTo("Data/Shops"))
+            {
+                e.Edit(asset =>
+                {
+                    var data = asset.AsDictionary<string, ShopData>().Data;
+
+                    if (data.TryGetValue(Game1.shop_carpenter, out ShopData shop))
+                    {
+                        shop.Items.Add(new ShopItemData
+                        {
+                            Id = this.CatalogueId,
+                            ItemId = this.CatalogueId,
+                            IsRecipe = true,
+                            Price = 50_000
+                        });
+                        shop.Items.Add(new ShopItemData
+                        {
+                            Id = this.MirrorId,
+                            ItemId = this.MirrorId,
+                            IsRecipe = true,
+                            Price = 50_000
+                        });
+                    }
+                });
+            }
+
+            // add textures
+            else if (e.NameWithoutLocale.IsEquivalentTo($"LooseSprites/{CatalogueId}"))
+                e.LoadFromModFile<Texture2D>("assets/catalogue.png", AssetLoadPriority.Exclusive);
+            else if (e.NameWithoutLocale.IsEquivalentTo($"LooseSprites/{MirrorId}"))
+                e.LoadFromModFile<Texture2D>("assets/mirror.png", AssetLoadPriority.Exclusive);
+
+            // add translation text
+            else if (e.NameWithoutLocale.IsEquivalentTo("Strings/BigCraftables"))
+            {
+                e.Edit(asset =>
+                {
+                    var data = asset.AsDictionary<string, string>().Data;
+
+                    data[$"{CatalogueId}_Name"] = this.Helper.Translation.Get("Catalogue_Name");
+                    data[$"{CatalogueId}_Description"] = this.Helper.Translation.Get("Catalogue_Description");
+
+                    data[$"{MirrorId}_Name"] = this.Helper.Translation.Get("Mirror_Name");
+                    data[$"{MirrorId}_Description"] = this.Helper.Translation.Get("Mirror_Description");
+                });
+            }
         }
 
         private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-            if (Context.IsWorldReady &&
-                Game1.currentLocation != null &&
-                Game1.activeClickableMenu == null &&
-                e.Button.IsActionButton())
+            if (Context.IsWorldReady && Game1.currentLocation != null && Game1.activeClickableMenu == null && e.Button.IsActionButton())
             {
                 GameLocation loc = Game1.currentLocation;
 
                 Vector2 tile = ModEntry.helper.Input.GetCursorPosition().GrabTile;
-                loc.Objects.TryGetValue(tile, out StardewValley.Object obj);
-                if (obj != null && obj.bigCraftable.Value)
+                if (loc.Objects.TryGetValue(tile, out Object obj))
                 {
-                    if (obj.ParentSheetIndex.Equals(ClothingCatalogueID))
+                    if (obj.QualifiedItemId == CatalogueQualifiedId)
                     {
                         Game1.activeClickableMenu = new DresserMenu();
-                        helper.Input.Suppress(e.Button);
+                        Helper.Input.Suppress(e.Button);
                     }
-                    else if (obj.ParentSheetIndex.Equals(CustomizationMirrorID))
+                    else if (obj.QualifiedItemId == MirrorQualifiedId)
                     {
                         Game1.activeClickableMenu = new CustomizeAnywhereMenu();
-                        helper.Input.Suppress(e.Button);
+                        Helper.Input.Suppress(e.Button);
                     }
                 }
             }
         }
-
-        private void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
-        {
-            if (JsonAssets != null)
-            {
-                ClothingCatalogueID = JsonAssets.GetBigCraftableId("Clothing Catalogue");
-                CustomizationMirrorID = JsonAssets.GetBigCraftableId("Customization Mirror");
-
-                if (ClothingCatalogueID == -1)
-                {
-                    ModEntry.monitor.Log("Could not get the ID for Clothing catalogue", LogLevel.Warn);
-                }
-                if (CustomizationMirrorID == -1)
-                {
-                    ModEntry.monitor.Log("Could not get the ID for customization mirror", LogLevel.Warn);
-                }
-            }
-        }
-
-        private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
-        {
-            JsonAssets = helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
-            if (JsonAssets == null)
-            {
-                ModEntry.monitor.Log("Json Assets API not detected: mirror and catalogue items not added", LogLevel.Info);
-            }
-            else
-            {
-                JsonAssets.LoadAssets(Path.Combine(helper.DirectoryPath, "assets"));
-            }
-        }
-
     }
 }

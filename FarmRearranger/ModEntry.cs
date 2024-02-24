@@ -1,11 +1,14 @@
 ﻿using FarmRearranger.Framework;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.GameData.BigCraftables;
+using StardewValley.GameData.Shops;
 using StardewValley.Menus;
-using System.IO;
-using xTile.Dimensions;
+using StardewValley.TokenizableStrings;
+using System.Collections.Generic;
 
 namespace FarmRearranger
 {
@@ -15,9 +18,11 @@ namespace FarmRearranger
 
         private GameLocation loc = null;
 
-        private IJsonAssetsApi JsonAssets;
         private ModConfig Config;
-        private int FarmRearrangerID;
+
+        private string FarmRearrangeId;
+        private string FarmRearrangeQualifiedId;
+
 
         /// <summary>
         /// Entry function, the starting point of the mod called by SMAPI
@@ -25,46 +30,18 @@ namespace FarmRearranger
         /// <param name="helper">provides useful apis for modding</param>
         public override void Entry(IModHelper helper)
         {
-            //read the config and save it
+            // read config
             this.Config = this.Helper.ReadConfig<ModConfig>();
 
-            //all the events
+            // init fields
+            this.FarmRearrangeId = this.ModManifest.UniqueID + "_FarmRearranger";
+            this.FarmRearrangeQualifiedId = ItemRegistry.type_bigCraftable + this.FarmRearrangeId;
+
+            // hook events
             helper.Events.Content.AssetRequested += OnAssetRequested;
             helper.Events.GameLoop.UpdateTicking += GameLoop_UpdateTicking;
-            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
-            helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             helper.Events.GameLoop.DayEnding += GameLoop_DayEnding;
-            helper.Events.Display.MenuChanged += Display_MenuChanged;
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
-        }
-
-        /// <summary>
-        /// Checks for when Robin's store is open and adds the Farm Renderer to the stock as necessary
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Display_MenuChanged(object sender, MenuChangedEventArgs e)
-        {
-            //we don't care if it's not a shop menu
-            if (!(e.NewMenu is ShopMenu))
-                return;
-
-            var shop = (ShopMenu)e.NewMenu;
-
-            //we don't care if it's not robin's store
-            if (shop.portraitPerson == null || !(shop.portraitPerson.Name == "Robin"))
-                return;
-
-            //ignore if player hasn't seen the mail yet
-            if (!Game1.player.mailReceived.Contains("FarmRearrangerMail"))
-                return;
-
-            //create the farm renderer object and add it to robin's stock
-            var itemStock = shop.itemPriceAndStock;
-            var obj = new StardewValley.Object(Vector2.Zero, FarmRearrangerID);
-            itemStock.Add(obj, new int[] { Config.Price, int.MaxValue });
-            shop.setItemPriceAndStock(itemStock);
-
         }
 
         /// <summary>
@@ -78,24 +55,6 @@ namespace FarmRearranger
             if (Game1.player.getFriendshipLevelForNPC("Robin") >= Config.FriendshipPointsRequired)
             {
                 Game1.addMailForTomorrow("FarmRearrangerMail");
-            }
-        }
-
-        /// <summary>
-        /// Get the ID for our Farm Rearranger, on save loaded as that's when JA loads stuff in
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
-        {
-            if (JsonAssets != null)
-            {
-                FarmRearrangerID = JsonAssets.GetBigCraftableId("Farm Rearranger");
-
-                if (FarmRearrangerID == -1)
-                {
-                    Monitor.Log("Could not get the ID for the Farm Rearranger item", LogLevel.Warn);
-                }
             }
         }
 
@@ -117,32 +76,13 @@ namespace FarmRearranger
 
             //check if the clicked tile contains a Farm Renderer
             Vector2 tile = Helper.Input.GetCursorPosition().Tile;
-            Game1.currentLocation.Objects.TryGetValue(tile, out StardewValley.Object obj);
-            if (obj != null && obj.bigCraftable.Value)
+            if (Game1.currentLocation.Objects.TryGetValue(tile, out Object obj) && obj.QualifiedItemId == this.FarmRearrangeQualifiedId)
             {
-                if (obj.ParentSheetIndex.Equals(FarmRearrangerID))
-                {
-                    if (Game1.currentLocation.Name == "Farm" || Config.CanArrangeOutsideFarm)
-                    {
-                        RearrangeFarm();
-                    }
-                    else
-                    {
-                        Game1.activeClickableMenu = new DialogueBox(Helper.Translation.Get("CantBuildOffFarm"));
-                    }
-                }
+                if (Game1.currentLocation.Name == "Farm" || Config.CanArrangeOutsideFarm)
+                    RearrangeFarm();
+                else
+                    Game1.activeClickableMenu = new DialogueBox(Helper.Translation.Get("CantBuildOffFarm"));
             }
-        }
-
-        /// <summary>
-        /// Load the JA api and give it our content pack
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
-        {
-            JsonAssets = Helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
-            JsonAssets.LoadAssets(Path.Combine(Helper.DirectoryPath, "assets"));
         }
 
         /// <summary>
@@ -175,12 +115,69 @@ namespace FarmRearranger
 
         private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
         {
-            if (e.NameWithoutLocale.IsEquivalentTo("Data/mail"))
+            string modId = this.ModManifest.UniqueID;
+
+            // add item data
+            if (e.NameWithoutLocale.IsEquivalentTo("Data/BigCraftables"))
+            {
+                e.Edit(asset =>
+                {
+                    var data = asset.AsDictionary<string, BigCraftableData>().Data;
+
+                    data[this.FarmRearrangeId] = new BigCraftableData
+                    {
+                        Name = this.FarmRearrangeId,
+                        DisplayName = TokenStringBuilder.LocalizedText($"Strings\\BigCraftables:{this.FarmRearrangeId}_Name"),
+                        Description = TokenStringBuilder.LocalizedText($"Strings\\BigCraftables:{this.FarmRearrangeId}_Description"),
+                        Price = 1,
+                        Texture = $"LooseSprites/{modId}"
+                    };
+                });
+            }
+
+            // add to shop
+            else if (e.NameWithoutLocale.IsEquivalentTo("Data/Shops"))
+            {
+                e.Edit(asset =>
+                {
+                    var data = asset.AsDictionary<string, ShopData>().Data;
+
+                    if (data.TryGetValue(Game1.shop_carpenter, out ShopData shop))
+                    {
+                        shop.Items.Add(new ShopItemData
+                        {
+                            Id = this.FarmRearrangeId,
+                            ItemId = this.FarmRearrangeId,
+                            Price = Config.Price,
+                            Condition = "PLAYER_HAS_MAIL Current FarmRearrangerMail Received"
+                        });
+                    }
+                });
+            }
+
+            // add mail
+            else if (e.NameWithoutLocale.IsEquivalentTo("Data/mail"))
             {
                 e.Edit(asset =>
                 {
                     var data = asset.AsDictionary<string, string>().Data;
                     data["FarmRearrangerMail"] = Helper.Translation.Get("robinletter");
+                });
+            }
+
+            // add texture
+            else if (e.NameWithoutLocale.IsEquivalentTo($"LooseSprites/{modId}"))
+                e.LoadFromModFile<Texture2D>("assets/farm-rearranger.png", AssetLoadPriority.Exclusive);
+
+            // add translation text
+            else if (e.NameWithoutLocale.IsEquivalentTo("Strings/BigCraftables"))
+            {
+                e.Edit(asset =>
+                {
+                    var data = asset.AsDictionary<string, string>().Data;
+
+                    data[$"{this.FarmRearrangeId}_Name"] = this.Helper.Translation.Get("FarmRearranger_Name");
+                    data[$"{this.FarmRearrangeId}_Description"] = this.Helper.Translation.Get("FarmRearranger_Description");
                 });
             }
         }

@@ -6,11 +6,5 @@
   "UniqueID": "cel10e.Cherry.FarmRearranger",
   "EntryDll": "FarmRearranger.dll",
   "MinimumApiVersion": "3.0.0",
-  "Dependencies": [
-    {
-      "UniqueID": "spacechase0.JsonAssets",
-      "IsRequired": true
-    }
-  ],
   "UpdateKeys": ["Nexus:5142"]
 }
