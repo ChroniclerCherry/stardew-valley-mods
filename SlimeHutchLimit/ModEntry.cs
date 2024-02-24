@@ -1,7 +1,7 @@
-﻿using Harmony;
-using StardewModdingAPI;
+﻿using StardewModdingAPI;
 using StardewValley;
 using System;
+using HarmonyLib;
 using SlimeHutchLimit.Framework;
 
 namespace SlimeHutchLimit
@@ -15,7 +15,7 @@ namespace SlimeHutchLimit
 
             Helper.ConsoleCommands.Add("SetSlimeHutchLimit", "Changes the max number of slimes that can inhabit a slime hutch.\n\nUsage: SetSlimeHutchLimit <value>\n- value: the number of slimes", ChangeMaxSlimes);
 
-            HarmonyInstance harmony = HarmonyInstance.Create(ModManifest.UniqueID);
+            Harmony harmony = new Harmony(ModManifest.UniqueID);
             harmony.Patch(AccessTools.Method(typeof(SlimeHutch), nameof(SlimeHutch.isFull)),
                 postfix: new HarmonyMethod(typeof(ModEntry), nameof(ModEntry.SlimeHutch_isFull_postfix)));
 

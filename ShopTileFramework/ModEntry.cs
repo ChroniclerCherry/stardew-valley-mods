@@ -1,5 +1,4 @@
-﻿using Harmony;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using ShopTileFramework.Framework;
 using ShopTileFramework.Framework.API;
 using ShopTileFramework.Framework.Patches;
@@ -9,6 +8,7 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
 using System.Linq;
+using HarmonyLib;
 using xTile.ObjectModel;
 
 namespace ShopTileFramework
@@ -62,7 +62,7 @@ namespace ShopTileFramework
             //get all the info from content packs
             ShopManager.LoadContentPacks();
 
-            HarmonyInstance harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
+            Harmony harmony = new Harmony(this.ModManifest.UniqueID);
             VanillaShopStockPatches.Apply(harmony);
         }
         /// <summary>

@@ -1,12 +1,12 @@
 ﻿using StardewModdingAPI;
 using StardewValley;
-using Harmony;
 using StardewModdingAPI.Events;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using StardewValley.Menus;
 using StardewValley.Locations;
 using System.Linq;
+using HarmonyLib;
 using StardewValley.Buildings;
 using HayBalesSilo.Framework;
 
@@ -21,7 +21,7 @@ namespace HayBalesSilo
             monitor = Monitor;
             Config = this.Helper.ReadConfig<ModConfig>();
 
-            var harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
+            var harmony = new Harmony(this.ModManifest.UniqueID);
             harmony.Patch(
                 original: AccessTools.Method(typeof(Utility), nameof(Utility.numSilos)),
                 postfix: new HarmonyMethod(typeof(PatchNumSilos), nameof(PatchNumSilos.Postfix))

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Harmony;
+using HarmonyLib;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -30,7 +30,7 @@ namespace ToolUpgradeCosts
 			_config = helper.ReadConfig<Config>();
             Helper.Events.GameLoop.SaveLoaded += GetIndexes;
 
-            HarmonyInstance harmony = HarmonyInstance.Create(ModManifest.UniqueID);
+            Harmony harmony = new Harmony(ModManifest.UniqueID);
 
 			harmony.Patch(
                 AccessTools.Method(typeof(Utility), "priceForToolUpgradeLevel"), 

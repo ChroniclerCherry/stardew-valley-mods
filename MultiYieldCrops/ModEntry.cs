@@ -1,5 +1,4 @@
-﻿using Harmony;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Characters;
@@ -7,6 +6,7 @@ using StardewValley.Objects;
 using StardewValley.Tools;
 using System;
 using System.Collections.Generic;
+using HarmonyLib;
 using MultiYieldCrops.Framework;
 
 namespace MultiYieldCrops
@@ -24,7 +24,7 @@ namespace MultiYieldCrops
 
             //harmony stuff
             HarvestPatches.Initialize(Monitor);
-            var harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
+            var harmony = new Harmony(this.ModManifest.UniqueID);
             harmony.Patch(
                 original: AccessTools.Method(typeof(Crop), nameof(Crop.harvest)),
                 prefix: new HarmonyMethod(typeof(HarvestPatches), nameof(HarvestPatches.CropHarvest_prefix)),

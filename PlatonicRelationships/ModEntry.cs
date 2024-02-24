@@ -1,8 +1,8 @@
 ﻿using StardewModdingAPI;
-using Harmony;
 using StardewValley;
 using StardewValley.Menus;
 using System;
+using HarmonyLib;
 using PlatonicRelationships.Framework;
 
 namespace PlatonicRelationships
@@ -22,14 +22,14 @@ namespace PlatonicRelationships
 
         public void ApplyPatches()
         {
-            var harmony = HarmonyInstance.Create("cherry.platonicrelationships");
+            var harmony = new Harmony("cherry.platonicrelationships");
 
             try
             {
                 this.Monitor.Log("Transpile patching SocialPage.drawNPCSlot", StardewModdingAPI.LogLevel.Debug);
                 harmony.Patch(
                     original: AccessTools.Method(typeof(SocialPage), name: "drawNPCSlot"),
-                    transpiler: new HarmonyMethod(type: typeof(PatchDrawNPCSlot), nameof(PatchDrawNPCSlot.Transpiler))
+                    transpiler: new HarmonyMethod(methodType: typeof(PatchDrawNPCSlot), nameof(PatchDrawNPCSlot.Transpiler))
                 );
             }
             catch (Exception e)
