@@ -5,6 +5,7 @@ using CustomCraftingStation.Framework;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Inventories;
 using StardewValley.Locations;
 using StardewValley.Menus;
 using StardewValley.Objects;
@@ -88,22 +89,18 @@ namespace CustomCraftingStation
             _openedNonCustomMenu = true;
 
             var activeMenu = Game1.activeClickableMenu;
-            if (activeMenu == null)
-                return;
 
-            IClickableMenu instance;
+            IClickableMenu instance = activeMenu switch
+            {
+                CraftingPage => activeMenu,
+                GameMenu gameMenu => gameMenu.pages[GameMenu.craftingTab],
+                _ => activeMenu is not null && activeMenu.GetType() == CookingSkillMenu
+                    ? activeMenu
+                    : null
+            };
 
-
-
-            if (activeMenu is CraftingPage)
-                instance = activeMenu;
-            else if (activeMenu is GameMenu gameMenu)
-                instance = gameMenu.pages[GameMenu.craftingTab];
-            else if (activeMenu.GetType() == CookingSkillMenu)
-                instance = activeMenu;
-            else
-                return;
-            OpenAndFixMenu(instance);
+            if (instance is not (null or CustomCraftingMenu))
+                OpenAndFixMenu(instance);
         }
 
         private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
@@ -251,16 +248,13 @@ namespace CustomCraftingStation
 
         public void OpenCraftingMenu(CraftingStationConfig station, Vector2 grabTile)
         {
-            List<Chest> Chests = GetChests(grabTile);
+            List<IInventory> chests = GetChests(grabTile);
 
             Vector2 centeringOnScreen =
                 Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2,
                     600 + IClickableMenu.borderWidth * 2);
 
-            var menu = new CustomCraftingMenu((int)centeringOnScreen.X, (int)centeringOnScreen.Y,
-                800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, Chests, station.CraftingRecipes, station.CookingRecipes);
-
-            Game1.activeClickableMenu = menu;
+            Game1.activeClickableMenu = new CustomCraftingMenu((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, chests, station.CraftingRecipes, station.CookingRecipes);
         }
 
         private void OpenAndFixMenu(IClickableMenu instance)
@@ -279,16 +273,16 @@ namespace CustomCraftingStation
             layoutRecipes.Invoke(isCooking ? ReducedCookingRecipes : knownCraftingRecipes);
         }
 
-        public List<Chest> GetChests(Vector2 grabTile)
+        public List<IInventory> GetChests(Vector2 grabTile)
         {
-            List<Chest> chests = new List<Chest>();
+            List<IInventory> chests = new List<IInventory>();
 
             IEnumerable<GameLocation> locs;
             locs = Context.IsMainPlayer ? Game1.locations : Helper.Multiplayer.GetActiveLocations();
 
             if (_config.CraftFromFridgeWhenInHouse)
                 if (Game1.currentLocation is FarmHouse house)
-                    chests.Add(house.fridge.Value);
+                    chests.Add(house.fridge.Value.Items);
 
             int radius = _config.CraftingFromChestsRadius;
             if (radius == 0 && !_config.GlobalCraftFromChest)
@@ -297,7 +291,7 @@ namespace CustomCraftingStation
             if (_config.GlobalCraftFromChest)
             {
                 if (!_config.CraftFromFridgeWhenInHouse) //so we dont add this twice
-                    chests.Add((Game1.getLocationFromName("FarmHouse") as FarmHouse)?.fridge.Value);
+                    chests.Add((Game1.getLocationFromName("FarmHouse") as FarmHouse)?.fridge.Value.Items);
 
                 foreach (var location in locs)
                 {
@@ -306,7 +300,7 @@ namespace CustomCraftingStation
                         foreach (var obj in objs)
                         {
                             if (obj.Value is Chest chest)
-                                chests.Add(chest);
+                                chests.Add(chest.Items);
                         }
                     }
                 }
@@ -324,7 +318,7 @@ namespace CustomCraftingStation
 
                         var obj = loc.objects[tile];
                         if (obj != null && obj is Chest chest)
-                            chests.Add(chest);
+                            chests.Add(chest.Items);
                     }
                 }
             }
