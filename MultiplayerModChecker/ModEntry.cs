@@ -6,6 +6,7 @@ using System.Net.Configuration;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using MultiplayerModChecker.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -178,46 +179,5 @@ namespace MultiplayerModChecker
 
             }
         }
-    }
-
-    public class Config
-    {
-        public String[] IgnoredMods { get; set; } = { "Cherry.MultiplayerModChecker" };
-        public bool HideReportInTrace { get; set; } = false;
-    }
-
-    public class MultiplayerReportData
-    {
-        public string FarmhandName { get; set; }
-        public DateTime TimeConnected { get; set; }
-        public long FarmhandID { get; set; }
-
-        public SmapiGameVersionDifference SmapiGameGameVersions { get; set; } = new SmapiGameVersionDifference();
-
-        internal List<ModVersions> Mods { get; set; } = new List<ModVersions>();
-
-        public List<string> MissingOnHost { get; set; } = new List<string>();
-        public List<string> MissingOnFarmhand { get; set; } = new List<string>();
-
-        public List<string> VersionMismatch { get; set; } = new List<string>();
-    }
-
-    public class SmapiGameVersionDifference
-    {
-        public bool FarmhandHasSmapi { get; set; }
-        public ISemanticVersion HostSmapiVersion { get; set; }
-        public ISemanticVersion FarmhandSmapiVersion { get; set; }
-
-    }
-
-    public class ModVersions
-    {
-        public string ModName { get; set; }
-
-        public string ModUniqueID { get; set; }
-        public bool DoesHostHave { get; set; } = false;
-        public bool DoesFarmhandHave { get; set; } = false;
-        public ISemanticVersion HostModVersion { get; set; }
-        public ISemanticVersion FarmhandModVersion { get; set; }
     }
 }

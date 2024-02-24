@@ -1,4 +1,4 @@
-﻿namespace CustomCraftingStation.Framework
+﻿namespace LimitedCampfireCooking
 {
     public interface ICCSApi
     {

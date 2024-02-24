@@ -2,6 +2,7 @@
 using StardewModdingAPI;
 using StardewValley;
 using System;
+using SlimeHutchLimit.Framework;
 
 namespace SlimeHutchLimit
 {
@@ -39,10 +40,5 @@ namespace SlimeHutchLimit
                 Monitor.Log($"Invalid input.");
             }
         }
-    }
-
-    public class Config
-    {
-        public int MaxSlimesInHutch { get; set; } = 20;
     }
 }

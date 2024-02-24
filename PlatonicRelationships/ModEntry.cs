@@ -53,9 +53,4 @@ namespace PlatonicRelationships
             }
         }
     }
-
-    class ModConfig
-    {
-        public bool AddDatingRequirementToRomanticEvents { get; set; } = true;
-    }
 }

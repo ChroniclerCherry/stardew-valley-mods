@@ -1,5 +1,6 @@
 ﻿using Harmony;
 using Microsoft.Xna.Framework;
+using ShopTileFramework.Framework;
 using ShopTileFramework.Framework.API;
 using ShopTileFramework.Framework.Patches;
 using ShopTileFramework.Framework.Shop;
@@ -310,10 +311,5 @@ namespace ShopTileFramework
 
             } //end shopProperty null check
         }
-    }
-
-    class ModConfig
-    {
-        public bool VerboseLogging { get; set; } = false;
     }
 }

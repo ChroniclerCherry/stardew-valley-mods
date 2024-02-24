@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using ProfitMargins.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
@@ -64,11 +65,5 @@ namespace ProfitMargins
             }
             return true;
         }
-    }
-
-    class ModConfig
-    {
-        public bool EnableInMultiplayer { get; set; } = false;
-        public float ProfitMargin { get; set; } = 1f;
     }
 }

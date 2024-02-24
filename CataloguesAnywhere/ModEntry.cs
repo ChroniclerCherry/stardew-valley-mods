@@ -1,4 +1,5 @@
 ﻿using System;
+using CataloguesAnywhere.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -32,14 +33,6 @@ namespace CataloguesAnywhere
                     Game1.activeClickableMenu = (IClickableMenu)new ShopMenu(Utility.getAllWallpapersAndFloorsForFree(), 0, (string)null, (Func<ISalable, Farmer, int, bool>)null, (Func<ISalable, bool>)null, "Catalogue");
                 }
             }
-        }
-
-        class ModConfig
-        {
-            public bool Enabled { get; set; } = true;
-            public SButton ActivateButton { get; set; } = SButton.LeftControl;
-            public SButton furnitureButton { get; set; } = SButton.D1;
-            public SButton WallpaperButton { get; set; } = SButton.D2;
         }
     }
 }

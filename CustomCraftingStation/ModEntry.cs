@@ -15,8 +15,8 @@ namespace CustomCraftingStation
     {
         private bool _openedNonCustomMenu;
 
-        private Dictionary<string, CraftingStation> _tileCraftingStations;
-        private Dictionary<string, CraftingStation> _craftableCraftingStations;
+        private Dictionary<string, CraftingStationConfig> _tileCraftingStations;
+        private Dictionary<string, CraftingStationConfig> _craftableCraftingStations;
 
         private List<string> _cookingRecipesToRemove;
         private List<string> _craftingRecipesToRemove;
@@ -167,8 +167,8 @@ namespace CustomCraftingStation
         {
             var packs = Helper.ContentPacks.GetOwned();
 
-            _tileCraftingStations = new Dictionary<string, CraftingStation>();
-            _craftableCraftingStations = new Dictionary<string, CraftingStation>();
+            _tileCraftingStations = new Dictionary<string, CraftingStationConfig>();
+            _craftableCraftingStations = new Dictionary<string, CraftingStationConfig>();
             _cookingRecipesToRemove = new List<string>();
             _craftingRecipesToRemove = new List<string>();
 
@@ -186,7 +186,7 @@ namespace CustomCraftingStation
             }
         }
 
-        private void RegisterCraftingStations(List<CraftingStation> craftingStations)
+        private void RegisterCraftingStations(List<CraftingStationConfig> craftingStations)
         {
             if (craftingStations == null)
                 return;
@@ -249,7 +249,7 @@ namespace CustomCraftingStation
             }
         }
 
-        public void OpenCraftingMenu(CraftingStation station, Vector2 grabTile)
+        public void OpenCraftingMenu(CraftingStationConfig station, Vector2 grabTile)
         {
             List<Chest> Chests = GetChests(grabTile);
 

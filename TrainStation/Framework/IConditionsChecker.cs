@@ -1,4 +1,4 @@
-﻿namespace ExpandedPreconditionsUtility.Framework
+﻿namespace TrainStation.Framework
 {
     public interface IConditionsChecker
     {
@@ -15,12 +15,5 @@
         /// <param name="conditions">An array of condition strings.</param>
         /// <returns></returns>
         bool CheckConditions(string[] conditions);
-
-        /// <summary>
-        /// Checks a single condition string. The string will be evaluated as true if every single condition provided is true.
-        /// </summary>
-        /// <param name="conditions"></param>
-        /// <returns></returns>
-        bool CheckConditions(string conditions);
     }
 }

@@ -1,4 +1,5 @@
-﻿using StardewModdingAPI;
+﻿using SnackEverything.Framework;
+using StardewModdingAPI;
 using StardewValley;
 using System;
 using System.Collections.Generic;
@@ -27,10 +28,5 @@ namespace SnackEverything
                 Game1.objectInformation[key] = string.Join("/", info);
             }
         }
-    }
-
-    class ModConfig
-    {
-       public bool YummyArtefacts { get; set; } = false;
     }
 }

@@ -8,6 +8,7 @@ using StardewValley.Menus;
 using StardewValley.Locations;
 using System.Linq;
 using StardewValley.Buildings;
+using HayBalesSilo.Framework;
 
 namespace HayBalesSilo
 {
@@ -162,24 +163,6 @@ namespace HayBalesSilo
                 fields[8] = Helper.Translation.Get("DisplayName"); //display name
 
                 data[45] = string.Join("/", fields);
-            }
-        }
-    }
-
-    class ModConfig
-    {
-        public bool RequiresConstructedSilo { get; set; } = true;
-        public int HayBaleEquivalentToHowManySilos { get; set; } = 1;
-        public int HaybalePrice { get; set; } = 5000;
-    }
-    public class PatchNumSilos
-    {
-        internal static void Postfix(ref int __result)
-        {
-
-            if (__result > 0 || !ModEntry.Config.RequiresConstructedSilo)
-            {
-                __result = __result + (ModEntry.NumHayBales()*ModEntry.Config.HayBaleEquivalentToHowManySilos);
             }
         }
     }

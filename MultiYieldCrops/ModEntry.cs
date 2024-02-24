@@ -253,27 +253,5 @@ namespace MultiYieldCrops
                 
             }
         }
-
-    } //end class
-
-    class ContentModel
-    {
-        public List<CropHarvestRules> Harvests { get; set; }
-    }
-
-    class CropHarvestRules
-    {
-        public string CropName;
-        public List<Rule> HarvestRules;
-    }
-
-    class Rule
-    {
-        public string ExtraYieldItemType = "Object";
-        public string ItemName;
-        public int minHarvest = 1;
-        public int maxHarvest = 1;
-        public float maxHarvestIncreasePerFarmingLevel = 0;
-        public string[] disableWithMods = null;
     }
 }

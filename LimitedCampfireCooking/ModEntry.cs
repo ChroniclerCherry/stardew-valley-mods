@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LimitedCampfireCooking.Framework;
+using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -82,34 +83,5 @@ namespace LimitedCampfireCooking
                 }
             }
         }
-    }
-
-    class ModConfig
-    {
-        public bool EnableAllCookingRecipies { get; set; } = false;
-        public string[] Recipes { get; set; } = {
-                    "Fried Egg",
-                    "Baked Fish",
-                    "Parsnip Soup",
-                    "Vegetable Stew",
-                    "Bean Hotpot",
-                    "Glazed Yams",
-                    "Carp Surprise",
-                    "Fish Taco",
-                    "Tom Kha Soup",
-                    "Trout Soup",
-                    "Pumpkin Soup",
-                    "Algae Soup",
-                    "Pale Broth",
-                    "Roasted Hazelnuts",
-                    "Chowder",
-                    "Lobster Bisque",
-                    "Fish Stew"
-                };
-    }
-
-    public interface ICCSApi
-    {
-        void SetCCSCraftingMenuOverride(bool menuOverride);
     }
 }
