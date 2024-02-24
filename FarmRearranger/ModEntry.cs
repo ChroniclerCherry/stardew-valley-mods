@@ -16,8 +16,6 @@ namespace FarmRearranger
     {
         private bool isArranging = false;
 
-        private GameLocation loc = null;
-
         private ModConfig Config;
 
         private string FarmRearrangeId;
@@ -94,22 +92,15 @@ namespace FarmRearranger
         /// <param name="e"></param>
         private void GameLoop_UpdateTicking(object sender, UpdateTickingEventArgs e)
         {
-            //if we're not currently moving buildings from our mod, ignore
-            if (!isArranging)
-                return;
-
-
-            if (Game1.locationRequest?.Name == "ScienceHouse")
+            if (isArranging)
             {
-                //change location to source location
-                Game1.locationRequest.Location = loc;
-
-                //no longer arranging so set our trackers to defaults
-                isArranging = false;
-                loc = null;
-
-                //close the menu so players aren't gonna be asked to keep buying buildings
-                Game1.exitActiveMenu();
+                if (Game1.activeClickableMenu is not CarpenterMenu menu)
+                    isArranging = false;
+                else if (!menu.onFarm)
+                {
+                    isArranging = false;
+                    Game1.exitActiveMenu();
+                }
             }
         }
 
@@ -190,18 +181,6 @@ namespace FarmRearranger
             //our boolean to keep track that we are currently in a Farm rearranger menu
             //so we don't mess with any other vanilla warps to robin's house
             isArranging = true;
-
-            //remember the location, which should be Farm, but could be anywhere depending on configs
-            loc = Game1.currentLocation;
-
-            //for some reason the player gets watrped one tile to the left when using this menu on the farm
-            //so i move them a tile to the right to prevent them getting warped into a solid tile
-            if (loc.Name == "Farm")
-            {
-                var pos = Game1.player.Position;
-                Game1.player.Position = new Vector2(pos.X + 64, pos.Y);
-            }
-            
 
             //open the carpenter menu then do everything that is normally done
             //when the move buildings option is clicked
