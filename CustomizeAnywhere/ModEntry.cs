@@ -6,7 +6,6 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
 using StardewValley.Objects;
-using System;
 
 namespace CustomizeAnywhere
 {
@@ -16,12 +15,14 @@ namespace CustomizeAnywhere
         internal static IMonitor monitor;
         internal static IModHelper helper;
 
+        private DresserAndMirror DresserAndMirror;
+
         public override void Entry(IModHelper h)
         {
             helper = h;
             monitor = Monitor;
 
-            new DresserAndMirror(helper, this.ModManifest.UniqueID);
+            this.DresserAndMirror = new DresserAndMirror(helper, this.ModManifest.UniqueID);
             
             this.Config = this.Helper.ReadConfig<ModConfig>();
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
@@ -42,16 +43,14 @@ namespace CustomizeAnywhere
                 return;
 
             var input = this.Helper.Input;
-            if (input.IsDown(this.Config.ActivateButton)) {
+            if (input.IsDown(this.Config.ActivateButton))
+            {
                 if (input.IsDown(this.Config.customizeButton))
-                {
                     Game1.activeClickableMenu = new CustomizeAnywhereMenu();
-                } else if (input.IsDown(this.Config.dresserButton))
-                {
-                    Game1.activeClickableMenu = new DresserMenu();
-                }
+                else if (input.IsDown(this.Config.dresserButton))
+                    this.DresserAndMirror.OpenDresser();
 
-                    if (!Game1.player.eventsSeen.Contains(992559) && !this.Config.canTailorWithoutEvent)
+                if (!Game1.player.eventsSeen.Contains(992559) && !this.Config.canTailorWithoutEvent)
                 {
                     return;
                 }

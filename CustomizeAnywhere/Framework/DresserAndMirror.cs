@@ -14,6 +14,7 @@ namespace CustomizeAnywhere.Framework
         private IModHelper Helper;
 
         private readonly string ModId;
+        private readonly string DresserShopId;
 
         private readonly string CatalogueId;
         private readonly string MirrorId;
@@ -24,6 +25,7 @@ namespace CustomizeAnywhere.Framework
         public DresserAndMirror(IModHelper helper, string modId)
         {
             ModId = modId;
+            DresserShopId = $"{modId}_Dresser";
             CatalogueId = $"{modId}_Catalogue";
             MirrorId = $"{modId}_Mirror";
 
@@ -33,6 +35,17 @@ namespace CustomizeAnywhere.Framework
             this.Helper = helper;
             helper.Events.Content.AssetRequested += OnAssetRequested;
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
+        }
+
+        public void OpenDresser()
+        {
+            Utility.TryOpenShopMenu(this.DresserShopId, null as string);
+            if (Game1.activeClickableMenu is ShopMenu menu)
+            {
+                menu.UseDresserTabs();
+                menu.tabButtons.RemoveAll(p => p.myID is (ShopMenu.region_tabStartIndex + 4) or (ShopMenu.region_tabStartIndex + 5)); // remove boots + rings tabs
+                menu.repositionTabs();
+            }
         }
 
         private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
@@ -73,13 +86,14 @@ namespace CustomizeAnywhere.Framework
                 });
             }
 
-            // add recipes to shop
+            // add dresser shop & add recipes
             else if (e.NameWithoutLocale.IsEquivalentTo("Data/Shops"))
             {
                 e.Edit(asset =>
                 {
                     var data = asset.AsDictionary<string, ShopData>().Data;
 
+                    // add catalogue + mirror recipes
                     if (data.TryGetValue(Game1.shop_carpenter, out ShopData shop))
                     {
                         shop.Items.Add(new ShopItemData
@@ -97,6 +111,43 @@ namespace CustomizeAnywhere.Framework
                             Price = 50_000
                         });
                     }
+
+                    // add dresser shop
+                    data[this.DresserShopId] = new ShopData
+                    {
+                        Owners = new()
+                        {
+                            new ShopOwnerData
+                            {
+                                Id = "Default",
+                                Name = "AnyOrNone",
+                                Portrait = "",
+                                Dialogues = new()
+                            }
+                        },
+
+                        Items = new()
+                        {
+                            new ShopItemData
+                            {
+                                Id = "Shirts",
+                                ItemId = "ALL_ITEMS (S)",
+                                Price = 0
+                            },
+                            new ShopItemData
+                            {
+                                Id = "Pants",
+                                ItemId = "ALL_ITEMS (P)",
+                                Price = 0
+                            },
+                            new ShopItemData
+                            {
+                                Id = "Hats",
+                                ItemId = "ALL_ITEMS (H)",
+                                Price = 0
+                            }
+                        }
+                    };
                 });
             }
 
@@ -133,7 +184,7 @@ namespace CustomizeAnywhere.Framework
                 {
                     if (obj.QualifiedItemId == CatalogueQualifiedId)
                     {
-                        Game1.activeClickableMenu = new DresserMenu();
+                        this.OpenDresser();
                         Helper.Input.Suppress(e.Button);
                     }
                     else if (obj.QualifiedItemId == MirrorQualifiedId)
