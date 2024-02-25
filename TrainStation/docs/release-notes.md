@@ -4,6 +4,7 @@
 ## Upcoming release
 - Updated for Stardew Valley 1.6 and SMAPI 4.0.0.
 - The train arrival message is no longer shown if there's an event or festival at the destination (thanks to jennampe!).
+- Improved translations. Thanks to burunduk (added Ukrainian)!
 
 ## 1.1.1
 Released 18 April 2021 for SMAPI 3.0.0 or later.
