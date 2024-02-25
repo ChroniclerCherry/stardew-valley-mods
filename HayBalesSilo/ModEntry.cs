@@ -38,16 +38,17 @@ namespace HayBalesSilo
         // Add GMCM compatibility
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            var gmcm = this.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
-            if (gmcm is null) return;
+            var configMenu = this.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
+            if (configMenu is null)
+                return;
 
-            gmcm.Register(
+            configMenu.Register(
                 mod: this.ModManifest,
                 reset: () => Config = new ModConfig(),
                 save: () => this.Helper.WriteConfig(Config)
             );
 
-            gmcm.AddBoolOption(
+            configMenu.AddBoolOption(
                 mod: this.ModManifest,
                 name: () => "RequiresConstructedSilo",
                 tooltip: () => "Whether you need to construct at least one Silo for hay bales to work",
@@ -55,7 +56,7 @@ namespace HayBalesSilo
                 setValue: value => Config.RequiresConstructedSilo = value
             );
 
-            gmcm.AddNumberOption(
+            configMenu.AddNumberOption(
                 mod: this.ModManifest,
                 name: () => "HayBaleEquivalentToHowManySilos",
                 tooltip: () => "How many silos is each hay bale equivalent to in terms of adding hay capacity",
@@ -63,7 +64,7 @@ namespace HayBalesSilo
                 setValue: value => Config.HayBaleEquivalentToHowManySilos = value
             );
 
-            gmcm.AddNumberOption(
+            configMenu.AddNumberOption(
                 mod: this.ModManifest,
                 name: () => "HaybalePrice",
                 getValue: () => Config.HaybalePrice,
