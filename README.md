@@ -1,42 +1,94 @@
-# Stardew Valley Mods
-A collection of mods for the game Stardew Valley.
+﻿This repository contains my SMAPI mods for Stardew Valley. See the individual mods for documentation and release notes.
 
-All my Mods can be found [on my Nexus account](https://www.nexusmods.com/stardewvalley/users/3590100?tab=user+files)
+## Mods
+### Featured
+* [Train Station](https://www.nexusmods.com/stardewvalley/mods/6183) _([docs](TrainStation/docs/README.md) • [release notes](TrainStation/docs/release-notes.md))_  
+  Makes the train station at the railroad functional and lets modders add more stations to create a connected travel
+  network.
 
-[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/L3L61RYLE)
+* [Shop Tile Framework](https://www.nexusmods.com/stardewvalley/mods/5005) _([docs](ShopTileFramework/docs/README.md) • [release notes](ShopTileFramework/docs/release-notes.md))_  
+  Lets modders create new fully customizable shops and animal shops, and makes them interactable in-game via tile
+  properties.
 
-**Featured mods:**
+* [Platonic Relationships](https://www.nexusmods.com/stardewvalley/mods/4668) _([release notes](PlatonicRelationships/docs/release-notes.md))_  
+  Removes the limits preventing you from reaching 10 hearts with certain characters if you aren't dating them. Edits
+  existing events so that romantic mentions only happens while dating. Adding platonic versions of 10-heart events is
+  in progress.
 
-## [Shop Tile Framework](tree/master/ShopTileFramework)
-[[Release](https://www.nexusmods.com/stardewvalley/mods/5005) | [README](/ShopTileFramework/README.md)]
+* [Expanded Preconditions Utility](https://www.nexusmods.com/stardewvalley/mods/6529) _([docs](ExpandedPreconditionsUtility/docs/README.md) • [release notes](ExpandedPreconditionsUtility/docs/release-notes.md))_  
+  Provides a conditions system any mod can use based on the game's event preconditions.
 
-A framework mod that allows modders to create new fully customizable shops and animal shops, and makes them interactable in game via tile properties.
+### Active
+* [Catalogues Anywhere](https://www.nexusmods.com/stardewvalley/mods/4949) _([release notes](CataloguesAnywhere/docs/release-notes.md))_  
+  Lets players open the furniture and wallpaper/flooring catalogues anywhere.
 
-## [Platonic Relationships](tree/master/PlatonicRelationships)
-[[Release](https://www.nexusmods.com/stardewvalley/mods/4668)]
+* [Custom Crafting Stations](https://www.nexusmods.com/stardewvalley/mods/6293) _([docs](CustomCraftingStation/docs/README.md) • [release notes](CustomCraftingStation/docs/release-notes.md))_  
+  Lets modders add filtered crafting stations to the game.
 
-A mod that removes the limits in the game preventing you from reaching 10 hearts with certain characters if you are not dating them. Edits existing events so that romantic mentions only happens while dating. Adding platonic versions of 10 heart events is in progress.
+* [Customize Anywhere](https://www.nexusmods.com/stardewvalley/mods/4734) _([release notes](CustomizeAnywhere/docs/release-notes.md))_  
+  Lets players customize access their characters and access a wardrobe with all clothing from anywhere, or via in-game
+  items.
 
-**Other mods:**
+* [Farm Rearranger](https://www.nexusmods.com/stardewvalley/mods/5142) _([release notes](FarmRearranger/docs/release-notes.md))_  
+  Adds an item to the game that lets players rearrange their farm buildings from the farm.
 
-[[Customize Anywhere](tree/master/CustomizeAnywhere) | [Release](https://www.nexusmods.com/stardewvalley/mods/4734)] A mod that allows players to access a custom menu that allows them to fully customize their characters from anywhere, and access a wardrobe with all clothing
+* [Hay Bales as Silos](https://www.nexusmods.com/stardewvalley/mods/5151) _([release notes](HayBalesSilo/docs/release-notes.md))_  
+  Repurposes Ornamental Hay Bales to store hay like silos when placed around the farm.
 
-[[Profit Margins](tree/master/ProfitMargins) | [Release](https://www.nexusmods.com/stardewvalley/mods/4663)] Allows configuration of profit margins via a config file
+* [Limited campfire Cooking](https://www.nexusmods.com/stardewvalley/mods/4971) _([release notes](LimitedCampfireCooking/docs/release-notes.md))_  
+  Allows cooking a configurable selection of recipes at campfires.
 
-[[Catalogues Anywhere](tree/master/CataloguesAnywhere) | [Release](https://www.nexusmods.com/stardewvalley/mods/4949)] Allows players to open up the furniture and wallpaper/flooring catalogue anywhere
+* [Multiplayer Mod Checker](https://www.nexusmods.com/stardewvalley/mods/6609) _([release notes](MultiplayerModChecker/docs/release-notes.md))_  
+  Logs a message and generates a report when a farmhand connects in multiplayer with mods that don't match with the
+  host.
 
-[[Limited campfire Cooking](tree/master/LimitedCampfireCooking) | [Release](https://www.nexusmods.com/stardewvalley/mods/4971)] Allows cooking a configurable selection of recipes at campfires
+* [Multi Yield Crops](https://www.nexusmods.com/stardewvalley/mods/6069) _([docs](MultiYieldCrops/docs/README.md) • [release notes](MultiYieldCrops/docs/release-notes.md))_  
+  Lets content packs add extra items to yield when harvesting a crop.
 
-[[Farm Rearranger](tree/master/FarmRearranger) | [Release](https://www.nexusmods.com/stardewvalley/mods/5142)] Adds an item to the game that allows players to rearrange their farm buildings from the farm
+* [Profit Margins](https://www.nexusmods.com/stardewvalley/mods/4663) _([release notes](ProfitMargins/docs/release-notes.md))_  
+  Allows changing the game's profit margins by editing a config file.
 
-[[Hay Bales as Silos](tree/master/HayBalesSilo) | [Release](https://www.nexusmods.com/stardewvalley/mods/5151)] Makes Ornamental Hay Bales functional silos when placed around the farm
+* [Slime Hutch Limit](https://www.nexusmods.com/stardewvalley/mods/6455) _([release notes](SlimeHutchLimit/docs/release-notes.md))_  
+  Lets you change the maximum number of slimes allowed in each slime hutch.
 
-[[Snack Anything](tree/master/SnackEverything) | [Release](https://www.nexusmods.com/stardewvalley/mods/5196)] Makes almost all objects edible.
+* [Snack Anything](https://www.nexusmods.com/stardewvalley/mods/5196) _([release notes](SnackEverything/docs/release-notes.md))_  
+  Hold a button (default `LeftShift`) to allow eating almost any object. You'll gain health and energy proportional to
+  the object's sell value.
 
-[[Upgrade Empty Cabins](tree/master/UpgradeEmptyCabins) | [Release](https://www.nexusmods.com/stardewvalley/mods/5253)] Allows players to upgrade uninhabited cabins
+* [Tool Upgrade Costs](https://www.nexusmods.com/stardewvalley/mods/6576) _([release notes](ToolUpgradeCosts/docs/release-notes.md))_  
+  Lets the player fully customize the cost and needed materials to upgrade vanilla tools.
 
-[[Multi Yield Crops](tree/master/MultiYieldCrops) | [Release](https://www.nexusmods.com/stardewvalley/mods/6069) | [README](MultiYieldCrops/README.md) ] Allows crops to have more than a single item as its yield
+* [Upgrade Empty Cabins](https://www.nexusmods.com/stardewvalley/mods/5253) _([release notes](UpgradeEmptyCabins/docs/release-notes.md))_  
+  Lets players upgrade uninhabited cabins.
 
-[[Train Station](tree/master/TrainStation/TrainStation) | [Release](https://www.nexusmods.com/stardewvalley/mods/6183) | [README](/TrainStation/TrainStation/README.md) ] Allows crops to have more than a single item as its yield
+## Translating the mods
+<!--
 
-[[Custom Crafting Stations](tree/master/CustomCraftingStation) | [Release](https://www.nexusmods.com/stardewvalley/mods/6293) | [README](/CustomCraftingStation/README.md) ] Allows modders to add specialized crafting stations to the game
+    This section is auto-generated using a script, there's no need to edit it manually.
+    https://github.com/Pathoschild/StardewScripts/tree/main/create-translation-summary
+
+-->
+The mods can be translated into any language supported by the game, and SMAPI will automatically
+use the right translations.
+
+Contributions are welcome! See [Modding:Translations](https://stardewvalleywiki.com/Modding:Translations)
+on the wiki for help contributing translations.
+
+(❑ = untranslated, ↻ = partly translated, ✓ = fully translated)
+
+&nbsp;      | Customize Anywhere          | Farm Rearranger                  | Hay Bales as Silos             | Multiplayer Mod Checker                 | Train Station                  | Upgrade Empty Cabins
+:---------- | :-------------------------- | :------------------------------- | :----------------------------- | :-------------------------------------- | :----------------------------- | :-----------------------------------
+Chinese     | [❑](CustomizeAnywhere/i18n) | [✓](FarmRearranger/i18n/zh.json) | [↻](HayBalesSilo/i18n/zh.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/zh.json) | [❑](UpgradeEmptyCabins/i18n)
+French      | [❑](CustomizeAnywhere/i18n) | [↻](FarmRearranger/i18n/fr.json) | [↻](HayBalesSilo/i18n/fr.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/fr.json) | [✓](UpgradeEmptyCabins/i18n/fr.json)
+German      | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [↻](HayBalesSilo/i18n/de.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/de.json) | [❑](UpgradeEmptyCabins/i18n)
+Hungarian   | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesSilo/i18n)         | [❑](MultiplayerModChecker/i18n)         | [❑](TrainStation/i18n)         | [❑](UpgradeEmptyCabins/i18n)
+Italian     | [❑](CustomizeAnywhere/i18n) | [↻](FarmRearranger/i18n/it.json) | [↻](HayBalesSilo/i18n/it.json) | [❑](MultiplayerModChecker/i18n)         | [❑](TrainStation/i18n)         | [✓](UpgradeEmptyCabins/i18n/it.json)
+Japanese    | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesSilo/i18n)         | [❑](MultiplayerModChecker/i18n)         | [❑](TrainStation/i18n)         | [❑](UpgradeEmptyCabins/i18n)
+Korean      | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [↻](HayBalesSilo/i18n/ko.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/ko.json) | [✓](UpgradeEmptyCabins/i18n/ko.json)
+Portuguese  | [❑](CustomizeAnywhere/i18n) | [↻](FarmRearranger/i18n/pt.json) | [↻](HayBalesSilo/i18n/pt.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/pt.json) | [✓](UpgradeEmptyCabins/i18n/pt.json)
+Russian     | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesSilo/i18n)         | [✓](MultiplayerModChecker/i18n/ru.json) | [↻](TrainStation/i18n/ru.json) | [❑](UpgradeEmptyCabins/i18n)
+Spanish     | [❑](CustomizeAnywhere/i18n) | [↻](FarmRearranger/i18n/es.json) | [↻](HayBalesSilo/i18n/es.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/es.json) | [✓](UpgradeEmptyCabins/i18n/es.json)
+Turkish     | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesSilo/i18n)         | [❑](MultiplayerModChecker/i18n)         | [❑](TrainStation/i18n)         | [❑](UpgradeEmptyCabins/i18n)
+[Ukrainian] | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesSilo/i18n)         | [❑](MultiplayerModChecker/i18n)         | [✓](TrainStation/i18n/uk.json) | [❑](UpgradeEmptyCabins/i18n)
+
+[Ukrainian]: https://www.nexusmods.com/stardewvalley/mods/8427
