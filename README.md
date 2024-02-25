@@ -22,7 +22,10 @@
 * [Catalogues Anywhere](https://www.nexusmods.com/stardewvalley/mods/4949) _([release notes](CataloguesAnywhere/docs/release-notes.md))_  
   Lets players open the furniture and wallpaper/flooring catalogues anywhere.
 
-* [Custom Crafting Stations](https://www.nexusmods.com/stardewvalley/mods/6293) _([docs](CustomCraftingStation/docs/README.md) • [release notes](CustomCraftingStation/docs/release-notes.md))_  
+* [Change Slime Hutch Limit](https://www.nexusmods.com/stardewvalley/mods/6455) _([release notes](ChangeSlimeHutchLimit/docs/release-notes.md))_  
+  Lets you change the maximum number of slimes allowed in each slime hutch.
+
+* [Custom Crafting Stations](https://www.nexusmods.com/stardewvalley/mods/6293) _([docs](CustomCraftingStations/docs/README.md) • [release notes](CustomCraftingStations/docs/release-notes.md))_  
   Lets modders add filtered crafting stations to the game.
 
 * [Customize Anywhere](https://www.nexusmods.com/stardewvalley/mods/4734) _([release notes](CustomizeAnywhere/docs/release-notes.md))_  
@@ -32,7 +35,7 @@
 * [Farm Rearranger](https://www.nexusmods.com/stardewvalley/mods/5142) _([release notes](FarmRearranger/docs/release-notes.md))_  
   Adds an item to the game that lets players rearrange their farm buildings from the farm.
 
-* [Hay Bales as Silos](https://www.nexusmods.com/stardewvalley/mods/5151) _([release notes](HayBalesSilo/docs/release-notes.md))_  
+* [Hay Bales as Silos](https://www.nexusmods.com/stardewvalley/mods/5151) _([release notes](HayBalesAsSilos/docs/release-notes.md))_  
   Repurposes Ornamental Hay Bales to store hay like silos when placed around the farm.
 
 * [Limited campfire Cooking](https://www.nexusmods.com/stardewvalley/mods/4971) _([release notes](LimitedCampfireCooking/docs/release-notes.md))_  
@@ -48,10 +51,7 @@
 * [Profit Margins](https://www.nexusmods.com/stardewvalley/mods/4663) _([release notes](ProfitMargins/docs/release-notes.md))_  
   Allows changing the game's profit margins by editing a config file.
 
-* [Slime Hutch Limit](https://www.nexusmods.com/stardewvalley/mods/6455) _([release notes](SlimeHutchLimit/docs/release-notes.md))_  
-  Lets you change the maximum number of slimes allowed in each slime hutch.
-
-* [Snack Anything](https://www.nexusmods.com/stardewvalley/mods/5196) _([release notes](SnackEverything/docs/release-notes.md))_  
+* [Snack Anything](https://www.nexusmods.com/stardewvalley/mods/5196) _([release notes](SnackAnything/docs/release-notes.md))_  
   Hold a button (default `LeftShift`) to allow eating almost any object. You'll gain health and energy proportional to
   the object's sell value.
 

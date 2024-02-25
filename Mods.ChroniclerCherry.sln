@@ -5,7 +5,9 @@ VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CataloguesAnywhere", "CataloguesAnywhere\CataloguesAnywhere.csproj", "{077516AD-1A70-4CDC-90E3-BE4F1D78D60B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomCraftingStation", "CustomCraftingStation\CustomCraftingStation.csproj", "{8D64FA42-508D-4388-BA81-7E31C8BAA040}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChangeSlimeHutchLimit", "ChangeSlimeHutchLimit\ChangeSlimeHutchLimit.csproj", "{15F86DAA-1648-494F-9FB9-67532A1ED38C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomCraftingStations", "CustomCraftingStations\CustomCraftingStations.csproj", "{8D64FA42-508D-4388-BA81-7E31C8BAA040}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomizeAnywhere", "CustomizeAnywhere\CustomizeAnywhere.csproj", "{FB3F45E3-7185-4100-8EE0-2128BCF5C9E1}"
 EndProject
@@ -13,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpandedPreconditionsUtilit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FarmRearranger", "FarmRearranger\FarmRearranger.csproj", "{B29E2493-F766-4240-A6A8-E95BA6CBBC55}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HayBalesSilo", "HayBalesSilo\HayBalesSilo.csproj", "{1C8C8299-8421-429E-B02A-E00C1A36D800}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HayBalesAsSilos", "HayBalesAsSilos\HayBalesAsSilos.csproj", "{1C8C8299-8421-429E-B02A-E00C1A36D800}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LimitedCampfireCooking", "LimitedCampfireCooking\LimitedCampfireCooking.csproj", "{6C975CBF-9099-47DB-A036-2952257421ED}"
 EndProject
@@ -27,9 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProfitMargins", "ProfitMarg
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopTileFramework", "ShopTileFramework\ShopTileFramework.csproj", "{99EA84ED-3D3C-41F0-9492-4336CC39E0C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SlimeHutchLimit", "SlimeHutchLimit\SlimeHutchLimit.csproj", "{15F86DAA-1648-494F-9FB9-67532A1ED38C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SnackAnything", "SnackEverything\SnackAnything.csproj", "{2118638D-2409-4A80-BA53-6AEF6E8D0948}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SnackAnything", "SnackAnything\SnackAnything.csproj", "{2118638D-2409-4A80-BA53-6AEF6E8D0948}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToolUpgradeCosts", "ToolUpgradeCosts\ToolUpgradeCosts.csproj", "{D903D510-C920-4883-8137-BAF903FB4F72}"
 EndProject
@@ -57,6 +57,10 @@ Global
 		{077516AD-1A70-4CDC-90E3-BE4F1D78D60B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{077516AD-1A70-4CDC-90E3-BE4F1D78D60B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{077516AD-1A70-4CDC-90E3-BE4F1D78D60B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15F86DAA-1648-494F-9FB9-67532A1ED38C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15F86DAA-1648-494F-9FB9-67532A1ED38C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15F86DAA-1648-494F-9FB9-67532A1ED38C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15F86DAA-1648-494F-9FB9-67532A1ED38C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8D64FA42-508D-4388-BA81-7E31C8BAA040}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8D64FA42-508D-4388-BA81-7E31C8BAA040}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D64FA42-508D-4388-BA81-7E31C8BAA040}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -101,10 +105,6 @@ Global
 		{99EA84ED-3D3C-41F0-9492-4336CC39E0C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99EA84ED-3D3C-41F0-9492-4336CC39E0C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99EA84ED-3D3C-41F0-9492-4336CC39E0C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15F86DAA-1648-494F-9FB9-67532A1ED38C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15F86DAA-1648-494F-9FB9-67532A1ED38C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15F86DAA-1648-494F-9FB9-67532A1ED38C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15F86DAA-1648-494F-9FB9-67532A1ED38C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2118638D-2409-4A80-BA53-6AEF6E8D0948}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2118638D-2409-4A80-BA53-6AEF6E8D0948}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2118638D-2409-4A80-BA53-6AEF6E8D0948}.Release|Any CPU.ActiveCfg = Release|Any CPU
