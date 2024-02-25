@@ -1,8 +1,8 @@
-﻿using ShopTileFramework.Framework.Data;
+using System.Collections.Generic;
+using ShopTileFramework.Framework.Data;
 using ShopTileFramework.Framework.ItemPriceAndStock;
 using StardewModdingAPI;
 using StardewValley;
-using System.Collections.Generic;
 
 namespace ShopTileFramework.Framework.Shop
 {

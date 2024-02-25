@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using HayBalesSilo.Framework;
@@ -93,7 +93,7 @@ namespace HayBalesSilo
                     int capacityPerBale = 240 * Config.HayBaleEquivalentToHowManySilos;
 
                     var data = asset.AsDictionary<string, string>().Data;
-                    
+
                     data["OrnamentalHayBale_Name"] = this.Helper.Translation.Get("DisplayName");
                     data["OrnamentalHayBale_Description"] = this.Helper.Translation.Get("Description").ToString().Replace("{{capacity}}", capacityPerBale.ToString());
                 });

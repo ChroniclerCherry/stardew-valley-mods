@@ -1,9 +1,9 @@
+using System.Collections.Generic;
+using ShopTileFramework.Framework.Apis;
 using ShopTileFramework.Framework.Data;
 using ShopTileFramework.Framework.Utility;
 using StardewValley;
 using StardewValley.Menus;
-using System.Collections.Generic;
-using ShopTileFramework.Framework.Apis;
 
 namespace ShopTileFramework.Framework.Shop
 {
@@ -12,7 +12,6 @@ namespace ShopTileFramework.Framework.Shop
     /// </summary>
     class AnimalShop : AnimalShopModel
     {
-
         private List<Object> _shopAnimalStock;
         private List<Object> _allAnimalsStock;
 

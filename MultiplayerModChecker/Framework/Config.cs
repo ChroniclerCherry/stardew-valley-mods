@@ -1,4 +1,4 @@
-﻿namespace MultiplayerModChecker.Framework
+namespace MultiplayerModChecker.Framework
 {
     public class Config
     {

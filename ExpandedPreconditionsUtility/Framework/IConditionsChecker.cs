@@ -1,4 +1,4 @@
-﻿namespace ExpandedPreconditionsUtility.Framework
+namespace ExpandedPreconditionsUtility.Framework
 {
     public interface IConditionsChecker
     {

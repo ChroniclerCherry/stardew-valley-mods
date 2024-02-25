@@ -1,5 +1,5 @@
-﻿using StardewModdingAPI;
 using ExpandedPreconditionsUtility.Framework;
+using StardewModdingAPI;
 
 namespace ExpandedPreconditionsUtility
 {

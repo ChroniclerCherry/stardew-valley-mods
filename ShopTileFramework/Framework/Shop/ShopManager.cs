@@ -1,10 +1,10 @@
-﻿using ShopTileFramework.Framework.Data;
-using ShopTileFramework.Framework.ItemPriceAndStock;
-using ShopTileFramework.Framework.Utility;
-using StardewModdingAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ShopTileFramework.Framework.Data;
+using ShopTileFramework.Framework.ItemPriceAndStock;
+using ShopTileFramework.Framework.Utility;
+using StardewModdingAPI;
 
 namespace ShopTileFramework.Framework.Shop
 {
@@ -60,7 +60,7 @@ namespace ShopTileFramework.Framework.Shop
                 catch (Exception ex)
                 {
                     ModEntry.monitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}.", LogLevel.Error);
-                    ModEntry.monitor.Log(ex.Message + ex.StackTrace,LogLevel.Error);
+                    ModEntry.monitor.Log(ex.Message + ex.StackTrace, LogLevel.Error);
                     continue;
                 }
 
@@ -115,7 +115,8 @@ namespace ShopTileFramework.Framework.Shop
             {
                 foreach (var vanillaShopPack in data.VanillaShops)
                 {
-                    if (!VanillaShopNames.Contains(vanillaShopPack.ShopName)){
+                    if (!VanillaShopNames.Contains(vanillaShopPack.ShopName))
+                    {
                         ModEntry.monitor.Log($"{contentPack.Manifest.Name}" +
                             $" is trying to edit nonexistent vanilla store" +
                             $" \"{vanillaShopPack.ShopName}\"", LogLevel.Warn);
@@ -132,7 +133,8 @@ namespace ShopTileFramework.Framework.Shop
                         if (vanillaShopPack.AddStockAboveVanilla)
                             VanillaShops[vanillaShopPack.ShopName].AddStockAboveVanilla = true;
 
-                    } else
+                    }
+                    else
                     {
                         vanillaShopPack.Initialize();
                         vanillaShopPack.StockManagers.Add(new ItemPriceAndStockManager(vanillaShopPack));
@@ -140,7 +142,6 @@ namespace ShopTileFramework.Framework.Shop
                     }
                 }
             }
-
         }
 
         /// <summary>
@@ -209,6 +210,5 @@ namespace ShopTileFramework.Framework.Shop
                 shop.UpdateItemPriceAndStock();
             }
         }
-
     }
 }

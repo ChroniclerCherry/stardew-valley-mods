@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
@@ -41,7 +41,6 @@ namespace MultiYieldCrops
 
         public void SpawnHarvest(Vector2 tileLocation, string cropName, int fertilizer, JunimoHarvester junimo = null)
         {
-
             if (!this.allHarvestRules.ContainsKey(cropName))
                 return;
 
@@ -49,7 +48,7 @@ namespace MultiYieldCrops
 
             foreach (Rule data in this.allHarvestRules[cropName])
             {
-                foreach (Item item in this.SpawnItems(data,fertilizer))
+                foreach (Item item in this.SpawnItems(data, fertilizer))
                 {
                     if (item == null)
                         continue;
@@ -63,7 +62,6 @@ namespace MultiYieldCrops
                     }
                 }
             }
-
         }
 
         private IEnumerable<Item> SpawnItems(Rule data, int fertilizerQualityLevel)
@@ -106,7 +104,7 @@ namespace MultiYieldCrops
         /// <param name="name">The item name.</param>
         /// <param name="itemType">The item type, matching a key recognized by <see cref="GetItemDataDefinitionFromType"/>.</param>
         /// <returns>Returns the item's qualified item ID, or <c>null</c> if not found.</returns>
-        public string GetIdByName(string name,string itemType)
+        public string GetIdByName(string name, string itemType)
         {
             // there's multiple stone items and 390 is the one that works
             if (itemType == "Object" && name == "Stone")
@@ -172,10 +170,10 @@ namespace MultiYieldCrops
                 {
                     this.LoadContentPack(data);
                 }
-
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                this.Monitor.Log(ex.Message + ex.StackTrace,LogLevel.Error);
+                this.Monitor.Log(ex.Message + ex.StackTrace, LogLevel.Error);
             }
 
             foreach (var pack in this.Helper.ContentPacks.GetOwned())
@@ -187,7 +185,7 @@ namespace MultiYieldCrops
                 }
 
                 this.LoadContentPack(pack.ReadJsonFile<ContentModel>("HarvestRules.json"));
-                
+
             }
         }
         private void LoadContentPack(ContentModel data)
@@ -197,13 +195,13 @@ namespace MultiYieldCrops
 
             foreach (var harvests in data.Harvests)
             {
-                this.LoadCropHarvestRulesFor(harvests.CropName,harvests.HarvestRules);
+                this.LoadCropHarvestRulesFor(harvests.CropName, harvests.HarvestRules);
             }
         }
 
         private void LoadCropHarvestRulesFor(string cropName, List<Rule> harvestRules)
         {
-            foreach(Rule rule in harvestRules)
+            foreach (Rule rule in harvestRules)
             {
                 if (rule.disableWithMods != null)
                 {
@@ -223,14 +221,15 @@ namespace MultiYieldCrops
                 }
 
 
-                if (this.allHarvestRules.ContainsKey(cropName)){
+                if (this.allHarvestRules.ContainsKey(cropName))
+                {
                     this.allHarvestRules[cropName].Add(rule);
-                } else
+                }
+                else
                 {
                     this.allHarvestRules[cropName] = new List<Rule>();
                     this.allHarvestRules[cropName].Add(rule);
                 }
-                
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace ShopTileFramework.Framework
+namespace ShopTileFramework.Framework
 {
     class ModConfig
     {

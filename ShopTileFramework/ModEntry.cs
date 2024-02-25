@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+using System.Linq;
+using HarmonyLib;
+using Microsoft.Xna.Framework;
 using ShopTileFramework.Framework;
 using ShopTileFramework.Framework.Apis;
 using ShopTileFramework.Framework.Patches;
@@ -7,8 +9,6 @@ using ShopTileFramework.Framework.Utility;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
-using System.Linq;
-using HarmonyLib;
 using xTile.ObjectModel;
 
 namespace ShopTileFramework
@@ -167,7 +167,7 @@ namespace ShopTileFramework
             ShopManager.InitializeShops();
 
             ApiManager.RegisterJsonAssets();
-            if (ApiManager.JsonAssets!= null)
+            if (ApiManager.JsonAssets != null)
                 ApiManager.JsonAssets.AddedItemsToShop += this.JsonAssets_AddedItemsToShop;
 
             ApiManager.RegisterExpandedPreconditionsUtility();
@@ -241,7 +241,7 @@ namespace ShopTileFramework
                 return;
 
             //if there is a tile property, attempt to open shop if it exists
-            this.CheckForShopToOpen(tileProperty,e);
+            this.CheckForShopToOpen(tileProperty, e);
         }
 
         /// <summary>
@@ -304,7 +304,6 @@ namespace ShopTileFramework
                             $"was not found.", LogLevel.Debug);
                     }
                 }
-
             } //end shopProperty null check
         }
     }

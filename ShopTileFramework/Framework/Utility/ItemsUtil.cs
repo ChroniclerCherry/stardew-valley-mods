@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using ShopTileFramework.Framework.Apis;
 using StardewValley;
@@ -149,7 +149,7 @@ namespace ShopTileFramework.Framework.Utility
             return null;
         }
 
-        public static void RegisterPacksToRemove(string[] JApacks,string[] recipePacks, string[] itemNames)
+        public static void RegisterPacksToRemove(string[] JApacks, string[] recipePacks, string[] itemNames)
         {
             if (JApacks != null)
                 PacksToRemove = PacksToRemove.Union(JApacks).ToList();
@@ -220,14 +220,13 @@ namespace ShopTileFramework.Framework.Utility
                 {
                     ItemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
                 }
-
             }
         }
 
         public static Dictionary<ISalable, ItemStockInformation> RemoveSpecifiedJAPacks(Dictionary<ISalable, ItemStockInformation> stock)
         {
             List<ISalable> removeItems = (stock.Keys.Where(item => ItemsToRemove.Contains(item.Name))).ToList();
-            
+
             foreach (var item in removeItems)
             {
                 stock.Remove(item);

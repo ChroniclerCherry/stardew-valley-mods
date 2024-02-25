@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using StardewValley;
 using StardewValley.Menus;
 using xTile.ObjectModel;
@@ -18,7 +18,7 @@ namespace ShopTileFramework.Framework.Utility
         /// <param name="layer">the name of the layer</param>
         /// <param name="tile">the coordinates of the tile</param>
         /// <returns>The tile property if there is one, null if there isn't</returns>
-        public  static IPropertyCollection GetTileProperty(GameLocation map, string layer, Vector2 tile)
+        public static IPropertyCollection GetTileProperty(GameLocation map, string layer, Vector2 tile)
         {
             if (map == null)
                 return null;

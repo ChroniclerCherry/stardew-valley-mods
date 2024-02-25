@@ -1,12 +1,12 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using System;
+using Microsoft.Xna.Framework.Graphics;
+using ShopTileFramework.Framework.Apis;
 using ShopTileFramework.Framework.Data;
 using ShopTileFramework.Framework.ItemPriceAndStock;
 using ShopTileFramework.Framework.Utility;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
-using System;
-using ShopTileFramework.Framework.Apis;
 
 namespace ShopTileFramework.Framework.Shop
 {
@@ -47,7 +47,7 @@ namespace ShopTileFramework.Framework.Shop
             try
             {
                 //if the seasonal version exists, load it
-                if (this.ContentPack.HasFile(seasonalPath)) 
+                if (this.ContentPack.HasFile(seasonalPath))
                 {
                     this._portrait = this.ContentPack.ModContent.Load<Texture2D>(seasonalPath);
                 }
@@ -59,7 +59,7 @@ namespace ShopTileFramework.Framework.Shop
             }
             catch (Exception ex) //couldn't load the image
             {
-                ModEntry.monitor.Log(ex.Message+ex.StackTrace, LogLevel.Error);
+                ModEntry.monitor.Log(ex.Message + ex.StackTrace, LogLevel.Error);
             }
         }
         /// <summary>

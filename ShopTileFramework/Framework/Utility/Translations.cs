@@ -1,6 +1,6 @@
-﻿using StardewModdingAPI;
-using StardewValley;
 using System.Collections.Generic;
+using StardewModdingAPI;
+using StardewValley;
 
 namespace ShopTileFramework.Framework.Utility
 {

@@ -1,4 +1,4 @@
-﻿namespace MultiYieldCrops.Framework
+namespace MultiYieldCrops.Framework
 {
     class Rule
     {

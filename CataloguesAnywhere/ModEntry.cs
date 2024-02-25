@@ -1,4 +1,4 @@
-﻿using CataloguesAnywhere.Framework;
+using CataloguesAnywhere.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;

@@ -1,4 +1,4 @@
-﻿using FarmRearranger.Framework;
+using FarmRearranger.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -8,7 +8,6 @@ using StardewValley.GameData.BigCraftables;
 using StardewValley.GameData.Shops;
 using StardewValley.Menus;
 using StardewValley.TokenizableStrings;
-using System.Collections.Generic;
 
 namespace FarmRearranger
 {

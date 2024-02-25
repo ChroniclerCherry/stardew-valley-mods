@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
@@ -9,7 +9,6 @@ namespace MultiYieldCrops.Framework
 {
     class HarvestPatches
     {
-
         private static IMonitor Monitor;
 
         // call this method from your Entry class
@@ -18,7 +17,7 @@ namespace MultiYieldCrops.Framework
             Monitor = monitor;
         }
 
-        public static void CropHarvest_prefix(Crop __instance,out bool __state)
+        public static void CropHarvest_prefix(Crop __instance, out bool __state)
         {
             //checks if crop can be harvested
             __state = ((int)__instance.currentPhase >= __instance.phaseDays.Count - 1 && (!__instance.fullyGrown || (int)__instance.dayOfCurrentPhase <= 0));
@@ -27,7 +26,6 @@ namespace MultiYieldCrops.Framework
         public static void CropHarvest_postfix(int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester,
             Crop __instance, bool __state)
         {
-
             if (!__state)
                 return;
 
@@ -37,9 +35,10 @@ namespace MultiYieldCrops.Framework
                 string cropName = ItemRegistry.GetDataOrErrorItem(cropId).InternalName;
                 int fertilizerQualityLevel = soil.GetFertilizerQualityBoostLevel();
 
-                ModEntry.instance.SpawnHarvest(new Vector2(xTile,yTile), cropName, fertilizerQualityLevel, junimoHarvester);
+                ModEntry.instance.SpawnHarvest(new Vector2(xTile, yTile), cropName, fertilizerQualityLevel, junimoHarvester);
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Monitor.Log($"Failed in {nameof(CropHarvest_postfix)}:\n{ex}", LogLevel.Error);
             }

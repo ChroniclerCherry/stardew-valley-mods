@@ -1,4 +1,4 @@
-﻿using StardewModdingAPI;
+using StardewModdingAPI;
 
 namespace ShopTileFramework.Framework.Apis
 {
@@ -24,7 +24,6 @@ namespace ShopTileFramework.Framework.Apis
                 ModEntry.monitor.Log("Json Assets API not detected. This is only an issue if you're using cystom Json Assets items and shops trying to sell them, as custom items will not appear in shops.",
                     LogLevel.Info);
             }
-
         }
 
         /// <summary>
@@ -70,6 +69,5 @@ namespace ShopTileFramework.Framework.Apis
         {
             //TODO: when FAVR is released, start deprecating support for BFAV
         }
-
     }
 }

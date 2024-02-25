@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -54,7 +54,7 @@ namespace TrainStation
 
 
             this.ConditionsApi.Initialize(false, this.ModManifest.UniqueID);
-            
+
         }
 
         public override object GetApi()
@@ -81,7 +81,6 @@ namespace TrainStation
 
         private void DrawInTicketStation()
         {
-            
             GameLocation railway = Game1.getLocationFromName("Railroad");
 
             //get references to all the stuff I need to edit the railroad map
@@ -100,8 +99,8 @@ namespace TrainStation
             }
             catch (Exception e)
             {
-                this.Monitor.Log(e.ToString(),LogLevel.Error);
-                this.Monitor.Log("Train station has recovered from a crash and will continue to function, however the ticket station may be invisible or looked glitched. This is caused by the map mod you are using changing tilesheet orders through renaming vanilla tilesheets or not naming custom tilesheets properly. Please report this to the map mod you are using to fix this issue.",LogLevel.Alert);
+                this.Monitor.Log(e.ToString(), LogLevel.Error);
+                this.Monitor.Log("Train station has recovered from a crash and will continue to function, however the ticket station may be invisible or looked glitched. This is caused by the map mod you are using changing tilesheet orders through renaming vanilla tilesheets or not naming custom tilesheets properly. Please report this to the map mod you are using to fix this issue.", LogLevel.Alert);
                 //draw anything from the tilesheet
                 buildingsLayer.Tiles[this.Config.TicketStationX, this.Config.TicketStationY] =
                     new StaticTile(buildingsLayer, outdoorsTilesheet, BlendMode.Alpha, 1);
@@ -146,7 +145,7 @@ namespace TrainStation
             content.BoatStops = new List<BoatStop>();
 
             this.TrainStops = new List<TrainStop>() { RailRoadStop };
-            this.BoatStops = new List<BoatStop>(){ BoatTunnelStop };
+            this.BoatStops = new List<BoatStop>() { BoatTunnelStop };
 
             foreach (IContentPack pack in this.Helper.ContentPacks.GetOwned())
             {
@@ -180,10 +179,9 @@ namespace TrainStation
                         this.BoatStops.Add(cp.BoatStops.ElementAt(i));
                     }
                 }
-
             }
-
         }
+
         private void RemoveInvalidLocations()
         {
             for (int i = this.TrainStops.Count - 1; i >= 0; i--)
@@ -194,7 +192,6 @@ namespace TrainStation
                     this.Monitor.Log($"Could not find location {stop.TargetMapName}", LogLevel.Warn);
                     this.TrainStops.RemoveAt(i);
                 }
-
             }
 
             for (int i = this.BoatStops.Count - 1; i >= 0; i--)
@@ -205,7 +202,6 @@ namespace TrainStation
                     this.Monitor.Log($"Could not find location {stop.TargetMapName}", LogLevel.Warn);
                     this.BoatStops.RemoveAt(i);
                 }
-
             }
         }
 
@@ -235,12 +231,12 @@ namespace TrainStation
             if (tileProperty == "TrainStation")
             {
                 this.OpenTrainMenu();
-            } else if (this.BoatStops.Count > 0 && tileProperty == "BoatTicket" && Game1.MasterPlayer.hasOrWillReceiveMail("willyBoatFixed"))
+            }
+            else if (this.BoatStops.Count > 0 && tileProperty == "BoatTicket" && Game1.MasterPlayer.hasOrWillReceiveMail("willyBoatFixed"))
             {
                 this.OpenBoatMenu();
                 this.Helper.Input.Suppress(e.Button);
             }
-
         }
 
         public void OpenBoatMenu()
@@ -274,7 +270,7 @@ namespace TrainStation
 
             if (Game1.currentLocation is BoatTunnel tunnel)
             {
-                responses.Add(new Response("GingerIsland",this.Helper.Translation.Get("GingerIsland") + $" - {tunnel.TicketPrice}g"));
+                responses.Add(new Response("GingerIsland", this.Helper.Translation.Get("GingerIsland") + $" - {tunnel.TicketPrice}g"));
             }
             responses.Add(new Response("Cancel", this.Helper.Translation.Get("MenuCancelOption")));
 
@@ -331,7 +327,6 @@ namespace TrainStation
 
             if (whichAnswer == "GingerIsland")
             {
-
                 if (Game1.currentLocation is BoatTunnel tunnel)
                 {
                     if (Game1.player.Money >= tunnel.TicketPrice)
@@ -374,7 +369,6 @@ namespace TrainStation
 
         private void AttemptToWarpBoat(BoatStop stop)
         {
-
             if (!this.TryToChargeMoney(stop.Cost))
             {
                 Game1.drawObjectDialogue(this.Helper.Translation.Get("NotEnoughMoney", new { DestinationName = stop.TranslatedName }));
@@ -385,7 +379,6 @@ namespace TrainStation
         }
         private void AttemptToWarp(TrainStop stop)
         {
-
             if (!this.TryToChargeMoney(stop.Cost))
             {
                 Game1.drawObjectDialogue(this.Helper.Translation.Get("NotEnoughMoney", new { DestinationName = stop.TranslatedName }));

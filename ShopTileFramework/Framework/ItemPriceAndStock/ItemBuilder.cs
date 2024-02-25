@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ShopTileFramework.Framework.Utility;
 using StardewModdingAPI;
@@ -68,7 +68,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             var priceStockCurrency = this.GetPriceStockAndCurrency(item, priceMultiplier);
             this._itemPriceAndStock.Add(item, priceStockCurrency);
 
-            return true;       
+            return true;
         }
 
         /// <summary>

@@ -1,5 +1,5 @@
-﻿using StardewValley;
 using System.Collections.Generic;
+using StardewValley;
 
 namespace ShopTileFramework.Framework.Apis
 {

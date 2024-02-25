@@ -1,4 +1,4 @@
-﻿namespace SlimeHutchLimit.Framework
+namespace SlimeHutchLimit.Framework
 {
     public class Config
     {

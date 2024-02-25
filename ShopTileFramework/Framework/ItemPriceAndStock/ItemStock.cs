@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using ShopTileFramework.Framework.Apis;
 using ShopTileFramework.Framework.Data;
@@ -82,7 +82,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             double pricemultiplier = 1;
             if (this._priceMultiplierWhen != null)
             {
-                foreach (KeyValuePair<double,string[]> kvp in this._priceMultiplierWhen)
+                foreach (KeyValuePair<double, string[]> kvp in this._priceMultiplierWhen)
                 {
                     if (ApiManager.Conditions.CheckConditions(kvp.Value))
                     {
@@ -139,7 +139,6 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             {
                 this._builder.AddItemToStock(itemName, pricemultiplier);
             }
-
         }
 
         /// <summary>
@@ -165,7 +164,6 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
 
                     if (crops != null)
                     {
-
                         foreach (string crop in crops)
                         {
                             if (this.ExcludeFromJaPacks != null && this.ExcludeFromJaPacks.Contains(crop)) continue;
@@ -177,7 +175,6 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
 
                     if (trees != null)
                     {
-
                         foreach (string tree in trees)
                         {
                             if (this.ExcludeFromJaPacks != null && this.ExcludeFromJaPacks.Contains(tree)) continue;
@@ -230,6 +227,5 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
                     return null;
             }
         }
-
     }
 }

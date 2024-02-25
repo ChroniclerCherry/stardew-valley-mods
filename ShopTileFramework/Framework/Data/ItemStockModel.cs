@@ -1,4 +1,4 @@
-﻿namespace ShopTileFramework.Framework.Data
+namespace ShopTileFramework.Framework.Data
 {
     abstract class ItemStockModel
     {

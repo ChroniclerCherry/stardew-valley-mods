@@ -1,12 +1,11 @@
-﻿using LimitedCampfireCooking.Framework;
+using System.Collections.Generic;
+using System.Linq;
+using LimitedCampfireCooking.Framework;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace LimitedCampfireCooking
 {
@@ -27,7 +26,7 @@ namespace LimitedCampfireCooking
         {
             this.CustomCraftingStations = this.Helper.ModRegistry.GetApi<ICustomCraftingStationsApi>("Cherry.CustomCraftingStations");
             if (this.CustomCraftingStations != null)
-                this.Monitor.Log("Custom Crafting Station detected. Compatibility patch added.",LogLevel.Info);
+                this.Monitor.Log("Custom Crafting Station detected. Compatibility patch added.", LogLevel.Info);
         }
 
         private void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)

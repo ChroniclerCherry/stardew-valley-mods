@@ -1,6 +1,6 @@
 ﻿{
     "robinletter": "嘿，@！^我和玛鲁一直在做一个新项目，我们想也许你能从中得到一些有用的东西。 ^它被称为“农舍排布器”:一套方便的蓝图，你可以用来改变你自己的农场建筑布局，而不必叫我过来才能排布！^我已经把它们加到我的店里了，所以你可以随时来取。保重！^^-罗宾[#]Rearranger Notice",
-    "CantBuildOffFarm" : "你只能在你的农场里重新布置你的建筑。",
+    "CantBuildOffFarm": "你只能在你的农场里重新布置你的建筑。",
 
     "FarmRearranger_Name": "农场布局器",
     "FarmRearranger_Description": "它可以让你移动你的农场建筑。"

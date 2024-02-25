@@ -1,4 +1,4 @@
-﻿using StardewModdingAPI;
+using StardewModdingAPI;
 using System.Collections.Generic;
 
 namespace PlatonicRelationships.Framework

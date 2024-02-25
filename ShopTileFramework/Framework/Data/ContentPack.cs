@@ -1,4 +1,4 @@
-﻿using ShopTileFramework.Framework.Shop;
+using ShopTileFramework.Framework.Shop;
 
 namespace ShopTileFramework.Framework.Data
 {

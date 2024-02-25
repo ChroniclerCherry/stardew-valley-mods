@@ -1,4 +1,4 @@
-﻿namespace HayBalesSilo.Framework
+namespace HayBalesSilo.Framework
 {
     class ModConfig
     {

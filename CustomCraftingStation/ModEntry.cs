@@ -1,6 +1,6 @@
-﻿using System;
-using System.Linq;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using CustomCraftingStation.Framework;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
@@ -34,7 +34,7 @@ namespace CustomCraftingStation
         {
             if (Constants.TargetPlatform == GamePlatform.Android)
             {
-                this.Monitor.Log("Custom Crafting Stations does not currently support Android.",LogLevel.Error);
+                this.Monitor.Log("Custom Crafting Stations does not currently support Android.", LogLevel.Error);
                 return;
             }
 
@@ -76,7 +76,6 @@ namespace CustomCraftingStation
 
         private void Display_RenderingActiveMenu(object sender, StardewModdingAPI.Events.RenderingActiveMenuEventArgs e)
         {
-
             if (!Context.IsWorldReady)
                 return;
 
@@ -188,7 +187,6 @@ namespace CustomCraftingStation
                 return;
             foreach (var station in craftingStations)
             {
-
                 int numRecipes = station.CraftingRecipes.Count;
                 for (int i = numRecipes - 1; i >= 0; i--)
                 {

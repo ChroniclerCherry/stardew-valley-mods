@@ -1,4 +1,4 @@
-﻿namespace ProfitMargins.Framework
+namespace ProfitMargins.Framework
 {
     class ModConfig
     {

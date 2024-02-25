@@ -1,5 +1,5 @@
-﻿using ShopTileFramework.Framework.ItemPriceAndStock;
 using System.Collections.Generic;
+using ShopTileFramework.Framework.ItemPriceAndStock;
 
 namespace ShopTileFramework.Framework.Data
 {

@@ -1,4 +1,4 @@
-﻿namespace CustomCraftingStation.Framework
+namespace CustomCraftingStation.Framework
 {
     public class CustomCraftingStationsApi : ICustomCraftingStationsApi
     {

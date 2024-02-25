@@ -1,11 +1,11 @@
-﻿using HarmonyLib;
+using System.Collections.Generic;
+using System.Linq;
+using HarmonyLib;
 using ShopTileFramework.Framework.Shop;
 using ShopTileFramework.Framework.Utility;
 using StardewValley;
 using StardewValley.GameData.Shops;
 using StardewValley.Internal;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ShopTileFramework.Framework.Patches
 {

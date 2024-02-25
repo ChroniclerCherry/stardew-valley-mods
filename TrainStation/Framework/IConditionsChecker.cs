@@ -1,4 +1,4 @@
-﻿namespace TrainStation.Framework
+namespace TrainStation.Framework
 {
     public interface IConditionsChecker
     {

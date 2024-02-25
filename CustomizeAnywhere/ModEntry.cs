@@ -1,4 +1,4 @@
-﻿using CustomizeAnywhere.Framework;
+using CustomizeAnywhere.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -20,7 +20,7 @@ namespace CustomizeAnywhere
             monitor = this.Monitor;
 
             this.DresserAndMirror = new DresserAndMirror(helper, this.ModManifest.UniqueID);
-            
+
             this.Config = this.Helper.ReadConfig<ModConfig>();
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
         }

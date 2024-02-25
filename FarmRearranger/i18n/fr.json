@@ -1,6 +1,6 @@
 ﻿{
     "robinletter": "Héy @! ^Maru et moi avons travaillé sur un nouveau projet, et nous avons pensé que vous pourriez peut-être vous en servir. ^C'est ce qu'on appelle un 'Réarranger': un ensemble pratique de plans que vous pouvez utiliser pour changer la disposition de vos bâtiments de ferme par vous-même sans avoir à me téléphoner! ^Je les ai ajoutés à ma boutique, alors n'hésitez pas à venir en chercher un quand vous le souhaitez. Au revoir! ^^-Robin[#]Avis de Réarranger",
-    "CantBuildOffFarm" : "Vous ne pouvez réorganiser vos bâtiments qu'à partir de votre ferme.",
+    "CantBuildOffFarm": "Vous ne pouvez réorganiser vos bâtiments qu'à partir de votre ferme.",
 
     // TODO
     "FarmRearranger_Name": "Farm Rearranger",

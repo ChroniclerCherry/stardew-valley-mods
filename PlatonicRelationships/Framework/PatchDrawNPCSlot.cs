@@ -1,4 +1,4 @@
-﻿namespace PlatonicRelationships.Framework
+namespace PlatonicRelationships.Framework
 {
     //patching the method SocialPage.drawNPCSlot()
     public static class PatchDrawNpcSlotHeart

@@ -1,4 +1,4 @@
-﻿namespace LimitedCampfireCooking
+namespace LimitedCampfireCooking
 {
     public interface ICustomCraftingStationsApi
     {

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using HarmonyLib;
@@ -23,7 +22,6 @@ namespace PlatonicRelationships.Framework
                     }
                     else if (instructionList[i].operand.ToString() == "2498")
                     {
-
                         //changes the hard cap for non-dating from 2498 to 10 hearts
                         instructionList[i].operand = 2500;
                         break;
@@ -32,6 +30,5 @@ namespace PlatonicRelationships.Framework
             }
             return instructionList.AsEnumerable();
         }
-
     }
 }

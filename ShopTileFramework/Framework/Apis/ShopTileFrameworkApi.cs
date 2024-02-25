@@ -1,8 +1,8 @@
-﻿using ShopTileFramework.Framework.Data;
-using ShopTileFramework.Framework.Shop;
-using StardewValley;
 using System;
 using System.Collections.Generic;
+using ShopTileFramework.Framework.Data;
+using ShopTileFramework.Framework.Shop;
+using StardewValley;
 
 namespace ShopTileFramework.Framework.Apis
 {
@@ -102,6 +102,5 @@ namespace ShopTileFramework.Framework.Apis
 
             return shop.StockManager.ItemPriceAndStock;
         }
-
     }
 }

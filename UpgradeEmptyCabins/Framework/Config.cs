@@ -1,4 +1,4 @@
-﻿namespace UpgradeEmptyCabins.Framework
+namespace UpgradeEmptyCabins.Framework
 {
     internal class Config
     {

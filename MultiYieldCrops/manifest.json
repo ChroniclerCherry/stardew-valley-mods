@@ -1,10 +1,10 @@
 ﻿{
-  "Name": "Multi Yield Crops",
-  "Author": "Cherry",
-  "Version": "1.0.2",
-  "Description": "Allows crops to yield more than one kind of item",
-  "UniqueID": "Cherry.MultiYieldCrops",
-  "EntryDll": "MultiYieldCrops.dll",
-  "MinimumApiVersion": "3.8.0",
-  "UpdateKeys": ["Nexus:6069"]
+    "Name": "Multi Yield Crops",
+    "Author": "Cherry",
+    "Version": "1.0.2",
+    "Description": "Allows crops to yield more than one kind of item",
+    "UniqueID": "Cherry.MultiYieldCrops",
+    "EntryDll": "MultiYieldCrops.dll",
+    "MinimumApiVersion": "3.8.0",
+    "UpdateKeys": [ "Nexus:6069" ]
 }

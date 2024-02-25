@@ -1,8 +1,7 @@
-﻿using StardewModdingAPI;
-using StardewValley;
-using System;
 using HarmonyLib;
 using SlimeHutchLimit.Framework;
+using StardewModdingAPI;
+using StardewValley;
 
 namespace SlimeHutchLimit
 {
@@ -28,7 +27,6 @@ namespace SlimeHutchLimit
 
         private void ChangeMaxSlimes(string arg1, string[] arg2)
         {
-
             if (int.TryParse(arg2[0], out int newLimit))
             {
                 _config.MaxSlimesInHutch = newLimit;

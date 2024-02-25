@@ -1,4 +1,4 @@
-﻿namespace FarmRearranger.Framework
+namespace FarmRearranger.Framework
 {
     class ModConfig
     {

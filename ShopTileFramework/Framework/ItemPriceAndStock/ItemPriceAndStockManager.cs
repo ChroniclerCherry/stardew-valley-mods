@@ -1,7 +1,7 @@
-﻿using ShopTileFramework.Framework.Shop;
+using System.Collections.Generic;
+using ShopTileFramework.Framework.Shop;
 using ShopTileFramework.Framework.Utility;
 using StardewValley;
-using System.Collections.Generic;
 
 namespace ShopTileFramework.Framework.ItemPriceAndStock
 {
@@ -62,7 +62,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             {
                 var priceAndStock = stock.Update();
                 //null is returned if conditions aren't met, skip adding this stock
-                if (priceAndStock == null) 
+                if (priceAndStock == null)
                     continue;
 
                 this.Add(priceAndStock);
@@ -84,6 +84,5 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
                 this.ItemPriceAndStock.Add(kvp.Key, kvp.Value);
             }
         }
-
     }
 }

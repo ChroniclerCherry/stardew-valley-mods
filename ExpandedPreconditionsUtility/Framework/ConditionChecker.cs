@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Netcode;
@@ -101,7 +101,6 @@ namespace ExpandedPreconditionsUtility.Framework
 
                     return false;
                 }
-
             }
 
             if (this._verboseLogging)
@@ -342,6 +341,5 @@ namespace ExpandedPreconditionsUtility.Framework
 
             return true;
         }
-
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
@@ -59,7 +59,6 @@ namespace UpgradeEmptyCabins
                     ((Cabin)cab.indoors.Value).furniture.Remove(bed);
                     this.Monitor.Log("Bed removed from " + cab.GetIndoorsName(), LogLevel.Info);
                 }
-                    
             }
         }
 
@@ -78,7 +77,7 @@ namespace UpgradeEmptyCabins
                     {
                         continue;
                     }
-                    
+
                     ((Cabin)cab.indoors.Value).Objects.Remove(obj.Key);
                     this.Monitor.Log("Seed box removed from " + cab.GetIndoorsName(), LogLevel.Info);
                 }
@@ -92,7 +91,6 @@ namespace UpgradeEmptyCabins
 
         private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-
             if (!Context.CanPlayerMove)
                 return;
 
@@ -129,16 +127,15 @@ namespace UpgradeEmptyCabins
                     FinalUpgrade(cabin);
                 }
             }
-            
         }
 
         private static void FinalUpgrade(Building cabin)
         {
             var cabinIndoors = ((Cabin)cabin.indoors.Value);
-                cabin.daysUntilUpgrade.Value = -1;
-                cabinIndoors.moveObjectsForHouseUpgrade(cabinIndoors.upgradeLevel);
-                cabinIndoors.setMapForUpgradeLevel(cabinIndoors.upgradeLevel);
-                cabinIndoors.upgradeLevel++;
+            cabin.daysUntilUpgrade.Value = -1;
+            cabinIndoors.moveObjectsForHouseUpgrade(cabinIndoors.upgradeLevel);
+            cabinIndoors.setMapForUpgradeLevel(cabinIndoors.upgradeLevel);
+            cabinIndoors.upgradeLevel++;
         }
 
         internal void AskForUpgrade()
@@ -162,13 +159,13 @@ namespace UpgradeEmptyCabins
                 switch (cabinIndoors.upgradeLevel)
                 {
                     case 0:
-                        displayInfo = $"{cabin.buildingType.Value} {this.Helper.Translation.Get("robin.hu1_materials") }";
+                        displayInfo = $"{cabin.buildingType.Value} {this.Helper.Translation.Get("robin.hu1_materials")}";
                         break;
                     case 1:
-                        displayInfo = $"{cabin.buildingType.Value} {this.Helper.Translation.Get("robin.hu2_materials") }";
+                        displayInfo = $"{cabin.buildingType.Value} {this.Helper.Translation.Get("robin.hu2_materials")}";
                         break;
                     case 2:
-                        displayInfo = $"{cabin.buildingType.Value} {this.Helper.Translation.Get("robin.hu3_materials") }";
+                        displayInfo = $"{cabin.buildingType.Value} {this.Helper.Translation.Get("robin.hu3_materials")}";
                         break;
                 }
                 if (displayInfo != null)

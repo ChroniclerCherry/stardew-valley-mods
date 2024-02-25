@@ -1,4 +1,4 @@
-﻿namespace PlatonicRelationships.Framework
+namespace PlatonicRelationships.Framework
 {
     class ModConfig
     {

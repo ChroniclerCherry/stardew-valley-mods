@@ -1,9 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
 using ProfitMargins.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
-using StardewModdingAPI.Utilities;
 using StardewValley;
 
 namespace ProfitMargins
@@ -37,11 +34,11 @@ namespace ProfitMargins
 
         private void DayStarted(object sender, DayStartedEventArgs args)
         {
-            if (this.checkContext()) {
+            if (this.checkContext())
+            {
                 this.originalDifficulty = Game1.player.difficultyModifier;
                 Game1.player.difficultyModifier = this.config.ProfitMargin;
             }
-
         }
 
         private void OnSaving(object sender, SavingEventArgs args)
@@ -51,7 +48,6 @@ namespace ProfitMargins
                 Game1.player.difficultyModifier = this.originalDifficulty;
                 this.Monitor.Log("During save, DL:" + Game1.player.difficultyModifier.ToString(), LogLevel.Debug);
             }
-
         }
 
         private bool checkContext()
@@ -59,7 +55,8 @@ namespace ProfitMargins
             if (!Context.IsMainPlayer)
             {
                 return false;
-            } else if (Context.IsMultiplayer && !this.config.EnableInMultiplayer)
+            }
+            else if (Context.IsMultiplayer && !this.config.EnableInMultiplayer)
             {
                 return false;
             }

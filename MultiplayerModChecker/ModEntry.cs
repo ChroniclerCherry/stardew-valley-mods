@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -49,7 +49,7 @@ namespace MultiplayerModChecker
                 var farmHandMods = e.Peer.Mods.Select(m => m.ID);
                 var allMods = HostMods.Union(farmHandMods).Distinct();
 
-                foreach (var mod in allMods)
+                foreach (string mod in allMods)
                 {
                     if (this._config.IgnoredMods.Contains(mod)) continue;
 
@@ -92,7 +92,7 @@ namespace MultiplayerModChecker
 
         private void GenerateReport(MultiplayerReportData reportData)
         {
-            Dictionary<string,LogLevel> report = new Dictionary<string, LogLevel>();
+            Dictionary<string, LogLevel> report = new Dictionary<string, LogLevel>();
 
             if (!reportData.SmapiGameGameVersions.FarmhandHasSmapi)
             {
@@ -110,10 +110,12 @@ namespace MultiplayerModChecker
                     if (!modData.DoesHostHave)
                     {
                         reportData.MissingOnHost.Add($"{modData.ModName} ({modData.ModUniqueId})");
-                    } else if (!modData.DoesFarmhandHave)
+                    }
+                    else if (!modData.DoesFarmhandHave)
                     {
                         reportData.MissingOnFarmhand.Add($"{modData.ModName} ({modData.ModUniqueId})");
-                    } else if (!modData.HostModVersion.Equals(modData.FarmhandModVersion))
+                    }
+                    else if (!modData.HostModVersion.Equals(modData.FarmhandModVersion))
                     {
                         reportData.VersionMismatch.Add(this.Helper.Translation.Get("ModMismatch.Version.Each", new { ModName = modData.ModName, ModID = modData.ModUniqueId, HostVersion = modData.HostModVersion, FarmhandVersion = modData.FarmhandModVersion }));
                     }
@@ -121,7 +123,7 @@ namespace MultiplayerModChecker
             }
 
             if (reportData.MissingOnHost.Count > 0)
-                report.Add(this.Helper.Translation.Get("ModMismatch.Host",new { ModList = string.Join(",",reportData.MissingOnHost) }), LogLevel.Warn);
+                report.Add(this.Helper.Translation.Get("ModMismatch.Host", new { ModList = string.Join(",", reportData.MissingOnHost) }), LogLevel.Warn);
 
             if (reportData.MissingOnFarmhand.Count > 0)
                 report.Add(this.Helper.Translation.Get("ModMismatch.Farmhand", new { ModList = string.Join(",", reportData.MissingOnFarmhand) }), LogLevel.Warn);
@@ -129,7 +131,7 @@ namespace MultiplayerModChecker
             if (reportData.VersionMismatch.Count > 0)
                 report.Add(this.Helper.Translation.Get("ModMismatch.Version", new { ModList = string.Join(",", reportData.VersionMismatch) }), LogLevel.Warn);
 
-            this.Helper.Multiplayer.SendMessage(report,"MultiplayerReport",new []{this.ModManifest.UniqueID},new []{reportData.FarmhandId});
+            this.Helper.Multiplayer.SendMessage(report, "MultiplayerReport", new[] { this.ModManifest.UniqueID }, new[] { reportData.FarmhandId });
             this.Helper.Data.WriteJsonFile("LatestMultiplayerModReport-Host.json", this._rawReports);
             this.PublishReport(reportData, report);
         }
@@ -149,7 +151,7 @@ namespace MultiplayerModChecker
                     preface = this.Helper.Translation.Get("HostReport", new { FarmhandID = reportData.FarmhandId, FarmhandName = reportData.FarmhandName, ConnectionTime = reportData.TimeConnected });
                     this.Monitor.Log(preface, this._config.HideReportInTrace ? LogLevel.Trace : LogLevel.Warn);
                 }
-                
+
                 foreach (var log in report)
                 {
                     this.Monitor.Log(log.Key, this._config.HideReportInTrace ? LogLevel.Trace : log.Value);
@@ -170,7 +172,6 @@ namespace MultiplayerModChecker
                     this.Monitor.Log(this.Helper.Translation.Get("SuccessfulConnectionHostSide", new { FarmhandID = reportData.FarmhandId, FarmhandName = reportData.FarmhandName }),
                         LogLevel.Info);
                 }
-
             }
         }
     }
