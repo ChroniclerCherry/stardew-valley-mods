@@ -3,6 +3,7 @@
 # Release notes
 ## Upcoming release
 - Updated for Stardew Valley 1.6 and SMAPI 4.0.0.
+- Fixed repeating extra yields when harvesting a crop while your inventory is full (thanks to atravita!).
 
 ## 1.0.2
 Released 21 December 2020 for SMAPI 3.0.0 or later.
