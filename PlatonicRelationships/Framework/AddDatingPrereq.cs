@@ -28,7 +28,7 @@ namespace PlatonicRelationships.Framework
             IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
             if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/Farm"))
             {
-                changeMails(data);
+                this.changeMails(data);
             }
             else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/Beach"))
             {

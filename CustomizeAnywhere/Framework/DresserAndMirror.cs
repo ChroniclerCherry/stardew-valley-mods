@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -25,17 +25,17 @@ namespace CustomizeAnywhere.Framework
 
         public DresserAndMirror(IModHelper helper, string modId)
         {
-            ModId = modId;
-            DresserShopId = $"{modId}_Dresser";
-            CatalogueId = $"{modId}_Catalogue";
-            MirrorId = $"{modId}_Mirror";
+            this.ModId = modId;
+            this.DresserShopId = $"{modId}_Dresser";
+            this.CatalogueId = $"{modId}_Catalogue";
+            this.MirrorId = $"{modId}_Mirror";
 
-            CatalogueQualifiedId = ItemRegistry.type_bigCraftable + CatalogueId;
-            MirrorQualifiedId = ItemRegistry.type_bigCraftable + MirrorId;
+            this.CatalogueQualifiedId = ItemRegistry.type_bigCraftable + this.CatalogueId;
+            this.MirrorQualifiedId = ItemRegistry.type_bigCraftable + this.MirrorId;
 
             this.Helper = helper;
-            helper.Events.Content.AssetRequested += OnAssetRequested;
-            helper.Events.Input.ButtonPressed += Input_ButtonPressed;
+            helper.Events.Content.AssetRequested += this.OnAssetRequested;
+            helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
         }
 
         public void OpenDresser()
@@ -58,19 +58,19 @@ namespace CustomizeAnywhere.Framework
                 {
                     var data = asset.AsDictionary<string, BigCraftableData>().Data;
 
-                    data[CatalogueId] = new BigCraftableData
+                    data[this.CatalogueId] = new BigCraftableData
                     {
-                        Name = CatalogueId,
-                        DisplayName = TokenStringBuilder.LocalizedText($"Strings/BigCraftables:{CatalogueId}_Name"),
-                        Description = TokenStringBuilder.LocalizedText($"Strings/BigCraftables:{CatalogueId}_Description"),
-                        Texture = $"LooseSprites/{CatalogueId}"
+                        Name = this.CatalogueId,
+                        DisplayName = TokenStringBuilder.LocalizedText($"Strings/BigCraftables:{this.CatalogueId}_Name"),
+                        Description = TokenStringBuilder.LocalizedText($"Strings/BigCraftables:{this.CatalogueId}_Description"),
+                        Texture = $"LooseSprites/{this.CatalogueId}"
                     };
-                    data[MirrorId] = new BigCraftableData
+                    data[this.MirrorId] = new BigCraftableData
                     {
-                        Name = CatalogueId,
-                        DisplayName = TokenStringBuilder.LocalizedText($"Strings/BigCraftables:{MirrorId}_Name"),
-                        Description = TokenStringBuilder.LocalizedText($"Strings/BigCraftables:{MirrorId}_Description"),
-                        Texture = $"LooseSprites/{MirrorId}"
+                        Name = this.CatalogueId,
+                        DisplayName = TokenStringBuilder.LocalizedText($"Strings/BigCraftables:{this.MirrorId}_Name"),
+                        Description = TokenStringBuilder.LocalizedText($"Strings/BigCraftables:{this.MirrorId}_Description"),
+                        Texture = $"LooseSprites/{this.MirrorId}"
                     };
                 });
             }
@@ -82,8 +82,8 @@ namespace CustomizeAnywhere.Framework
                 {
                     var data = asset.AsDictionary<string, string>().Data;
 
-                    data[CatalogueId] = $"388 10/Field/{CatalogueId}/true/null/"; // 10 wood
-                    data[MirrorId] = $"388 10 338 2/Field/{MirrorId}/true/null/"; // 10 wood, 2 quartz
+                    data[this.CatalogueId] = $"388 10/Field/{this.CatalogueId}/true/null/"; // 10 wood
+                    data[this.MirrorId] = $"388 10 338 2/Field/{this.MirrorId}/true/null/"; // 10 wood, 2 quartz
                 });
             }
 
@@ -153,9 +153,9 @@ namespace CustomizeAnywhere.Framework
             }
 
             // add textures
-            else if (e.NameWithoutLocale.IsEquivalentTo($"LooseSprites/{CatalogueId}"))
+            else if (e.NameWithoutLocale.IsEquivalentTo($"LooseSprites/{this.CatalogueId}"))
                 e.LoadFromModFile<Texture2D>("assets/catalogue.png", AssetLoadPriority.Exclusive);
-            else if (e.NameWithoutLocale.IsEquivalentTo($"LooseSprites/{MirrorId}"))
+            else if (e.NameWithoutLocale.IsEquivalentTo($"LooseSprites/{this.MirrorId}"))
                 e.LoadFromModFile<Texture2D>("assets/mirror.png", AssetLoadPriority.Exclusive);
 
             // add translation text
@@ -165,11 +165,11 @@ namespace CustomizeAnywhere.Framework
                 {
                     var data = asset.AsDictionary<string, string>().Data;
 
-                    data[$"{CatalogueId}_Name"] = this.Helper.Translation.Get("Catalogue_Name");
-                    data[$"{CatalogueId}_Description"] = this.Helper.Translation.Get("Catalogue_Description");
+                    data[$"{this.CatalogueId}_Name"] = this.Helper.Translation.Get("Catalogue_Name");
+                    data[$"{this.CatalogueId}_Description"] = this.Helper.Translation.Get("Catalogue_Description");
 
-                    data[$"{MirrorId}_Name"] = this.Helper.Translation.Get("Mirror_Name");
-                    data[$"{MirrorId}_Description"] = this.Helper.Translation.Get("Mirror_Description");
+                    data[$"{this.MirrorId}_Name"] = this.Helper.Translation.Get("Mirror_Name");
+                    data[$"{this.MirrorId}_Description"] = this.Helper.Translation.Get("Mirror_Description");
                 });
             }
         }
@@ -183,15 +183,15 @@ namespace CustomizeAnywhere.Framework
                 Vector2 tile = ModEntry.helper.Input.GetCursorPosition().GrabTile;
                 if (loc.Objects.TryGetValue(tile, out Object obj))
                 {
-                    if (obj.QualifiedItemId == CatalogueQualifiedId)
+                    if (obj.QualifiedItemId == this.CatalogueQualifiedId)
                     {
                         this.OpenDresser();
-                        Helper.Input.Suppress(e.Button);
+                        this.Helper.Input.Suppress(e.Button);
                     }
-                    else if (obj.QualifiedItemId == MirrorQualifiedId)
+                    else if (obj.QualifiedItemId == this.MirrorQualifiedId)
                     {
                         Game1.activeClickableMenu = new CharacterCustomization(CharacterCustomization.Source.Wizard);
-                        Helper.Input.Suppress(e.Button);
+                        this.Helper.Input.Suppress(e.Button);
                     }
                 }
             }

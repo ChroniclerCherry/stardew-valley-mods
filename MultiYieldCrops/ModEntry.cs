@@ -22,7 +22,7 @@ namespace MultiYieldCrops
             instance = this;
 
             //harmony stuff
-            HarvestPatches.Initialize(Monitor);
+            HarvestPatches.Initialize(this.Monitor);
             var harmony = new Harmony(this.ModManifest.UniqueID);
             harmony.Patch(
                 original: AccessTools.Method(typeof(Crop), nameof(Crop.harvest)),
@@ -36,20 +36,20 @@ namespace MultiYieldCrops
             //    postfix: new HarmonyMethod(typeof(HarvestPatches), nameof(HarvestPatches.BushPerformUseAction_postfix))
             //);
 
-            InitializeHarvestRules();
+            this.InitializeHarvestRules();
         }
 
         public void SpawnHarvest(Vector2 tileLocation, string cropName, int fertilizer, JunimoHarvester junimo = null)
         {
 
-            if (!allHarvestRules.ContainsKey(cropName))
+            if (!this.allHarvestRules.ContainsKey(cropName))
                 return;
 
             Vector2 location = new Vector2((tileLocation.X * 64 + 32), (tileLocation.Y * 64 + 32));
 
-            foreach (Rule data in allHarvestRules[cropName])
+            foreach (Rule data in this.allHarvestRules[cropName])
             {
-                foreach (Item item in SpawnItems(data,fertilizer))
+                foreach (Item item in this.SpawnItems(data,fertilizer))
                 {
                     if (item == null)
                         continue;
@@ -69,7 +69,7 @@ namespace MultiYieldCrops
         private IEnumerable<Item> SpawnItems(Rule data, int fertilizerQualityLevel)
         {
             int quality = fertilizerQualityLevel;
-            string itemId = GetIdByName(data.ItemName, data.ExtraYieldItemType);
+            string itemId = this.GetIdByName(data.ItemName, data.ExtraYieldItemType);
             Point tile = Game1.player.TilePoint;
 
             //stole this code from the game to calculate crop quality
@@ -88,7 +88,7 @@ namespace MultiYieldCrops
 
             if (itemId is null)
             {
-                Monitor.Log($"No idea what {data.ExtraYieldItemType} {data.ItemName} is", LogLevel.Warn);
+                this.Monitor.Log($"No idea what {data.ExtraYieldItemType} {data.ItemName} is", LogLevel.Warn);
                 yield return null;
             }
 
@@ -164,29 +164,29 @@ namespace MultiYieldCrops
 
         private void InitializeHarvestRules()
         {
-            allHarvestRules = new Dictionary<string, List<Rule>>();
+            this.allHarvestRules = new Dictionary<string, List<Rule>>();
             try
             {
-                ContentModel data = Helper.ReadConfig<ContentModel>();
+                ContentModel data = this.Helper.ReadConfig<ContentModel>();
                 if (data.Harvests != null)
                 {
-                    LoadContentPack(data);
+                    this.LoadContentPack(data);
                 }
 
             } catch(Exception ex)
             {
-                Monitor.Log(ex.Message + ex.StackTrace,LogLevel.Error);
+                this.Monitor.Log(ex.Message + ex.StackTrace,LogLevel.Error);
             }
 
-            foreach (var pack in Helper.ContentPacks.GetOwned())
+            foreach (var pack in this.Helper.ContentPacks.GetOwned())
             {
                 if (!pack.HasFile("HarvestRules.json"))
                 {
-                    Monitor.Log($"{pack.Manifest.UniqueID} does not have a HarvestRules.json", LogLevel.Error);
+                    this.Monitor.Log($"{pack.Manifest.UniqueID} does not have a HarvestRules.json", LogLevel.Error);
                     continue;
                 }
-                
-                LoadContentPack(pack.ReadJsonFile<ContentModel>("HarvestRules.json"));
+
+                this.LoadContentPack(pack.ReadJsonFile<ContentModel>("HarvestRules.json"));
                 
             }
         }
@@ -197,7 +197,7 @@ namespace MultiYieldCrops
 
             foreach (var harvests in data.Harvests)
             {
-                LoadCropHarvestRulesFor(harvests.CropName,harvests.HarvestRules);
+                this.LoadCropHarvestRulesFor(harvests.CropName,harvests.HarvestRules);
             }
         }
 
@@ -210,9 +210,9 @@ namespace MultiYieldCrops
                     bool skipRule = false;
                     foreach (string mod in rule.disableWithMods)
                     {
-                        if (Helper.ModRegistry.IsLoaded(mod))
+                        if (this.Helper.ModRegistry.IsLoaded(mod))
                         {
-                            Monitor.Log($"A rule was skipped for {cropName} because {mod} was found", LogLevel.Trace);
+                            this.Monitor.Log($"A rule was skipped for {cropName} because {mod} was found", LogLevel.Trace);
                             skipRule = true;
                             break;
                         }
@@ -223,12 +223,12 @@ namespace MultiYieldCrops
                 }
 
 
-                if (allHarvestRules.ContainsKey(cropName)){
-                    allHarvestRules[cropName].Add(rule);
+                if (this.allHarvestRules.ContainsKey(cropName)){
+                    this.allHarvestRules[cropName].Add(rule);
                 } else
                 {
-                    allHarvestRules[cropName] = new List<Rule>();
-                    allHarvestRules[cropName].Add(rule);
+                    this.allHarvestRules[cropName] = new List<Rule>();
+                    this.allHarvestRules[cropName].Add(rule);
                 }
                 
             }

@@ -11,11 +11,11 @@ namespace SlimeHutchLimit
         private static Config _config;
         public override void Entry(IModHelper helper)
         {
-            _config = Helper.ReadConfig<Config>();
+            _config = this.Helper.ReadConfig<Config>();
 
-            Helper.ConsoleCommands.Add("SetSlimeHutchLimit", "Changes the max number of slimes that can inhabit a slime hutch.\n\nUsage: SetSlimeHutchLimit <value>\n- value: the number of slimes", ChangeMaxSlimes);
+            this.Helper.ConsoleCommands.Add("SetSlimeHutchLimit", "Changes the max number of slimes that can inhabit a slime hutch.\n\nUsage: SetSlimeHutchLimit <value>\n- value: the number of slimes", this.ChangeMaxSlimes);
 
-            Harmony harmony = new Harmony(ModManifest.UniqueID);
+            Harmony harmony = new Harmony(this.ModManifest.UniqueID);
             harmony.Patch(AccessTools.Method(typeof(SlimeHutch), nameof(SlimeHutch.isFull)),
                 postfix: new HarmonyMethod(typeof(ModEntry), nameof(ModEntry.SlimeHutch_isFull_postfix)));
 
@@ -32,12 +32,12 @@ namespace SlimeHutchLimit
             if (int.TryParse(arg2[0], out int newLimit))
             {
                 _config.MaxSlimesInHutch = newLimit;
-                Helper.WriteConfig(_config);
-                Monitor.Log($"The new Slime limit is: {_config.MaxSlimesInHutch}");
+                this.Helper.WriteConfig(_config);
+                this.Monitor.Log($"The new Slime limit is: {_config.MaxSlimesInHutch}");
             }
             else
             {
-                Monitor.Log($"Invalid input.");
+                this.Monitor.Log($"Invalid input.");
             }
         }
     }

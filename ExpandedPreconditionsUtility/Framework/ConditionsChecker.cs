@@ -10,22 +10,22 @@ namespace ExpandedPreconditionsUtility.Framework
         private readonly IMonitor _monitor;
         internal ConditionsChecker(IMonitor monitor, IModHelper helper)
         {
-            _helper = helper;
-            _monitor = monitor;
+            this._helper = helper;
+            this._monitor = monitor;
         }
 
         public void Initialize(bool verbose, string uniqueId)
         {
-            _conditionChecker = new ConditionChecker(_helper, _monitor, verbose, uniqueId);
+            this._conditionChecker = new ConditionChecker(this._helper, this._monitor, verbose, uniqueId);
         }
         public bool CheckConditions(string[] conditions)
         {
-            return _conditionChecker.CheckConditions(conditions);
+            return this._conditionChecker.CheckConditions(conditions);
         }
 
         public bool CheckConditions(string conditions)
         {
-            return _conditionChecker.CheckConditions(new[] { conditions });
+            return this._conditionChecker.CheckConditions(new[] { conditions });
         }
     }
 }

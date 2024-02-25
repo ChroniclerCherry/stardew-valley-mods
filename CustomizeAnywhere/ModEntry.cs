@@ -17,7 +17,7 @@ namespace CustomizeAnywhere
         public override void Entry(IModHelper h)
         {
             helper = h;
-            monitor = Monitor;
+            monitor = this.Monitor;
 
             this.DresserAndMirror = new DresserAndMirror(helper, this.ModManifest.UniqueID);
             
@@ -29,7 +29,7 @@ namespace CustomizeAnywhere
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
             // ignore if player isn't free to move or direct access is turned off in the config
-            if (!Context.CanPlayerMove || !Config.canAccessMenusAnywhere)
+            if (!Context.CanPlayerMove || !this.Config.canAccessMenusAnywhere)
                 return;
 
             var input = this.Helper.Input;

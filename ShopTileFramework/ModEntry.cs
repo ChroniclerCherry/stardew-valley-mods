@@ -41,7 +41,7 @@ namespace ShopTileFramework
         {
             //make helper and monitor static so they can be accessed in other classes
             helper = h;
-            monitor = Monitor;
+            monitor = this.Monitor;
 
             //set verbose logging
             VerboseLogging = helper.ReadConfig<ModConfig>().VerboseLogging;
@@ -49,12 +49,12 @@ namespace ShopTileFramework
             if (VerboseLogging)
                 monitor.Log("Verbose logging has been turned on. More information will be printed to the console.", LogLevel.Info);
 
-            helper.Events.Input.ButtonPressed += Input_ButtonPressed;
-            helper.Events.Display.MenuChanged += Display_MenuChanged;
-            helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
-            helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
-            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
-            helper.Events.GameLoop.UpdateTicking += GameLoop_UpdateTicking;
+            helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
+            helper.Events.Display.MenuChanged += this.Display_MenuChanged;
+            helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
+            helper.Events.GameLoop.DayStarted += this.GameLoop_DayStarted;
+            helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
+            helper.Events.GameLoop.UpdateTicking += this.GameLoop_UpdateTicking;
 
             //add console commands
             new ConsoleCommands().Register(helper);
@@ -107,12 +107,12 @@ namespace ShopTileFramework
             //TODO: deprecate this once FAVR is out
             //this is the vanilla Marnie menu for us to exclude animals from
             if (e.NewMenu is PurchaseAnimalsMenu && SourceLocation == null &&
-                !_changedMarnieStock && AnimalShop.ExcludeFromMarnie.Count > 0)
+                !this._changedMarnieStock && AnimalShop.ExcludeFromMarnie.Count > 0)
             {
                 //close the current menu to open our own	
                 Game1.exitActiveMenu();
-                var allAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock(Game1.getFarm());
-                _changedMarnieStock = true;
+                var allAnimalsStock = Utility.getPurchaseAnimalStock(Game1.getFarm());
+                this._changedMarnieStock = true;
 
                 //removes all animals on the exclusion list
                 var newAnimalStock = (from animal in allAnimalsStock
@@ -168,7 +168,7 @@ namespace ShopTileFramework
 
             ApiManager.RegisterJsonAssets();
             if (ApiManager.JsonAssets!= null)
-                ApiManager.JsonAssets.AddedItemsToShop += JsonAssets_AddedItemsToShop;
+                ApiManager.JsonAssets.AddedItemsToShop += this.JsonAssets_AddedItemsToShop;
 
             ApiManager.RegisterExpandedPreconditionsUtility();
             ApiManager.RegisterBetterFarmAnimalVariety();
@@ -217,7 +217,7 @@ namespace ShopTileFramework
             SourceLocation = null;
             _playerPos = Vector2.Zero;
             //checks if i've changed marnie's stock already after opening her menu
-            _changedMarnieStock = false;
+            this._changedMarnieStock = false;
 
             if (Constants.TargetPlatform == GamePlatform.Android)
             {
@@ -232,7 +232,7 @@ namespace ShopTileFramework
             else if (!e.Button.IsActionButton())
                 return;
 
-            Vector2 clickedTile = Helper.Input.GetCursorPosition().GrabTile;
+            Vector2 clickedTile = this.Helper.Input.GetCursorPosition().GrabTile;
 
             //check if there is a tile property on Buildings layer
             IPropertyCollection tileProperty = TileUtility.GetTileProperty(Game1.currentLocation, "Buildings", clickedTile);
@@ -241,7 +241,7 @@ namespace ShopTileFramework
                 return;
 
             //if there is a tile property, attempt to open shop if it exists
-            CheckForShopToOpen(tileProperty,e);
+            this.CheckForShopToOpen(tileProperty,e);
         }
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace ShopTileFramework
                     }
                     else
                     {
-                        Monitor.Log($"A Shop tile was clicked, but a shop by the name \"{shopName}\" could not be opened.", LogLevel.Debug);
+                        this.Monitor.Log($"A Shop tile was clicked, but a shop by the name \"{shopName}\" could not be opened.", LogLevel.Debug);
                     }
                 }
             }
@@ -300,7 +300,7 @@ namespace ShopTileFramework
                     }
                     else
                     {
-                        Monitor.Log($"An Animal Shop tile was clicked, but a shop by the name \"{shopName}\" " +
+                        this.Monitor.Log($"An Animal Shop tile was clicked, but a shop by the name \"{shopName}\" " +
                             $"was not found.", LogLevel.Debug);
                     }
                 }

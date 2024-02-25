@@ -14,13 +14,13 @@ namespace CustomizeAnywhere.Framework
 
         public ModConfig()
         {
-            canAccessMenusAnywhere = true;
-            ActivateButton = SButton.LeftShift;
-            customizeButton = SButton.D1;
-            dyeButton = SButton.D2;
-            tailoringButton = SButton.D3;
-            dresserButton = SButton.D4;
-            canTailorWithoutEvent = false;
+            this.canAccessMenusAnywhere = true;
+            this.ActivateButton = SButton.LeftShift;
+            this.customizeButton = SButton.D1;
+            this.dyeButton = SButton.D2;
+            this.tailoringButton = SButton.D3;
+            this.dresserButton = SButton.D4;
+            this.canTailorWithoutEvent = false;
         }
     }
 }

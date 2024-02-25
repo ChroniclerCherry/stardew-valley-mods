@@ -34,19 +34,19 @@ namespace CustomCraftingStation
         {
             if (Constants.TargetPlatform == GamePlatform.Android)
             {
-                Monitor.Log("Custom Crafting Stations does not currently support Android.",LogLevel.Error);
+                this.Monitor.Log("Custom Crafting Stations does not currently support Android.",LogLevel.Error);
                 return;
             }
 
-            _config = Helper.ReadConfig<Config>();
+            this._config = this.Helper.ReadConfig<Config>();
 
-            Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
+            this.Helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
 
-            Helper.Events.Display.RenderingActiveMenu += Display_RenderingActiveMenu;
-            Helper.Events.Display.MenuChanged += Display_MenuChanged;
+            this.Helper.Events.Display.RenderingActiveMenu += this.Display_RenderingActiveMenu;
+            this.Helper.Events.Display.MenuChanged += this.Display_MenuChanged;
 
-            Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
-            Helper.Events.Input.ButtonPressed += Input_ButtonPressed;
+            this.Helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
+            this.Helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
         }
 
         public override object GetApi()
@@ -57,20 +57,20 @@ namespace CustomCraftingStation
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
             //register content packs
-            RegisterContentPacks();
+            this.RegisterContentPacks();
 
             //remove exclusive recipes
-            ReducedCookingRecipes = new List<string>();
-            ReducedCraftingRecipes = new List<string>();
+            this.ReducedCookingRecipes = new List<string>();
+            this.ReducedCraftingRecipes = new List<string>();
 
-            foreach (var recipe in CraftingRecipe.craftingRecipes.Where(recipe => !_craftingRecipesToRemove.Contains(recipe.Key)))
+            foreach (var recipe in CraftingRecipe.craftingRecipes.Where(recipe => !this._craftingRecipesToRemove.Contains(recipe.Key)))
             {
-                ReducedCraftingRecipes.Add(recipe.Key);
+                this.ReducedCraftingRecipes.Add(recipe.Key);
             }
 
-            foreach (var recipe in CraftingRecipe.cookingRecipes.Where(recipe => !_cookingRecipesToRemove.Contains(recipe.Key)))
+            foreach (var recipe in CraftingRecipe.cookingRecipes.Where(recipe => !this._cookingRecipesToRemove.Contains(recipe.Key)))
             {
-                ReducedCookingRecipes.Add(recipe.Key);
+                this.ReducedCookingRecipes.Add(recipe.Key);
             }
         }
 
@@ -80,13 +80,13 @@ namespace CustomCraftingStation
             if (!Context.IsWorldReady)
                 return;
 
-            if (_openedNonCustomMenu)
+            if (this._openedNonCustomMenu)
             {
                 return;
             }
 
             if (!MenuOverride) return;
-            _openedNonCustomMenu = true;
+            this._openedNonCustomMenu = true;
 
             var activeMenu = Game1.activeClickableMenu;
 
@@ -94,13 +94,12 @@ namespace CustomCraftingStation
             {
                 CraftingPage => activeMenu,
                 GameMenu gameMenu => gameMenu.pages[GameMenu.craftingTab],
-                _ => activeMenu is not null && activeMenu.GetType() == CookingSkillMenu
+                _ => activeMenu is not null && activeMenu.GetType() == this.CookingSkillMenu
                     ? activeMenu
                     : null
             };
 
-            if (instance is not (null or CustomCraftingMenu))
-                OpenAndFixMenu(instance);
+            if (instance is not (null or CustomCraftingMenu)) this.OpenAndFixMenu(instance);
         }
 
         private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
@@ -109,9 +108,9 @@ namespace CustomCraftingStation
                 e.OldMenu is CustomCraftingMenu
                 || e.OldMenu is CraftingPage
                 || e.OldMenu is GameMenu
-                || e.OldMenu.GetType() == CookingSkillMenu)
+                || e.OldMenu.GetType() == this.CookingSkillMenu)
             {
-                _openedNonCustomMenu = false;
+                this._openedNonCustomMenu = false;
                 if (e.NewMenu == null)
                     MenuOverride = true;
             }
@@ -119,7 +118,7 @@ namespace CustomCraftingStation
 
         private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
-            CookingSkillMenu = Type.GetType("CookingSkill.NewCraftingPage, CookingSkill");
+            this.CookingSkillMenu = Type.GetType("CookingSkill.NewCraftingPage, CookingSkill");
         }
 
         private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
@@ -135,10 +134,10 @@ namespace CustomCraftingStation
             Game1.currentLocation.Objects.TryGetValue(grabTile, out var obj);
             if (obj != null && obj.bigCraftable.Value)
             {
-                if (_craftableCraftingStations.ContainsKey(obj.Name))
+                if (this._craftableCraftingStations.ContainsKey(obj.Name))
                 {
-                    OpenCraftingMenu(_craftableCraftingStations[obj.Name], e.Cursor.GrabTile);
-                    Helper.Input.Suppress(e.Button);
+                    this.OpenCraftingMenu(this._craftableCraftingStations[obj.Name], e.Cursor.GrabTile);
+                    this.Helper.Input.Suppress(e.Button);
                     return;
                 }
             }
@@ -153,33 +152,33 @@ namespace CustomCraftingStation
             if (properties[0] != "CraftingStation")
                 return;
 
-            if (_tileCraftingStations.ContainsKey(properties[1]))
+            if (this._tileCraftingStations.ContainsKey(properties[1]))
             {
-                OpenCraftingMenu(_tileCraftingStations[properties[1]], e.Cursor.GrabTile);
-                Helper.Input.Suppress(e.Button);
+                this.OpenCraftingMenu(this._tileCraftingStations[properties[1]], e.Cursor.GrabTile);
+                this.Helper.Input.Suppress(e.Button);
             }
         }
 
         private void RegisterContentPacks()
         {
-            var packs = Helper.ContentPacks.GetOwned();
+            var packs = this.Helper.ContentPacks.GetOwned();
 
-            _tileCraftingStations = new Dictionary<string, CraftingStationConfig>();
-            _craftableCraftingStations = new Dictionary<string, CraftingStationConfig>();
-            _cookingRecipesToRemove = new List<string>();
-            _craftingRecipesToRemove = new List<string>();
+            this._tileCraftingStations = new Dictionary<string, CraftingStationConfig>();
+            this._craftableCraftingStations = new Dictionary<string, CraftingStationConfig>();
+            this._cookingRecipesToRemove = new List<string>();
+            this._craftingRecipesToRemove = new List<string>();
 
             foreach (var pack in packs)
             {
                 if (!pack.HasFile("content.json"))
                 {
-                    Monitor.Log($"{pack.Manifest.UniqueID} is missing a content.json", LogLevel.Error);
+                    this.Monitor.Log($"{pack.Manifest.UniqueID} is missing a content.json", LogLevel.Error);
                     continue;
                 }
 
                 ContentPack contentPack = pack.ModContent.Load<ContentPack>("content.json");
 
-                RegisterCraftingStations(contentPack.CraftingStations);
+                this.RegisterCraftingStations(contentPack.CraftingStations);
             }
         }
 
@@ -195,7 +194,7 @@ namespace CustomCraftingStation
                 {
                     if (!CraftingRecipe.craftingRecipes.Keys.Contains(station.CraftingRecipes[i]))
                     {
-                        Monitor.Log($"The recipe for {station.CraftingRecipes[i]} could not be found.");
+                        this.Monitor.Log($"The recipe for {station.CraftingRecipes[i]} could not be found.");
                         station.CraftingRecipes.RemoveAt(i);
                     }
                 }
@@ -205,50 +204,48 @@ namespace CustomCraftingStation
                 {
                     if (!CraftingRecipe.cookingRecipes.Keys.Contains(station.CookingRecipes[i]))
                     {
-                        Monitor.Log($"The recipe for {station.CookingRecipes[i]} could not be found.");
+                        this.Monitor.Log($"The recipe for {station.CookingRecipes[i]} could not be found.");
                         station.CookingRecipes.RemoveAt(i);
                     }
                 }
 
                 if (station.ExclusiveRecipes)
                 {
-                    _craftingRecipesToRemove.AddRange(station.CraftingRecipes);
-                    _cookingRecipesToRemove.AddRange(station.CookingRecipes);
+                    this._craftingRecipesToRemove.AddRange(station.CraftingRecipes);
+                    this._cookingRecipesToRemove.AddRange(station.CookingRecipes);
                 }
 
                 if (station.TileData != null)
                 {
-                    if (_tileCraftingStations.Keys.Contains(station.TileData))
+                    if (this._tileCraftingStations.Keys.Contains(station.TileData))
                     {
-                        Monitor.Log(
+                        this.Monitor.Log(
                             $"Multiple mods are trying to use the Tiledata {station.TileData}; Only one will be applied.",
                             LogLevel.Error);
                     }
                     else
                     {
-                        if (station.TileData != null)
-                            _tileCraftingStations.Add(station.TileData, station);
+                        if (station.TileData != null) this._tileCraftingStations.Add(station.TileData, station);
                     }
                 }
 
                 if (station.BigCraftable == null) continue;
-                if (_craftableCraftingStations.Keys.Contains(station.BigCraftable))
+                if (this._craftableCraftingStations.Keys.Contains(station.BigCraftable))
                 {
-                    Monitor.Log(
+                    this.Monitor.Log(
                         $"Multiple mods are trying to use the BigCraftable {station.BigCraftable}; Only one will be applied.",
                         LogLevel.Error);
                 }
                 else
                 {
-                    if (station.BigCraftable != null)
-                        _craftableCraftingStations.Add(station.BigCraftable, station);
+                    if (station.BigCraftable != null) this._craftableCraftingStations.Add(station.BigCraftable, station);
                 }
             }
         }
 
         public void OpenCraftingMenu(CraftingStationConfig station, Vector2 grabTile)
         {
-            List<IInventory> chests = GetChests(grabTile);
+            List<IInventory> chests = this.GetChests(grabTile);
 
             Vector2 centeringOnScreen =
                 Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2,
@@ -259,18 +256,16 @@ namespace CustomCraftingStation
 
         private void OpenAndFixMenu(IClickableMenu instance)
         {
-            var isCooking = Helper.Reflection.GetField<bool>(instance, "cooking").GetValue();
-            var layoutRecipes = Helper.Reflection.GetMethod(instance, "layoutRecipes");
+            var isCooking = this.Helper.Reflection.GetField<bool>(instance, "cooking").GetValue();
+            var layoutRecipes = this.Helper.Reflection.GetMethod(instance, "layoutRecipes");
 
-            var pagesOfCraftingRecipes =
-                Helper.Reflection.GetField<List<Dictionary<ClickableTextureComponent, CraftingRecipe>>>(instance,
+            var pagesOfCraftingRecipes = this.Helper.Reflection.GetField<List<Dictionary<ClickableTextureComponent, CraftingRecipe>>>(instance,
                     "pagesOfCraftingRecipes");
             pagesOfCraftingRecipes.SetValue(new List<Dictionary<ClickableTextureComponent, CraftingRecipe>>());
 
-            List<string> knownCraftingRecipes =
-                ReducedCraftingRecipes.Where(recipe => Game1.player.craftingRecipes.ContainsKey(recipe)).ToList();
+            List<string> knownCraftingRecipes = this.ReducedCraftingRecipes.Where(recipe => Game1.player.craftingRecipes.ContainsKey(recipe)).ToList();
 
-            layoutRecipes.Invoke(isCooking ? ReducedCookingRecipes : knownCraftingRecipes);
+            layoutRecipes.Invoke(isCooking ? this.ReducedCookingRecipes : knownCraftingRecipes);
         }
 
         public List<IInventory> GetChests(Vector2 grabTile)
@@ -278,19 +273,19 @@ namespace CustomCraftingStation
             List<IInventory> chests = new List<IInventory>();
 
             IEnumerable<GameLocation> locs;
-            locs = Context.IsMainPlayer ? Game1.locations : Helper.Multiplayer.GetActiveLocations();
+            locs = Context.IsMainPlayer ? Game1.locations : this.Helper.Multiplayer.GetActiveLocations();
 
-            if (_config.CraftFromFridgeWhenInHouse)
+            if (this._config.CraftFromFridgeWhenInHouse)
                 if (Game1.currentLocation is FarmHouse house)
                     chests.Add(house.fridge.Value.Items);
 
-            int radius = _config.CraftingFromChestsRadius;
-            if (radius == 0 && !_config.GlobalCraftFromChest)
+            int radius = this._config.CraftingFromChestsRadius;
+            if (radius == 0 && !this._config.GlobalCraftFromChest)
                 return chests;
 
-            if (_config.GlobalCraftFromChest)
+            if (this._config.GlobalCraftFromChest)
             {
-                if (!_config.CraftFromFridgeWhenInHouse) //so we dont add this twice
+                if (!this._config.CraftFromFridgeWhenInHouse) //so we dont add this twice
                     chests.Add((Game1.getLocationFromName("FarmHouse") as FarmHouse)?.fridge.Value.Items);
 
                 foreach (var location in locs)

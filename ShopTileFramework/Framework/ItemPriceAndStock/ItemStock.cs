@@ -35,29 +35,29 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// <param name="priceMultiplierWhen"></param>
         internal void Initialize(string shopName, int price, double defaultSellPriceMultiplier, Dictionary<double, string[]> priceMultiplierWhen)
         {
-            ShopName = shopName;
-            DefaultSellPriceMultiplier = defaultSellPriceMultiplier;
-            PriceMultiplierWhen = priceMultiplierWhen;
+            this.ShopName = shopName;
+            this.DefaultSellPriceMultiplier = defaultSellPriceMultiplier;
+            this.PriceMultiplierWhen = priceMultiplierWhen;
 
-            if (Quality < 0 || Quality == 3 || Quality > 4)
+            if (this.Quality < 0 || this.Quality == 3 || this.Quality > 4)
             {
-                Quality = 0;
+                this.Quality = 0;
                 ModEntry.monitor.Log("Item quality can only be 0,1,2, or 4. Defaulting to 0", LogLevel.Warn);
             }
 
-            CurrencyObjectId = ItemsUtil.GetItemIdByName(StockItemCurrency);
+            this.CurrencyObjectId = ItemsUtil.GetItemIdByName(this.StockItemCurrency);
 
             //sets price to the store price if no stock price is given
-            if (StockPrice == -1)
+            if (this.StockPrice == -1)
             {
-                StockPrice = price;
+                this.StockPrice = price;
             }
             this._priceMultiplierWhen = priceMultiplierWhen;
 
-            if (IsRecipe)
-                Stock = 1;
+            if (this.IsRecipe)
+                this.Stock = 1;
 
-            _builder = new ItemBuilder(this);
+            this._builder = new ItemBuilder(this);
         }
 
         /// <summary>
@@ -66,23 +66,23 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// <returns></returns>
         public Dictionary<ISalable, ItemStockInformation> Update()
         {
-            if (When != null && !ApiManager.Conditions.CheckConditions(When))
+            if (this.When != null && !ApiManager.Conditions.CheckConditions(this.When))
                 return null; //did not pass conditions
 
-            if (!ItemsUtil.CheckItemType(ItemType)) //check that itemtype is valid
+            if (!ItemsUtil.CheckItemType(this.ItemType)) //check that itemtype is valid
             {
-                ModEntry.monitor.Log($"\t\"{ItemType}\" is not a valid ItemType. No items from this stock will be added."
+                ModEntry.monitor.Log($"\t\"{this.ItemType}\" is not a valid ItemType. No items from this stock will be added."
                     , LogLevel.Warn);
                 return null;
             }
 
-            _itemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
-            _builder.SetItemPriceAndStock(_itemPriceAndStock);
+            this._itemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
+            this._builder.SetItemPriceAndStock(this._itemPriceAndStock);
 
             double pricemultiplier = 1;
-            if (_priceMultiplierWhen != null)
+            if (this._priceMultiplierWhen != null)
             {
-                foreach (KeyValuePair<double,string[]> kvp in _priceMultiplierWhen)
+                foreach (KeyValuePair<double,string[]> kvp in this._priceMultiplierWhen)
                 {
                     if (ApiManager.Conditions.CheckConditions(kvp.Value))
                     {
@@ -92,25 +92,25 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
                 }
             }
 
-            if (ItemType != "Seed")
+            if (this.ItemType != "Seed")
             {
-                AddById(pricemultiplier);
-                AddByName(pricemultiplier);
+                this.AddById(pricemultiplier);
+                this.AddByName(pricemultiplier);
             }
             else
             {
-                if (ItemIds != null)
+                if (this.ItemIds != null)
                     ModEntry.monitor.Log(
                         "ItemType of \"Seed\" is a special itemtype used for parsing Seeds from JA Pack crops and trees and does not support input via ID. If adding seeds via ID, please use the ItemType \"Object\" instead to directly sell the seeds/saplings");
-                if (ItemNames != null)
+                if (this.ItemNames != null)
                     ModEntry.monitor.Log(
                         "ItemType of \"Seed\" is a special itemtype used for parsing Seeds from JA Pack crops and trees and does not support input via Name. If adding seeds via Name, please use the ItemType \"Object\" instead to directly sell the seeds/saplings");
             }
 
-            AddByJAPack(pricemultiplier);
+            this.AddByJAPack(pricemultiplier);
 
-            ItemsUtil.RandomizeStock(_itemPriceAndStock, MaxNumItemsSoldInItemStock);
-            return _itemPriceAndStock;
+            ItemsUtil.RandomizeStock(this._itemPriceAndStock, this.MaxNumItemsSoldInItemStock);
+            return this._itemPriceAndStock;
         }
 
         /// <summary>
@@ -118,12 +118,12 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// </summary>
         private void AddById(double pricemultiplier)
         {
-            if (ItemIds == null)
+            if (this.ItemIds == null)
                 return;
 
-            foreach (string itemId in ItemIds)
+            foreach (string itemId in this.ItemIds)
             {
-                _builder.AddItemToStock(itemId, pricemultiplier);
+                this._builder.AddItemToStock(itemId, pricemultiplier);
             }
         }
 
@@ -132,12 +132,12 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// </summary>
         private void AddByName(double pricemultiplier)
         {
-            if (ItemNames == null)
+            if (this.ItemNames == null)
                 return;
 
-            foreach (var itemName in ItemNames)
+            foreach (var itemName in this.ItemNames)
             {
-                _builder.AddItemToStock(itemName, pricemultiplier);
+                this._builder.AddItemToStock(itemName, pricemultiplier);
             }
 
         }
@@ -147,17 +147,17 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// </summary>
         private void AddByJAPack(double pricemultiplier)
         {
-            if (JaPacks == null)
+            if (this.JaPacks == null)
                 return;
 
             if (ApiManager.JsonAssets == null)
                 return;
 
-            foreach (var JAPack in JaPacks)
+            foreach (var JAPack in this.JaPacks)
             {
-                ModEntry.monitor.Log($"Adding all {ItemType}s from {JAPack}", LogLevel.Debug);
+                ModEntry.monitor.Log($"Adding all {this.ItemType}s from {JAPack}", LogLevel.Debug);
 
-                if (ItemType == "Seed")
+                if (this.ItemType == "Seed")
                 {
                     var crops = ApiManager.JsonAssets.GetAllCropsFromContentPack(JAPack);
                     var trees = ApiManager.JsonAssets.GetAllFruitTreesFromContentPack(JAPack);
@@ -168,10 +168,10 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
 
                         foreach (string crop in crops)
                         {
-                            if (ExcludeFromJaPacks != null && ExcludeFromJaPacks.Contains(crop)) continue;
+                            if (this.ExcludeFromJaPacks != null && this.ExcludeFromJaPacks.Contains(crop)) continue;
                             string id = ItemsUtil.GetSeedId(crop);
                             if (id is not null)
-                                _builder.AddItemToStock(id, pricemultiplier);
+                                this._builder.AddItemToStock(id, pricemultiplier);
                         }
                     }
 
@@ -180,27 +180,27 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
 
                         foreach (string tree in trees)
                         {
-                            if (ExcludeFromJaPacks != null && ExcludeFromJaPacks.Contains(tree)) continue;
+                            if (this.ExcludeFromJaPacks != null && this.ExcludeFromJaPacks.Contains(tree)) continue;
                             string id = ItemsUtil.GetSaplingId(tree);
                             if (id is not null)
-                                _builder.AddItemToStock(id, pricemultiplier);
+                                this._builder.AddItemToStock(id, pricemultiplier);
                         }
                     }
 
                     continue; //skip the rest of the loop so we don't also add the none-seed version
                 }
 
-                var packs = GetJaItems(JAPack);
+                var packs = this.GetJaItems(JAPack);
                 if (packs == null)
                 {
-                    ModEntry.monitor.Log($"No {ItemType} from {JAPack} could be found", LogLevel.Trace);
+                    ModEntry.monitor.Log($"No {this.ItemType} from {JAPack} could be found", LogLevel.Trace);
                     continue;
                 }
 
                 foreach (string itemName in packs)
                 {
-                    if (ExcludeFromJaPacks != null && ExcludeFromJaPacks.Contains(itemName)) continue;
-                    _builder.AddItemToStock(itemName, pricemultiplier);
+                    if (this.ExcludeFromJaPacks != null && this.ExcludeFromJaPacks.Contains(itemName)) continue;
+                    this._builder.AddItemToStock(itemName, pricemultiplier);
                 }
             }
         }
@@ -212,7 +212,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// <returns>A list of all the names of the items of the right item type in that pack</returns>
         private List<string> GetJaItems(string JAPack)
         {
-            switch (ItemType)
+            switch (this.ItemType)
             {
                 case "Object":
                     return ApiManager.JsonAssets.GetAllObjectsFromContentPack(JAPack);

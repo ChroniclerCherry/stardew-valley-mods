@@ -24,8 +24,8 @@ namespace ProfitMargins
 
         public override void Entry(IModHelper helper)
         {
-            config = helper.ReadConfig<ModConfig>();
-            helper.Events.GameLoop.DayStarted += DayStarted;
+            this.config = helper.ReadConfig<ModConfig>();
+            helper.Events.GameLoop.DayStarted += this.DayStarted;
             helper.Events.GameLoop.Saving += this.OnSaving;
             return;
 
@@ -37,18 +37,18 @@ namespace ProfitMargins
 
         private void DayStarted(object sender, DayStartedEventArgs args)
         {
-            if (checkContext()) { 
-                originalDifficulty = Game1.player.difficultyModifier;
-                Game1.player.difficultyModifier = config.ProfitMargin;
+            if (this.checkContext()) {
+                this.originalDifficulty = Game1.player.difficultyModifier;
+                Game1.player.difficultyModifier = this.config.ProfitMargin;
             }
 
         }
 
         private void OnSaving(object sender, SavingEventArgs args)
         {
-            if (checkContext())
+            if (this.checkContext())
             {
-                Game1.player.difficultyModifier = originalDifficulty;
+                Game1.player.difficultyModifier = this.originalDifficulty;
                 this.Monitor.Log("During save, DL:" + Game1.player.difficultyModifier.ToString(), LogLevel.Debug);
             }
 
@@ -59,7 +59,7 @@ namespace ProfitMargins
             if (!Context.IsMainPlayer)
             {
                 return false;
-            } else if (Context.IsMultiplayer && !config.EnableInMultiplayer)
+            } else if (Context.IsMultiplayer && !this.config.EnableInMultiplayer)
             {
                 return false;
             }

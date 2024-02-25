@@ -15,18 +15,18 @@ namespace PlatonicRelationships
 
         public override void Entry(IModHelper helper)
         {
-            Config = this.Helper.ReadConfig<ModConfig>();
-            if (Config.AddDatingRequirementToRomanticEvents)
-                helper.Events.Content.AssetRequested += OnAssetRequested;
+            this.Config = this.Helper.ReadConfig<ModConfig>();
+            if (this.Config.AddDatingRequirementToRomanticEvents)
+                helper.Events.Content.AssetRequested += this.OnAssetRequested;
 
             //apply harmony patches
-            ApplyPatches();
+            this.ApplyPatches();
         }
 
         private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
         {
-            if (Editor.CanEdit(e.NameWithoutLocale))
-                e.Edit(Editor.Edit);
+            if (this.Editor.CanEdit(e.NameWithoutLocale))
+                e.Edit(this.Editor.Edit);
         }
 
         public void ApplyPatches()
@@ -43,7 +43,7 @@ namespace PlatonicRelationships
             }
             catch (Exception e)
             {
-                Monitor.Log($"Failed in Patching SocialPage.drawNPCSlotHeart: \n{e}", LogLevel.Error);
+                this.Monitor.Log($"Failed in Patching SocialPage.drawNPCSlotHeart: \n{e}", LogLevel.Error);
                 return;
             }
 
@@ -57,7 +57,7 @@ namespace PlatonicRelationships
             }
             catch (Exception e)
             {
-                Monitor.Log($"Failed in Patching Utility.GetMaximumHeartsForCharacter: \n{e}", LogLevel.Error);
+                this.Monitor.Log($"Failed in Patching Utility.GetMaximumHeartsForCharacter: \n{e}", LogLevel.Error);
                 return;
             }
         }

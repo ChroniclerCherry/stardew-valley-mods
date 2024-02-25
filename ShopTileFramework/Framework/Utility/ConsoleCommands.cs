@@ -19,28 +19,28 @@ namespace ShopTileFramework.Framework.Utility
                 "Opens up a custom shop's menu. \n\n" +
                 "Usage: open_shop <ShopName>\n" +
                 "-ShopName: the name of the shop to open",
-                DisplayShopMenu);
+                this.DisplayShopMenu);
 
             helper.ConsoleCommands.Add("open_animal_shop",
                 "Opens up a custom animal shop's menu. \n\n" +
                 "Usage: open_shop <open_animal_shop>\n" +
                 "-ShopName: the name of the animal shop to open",
-                DisplayAnimalShopMenus);
+                this.DisplayAnimalShopMenus);
             helper.ConsoleCommands.Add("reset_shop",
                 "Resets the stock of specified shop. Rechecks conditions and randomizations\n\n" +
                 "Usage: reset_shop <ShopName>\n" +
                 "-ShopName: the name of the shop to reset",
-                ResetShopStock);
+                this.ResetShopStock);
 
             helper.ConsoleCommands.Add("list_shops",
                 "Lists all shops registered with Shop Tile Framework",
-                ListAllShops);
+                this.ListAllShops);
 
             helper.ConsoleCommands.Add("STFConditions",
                 "Will parse a single line of conditions and tell you if it is currently true or false\n\n" +
                 "Usage: STFConditions <ConditionsString>\n" +
                 "ConditionsString: A conditions string as would be written in the \"When\" field of the shops.json",
-                ConditionCheck);
+                this.ConditionCheck);
         }
 
         private void ConditionCheck(string arg1, string[] arg2)

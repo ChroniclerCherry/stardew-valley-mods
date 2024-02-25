@@ -34,29 +34,29 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         {
             string itemId =
                 ItemRegistry.GetData(itemIdOrName)?.ItemId
-                ?? ItemsUtil.GetItemIdByName(itemIdOrName, _itemStock.ItemType);
+                ?? ItemsUtil.GetItemIdByName(itemIdOrName, this._itemStock.ItemType);
 
             if (itemId is null)
             {
-                ModEntry.monitor.Log($"{_itemStock.ItemType} with the name or ID \"{itemIdOrName}\" could not be added to the shop {_itemStock.ShopName}", LogLevel.Trace);
+                ModEntry.monitor.Log($"{this._itemStock.ItemType} with the name or ID \"{itemIdOrName}\" could not be added to the shop {this._itemStock.ShopName}", LogLevel.Trace);
                 return false;
             }
 
             if (ModEntry.VerboseLogging)
-                ModEntry.monitor.Log($"Adding item ID {itemId} to {_itemStock.ShopName}", LogLevel.Debug);
+                ModEntry.monitor.Log($"Adding item ID {itemId} to {this._itemStock.ShopName}", LogLevel.Debug);
 
-            if (_itemStock.ItemType == "Seed" && _itemStock.FilterSeedsBySeason)
+            if (this._itemStock.ItemType == "Seed" && this._itemStock.FilterSeedsBySeason)
             {
                 if (!ItemsUtil.IsInSeasonCrop(itemId)) return false;
             }
 
-            var item = CreateItem(itemId);
+            var item = this.CreateItem(itemId);
             if (item == null)
             {
                 return false;
             }
 
-            if (_itemStock.IsRecipe)
+            if (this._itemStock.IsRecipe)
             {
                 if (!ItemsUtil.RecipesList.Contains(item.Name))
                 {
@@ -65,8 +65,8 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
                 }
             }
 
-            var priceStockCurrency = GetPriceStockAndCurrency(item, priceMultiplier);
-            _itemPriceAndStock.Add(item, priceStockCurrency);
+            var priceStockCurrency = this.GetPriceStockAndCurrency(item, priceMultiplier);
+            this._itemPriceAndStock.Add(item, priceStockCurrency);
 
             return true;       
         }
@@ -78,10 +78,10 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// <returns></returns>
         private Item CreateItem(string itemId)
         {
-            Item item = ItemRegistry.Create(itemId, _itemStock.Stock, _itemStock.Quality);
+            Item item = ItemRegistry.Create(itemId, this._itemStock.Stock, this._itemStock.Quality);
 
             if (item is Object obj)
-                obj.IsRecipe = _itemStock.IsRecipe;
+                obj.IsRecipe = this._itemStock.IsRecipe;
 
             return item;
         }
@@ -96,16 +96,16 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         private ItemStockInformation GetPriceStockAndCurrency(ISalable item, double priceMultiplier)
         {
             //if no price is provided, use the item's sale price multiplied by defaultSellPriceMultiplier
-            int price = _itemStock.StockPrice == -1
-                ? (int)(item.salePrice() * _itemStock.DefaultSellPriceMultiplier)
-                : _itemStock.StockPrice;
+            int price = this._itemStock.StockPrice == -1
+                ? (int)(item.salePrice() * this._itemStock.DefaultSellPriceMultiplier)
+                : this._itemStock.StockPrice;
             price = (int)(price * priceMultiplier);
 
-            int? currencyObjectStack = _itemStock.CurrencyObjectId != null
-                ? Math.Max(_itemStock.StockCurrencyStack, 1)
+            int? currencyObjectStack = this._itemStock.CurrencyObjectId != null
+                ? Math.Max(this._itemStock.StockCurrencyStack, 1)
                 : null;
 
-            return new ItemStockInformation(price, _itemStock.Stock, _itemStock.CurrencyObjectId, currencyObjectStack);
+            return new ItemStockInformation(price, this._itemStock.Stock, this._itemStock.CurrencyObjectId, currencyObjectStack);
         }
     }
 }

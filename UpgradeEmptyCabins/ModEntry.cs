@@ -16,26 +16,26 @@ namespace UpgradeEmptyCabins
         private Config _config;
         public override void Entry(IModHelper h)
         {
-            _config = Helper.ReadConfig<Config>();
+            this._config = this.Helper.ReadConfig<Config>();
 
-            Helper.ConsoleCommands.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", UpgradeCabinsCommand);
-            Helper.ConsoleCommands.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", RemoveSeedBoxesCommand);
-            Helper.ConsoleCommands.Add("remove_cabin_beds", "Removes beds from all unclaimed cabins.", RemoveCabinBedsCommand);
+            this.Helper.ConsoleCommands.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", this.UpgradeCabinsCommand);
+            this.Helper.ConsoleCommands.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", this.RemoveSeedBoxesCommand);
+            this.Helper.ConsoleCommands.Add("remove_cabin_beds", "Removes beds from all unclaimed cabins.", this.RemoveCabinBedsCommand);
 
-            Helper.Events.GameLoop.DayEnding += GameLoop_DayEnding;
-            Helper.Events.Input.ButtonPressed += Input_ButtonPressed;
-            Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
+            this.Helper.Events.GameLoop.DayEnding += this.GameLoop_DayEnding;
+            this.Helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
+            this.Helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
         }
 
-        private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+        private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            var api = Helper.ModRegistry.GetApi<GenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
+            var api = this.Helper.ModRegistry.GetApi<GenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
 
             if (api == null)
                 return;
 
-            api.RegisterModConfig(ModManifest, () => _config = new Config(), () => Helper.WriteConfig(_config));
-            api.RegisterSimpleOption(ModManifest, "Instance Build", "Whether cabins are instantly upgraded", () => _config.InstantBuild, val => _config.InstantBuild = val);
+            api.RegisterModConfig(this.ModManifest, () => this._config = new Config(), () => this.Helper.WriteConfig(this._config));
+            api.RegisterSimpleOption(this.ModManifest, "Instance Build", "Whether cabins are instantly upgraded", () => this._config.InstantBuild, val => this._config.InstantBuild = val);
         }
 
         private void RemoveCabinBedsCommand(string arg1, string[] arg2)
@@ -57,7 +57,7 @@ namespace UpgradeEmptyCabins
                 if (bed != null)
                 {
                     ((Cabin)cab.indoors.Value).furniture.Remove(bed);
-                    Monitor.Log("Bed removed from " + cab.GetIndoorsName(), LogLevel.Info);
+                    this.Monitor.Log("Bed removed from " + cab.GetIndoorsName(), LogLevel.Info);
                 }
                     
             }
@@ -80,14 +80,14 @@ namespace UpgradeEmptyCabins
                     }
                     
                     ((Cabin)cab.indoors.Value).Objects.Remove(obj.Key);
-                    Monitor.Log("Seed box removed from " + cab.GetIndoorsName(), LogLevel.Info);
+                    this.Monitor.Log("Seed box removed from " + cab.GetIndoorsName(), LogLevel.Info);
                 }
             }
         }
 
         private void UpgradeCabinsCommand(string arg1, string[] arg2)
         {
-            AskForUpgrade();
+            this.AskForUpgrade();
         }
 
         private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
@@ -109,10 +109,10 @@ namespace UpgradeEmptyCabins
             if (Game1.currentLocation.Name != "ScienceHouse")
                 return;
 
-            if (Helper.Input.GetCursorPosition().GrabTile != new Vector2(6, 19))
+            if (this.Helper.Input.GetCursorPosition().GrabTile != new Vector2(6, 19))
                 return;
 
-            AskForUpgrade();
+            this.AskForUpgrade();
 
         }
 
@@ -145,7 +145,7 @@ namespace UpgradeEmptyCabins
         {
             if (Game1.getFarm().isThereABuildingUnderConstruction())
             {
-                Game1.drawObjectDialogue(Helper.Translation.Get("robin.busy"));
+                Game1.drawObjectDialogue(this.Helper.Translation.Get("robin.busy"));
                 return;
             }
 
@@ -162,13 +162,13 @@ namespace UpgradeEmptyCabins
                 switch (cabinIndoors.upgradeLevel)
                 {
                     case 0:
-                        displayInfo = $"{cabin.buildingType.Value} {Helper.Translation.Get("robin.hu1_materials") }";
+                        displayInfo = $"{cabin.buildingType.Value} {this.Helper.Translation.Get("robin.hu1_materials") }";
                         break;
                     case 1:
-                        displayInfo = $"{cabin.buildingType.Value} {Helper.Translation.Get("robin.hu2_materials") }";
+                        displayInfo = $"{cabin.buildingType.Value} {this.Helper.Translation.Get("robin.hu2_materials") }";
                         break;
                     case 2:
-                        displayInfo = $"{cabin.buildingType.Value} {Helper.Translation.Get("robin.hu3_materials") }";
+                        displayInfo = $"{cabin.buildingType.Value} {this.Helper.Translation.Get("robin.hu3_materials") }";
                         break;
                 }
                 if (displayInfo != null)
@@ -177,15 +177,14 @@ namespace UpgradeEmptyCabins
 
             if (cabinNames.Count > 0)
             {
-                cabinNames.Add(new Response("Cancel", Helper.Translation.Get("menu.cancel_option")));
+                cabinNames.Add(new Response("Cancel", this.Helper.Translation.Get("menu.cancel_option")));
                 //Game1.activeClickableMenu = new CabinQuestionsBox("Which Cabin would you like to upgrade?", cabinNames);
-                Game1.currentLocation.createQuestionDialogue(
-                                Helper.Translation.Get("robin.whichcabin_question"),
+                Game1.currentLocation.createQuestionDialogue(this.Helper.Translation.Get("robin.whichcabin_question"),
                                 cabinNames.ToArray(),
                                 delegate (Farmer who, string answer)
                                 {
                                     Game1.activeClickableMenu = null;
-                                    HouseUpgradeAccept(ModUtility.GetCabin(answer));
+                                    this.HouseUpgradeAccept(ModUtility.GetCabin(answer));
                                 }
                                 );
             }
@@ -201,7 +200,7 @@ namespace UpgradeEmptyCabins
                 return;
             }
 
-            if (_config.InstantBuild)
+            if (this._config.InstantBuild)
             {
                 FinalUpgrade(cab);
                 Game1.getCharacterFromName("Robin").setNewDialogue(Game1.content.LoadString("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted"));

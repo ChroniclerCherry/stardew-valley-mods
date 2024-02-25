@@ -12,7 +12,7 @@ namespace ShopTileFramework.Framework.Data
         public string Quote { get; set; } = null;
         public int ShopPrice { get; set; } = -1;
         public int MaxNumItemsSoldInStore { get; set; } = int.MaxValue;
-        public double DefaultSellPriceMultipler { set => DefaultSellPriceMultiplier = value; }
+        public double DefaultSellPriceMultipler { set => this.DefaultSellPriceMultiplier = value; }
         public double DefaultSellPriceMultiplier { get; set; } = 1;
         public Dictionary<double, string[]> PriceMultiplierWhen { get; set; } = null;
         public ItemStock[] ItemStocks { get; set; }

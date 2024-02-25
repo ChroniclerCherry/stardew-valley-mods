@@ -36,10 +36,10 @@ namespace FarmRearranger
             this.FarmRearrangeQualifiedId = ItemRegistry.type_bigCraftable + this.FarmRearrangeId;
 
             // hook events
-            helper.Events.Content.AssetRequested += OnAssetRequested;
-            helper.Events.GameLoop.UpdateTicking += GameLoop_UpdateTicking;
-            helper.Events.GameLoop.DayEnding += GameLoop_DayEnding;
-            helper.Events.Input.ButtonPressed += Input_ButtonPressed;
+            helper.Events.Content.AssetRequested += this.OnAssetRequested;
+            helper.Events.GameLoop.UpdateTicking += this.GameLoop_UpdateTicking;
+            helper.Events.GameLoop.DayEnding += this.GameLoop_DayEnding;
+            helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace FarmRearranger
         private void GameLoop_DayEnding(object sender, DayEndingEventArgs e)
         {
             //if friendship is higher enough, send the mail tomorrow
-            if (Game1.player.getFriendshipLevelForNPC("Robin") >= Config.FriendshipPointsRequired)
+            if (Game1.player.getFriendshipLevelForNPC("Robin") >= this.Config.FriendshipPointsRequired)
             {
                 Game1.addMailForTomorrow("FarmRearrangerMail");
             }
@@ -73,13 +73,13 @@ namespace FarmRearranger
                 return;
 
             //check if the clicked tile contains a Farm Renderer
-            Vector2 tile = Helper.Input.GetCursorPosition().Tile;
+            Vector2 tile = this.Helper.Input.GetCursorPosition().Tile;
             if (Game1.currentLocation.Objects.TryGetValue(tile, out Object obj) && obj.QualifiedItemId == this.FarmRearrangeQualifiedId)
             {
-                if (Game1.currentLocation.Name == "Farm" || Config.CanArrangeOutsideFarm)
-                    RearrangeFarm();
+                if (Game1.currentLocation.Name == "Farm" || this.Config.CanArrangeOutsideFarm)
+                    this.RearrangeFarm();
                 else
-                    Game1.activeClickableMenu = new DialogueBox(Helper.Translation.Get("CantBuildOffFarm"));
+                    Game1.activeClickableMenu = new DialogueBox(this.Helper.Translation.Get("CantBuildOffFarm"));
             }
         }
 
@@ -92,13 +92,13 @@ namespace FarmRearranger
         /// <param name="e"></param>
         private void GameLoop_UpdateTicking(object sender, UpdateTickingEventArgs e)
         {
-            if (isArranging)
+            if (this.isArranging)
             {
                 if (Game1.activeClickableMenu is not CarpenterMenu menu)
-                    isArranging = false;
+                    this.isArranging = false;
                 else if (!menu.onFarm)
                 {
-                    isArranging = false;
+                    this.isArranging = false;
                     Game1.exitActiveMenu();
                 }
             }
@@ -139,7 +139,7 @@ namespace FarmRearranger
                         {
                             Id = this.FarmRearrangeId,
                             ItemId = this.FarmRearrangeId,
-                            Price = Config.Price,
+                            Price = this.Config.Price,
                             Condition = "PLAYER_HAS_MAIL Current FarmRearrangerMail Received"
                         });
                     }
@@ -152,7 +152,7 @@ namespace FarmRearranger
                 e.Edit(asset =>
                 {
                     var data = asset.AsDictionary<string, string>().Data;
-                    data["FarmRearrangerMail"] = Helper.Translation.Get("robinletter");
+                    data["FarmRearrangerMail"] = this.Helper.Translation.Get("robinletter");
                 });
             }
 
@@ -180,7 +180,7 @@ namespace FarmRearranger
         {
             //our boolean to keep track that we are currently in a Farm rearranger menu
             //so we don't mess with any other vanilla warps to robin's house
-            isArranging = true;
+            this.isArranging = true;
 
             //open the carpenter menu then do everything that is normally done
             //when the move buildings option is clicked

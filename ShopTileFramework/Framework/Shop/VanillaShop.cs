@@ -13,19 +13,19 @@ namespace ShopTileFramework.Framework.Shop
         public IContentPack ContentPack { set; get; }
         public void Initialize()
         {
-            StockManagers = new List<ItemPriceAndStockManager>();
+            this.StockManagers = new List<ItemPriceAndStockManager>();
         }
 
         public void UpdateItemPriceAndStock()
         {
-            ItemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
-            ModEntry.monitor.Log($"Generating stock for {ShopName}", LogLevel.Debug);
-            foreach (ItemPriceAndStockManager manager in StockManagers)
+            this.ItemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
+            ModEntry.monitor.Log($"Generating stock for {this.ShopName}", LogLevel.Debug);
+            foreach (ItemPriceAndStockManager manager in this.StockManagers)
             {
                 manager.Update();
 
                 foreach ((ISalable item, ItemStockInformation stockInfo) in manager.ItemPriceAndStock)
-                    ItemPriceAndStock[item] = stockInfo;
+                    this.ItemPriceAndStock[item] = stockInfo;
             }
         }
     }

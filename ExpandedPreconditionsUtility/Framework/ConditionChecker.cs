@@ -23,10 +23,10 @@ namespace ExpandedPreconditionsUtility.Framework
 
         public ConditionChecker(IModHelper helper, IMonitor monitor, bool verbose = false, string uniqueId = null)
         {
-            _helper = helper;
-            _monitor = monitor;
-            _verboseLogging = verbose;
-            _uniqueId = uniqueId;
+            this._helper = helper;
+            this._monitor = monitor;
+            this._verboseLogging = verbose;
+            this._uniqueId = uniqueId;
         }
 
         /// <summary>
@@ -42,31 +42,31 @@ namespace ExpandedPreconditionsUtility.Framework
                 return true;
 
             //using the farm because it should be available for every player at any point in the game. Current location sometimes doesn't exist for farmhands
-            VanillaPreconditionsMethod = condition => Game1.getFarm().checkEventPrecondition(condition) != "-1";
+            this.VanillaPreconditionsMethod = condition => Game1.getFarm().checkEventPrecondition(condition) != "-1";
 
             //if someone somehow marked this fake ID as seen, unmark it so condition checking will actually work
             if (Game1.player.eventsSeen.Remove("-6529"))
             {
-                _monitor.Log($"{_uniqueId} / Expanded Preconditions Utility uses the fake event ID of -6529 in order to use vanilla preconditions." +
+                this._monitor.Log($"{this._uniqueId} / Expanded Preconditions Utility uses the fake event ID of -6529 in order to use vanilla preconditions." +
                     " Somehow your save has marked this ID as seen. Expanded Preconditions is freeing it back up.", LogLevel.Warn);
             }
 
             //if any of the conditions are met, return true
             foreach (var con in conditions)
             {
-                if (_verboseLogging)
-                    _monitor.Log($"{_uniqueId}: Checking condition string: \"{con}\"", LogLevel.Debug);
+                if (this._verboseLogging)
+                    this._monitor.Log($"{this._uniqueId}: Checking condition string: \"{con}\"", LogLevel.Debug);
 
-                if (CheckIndividualConditions(con.Split('/')))
+                if (this.CheckIndividualConditions(con.Split('/')))
                 {
-                    if (_verboseLogging)
-                        _monitor.Log($"-{_uniqueId}: Player met the conditions: \"{con}\"", LogLevel.Debug);
+                    if (this._verboseLogging)
+                        this._monitor.Log($"-{this._uniqueId}: Player met the conditions: \"{con}\"", LogLevel.Debug);
                     return true;
                 }
             }
 
-            if (_verboseLogging)
-                _monitor.Log($"-{_uniqueId}: No conditions were met", LogLevel.Debug);
+            if (this._verboseLogging)
+                this._monitor.Log($"-{this._uniqueId}: No conditions were met", LogLevel.Debug);
 
             //if no conditions are met, return false
             return false;
@@ -82,30 +82,30 @@ namespace ExpandedPreconditionsUtility.Framework
             //if any of the conditions fail, return false
             foreach (var condition in conditions)
             {
-                if (_verboseLogging)
-                    _monitor.Log($"--{_uniqueId} / Checking individual condition: {condition}", LogLevel.Debug);
+                if (this._verboseLogging)
+                    this._monitor.Log($"--{this._uniqueId} / Checking individual condition: {condition}", LogLevel.Debug);
                 //if condition starts with a ! return false if condition checking is true
                 if (condition[0] == '!')
                 {
-                    if (CheckCustomConditions(condition.Substring(1)))
+                    if (this.CheckCustomConditions(condition.Substring(1)))
                     {
-                        if (_verboseLogging)
-                            _monitor.Log($"--{_uniqueId} / Failed individual condition: {condition}", LogLevel.Debug);
+                        if (this._verboseLogging)
+                            this._monitor.Log($"--{this._uniqueId} / Failed individual condition: {condition}", LogLevel.Debug);
                         return false;
                     }
                 }
-                else if (!CheckCustomConditions(condition))
+                else if (!this.CheckCustomConditions(condition))
                 {
-                    if (_verboseLogging)
-                        _monitor.Log($"--{_uniqueId} / Failed individual condition: {condition}", LogLevel.Debug);
+                    if (this._verboseLogging)
+                        this._monitor.Log($"--{this._uniqueId} / Failed individual condition: {condition}", LogLevel.Debug);
 
                     return false;
                 }
 
             }
 
-            if (_verboseLogging)
-                _monitor.Log($"--{_uniqueId} / Passed all conditions: {conditions}", LogLevel.Debug);
+            if (this._verboseLogging)
+                this._monitor.Log($"--{this._uniqueId} / Passed all conditions: {conditions}", LogLevel.Debug);
             //passed all conditions
             return true;
 
@@ -122,30 +122,30 @@ namespace ExpandedPreconditionsUtility.Framework
             switch (conditionParams[0])
             {
                 case "NPCAt":
-                    return CheckNpcAt(conditionParams);
+                    return this.CheckNpcAt(conditionParams);
                 case "HasMod":
-                    return CheckHasMod(conditionParams);
+                    return this.CheckHasMod(conditionParams);
                 case "SkillLevel":
-                    return CheckSkillLevel(conditionParams);
+                    return this.CheckSkillLevel(conditionParams);
                 case "CommunityCenterComplete":
                     return Game1.MasterPlayer.mailReceived.Contains("ccIsComplete") || Game1.MasterPlayer.hasCompletedCommunityCenter();
                 case "JojaMartComplete":
-                    return CheckJojaMartComplete();
+                    return this.CheckJojaMartComplete();
                 case "SeededRandom":
-                    return CheckSeededRandom(conditionParams);
+                    return this.CheckSeededRandom(conditionParams);
                 case "HasCookingRecipe":
-                    return CheckHasRecipe(conditionParams, Game1.player.cookingRecipes);
+                    return this.CheckHasRecipe(conditionParams, Game1.player.cookingRecipes);
                 case "HasCraftingRecipe":
-                    return CheckHasRecipe(conditionParams, Game1.player.craftingRecipes);
+                    return this.CheckHasRecipe(conditionParams, Game1.player.craftingRecipes);
                 case "FarmHouseUpgradeLevel":
-                    return CheckFarmHouseUpgrade(conditionParams);
+                    return this.CheckFarmHouseUpgrade(conditionParams);
                 case "HasItem":
-                    return HasItem(conditionParams);
+                    return this.HasItem(conditionParams);
 
                 default:
                     // Note: "-5005" is a random event id cause the vanilla method is for events and needs one ¯\_(ツ)_/¯
                     // so it's the negative mod id
-                    return VanillaPreconditionsMethod("-5005/" + con);
+                    return this.VanillaPreconditionsMethod("-5005/" + con);
             }
         }
 
@@ -276,7 +276,7 @@ namespace ExpandedPreconditionsUtility.Framework
                 return false;
 
             GameLocation town = Game1.getLocationFromName("Town");
-            return _helper.Reflection.GetMethod(town, "checkJojaCompletePrerequisite").Invoke<bool>();
+            return this._helper.Reflection.GetMethod(town, "checkJojaCompletePrerequisite").Invoke<bool>();
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace ExpandedPreconditionsUtility.Framework
             //if any isn't loaded, returns false
             for (int i = 1; i < conditionParams.Length; i++)
             {
-                if (!_helper.ModRegistry.IsLoaded(conditionParams[i]))
+                if (!this._helper.ModRegistry.IsLoaded(conditionParams[i]))
                     return false;
             }
 
@@ -335,7 +335,7 @@ namespace ExpandedPreconditionsUtility.Framework
                             return false;
                         break;
                     default:
-                        _monitor.Log($"{_uniqueId} / \"{conditionParams[i]}\" is not a valid parameter for SkillLevel. Skipping check.", LogLevel.Warn);
+                        this._monitor.Log($"{this._uniqueId} / \"{conditionParams[i]}\" is not a valid parameter for SkillLevel. Skipping check.", LogLevel.Warn);
                         break;
                 }
             }

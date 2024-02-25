@@ -29,10 +29,10 @@ namespace ToolUpgradeCosts
 		public override void Entry(IModHelper helper)
 		{
             _instance = this;
-			_config = helper.ReadConfig<Config>();
-            Helper.Events.GameLoop.SaveLoaded += GetIndexes;
+			this._config = helper.ReadConfig<Config>();
+            this.Helper.Events.GameLoop.SaveLoaded += this.GetIndexes;
 
-            Harmony harmony = new Harmony(ModManifest.UniqueID);
+            Harmony harmony = new Harmony(this.ModManifest.UniqueID);
 
 			harmony.Patch(
                 AccessTools.Method(typeof(ShopBuilder), nameof(ShopBuilder.GetShopStock), new[] { typeof(string), typeof(ShopData) }),
@@ -42,15 +42,15 @@ namespace ToolUpgradeCosts
 
 		private void GetIndexes(object sender, SaveLoadedEventArgs e)
 		{
-			foreach (KeyValuePair<UpgradeMaterials, Upgrade> upgrade in _config.UpgradeCosts)
+			foreach (KeyValuePair<UpgradeMaterials, Upgrade> upgrade in this._config.UpgradeCosts)
 			{
 				string name = upgrade.Value.MaterialName;
 
 				string id = Game1.objectData.FirstOrDefault(kvp => kvp.Value.Name == name).Key;
 				if (id is null)
 				{
-					Monitor.Log($"Object named \"{name}\" not found for the tool upgrade level of {upgrade.Key}. Vanilla upgrade item will be used", LogLevel.Error);
-					id = _defaultMaterials[upgrade.Key];
+					this.Monitor.Log($"Object named \"{name}\" not found for the tool upgrade level of {upgrade.Key}. Vanilla upgrade item will be used", LogLevel.Error);
+					id = this._defaultMaterials[upgrade.Key];
 				}
 				upgrade.Value.MaterialId = id;
 			}

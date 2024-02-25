@@ -16,7 +16,7 @@ namespace CataloguesAnywhere
 
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-            if (!Context.CanPlayerMove || !Config.Enabled)
+            if (!Context.CanPlayerMove || !this.Config.Enabled)
                 return;
 
             var input = this.Helper.Input;

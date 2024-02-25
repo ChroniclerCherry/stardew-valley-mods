@@ -21,7 +21,7 @@ namespace HayBalesSilo
 
         public override void Entry(IModHelper helper)
         {
-            monitor = Monitor;
+            monitor = this.Monitor;
             Config = this.Helper.ReadConfig<ModConfig>();
 
             var harmony = new Harmony(this.ModManifest.UniqueID);
@@ -30,8 +30,8 @@ namespace HayBalesSilo
                 postfix: new HarmonyMethod(typeof(PatchGameLocation), nameof(PatchGameLocation.After_GetHayCapacity))
             );
 
-            helper.Events.Content.AssetRequested += OnAssetRequested;
-            helper.Events.Input.ButtonPressed += Input_ButtonPressed;
+            helper.Events.Content.AssetRequested += this.OnAssetRequested;
+            helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
         }
 
         private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
@@ -50,7 +50,7 @@ namespace HayBalesSilo
                 return;
 
             //check if the clicked tile contains a Farm Renderer
-            Vector2 tile = Helper.Input.GetCursorPosition().GrabTile;
+            Vector2 tile = this.Helper.Input.GetCursorPosition().GrabTile;
             if (location.Objects.TryGetValue(tile, out Object obj) && obj.QualifiedItemId == HayBaleQualifiedId)
             {
                 if (location.getBuildingByType("Silo") is null)

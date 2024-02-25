@@ -23,37 +23,37 @@ namespace TrainStation
 
         public override void Entry(IModHelper helper)
         {
-            Config = helper.ReadConfig<ModConfig>();
+            this.Config = helper.ReadConfig<ModConfig>();
             Instance = this;
 
-            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
-            helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
-            helper.Events.Input.ButtonPressed += Input_ButtonPressed;
-            helper.Events.Display.MenuChanged += Display_MenuChanged;
-            helper.Events.Player.Warped += Player_Warped;
+            helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
+            helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
+            helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
+            helper.Events.Display.MenuChanged += this.Display_MenuChanged;
+            helper.Events.Player.Warped += this.Player_Warped;
         }
 
         private void Player_Warped(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
         {
             if (e.NewLocation.Name != "Railroad") return;
 
-            string property = e.NewLocation.doesTileHaveProperty(Config.TicketStationX, Config.TicketStationY,
+            string property = e.NewLocation.doesTileHaveProperty(this.Config.TicketStationX, this.Config.TicketStationY,
                 "Action", "Buildings");
             if (property != "TrainStation")
-                DrawInTicketStation();
+                this.DrawInTicketStation();
         }
 
         private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
-            ConditionsApi = Helper.ModRegistry.GetApi<IConditionsChecker>("Cherry.ExpandedPreconditionsUtility");
-            if (ConditionsApi == null)
+            this.ConditionsApi = this.Helper.ModRegistry.GetApi<IConditionsChecker>("Cherry.ExpandedPreconditionsUtility");
+            if (this.ConditionsApi == null)
             {
-                Monitor.Log("Expanded Preconditions Utility API not detected. Something went wrong, please check that your installation of Expanded Preconditions Utility is valid", LogLevel.Error);
+                this.Monitor.Log("Expanded Preconditions Utility API not detected. Something went wrong, please check that your installation of Expanded Preconditions Utility is valid", LogLevel.Error);
                 return;
             }
-                
-            
-            ConditionsApi.Initialize(false, this.ModManifest.UniqueID);
+
+
+            this.ConditionsApi.Initialize(false, this.ModManifest.UniqueID);
             
         }
 
@@ -68,12 +68,12 @@ namespace TrainStation
         ******************/
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
-            UpdateSelectedLanguage(); //get language code
-            LoadContentPacks();
+            this.UpdateSelectedLanguage(); //get language code
+            this.LoadContentPacks();
 
-            DrawInTicketStation();
+            this.DrawInTicketStation();
 
-            RemoveInvalidLocations();
+            this.RemoveInvalidLocations();
         }
 
         private readonly int TicketStationTopTile = 1032;
@@ -93,25 +93,25 @@ namespace TrainStation
             try
             {
                 //draw the ticket station
-                buildingsLayer.Tiles[Config.TicketStationX, Config.TicketStationY] =
-                    new StaticTile(buildingsLayer, outdoorsTilesheet, BlendMode.Alpha, TicketStationBottomTile);
-                frontLayer.Tiles[Config.TicketStationX, Config.TicketStationY - 1] =
-                    new StaticTile(frontLayer, outdoorsTilesheet, BlendMode.Alpha, TicketStationTopTile);
+                buildingsLayer.Tiles[this.Config.TicketStationX, this.Config.TicketStationY] =
+                    new StaticTile(buildingsLayer, outdoorsTilesheet, BlendMode.Alpha, this.TicketStationBottomTile);
+                frontLayer.Tiles[this.Config.TicketStationX, this.Config.TicketStationY - 1] =
+                    new StaticTile(frontLayer, outdoorsTilesheet, BlendMode.Alpha, this.TicketStationTopTile);
             }
             catch (Exception e)
             {
-                Monitor.Log(e.ToString(),LogLevel.Error);
-                Monitor.Log("Train station has recovered from a crash and will continue to function, however the ticket station may be invisible or looked glitched. This is caused by the map mod you are using changing tilesheet orders through renaming vanilla tilesheets or not naming custom tilesheets properly. Please report this to the map mod you are using to fix this issue.",LogLevel.Alert);
+                this.Monitor.Log(e.ToString(),LogLevel.Error);
+                this.Monitor.Log("Train station has recovered from a crash and will continue to function, however the ticket station may be invisible or looked glitched. This is caused by the map mod you are using changing tilesheet orders through renaming vanilla tilesheets or not naming custom tilesheets properly. Please report this to the map mod you are using to fix this issue.",LogLevel.Alert);
                 //draw anything from the tilesheet
-                buildingsLayer.Tiles[Config.TicketStationX, Config.TicketStationY] =
+                buildingsLayer.Tiles[this.Config.TicketStationX, this.Config.TicketStationY] =
                     new StaticTile(buildingsLayer, outdoorsTilesheet, BlendMode.Alpha, 1);
-                frontLayer.Tiles[Config.TicketStationX, Config.TicketStationY - 1] =
+                frontLayer.Tiles[this.Config.TicketStationX, this.Config.TicketStationY - 1] =
                     new StaticTile(frontLayer, outdoorsTilesheet, BlendMode.Alpha, 1);
             }
 
 
             //set the TrainStation property
-            railway.setTileProperty(Config.TicketStationX, Config.TicketStationY, "Buildings", "Action", "TrainStation");
+            railway.setTileProperty(this.Config.TicketStationX, this.Config.TicketStationY, "Buildings", "Action", "TrainStation");
 
             railway.map.LoadTileSheets(Game1.mapDisplayDevice);
         }
@@ -124,10 +124,10 @@ namespace TrainStation
             {
                 TargetMapName = "Railroad",
                 StopId = "Cherry.TrainStation",
-                TargetX = Config.RailroadWarpX,
-                TargetY = Config.RailroadWarpY,
+                TargetX = this.Config.RailroadWarpX,
+                TargetY = this.Config.RailroadWarpY,
                 Cost = 0,
-                TranslatedName = Helper.Translation.Get("TrainStationDisplayName")
+                TranslatedName = this.Helper.Translation.Get("TrainStationDisplayName")
             };
 
             //create stop in willy's boat room
@@ -138,21 +138,21 @@ namespace TrainStation
                 TargetX = 4,
                 TargetY = 9,
                 Cost = 0,
-                TranslatedName = Helper.Translation.Get("BoatStationDisplayName")
+                TranslatedName = this.Helper.Translation.Get("BoatStationDisplayName")
             };
 
             ContentPack content = new ContentPack();
             content.TrainStops = new List<TrainStop>();
             content.BoatStops = new List<BoatStop>();
 
-            TrainStops = new List<TrainStop>() { RailRoadStop };
-            BoatStops = new List<BoatStop>(){ BoatTunnelStop };
+            this.TrainStops = new List<TrainStop>() { RailRoadStop };
+            this.BoatStops = new List<BoatStop>(){ BoatTunnelStop };
 
-            foreach (IContentPack pack in Helper.ContentPacks.GetOwned())
+            foreach (IContentPack pack in this.Helper.ContentPacks.GetOwned())
             {
                 if (!pack.HasFile("TrainStops.json"))
                 {
-                    Monitor.Log($"{pack.Manifest.UniqueID} is missing a \"TrainStops.json\"", LogLevel.Error);
+                    this.Monitor.Log($"{pack.Manifest.UniqueID} is missing a \"TrainStops.json\"", LogLevel.Error);
                     continue;
                 }
 
@@ -163,9 +163,9 @@ namespace TrainStation
                     {
                         TrainStop stop = cp.TrainStops.ElementAt(i);
                         stop.StopId = $"{pack.Manifest.UniqueID}{i}"; //assigns a unique stopID to every stop
-                        stop.TranslatedName = Localize(stop.LocalizedDisplayName);
+                        stop.TranslatedName = this.Localize(stop.LocalizedDisplayName);
 
-                        TrainStops.Add(cp.TrainStops.ElementAt(i));
+                        this.TrainStops.Add(cp.TrainStops.ElementAt(i));
                     }
                 }
 
@@ -175,9 +175,9 @@ namespace TrainStation
                     {
                         BoatStop stop = cp.BoatStops.ElementAt(i);
                         stop.StopID = $"{pack.Manifest.UniqueID}{i}"; //assigns a unique stopID to every stop
-                        stop.TranslatedName = Localize(stop.LocalizedDisplayName);
+                        stop.TranslatedName = this.Localize(stop.LocalizedDisplayName);
 
-                        BoatStops.Add(cp.BoatStops.ElementAt(i));
+                        this.BoatStops.Add(cp.BoatStops.ElementAt(i));
                     }
                 }
 
@@ -186,24 +186,24 @@ namespace TrainStation
         }
         private void RemoveInvalidLocations()
         {
-            for (int i = TrainStops.Count - 1; i >= 0; i--)
+            for (int i = this.TrainStops.Count - 1; i >= 0; i--)
             {
-                TrainStop stop = TrainStops[i];
+                TrainStop stop = this.TrainStops[i];
                 if (Game1.getLocationFromName(stop.TargetMapName) == null)
                 {
-                    Monitor.Log($"Could not find location {stop.TargetMapName}", LogLevel.Warn);
-                    TrainStops.RemoveAt(i);
+                    this.Monitor.Log($"Could not find location {stop.TargetMapName}", LogLevel.Warn);
+                    this.TrainStops.RemoveAt(i);
                 }
 
             }
 
-            for (int i = BoatStops.Count - 1; i >= 0; i--)
+            for (int i = this.BoatStops.Count - 1; i >= 0; i--)
             {
-                BoatStop stop = BoatStops[i];
+                BoatStop stop = this.BoatStops[i];
                 if (Game1.getLocationFromName(stop.TargetMapName) == null)
                 {
-                    Monitor.Log($"Could not find location {stop.TargetMapName}", LogLevel.Warn);
-                    BoatStops.RemoveAt(i);
+                    this.Monitor.Log($"Could not find location {stop.TargetMapName}", LogLevel.Warn);
+                    this.BoatStops.RemoveAt(i);
                 }
 
             }
@@ -234,32 +234,32 @@ namespace TrainStation
 
             if (tileProperty == "TrainStation")
             {
-                OpenTrainMenu();
-            } else if (BoatStops.Count > 0 && tileProperty == "BoatTicket" && Game1.MasterPlayer.hasOrWillReceiveMail("willyBoatFixed"))
+                this.OpenTrainMenu();
+            } else if (this.BoatStops.Count > 0 && tileProperty == "BoatTicket" && Game1.MasterPlayer.hasOrWillReceiveMail("willyBoatFixed"))
             {
-                OpenBoatMenu();
-                Helper.Input.Suppress(e.Button);
+                this.OpenBoatMenu();
+                this.Helper.Input.Suppress(e.Button);
             }
 
         }
 
         public void OpenBoatMenu()
         {
-            Response[] responses = GetBoatReponses().ToArray();
+            Response[] responses = this.GetBoatReponses().ToArray();
 
-            Game1.currentLocation.createQuestionDialogue(Helper.Translation.Get("ChooseDestination"), responses, BoatDestinationPicked);
+            Game1.currentLocation.createQuestionDialogue(this.Helper.Translation.Get("ChooseDestination"), responses, this.BoatDestinationPicked);
         }
 
         private List<Response> GetBoatReponses()
         {
             List<Response> responses = new List<Response>();
 
-            foreach (BoatStop stop in BoatStops)
+            foreach (BoatStop stop in this.BoatStops)
             {
                 if (stop.TargetMapName == Game1.currentLocation.Name) //remove stops to the current map
                     continue;
 
-                if (!ConditionsApi.CheckConditions(stop.Conditions)) //remove stops that don't meet conditions
+                if (!this.ConditionsApi.CheckConditions(stop.Conditions)) //remove stops that don't meet conditions
                     continue;
 
                 string displayName = $"{stop.TranslatedName}";
@@ -276,33 +276,33 @@ namespace TrainStation
             {
                 responses.Add(new Response("GingerIsland",this.Helper.Translation.Get("GingerIsland") + $" - {tunnel.TicketPrice}g"));
             }
-            responses.Add(new Response("Cancel", Helper.Translation.Get("MenuCancelOption")));
+            responses.Add(new Response("Cancel", this.Helper.Translation.Get("MenuCancelOption")));
 
             return responses;
         }
 
         public void OpenTrainMenu()
         {
-            Response[] responses = GetReponses().ToArray();
+            Response[] responses = this.GetReponses().ToArray();
             if (responses.Length <= 1) //only 1 response means there's only the cancel option
             {
-                Game1.drawObjectDialogue(Helper.Translation.Get("NoDestinations"));
+                Game1.drawObjectDialogue(this.Helper.Translation.Get("NoDestinations"));
                 return;
             }
 
-            Game1.currentLocation.createQuestionDialogue(Helper.Translation.Get("ChooseDestination"), responses, DestinationPicked);
+            Game1.currentLocation.createQuestionDialogue(this.Helper.Translation.Get("ChooseDestination"), responses, this.DestinationPicked);
         }
 
         private List<Response> GetReponses()
         {
             List<Response> responses = new List<Response>();
 
-            foreach (TrainStop stop in TrainStops)
+            foreach (TrainStop stop in this.TrainStops)
             {
                 if (stop.TargetMapName == Game1.currentLocation.Name) //remove stops to the current map
                     continue;
 
-                if (!ConditionsApi.CheckConditions(stop.Conditions)) //remove stops that don't meet conditions
+                if (!this.ConditionsApi.CheckConditions(stop.Conditions)) //remove stops that don't meet conditions
                     continue;
 
                 string displayName = $"{stop.TranslatedName}";
@@ -315,7 +315,7 @@ namespace TrainStation
                 responses.Add(new Response(stop.StopId, displayName));
             }
 
-            responses.Add(new Response("Cancel", Helper.Translation.Get("MenuCancelOption")));
+            responses.Add(new Response("Cancel", this.Helper.Translation.Get("MenuCancelOption")));
 
             return responses;
         }
@@ -346,11 +346,11 @@ namespace TrainStation
                 }
             }
 
-            foreach (BoatStop stop in BoatStops)
+            foreach (BoatStop stop in this.BoatStops)
             {
                 if (stop.StopID == whichAnswer)
                 {
-                    AttemptToWarpBoat(stop);
+                    this.AttemptToWarpBoat(stop);
                 }
             }
         }
@@ -361,11 +361,11 @@ namespace TrainStation
             if (whichAnswer == "Cancel")
                 return;
 
-            foreach (TrainStop stop in TrainStops)
+            foreach (TrainStop stop in this.TrainStops)
             {
                 if (stop.StopId == whichAnswer)
                 {
-                    AttemptToWarp(stop);
+                    this.AttemptToWarp(stop);
                 }
             }
         }
@@ -375,9 +375,9 @@ namespace TrainStation
         private void AttemptToWarpBoat(BoatStop stop)
         {
 
-            if (!TryToChargeMoney(stop.Cost))
+            if (!this.TryToChargeMoney(stop.Cost))
             {
-                Game1.drawObjectDialogue(Helper.Translation.Get("NotEnoughMoney", new { DestinationName = stop.TranslatedName }));
+                Game1.drawObjectDialogue(this.Helper.Translation.Get("NotEnoughMoney", new { DestinationName = stop.TranslatedName }));
                 return;
             }
             LocationRequest request = Game1.getLocationRequest(stop.TargetMapName);
@@ -386,47 +386,48 @@ namespace TrainStation
         private void AttemptToWarp(TrainStop stop)
         {
 
-            if (!TryToChargeMoney(stop.Cost))
+            if (!this.TryToChargeMoney(stop.Cost))
             {
-                Game1.drawObjectDialogue(Helper.Translation.Get("NotEnoughMoney", new { DestinationName = stop.TranslatedName }));
+                Game1.drawObjectDialogue(this.Helper.Translation.Get("NotEnoughMoney", new { DestinationName = stop.TranslatedName }));
                 return;
             }
             LocationRequest request = Game1.getLocationRequest(stop.TargetMapName);
-            request.OnWarp += Request_OnWarp;
-            destinationMessage = Helper.Translation.Get("ArrivalMessage", new { DestinationName = stop.TranslatedName });
+            request.OnWarp += this.Request_OnWarp;
+            this.destinationMessage = this.Helper.Translation.Get("ArrivalMessage", new { DestinationName = stop.TranslatedName });
 
             Game1.warpFarmer(request, stop.TargetX, stop.TargetY, stop.FacingDirectionAfterWarp);
 
-            cue = Game1.soundBank.GetCue("trainLoop");
-            cue.SetVariable("Volume", 100f);
-            cue.Play();
+            this.cue = Game1.soundBank.GetCue("trainLoop");
+            this.cue.SetVariable("Volume", 100f);
+            this.cue.Play();
         }
 
         private bool finishedTrainWarp = false;
 
         private void Request_OnWarp()
         {
-            Game1.pauseThenMessage(3000, destinationMessage);
-            finishedTrainWarp = true;
+            Game1.pauseThenMessage(3000, this.destinationMessage);
+            this.finishedTrainWarp = true;
         }
 
         private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
         {
-            if (!finishedTrainWarp)
+            if (!this.finishedTrainWarp)
                 return;
 
             if (e.NewMenu is DialogueBox)
             {
-                AfterWarpPause();
+                this.AfterWarpPause();
             }
-            finishedTrainWarp = false;
+
+            this.finishedTrainWarp = false;
         }
 
         private void AfterWarpPause()
         {
             //Game1.drawObjectDialogue(destinationMessage);
             Game1.playSound("trainWhistle");
-            cue.Stop(Microsoft.Xna.Framework.Audio.AudioStopOptions.AsAuthored);
+            this.cue.Stop(Microsoft.Xna.Framework.Audio.AudioStopOptions.AsAuthored);
         }
 
         /******************
