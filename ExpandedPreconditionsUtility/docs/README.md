@@ -84,3 +84,6 @@ There's strings to provide a more readable shortcut for most use cases. If you w
 Let's say you wanted something of having a 50/50 chance happening each week, and for that to persist for the whole week. You would take the two scenarios you want, setting one of the conditions to `SeededRandom 22 Week 0.5 1.0` and the second one to `SeededRandom 22 Week 0 0.5` This means a random number is generated between 0 and 1 each week. If it is between 0 and 0.5 the first one resolves to true and the second one resolves to false and vice versa. This number will remain for the entire week, until it is rerolled again after 7 days
 
 ---------------------
+
+## See also
+* [Release notes](release-notes.md)

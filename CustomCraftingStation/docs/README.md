@@ -59,3 +59,6 @@ For Tiledata, they should be an `Action` tile on the `Buildings` layer with a fo
 
 ## API
 There are plans to add an API, to allow other mods to programatically open crafting menus through this mod. With optional dependency set up properly, this should help with incompatibility issues in the future.
+
+## See also
+* [Release notes](release-notes.md)

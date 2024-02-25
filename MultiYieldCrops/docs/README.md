@@ -95,3 +95,6 @@ The quality is calculated the same way as the game's crops. For each harvest, th
 ```
 
 Then for each item spawned from that harvest, if the item rolls a random number higher than highQualityChance, it will be gold star. If it fails, it will roll against lowerQualityChance for a chance to be silver. If it fails both, then it will be regular quality. 
+
+## See also
+* [Release notes](release-notes.md)

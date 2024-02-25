@@ -56,3 +56,6 @@ The ticket station and the warp to the railroad may end up somewhere invalid if 
   "RailroadWarpY": 42
 }
 ```
+
+## See also
+* [Release notes](release-notes.md)

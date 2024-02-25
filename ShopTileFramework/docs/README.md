@@ -370,6 +370,7 @@ If you need to find me, the following methods are your best bets:
 - Suggestions should be submitted through an issue on this repository
 - If you have questions that aren't answered here or requires clarification, you can DM me on discord at `Chronicler#9318`
 
-## More
+## See also
+* [Release notes](release-notes.md)
 * [Find a full template of the shops.json as an example here](TEMPLATE.md)
 * [Find examples and explanations of more complex conditions here](CONDITIONS.md)
