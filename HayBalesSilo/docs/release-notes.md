@@ -1,6 +1,7 @@
 ﻿# Release notes
 ## Upcoming release
 - Updated for Stardew Valley 1.6 and SMAPI 4.0.0.
+- Added integration with Generic Mod Config Menu (thanks to holy-the-sea!).
 
 ## 1.0.4
 Released 10 May 2020 for SMAPI 3.0.0 or later.
