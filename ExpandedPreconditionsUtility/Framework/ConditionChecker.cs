@@ -122,7 +122,7 @@ namespace ExpandedPreconditionsUtility.Framework
             switch (conditionParams[0])
             {
                 case "NPCAt":
-                    return CheckNPCAt(conditionParams);
+                    return CheckNpcAt(conditionParams);
                 case "HasMod":
                     return CheckHasMod(conditionParams);
                 case "SkillLevel":
@@ -249,7 +249,7 @@ namespace ExpandedPreconditionsUtility.Framework
         /// <param name="conditionParams">The condition string split by spaces, with the first parameter being the NPC 
         /// name and every two after that is the X and Y coordinates</param>
         /// <returns>true if the npc was found at the given tile, false if not</returns>
-        private bool CheckNPCAt(string[] conditionParams)
+        private bool CheckNpcAt(string[] conditionParams)
         {
             //the second parameter at index 1 is the name of an npc
             var npc = Game1.getCharacterFromName(conditionParams[1]);

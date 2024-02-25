@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ShopTileFramework.Framework.API;
+using ShopTileFramework.Framework.Apis;
 using ShopTileFramework.Framework.Data;
 using ShopTileFramework.Framework.Utility;
 using StardewModdingAPI;
@@ -66,7 +66,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// <returns></returns>
         public Dictionary<ISalable, ItemStockInformation> Update()
         {
-            if (When != null && !APIs.Conditions.CheckConditions(When))
+            if (When != null && !ApiManager.Conditions.CheckConditions(When))
                 return null; //did not pass conditions
 
             if (!ItemsUtil.CheckItemType(ItemType)) //check that itemtype is valid
@@ -84,7 +84,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             {
                 foreach (KeyValuePair<double,string[]> kvp in _priceMultiplierWhen)
                 {
-                    if (APIs.Conditions.CheckConditions(kvp.Value))
+                    if (ApiManager.Conditions.CheckConditions(kvp.Value))
                     {
                         pricemultiplier = kvp.Key;
                         break;
@@ -99,7 +99,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             }
             else
             {
-                if (ItemIDs != null)
+                if (ItemIds != null)
                     ModEntry.monitor.Log(
                         "ItemType of \"Seed\" is a special itemtype used for parsing Seeds from JA Pack crops and trees and does not support input via ID. If adding seeds via ID, please use the ItemType \"Object\" instead to directly sell the seeds/saplings");
                 if (ItemNames != null)
@@ -118,10 +118,10 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// </summary>
         private void AddById(double pricemultiplier)
         {
-            if (ItemIDs == null)
+            if (ItemIds == null)
                 return;
 
-            foreach (string itemId in ItemIDs)
+            foreach (string itemId in ItemIds)
             {
                 _builder.AddItemToStock(itemId, pricemultiplier);
             }
@@ -147,20 +147,20 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// </summary>
         private void AddByJAPack(double pricemultiplier)
         {
-            if (JAPacks == null)
+            if (JaPacks == null)
                 return;
 
-            if (APIs.JsonAssets == null)
+            if (ApiManager.JsonAssets == null)
                 return;
 
-            foreach (var JAPack in JAPacks)
+            foreach (var JAPack in JaPacks)
             {
                 ModEntry.monitor.Log($"Adding all {ItemType}s from {JAPack}", LogLevel.Debug);
 
                 if (ItemType == "Seed")
                 {
-                    var crops = APIs.JsonAssets.GetAllCropsFromContentPack(JAPack);
-                    var trees = APIs.JsonAssets.GetAllFruitTreesFromContentPack(JAPack);
+                    var crops = ApiManager.JsonAssets.GetAllCropsFromContentPack(JAPack);
+                    var trees = ApiManager.JsonAssets.GetAllFruitTreesFromContentPack(JAPack);
 
 
                     if (crops != null)
@@ -168,7 +168,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
 
                         foreach (string crop in crops)
                         {
-                            if (ExcludeFromJAPacks != null && ExcludeFromJAPacks.Contains(crop)) continue;
+                            if (ExcludeFromJaPacks != null && ExcludeFromJaPacks.Contains(crop)) continue;
                             string id = ItemsUtil.GetSeedId(crop);
                             if (id is not null)
                                 _builder.AddItemToStock(id, pricemultiplier);
@@ -180,7 +180,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
 
                         foreach (string tree in trees)
                         {
-                            if (ExcludeFromJAPacks != null && ExcludeFromJAPacks.Contains(tree)) continue;
+                            if (ExcludeFromJaPacks != null && ExcludeFromJaPacks.Contains(tree)) continue;
                             string id = ItemsUtil.GetSaplingId(tree);
                             if (id is not null)
                                 _builder.AddItemToStock(id, pricemultiplier);
@@ -199,7 +199,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
 
                 foreach (string itemName in packs)
                 {
-                    if (ExcludeFromJAPacks != null && ExcludeFromJAPacks.Contains(itemName)) continue;
+                    if (ExcludeFromJaPacks != null && ExcludeFromJaPacks.Contains(itemName)) continue;
                     _builder.AddItemToStock(itemName, pricemultiplier);
                 }
             }
@@ -215,17 +215,17 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             switch (ItemType)
             {
                 case "Object":
-                    return APIs.JsonAssets.GetAllObjectsFromContentPack(JAPack);
+                    return ApiManager.JsonAssets.GetAllObjectsFromContentPack(JAPack);
                 case "BigCraftable":
-                    return APIs.JsonAssets.GetAllBigCraftablesFromContentPack(JAPack);
+                    return ApiManager.JsonAssets.GetAllBigCraftablesFromContentPack(JAPack);
                 case "Clothing":
-                    return APIs.JsonAssets.GetAllClothingFromContentPack(JAPack);
+                    return ApiManager.JsonAssets.GetAllClothingFromContentPack(JAPack);
                 case "Ring":
-                    return APIs.JsonAssets.GetAllObjectsFromContentPack(JAPack);
+                    return ApiManager.JsonAssets.GetAllObjectsFromContentPack(JAPack);
                 case "Hat":
-                    return APIs.JsonAssets.GetAllHatsFromContentPack(JAPack);
+                    return ApiManager.JsonAssets.GetAllHatsFromContentPack(JAPack);
                 case "Weapon":
-                    return APIs.JsonAssets.GetAllWeaponsFromContentPack(JAPack);
+                    return ApiManager.JsonAssets.GetAllWeaponsFromContentPack(JAPack);
                 default:
                     return null;
             }

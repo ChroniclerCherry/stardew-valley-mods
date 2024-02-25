@@ -51,7 +51,7 @@ namespace CustomCraftingStation
 
         public override object GetApi()
         {
-            return new CCSApi();
+            return new CustomCraftingStationsApi();
         }
 
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)

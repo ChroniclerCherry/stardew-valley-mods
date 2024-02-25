@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ShopTileFramework.Framework.API;
+using ShopTileFramework.Framework.Apis;
 using StardewValley;
 using StardewValley.Extensions;
 using StardewValley.GameData.Crops;
@@ -121,7 +121,7 @@ namespace ShopTileFramework.Framework.Utility
         public static string GetSeedId(string cropName)
         {
             //int cropID = ModEntry.JsonAssets.GetCropId(cropName);
-            string cropId = APIs.JsonAssets.GetCropId(cropName);
+            string cropId = ApiManager.JsonAssets.GetCropId(cropName);
             foreach ((string id, CropData data) in Game1.cropData)
             {
                 // find the seed id in crops information to get seed id
@@ -138,7 +138,7 @@ namespace ShopTileFramework.Framework.Utility
         /// <returns>The ID of the sapling object if found, -1 if not</returns>
         public static string GetSaplingId(string treeName)
         {
-            string treeId = APIs.JsonAssets.GetFruitTreeId(treeName);
+            string treeId = ApiManager.JsonAssets.GetFruitTreeId(treeName);
             foreach ((string saplingId, FruitTreeData data) in Game1.fruitTreeData)
             {
                 //find the tree id in fruitTrees information to get sapling id
@@ -163,30 +163,30 @@ namespace ShopTileFramework.Framework.Utility
 
         public static void RegisterItemsToRemove()
         {
-            if (APIs.JsonAssets == null)
+            if (ApiManager.JsonAssets == null)
                 return;
 
             foreach (string pack in PacksToRemove)
             {
-                var items = APIs.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
+                var items = ApiManager.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
                 if (items != null)
                     ItemsToRemove.AddRange(items);
 
-                items = APIs.JsonAssets.GetAllClothingFromContentPack(pack);
+                items = ApiManager.JsonAssets.GetAllClothingFromContentPack(pack);
                 if (items != null)
                     ItemsToRemove.AddRange(items);
 
-                items = APIs.JsonAssets.GetAllHatsFromContentPack(pack);
+                items = ApiManager.JsonAssets.GetAllHatsFromContentPack(pack);
                 if (items != null)
                     ItemsToRemove.AddRange(items);
 
-                items = APIs.JsonAssets.GetAllObjectsFromContentPack(pack);
+                items = ApiManager.JsonAssets.GetAllObjectsFromContentPack(pack);
                 if (items != null)
                 {
                     ItemsToRemove.AddRange(items);
                 }
 
-                var crops = APIs.JsonAssets.GetAllCropsFromContentPack(pack);
+                var crops = ApiManager.JsonAssets.GetAllCropsFromContentPack(pack);
 
                 if (crops != null)
                 {
@@ -196,7 +196,7 @@ namespace ShopTileFramework.Framework.Utility
                     }
                 }
 
-                var trees = APIs.JsonAssets.GetAllFruitTreesFromContentPack(pack);
+                var trees = ApiManager.JsonAssets.GetAllFruitTreesFromContentPack(pack);
                 if (trees != null)
                 {
                     foreach (string saplingId in trees.Select(GetSaplingId))
@@ -204,18 +204,18 @@ namespace ShopTileFramework.Framework.Utility
                 }
 
 
-                items = APIs.JsonAssets.GetAllWeaponsFromContentPack(pack);
+                items = ApiManager.JsonAssets.GetAllWeaponsFromContentPack(pack);
                 if (items != null)
                     ItemsToRemove.AddRange(items);
             }
 
             foreach (string pack in RecipePacksToRemove)
             {
-                var items = APIs.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
+                var items = ApiManager.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
                 if (items != null)
                     ItemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
 
-                items = APIs.JsonAssets.GetAllObjectsFromContentPack(pack);
+                items = ApiManager.JsonAssets.GetAllObjectsFromContentPack(pack);
                 if (items != null)
                 {
                     ItemsToRemove.AddRange(items.Select(i => (i + " Recipe")));

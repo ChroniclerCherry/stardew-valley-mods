@@ -1,6 +1,6 @@
 ﻿namespace LimitedCampfireCooking
 {
-    public interface ICCSApi
+    public interface ICustomCraftingStationsApi
     {
         void SetCCSCraftingMenuOverride(bool menuOverride);
     }

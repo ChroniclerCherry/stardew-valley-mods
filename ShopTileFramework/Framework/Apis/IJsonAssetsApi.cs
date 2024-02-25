@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ShopTileFramework.Framework.API
+namespace ShopTileFramework.Framework.Apis
 {
     /// <summary>
     /// Interface for Json Assets API

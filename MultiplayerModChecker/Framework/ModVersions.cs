@@ -6,7 +6,7 @@ namespace MultiplayerModChecker.Framework
     {
         public string ModName { get; set; }
 
-        public string ModUniqueID { get; set; }
+        public string ModUniqueId { get; set; }
         public bool DoesHostHave { get; set; } = false;
         public bool DoesFarmhandHave { get; set; } = false;
         public ISemanticVersion HostModVersion { get; set; }

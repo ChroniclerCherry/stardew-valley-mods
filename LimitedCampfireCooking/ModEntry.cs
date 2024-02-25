@@ -13,7 +13,7 @@ namespace LimitedCampfireCooking
     class ModEntry : Mod
     {
         internal static ModConfig Config;
-        internal ICCSApi CCS;
+        internal ICustomCraftingStationsApi CustomCraftingStations;
 
         public override void Entry(IModHelper helper)
         {
@@ -25,8 +25,8 @@ namespace LimitedCampfireCooking
 
         private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            CCS = Helper.ModRegistry.GetApi<ICCSApi>("Cherry.CustomCraftingStations");
-            if (CCS != null)
+            CustomCraftingStations = Helper.ModRegistry.GetApi<ICustomCraftingStationsApi>("Cherry.CustomCraftingStations");
+            if (CustomCraftingStations != null)
                 Monitor.Log("Custom Crafting Station detected. Compatibility patch added.",LogLevel.Info);
         }
 
@@ -76,7 +76,7 @@ namespace LimitedCampfireCooking
                     Helper.Input.Suppress(e.Button);
                     Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, 0, 0);
                     
-                    CCS?.SetCCSCraftingMenuOverride(false);
+                    CustomCraftingStations?.SetCCSCraftingMenuOverride(false);
                     CraftingRecipe.cookingRecipes = LimitedCookingRecipes;
                     Game1.activeClickableMenu = new CraftingPage((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, true, true);
                     CraftingRecipe.cookingRecipes = AllCookingRecipes;

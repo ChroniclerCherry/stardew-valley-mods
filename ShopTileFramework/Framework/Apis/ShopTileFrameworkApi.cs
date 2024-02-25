@@ -4,13 +4,13 @@ using StardewValley;
 using System;
 using System.Collections.Generic;
 
-namespace ShopTileFramework.Framework.API
+namespace ShopTileFramework.Framework.Apis
 {
     /// <summary>
     /// API for Shop Tile Framework. 
     /// </summary>
     [Obsolete("This class is WIP and not tested yet.")]
-    public class STFApi : ISTFApi
+    public class ShopTileFrameworkApi : IShopTileFrameworkApi
     {
         /// <summary>
         /// Registers a mod directory as a content pack

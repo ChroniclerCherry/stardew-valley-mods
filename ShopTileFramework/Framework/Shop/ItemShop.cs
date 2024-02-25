@@ -6,7 +6,7 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
 using System;
-using ShopTileFramework.Framework.API;
+using ShopTileFramework.Framework.Apis;
 
 namespace ShopTileFramework.Framework.Shop
 {
@@ -82,7 +82,7 @@ namespace ShopTileFramework.Framework.Shop
 
             //if conditions aren't met, display closed message if there is one
             //skips condition checking if debug mode
-            if (!debug && !APIs.Conditions.CheckConditions(When))
+            if (!debug && !ApiManager.Conditions.CheckConditions(When))
             {
                 if (ClosedMessage != null)
                 {

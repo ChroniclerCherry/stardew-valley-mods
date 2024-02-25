@@ -13,7 +13,7 @@ namespace TrainStation.Framework
         public int FacingDirectionAfterWarp { get; set; } = 2;
         public string[] Conditions { get; set; }
 
-        internal string StopID; //assigned by the mod's uniqueID and the number of stops from that pack
+        internal string StopId; //assigned by the mod's uniqueID and the number of stops from that pack
         internal string TranslatedName;
     }
 }

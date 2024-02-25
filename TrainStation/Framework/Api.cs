@@ -17,14 +17,14 @@ namespace TrainStation.Framework
 
         public void RegisterTrainStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName)
         {
-            var stop = ModEntry.Instance.TrainStops.SingleOrDefault(s => s.StopID.Equals(stopId));
+            var stop = ModEntry.Instance.TrainStops.SingleOrDefault(s => s.StopId.Equals(stopId));
             if (stop == null)
             {
                 stop = new TrainStop();
                 ModEntry.Instance.TrainStops.Add(stop);
             }
 
-            stop.StopID = stopId;
+            stop.StopId = stopId;
             stop.TargetMapName = targetMapName;
             stop.LocalizedDisplayName = localizedDisplayName;
             stop.TargetX = targetX;

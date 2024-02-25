@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using ShopTileFramework.Framework;
-using ShopTileFramework.Framework.API;
+using ShopTileFramework.Framework.Apis;
 using ShopTileFramework.Framework.Patches;
 using ShopTileFramework.Framework.Shop;
 using ShopTileFramework.Framework.Utility;
@@ -135,7 +135,7 @@ namespace ShopTileFramework
         public override object GetApi()
         {
             //TODO: Test this
-            return new STFApi();
+            return new ShopTileFrameworkApi();
         }
         /// <summary>
         /// On a save loaded, store the language for translation purposes. Done on save loaded in
@@ -166,13 +166,13 @@ namespace ShopTileFramework
         {
             ShopManager.InitializeShops();
 
-            APIs.RegisterJsonAssets();
-            if (APIs.JsonAssets!= null)
-                APIs.JsonAssets.AddedItemsToShop += JsonAssets_AddedItemsToShop;
+            ApiManager.RegisterJsonAssets();
+            if (ApiManager.JsonAssets!= null)
+                ApiManager.JsonAssets.AddedItemsToShop += JsonAssets_AddedItemsToShop;
 
-            APIs.RegisterExpandedPreconditionsUtility();
-            APIs.RegisterBFAV();
-            APIs.RegisterFAVR();
+            ApiManager.RegisterExpandedPreconditionsUtility();
+            ApiManager.RegisterBetterFarmAnimalVariety();
+            ApiManager.RegisterFarmAnimalVarietyRedux();
         }
 
         private void JsonAssets_AddedItemsToShop(object sender, System.EventArgs e)

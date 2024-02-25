@@ -7,7 +7,7 @@ namespace MultiplayerModChecker.Framework
     {
         public string FarmhandName { get; set; }
         public DateTime TimeConnected { get; set; }
-        public long FarmhandID { get; set; }
+        public long FarmhandId { get; set; }
 
         public SmapiGameVersionDifference SmapiGameGameVersions { get; set; } = new SmapiGameVersionDifference();
 

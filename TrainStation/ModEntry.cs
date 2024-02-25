@@ -123,7 +123,7 @@ namespace TrainStation
             TrainStop RailRoadStop = new TrainStop
             {
                 TargetMapName = "Railroad",
-                StopID = "Cherry.TrainStation",
+                StopId = "Cherry.TrainStation",
                 TargetX = Config.RailroadWarpX,
                 TargetY = Config.RailroadWarpY,
                 Cost = 0,
@@ -162,7 +162,7 @@ namespace TrainStation
                     for (int i = 0; i < cp.TrainStops.Count; i++)
                     {
                         TrainStop stop = cp.TrainStops.ElementAt(i);
-                        stop.StopID = $"{pack.Manifest.UniqueID}{i}"; //assigns a unique stopID to every stop
+                        stop.StopId = $"{pack.Manifest.UniqueID}{i}"; //assigns a unique stopID to every stop
                         stop.TranslatedName = Localize(stop.LocalizedDisplayName);
 
                         TrainStops.Add(cp.TrainStops.ElementAt(i));
@@ -312,7 +312,7 @@ namespace TrainStation
                     displayName += $" - {stop.Cost}g";
                 }
 
-                responses.Add(new Response(stop.StopID, displayName));
+                responses.Add(new Response(stop.StopId, displayName));
             }
 
             responses.Add(new Response("Cancel", Helper.Translation.Get("MenuCancelOption")));
@@ -363,7 +363,7 @@ namespace TrainStation
 
             foreach (TrainStop stop in TrainStops)
             {
-                if (stop.StopID == whichAnswer)
+                if (stop.StopId == whichAnswer)
                 {
                     AttemptToWarp(stop);
                 }

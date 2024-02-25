@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShopTileFramework.Framework.API
+namespace ShopTileFramework.Framework.Apis
 {
     public interface IConditionsApi
     {

@@ -1,6 +1,6 @@
 ﻿namespace CustomCraftingStation.Framework
 {
-    public class CCSApi : ICCSApi
+    public class CustomCraftingStationsApi : ICustomCraftingStationsApi
     {
         public void SetCCSCraftingMenuOverride(bool menuOverride)
         {

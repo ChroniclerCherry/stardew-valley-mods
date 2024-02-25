@@ -1,12 +1,12 @@
 ﻿using StardewValley;
 using System.Collections.Generic;
 
-namespace ShopTileFramework.Framework.API
+namespace ShopTileFramework.Framework.Apis
 {
     /// <summary>
     /// Interface for Shop Tile Framework
     /// </summary>
-    public interface ISTFApi
+    public interface IShopTileFrameworkApi
     {
         bool RegisterShops(string dir);
         bool OpenItemShop(string shopName);
