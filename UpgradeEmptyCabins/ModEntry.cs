@@ -53,9 +53,9 @@ namespace UpgradeEmptyCabins
                 if (cab.buildingType.ToString() == cabin)
                 {
                     ((Cabin)cab.indoors.Value).cribStyle.Set(style);
-                    this.Monitor.Log("Cabin: " + cab.nameOfIndoors, LogLevel.Info);
-                    this.Monitor.Log("Cabin Type: " + cab.buildingType, LogLevel.Info);
-                    this.Monitor.Log("cribStyle: " + ((Cabin)cab.indoors.Value).cribStyle, LogLevel.Info);
+                    this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
+                    this.Monitor.Log("Cabin Type: " + cab.buildingType.Value, LogLevel.Info);
+                    this.Monitor.Log("cribStyle: " + ((Cabin)cab.indoors.Value).cribStyle.Value, LogLevel.Info);
                 }
             }
         }
@@ -76,8 +76,8 @@ namespace UpgradeEmptyCabins
                         mail.Remove(reno);
                     else
                         mail.Add(reno);
-                    this.Monitor.Log("Cabin: " + cab.nameOfIndoors, LogLevel.Info);
-                    this.Monitor.Log("Cabin Type: " + cab.buildingType, LogLevel.Info);
+                    this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
+                    this.Monitor.Log("Cabin Type: " + cab.buildingType.Value, LogLevel.Info);
                     this.Monitor.Log("Flags: " + mail, LogLevel.Info);
                 }
             }
@@ -94,14 +94,14 @@ namespace UpgradeEmptyCabins
                 foreach (string reno in renos)
                 {
                     if (mail.Contains(reno))
-                        this.Monitor.Log("Renovation already done: " + reno + " " + cab.nameOfIndoors, LogLevel.Info);
+                        this.Monitor.Log("Renovation already done: " + reno + " " + cab.GetIndoorsName(), LogLevel.Info);
                     else
                         mail.Add(reno);
                 }
                 ((Cabin)cab.indoors.Value).cribStyle.Set(0);
-                this.Monitor.Log("Cabin: " + cab.nameOfIndoors, LogLevel.Info);
-                this.Monitor.Log("   Type: " + cab.buildingType, LogLevel.Info);
-                this.Monitor.Log("   cribStyle:  " + ((Cabin)cab.indoors.Value).cribStyle, LogLevel.Info);
+                this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
+                this.Monitor.Log("   Type: " + cab.buildingType.Value, LogLevel.Info);
+                this.Monitor.Log("   cribStyle:  " + ((Cabin)cab.indoors.Value).cribStyle.Value, LogLevel.Info);
                 this.Monitor.Log("   flags: " + mail, LogLevel.Info);
             }
         }
