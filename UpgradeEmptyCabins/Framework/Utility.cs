@@ -9,8 +9,11 @@ namespace UpgradeEmptyCabins.Framework
         public static Building GetCabin(string name)
         {
             foreach (var cabin in GetCabins())
-                if (cabin.nameOfIndoors == name)
+            {
+                if (cabin.GetIndoorsName() == name)
                     return cabin;
+            }
+
             return null;
         }
 

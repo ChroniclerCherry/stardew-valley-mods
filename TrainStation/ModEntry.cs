@@ -1,16 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
-using System.Collections.Generic;
-using xTile.Layers;
-using xTile.Tiles;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using StardewValley.Locations;
 using StardewValley.Menus;
 using TrainStation.Framework;
+using xTile.Layers;
+using xTile.Tiles;
 
 namespace TrainStation
 {
@@ -276,7 +274,7 @@ namespace TrainStation
 
             if (Game1.currentLocation is BoatTunnel tunnel)
             {
-                responses.Add(new Response("GingerIsland",this.Helper.Translation.Get("GingerIsland") + $" - {tunnel.GetTicketPrice()}g"));
+                responses.Add(new Response("GingerIsland",this.Helper.Translation.Get("GingerIsland") + $" - {tunnel.TicketPrice}g"));
             }
             responses.Add(new Response("Cancel", Helper.Translation.Get("MenuCancelOption")));
 
@@ -336,12 +334,12 @@ namespace TrainStation
 
                 if (Game1.currentLocation is BoatTunnel tunnel)
                 {
-                    if (Game1.player.Money >= tunnel.GetTicketPrice())
+                    if (Game1.player.Money >= tunnel.TicketPrice)
                     {
-                        Game1.player.Money -= tunnel.GetTicketPrice();
+                        Game1.player.Money -= tunnel.TicketPrice;
                         tunnel.StartDeparture();
                     }
-                    else if (Game1.player.Money < tunnel.GetTicketPrice())
+                    else if (Game1.player.Money < tunnel.TicketPrice)
                     {
                         Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Locations:BusStop_NotEnoughMoneyForTicket"));
                     }
@@ -408,7 +406,7 @@ namespace TrainStation
 
         private void Request_OnWarp()
         {
-            Game1.pauseThenMessage(3000, destinationMessage, false);
+            Game1.pauseThenMessage(3000, destinationMessage);
             finishedTrainWarp = true;
         }
 

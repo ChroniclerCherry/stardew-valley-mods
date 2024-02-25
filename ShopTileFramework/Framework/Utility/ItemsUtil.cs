@@ -1,8 +1,11 @@
-﻿using ShopTileFramework.Framework.API;
-using StardewValley;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using ShopTileFramework.Framework.API;
+using StardewValley;
+using StardewValley.Extensions;
+using StardewValley.GameData.Crops;
+using StardewValley.GameData.FruitTrees;
+using StardewValley.ItemTypeDefinitions;
 
 namespace ShopTileFramework.Framework.Utility
 {
@@ -11,10 +14,7 @@ namespace ShopTileFramework.Framework.Utility
     /// </summary>
     public static class ItemsUtil
     {
-        public static Dictionary<string, IDictionary<int, string>> ObjectInfoSource { get; set; }
         public static List<string> RecipesList;
-        private static Dictionary<int, string> _fruitTreeData;
-        private static Dictionary<int, string> _cropData;
 
         public static List<string> PacksToRemove = new List<string>();
         public static List<string> RecipePacksToRemove = new List<string>();
@@ -26,29 +26,12 @@ namespace ShopTileFramework.Framework.Utility
         /// </summary>
         public static void UpdateObjectInfoSource()
         {
-            //load up all the object information into a static dictionary
-            ObjectInfoSource = new Dictionary<string, IDictionary<int, string>>
-            {
-                ["Object"] = Game1.objectInformation,
-                ["BigCraftable"] = Game1.bigCraftablesInformation,
-                ["Clothing"] = Game1.clothingInformation,
-                ["Ring"] = Game1.objectInformation,
-                ["Hat"] = ModEntry.helper.GameContent.Load<Dictionary<int, string>>("Data/hats"),
-                ["Boot"] = ModEntry.helper.GameContent.Load<Dictionary<int, string>>("Data/Boots"),
-                ["Furniture"] = ModEntry.helper.GameContent.Load<Dictionary<int, string>>("Data/Furniture"),
-                ["Weapon"] = ModEntry.helper.GameContent.Load<Dictionary<int, string>>("Data/weapons")
-            };
-
             //load up recipe information
-            RecipesList = ModEntry.helper.GameContent.Load<Dictionary<string, string>>("Data/CraftingRecipes").Keys.ToList();
-            RecipesList.AddRange(ModEntry.helper.GameContent.Load<Dictionary<string, string>>("Data/CookingRecipes").Keys.ToList());
+            RecipesList = CraftingRecipe.craftingRecipes.Keys.ToList();
+            RecipesList.AddRange(CraftingRecipe.cookingRecipes.Keys);
 
             //add "recipe" to the end of every element
             RecipesList = RecipesList.Select(s => s + " Recipe").ToList();
-
-            //load up tree and crop data
-            _fruitTreeData = ModEntry.helper.GameContent.Load<Dictionary<int, string>>("Data/fruitTrees");
-            _cropData = ModEntry.helper.GameContent.Load<Dictionary<int, string>>("Data/Crops");
         }
 
         /// <summary>
@@ -64,22 +47,60 @@ namespace ShopTileFramework.Framework.Utility
             }
         }
 
-        /// <summary>
-        /// Get the itemID given a name and the object information that item belongs to
-        /// </summary>
-        /// <param name="name">name of the item</param>
-        /// <param name="itemType"></param>
-        /// <returns></returns>
-        public static int GetIndexByName(string name, string itemType= "Object")
+        /// <summary>Get the qualified item ID to spawn given its name.</summary>
+        /// <param name="name">The item name.</param>
+        /// <param name="itemType">The item type, matching a key recognized by <see cref="GetItemDataDefinitionFromType"/>.</param>
+        /// <returns>Returns the item's qualified item ID, or <c>null</c> if not found.</returns>
+        public static string GetItemIdByName(string name, string itemType = "Object")
         {
-            foreach (KeyValuePair<int, string> kvp in ObjectInfoSource[itemType])
+            foreach (IItemDataDefinition itemDataDefinition in GetItemDataDefinitionFromType(itemType))
             {
-                if (kvp.Value.Split('/')[0] == name)
+                foreach (ParsedItemData data in itemDataDefinition.GetAllData())
                 {
-                    return kvp.Key;
+                    if (data.InternalName == name)
+                        return data.QualifiedItemId;
                 }
             }
-            return -1;
+
+            return null;
+        }
+
+        /// <summary>Get the item data definition which provides items of a given type.</summary>
+        /// <param name="itemType">The Multi Yield Crops type ID.</param>
+        public static IEnumerable<IItemDataDefinition> GetItemDataDefinitionFromType(string itemType)
+        {
+            switch (itemType)
+            {
+                case "BigCraftable":
+                    yield return ItemRegistry.GetTypeDefinition(ItemRegistry.type_bigCraftable);
+                    break;
+
+                case "Boot":
+                    yield return ItemRegistry.GetTypeDefinition(ItemRegistry.type_boots);
+                    break;
+
+                case "Clothing":
+                    yield return ItemRegistry.GetTypeDefinition(ItemRegistry.type_pants);
+                    yield return ItemRegistry.GetTypeDefinition(ItemRegistry.type_shirt);
+                    break;
+
+                case "Furniture":
+                    yield return ItemRegistry.GetTypeDefinition(ItemRegistry.type_furniture);
+                    break;
+
+                case "Hat":
+                    yield return ItemRegistry.GetTypeDefinition(ItemRegistry.type_hat);
+                    break;
+
+                case "Object":
+                case "Ring":
+                    yield return ItemRegistry.GetObjectTypeDefinition();
+                    break;
+
+                case "Weapon":
+                    yield return ItemRegistry.GetTypeDefinition(ItemRegistry.type_weapon);
+                    break;
+            }
         }
 
         /// <summary>
@@ -89,7 +110,7 @@ namespace ShopTileFramework.Framework.Utility
         /// <returns>True if it's a valid type, false if not</returns>
         public static bool CheckItemType(string itemType)
         {
-            return (itemType == "Seed" || ObjectInfoSource.ContainsKey(itemType));
+            return itemType == "Seed" || GetItemDataDefinitionFromType(itemType) is not null;
         }
 
         /// <summary>
@@ -97,37 +118,35 @@ namespace ShopTileFramework.Framework.Utility
         /// </summary>
         /// <param name="cropName">The name of the crop object</param>
         /// <returns>The ID of the seed object if found, -1 if not</returns>
-        public static int GetSeedId(string cropName)
+        public static string GetSeedId(string cropName)
         {
             //int cropID = ModEntry.JsonAssets.GetCropId(cropName);
-            int cropId = APIs.JsonAssets.GetCropId(cropName);
-            foreach (KeyValuePair<int, string> kvp in _cropData)
+            string cropId = APIs.JsonAssets.GetCropId(cropName);
+            foreach ((string id, CropData data) in Game1.cropData)
             {
-                //find the tree id in crops information to get seed id
-                Int32.TryParse(kvp.Value.Split('/')[2], out int id);
-                if (cropId == id)
-                    return kvp.Key;
+                // find the seed id in crops information to get seed id
+                if (data.HarvestItemId == cropId)
+                    return id;
             }
 
-            return -1;
+            return null;
         }
 
         /// <summary>
         /// Given the name of a tree crop, return the ID of its sapling object
         /// </summary>
         /// <returns>The ID of the sapling object if found, -1 if not</returns>
-        public static int GetSaplingId(string treeName)
+        public static string GetSaplingId(string treeName)
         {
-            int treeId = APIs.JsonAssets.GetFruitTreeId(treeName);
-            foreach (KeyValuePair<int, string> kvp in _fruitTreeData)
+            string treeId = APIs.JsonAssets.GetFruitTreeId(treeName);
+            foreach ((string saplingId, FruitTreeData data) in Game1.fruitTreeData)
             {
                 //find the tree id in fruitTrees information to get sapling id
-                Int32.TryParse(kvp.Value.Split('/')[0], out int id);
-                if (treeId == id)
-                    return kvp.Key;
+                if (data.Fruit.Any(p => p.ItemId == treeId))
+                    return saplingId;
             }
 
-            return -1;
+            return null;
         }
 
         public static void RegisterPacksToRemove(string[] JApacks,string[] recipePacks, string[] itemNames)
@@ -171,18 +190,17 @@ namespace ShopTileFramework.Framework.Utility
 
                 if (crops != null)
                 {
-                    foreach (int seedId in crops.Select(GetSeedId))
+                    foreach (string seedId in crops.Select(GetSeedId))
                     {
-                        ItemsToRemove.Add(ObjectInfoSource["Object"][seedId].Split('/')[0]);
+                        ItemsToRemove.Add(ItemRegistry.GetDataOrErrorItem(seedId).InternalName);
                     }
                 }
 
                 var trees = APIs.JsonAssets.GetAllFruitTreesFromContentPack(pack);
                 if (trees != null)
                 {
-                    foreach (int saplingID in trees.Select(GetSaplingId))
-                    {ItemsToRemove.Add(ObjectInfoSource["Object"][saplingID].Split('/')[0]);
-                    }
+                    foreach (string saplingId in trees.Select(GetSaplingId))
+                        ItemsToRemove.Add(ItemRegistry.GetDataOrErrorItem(saplingId).InternalName);
                 }
 
 
@@ -225,16 +243,15 @@ namespace ShopTileFramework.Framework.Utility
                 stock.Remove(item);
         }
 
-        public static bool IsInSeasonCrop(int itemId)
+        public static bool IsInSeasonCrop(string itemId)
         {
-            if (_cropData.ContainsKey(itemId))
+            if (itemId is not null)
             {
-                return _cropData[itemId].Split('/')[1].Contains(Game1.currentSeason);
-            }
+                if (Game1.cropData.TryGetValue(itemId, out CropData cropData))
+                    return cropData.Seasons?.Contains(Game1.season) is true;
 
-            if (_fruitTreeData.ContainsKey(itemId))
-            {
-                return _fruitTreeData[itemId].Split('/')[1].Contains(Game1.currentSeason);
+                if (Game1.fruitTreeData.TryGetValue(itemId, out FruitTreeData treeData))
+                    return treeData.Seasons?.Contains(Game1.season) is true;
             }
 
             return false;

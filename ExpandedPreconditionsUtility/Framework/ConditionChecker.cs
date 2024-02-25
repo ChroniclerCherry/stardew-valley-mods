@@ -14,7 +14,7 @@ namespace ExpandedPreconditionsUtility.Framework
         /// This is the vanilla method used to check preconditions
         /// Borrowing it to gain quick access to all vanilla preconditions
         /// </summary>
-        public IReflectedMethod VanillaPreconditionsMethod { get; private set; }
+        public Func<string, bool> VanillaPreconditionsMethod { get; private set; }
 
         private readonly IModHelper _helper;
         private readonly IMonitor _monitor;
@@ -42,15 +42,13 @@ namespace ExpandedPreconditionsUtility.Framework
                 return true;
 
             //using the farm because it should be available for every player at any point in the game. Current location sometimes doesn't exist for farmhands
-            VanillaPreconditionsMethod = _helper.Reflection.GetMethod(Game1.getFarm(), "checkEventPrecondition");
+            VanillaPreconditionsMethod = condition => Game1.getFarm().checkEventPrecondition(condition) != "-1";
 
-            //if someone somewhow marked this fake ID as seen, 
-            //unmark it so condition checking will actually work
-            if (Game1.player.eventsSeen.Contains(-6529))
+            //if someone somehow marked this fake ID as seen, unmark it so condition checking will actually work
+            if (Game1.player.eventsSeen.Remove("-6529"))
             {
                 _monitor.Log($"{_uniqueId} / Expanded Preconditions Utility uses the fake event ID of -6529 in order to use vanilla preconditions." +
                     " Somehow your save has marked this ID as seen. Expanded Preconditions is freeing it back up.", LogLevel.Warn);
-                Game1.player.eventsSeen.Remove(-6529);
             }
 
             //if any of the conditions are met, return true
@@ -147,7 +145,7 @@ namespace ExpandedPreconditionsUtility.Framework
                 default:
                     // Note: "-5005" is a random event id cause the vanilla method is for events and needs one ¯\_(ツ)_/¯
                     // so it's the negative mod id
-                    return VanillaPreconditionsMethod.Invoke<int>("-5005/" + con) != -1;
+                    return VanillaPreconditionsMethod("-5005/" + con);
             }
         }
 
@@ -260,7 +258,7 @@ namespace ExpandedPreconditionsUtility.Framework
             for (int i = 2; i < conditionParams.Length; i += 2)
             {
                 if (npc.currentLocation == Game1.currentLocation &&
-                    npc.getTileLocation() == new Vector2(int.Parse(conditionParams[i]), int.Parse(conditionParams[i + 1])))
+                    npc.Tile == new Vector2(int.Parse(conditionParams[i]), int.Parse(conditionParams[i + 1])))
                     return true;
             }
             return false;

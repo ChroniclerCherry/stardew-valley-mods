@@ -1,14 +1,13 @@
-﻿using StardewModdingAPI;
-using StardewValley;
-using StardewModdingAPI.Events;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using StardewValley.Menus;
-using StardewValley.Locations;
+﻿using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
-using StardewValley.Buildings;
 using HayBalesSilo.Framework;
+using Microsoft.Xna.Framework;
+using StardewModdingAPI;
+using StardewModdingAPI.Events;
+using StardewValley;
+using StardewValley.Buildings;
+using StardewValley.GameData.Shops;
 
 namespace HayBalesSilo
 {
@@ -16,6 +15,10 @@ namespace HayBalesSilo
     {
         internal static IMonitor monitor;
         internal static ModConfig Config;
+
+        internal static readonly string HayBaleId = "45";
+        internal static readonly string HayBaleQualifiedId = ItemRegistry.type_bigCraftable + "45";
+
         public override void Entry(IModHelper helper)
         {
             monitor = Monitor;
@@ -23,35 +26,12 @@ namespace HayBalesSilo
 
             var harmony = new Harmony(this.ModManifest.UniqueID);
             harmony.Patch(
-                original: AccessTools.Method(typeof(Utility), nameof(Utility.numSilos)),
-                postfix: new HarmonyMethod(typeof(PatchNumSilos), nameof(PatchNumSilos.Postfix))
-                );
+                original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.GetHayCapacity)),
+                postfix: new HarmonyMethod(typeof(PatchGameLocation), nameof(PatchGameLocation.After_GetHayCapacity))
+            );
 
             helper.Events.Content.AssetRequested += OnAssetRequested;
             helper.Events.Input.ButtonPressed += Input_ButtonPressed;
-            helper.Events.Display.MenuChanged += Display_MenuChanged;
-
-        }
-
-        private void Display_MenuChanged(object sender, MenuChangedEventArgs e)
-        {
-            //we don't care if it's not Marnie's shop
-            if (e.NewMenu is not ShopMenu { ShopId: Game1.shop_animalSupplies } shop)
-                return;
-
-            //create the farm renderer object and add it to robin's stock
-            var itemStock = shop.itemPriceAndStock;
-
-            foreach ((ISalable item, ItemStockInformation stockInfo) in itemStock)
-            {
-                if (item.QualifiedItemId == "(BC)45") // Ornamental Hay Bale
-                {
-                    itemStock[item] = stockInfo with { Price = Config.HaybalePrice };
-                    break;
-                }
-            }
-
-            shop.setItemPriceAndStock(itemStock);
         }
 
         private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
@@ -61,74 +41,83 @@ namespace HayBalesSilo
             if (!Context.CanPlayerMove)
                 return;
 
-            if (!GetAllAffectedMaps().Contains(Game1.currentLocation))
+            GameLocation location = Game1.currentLocation;
+            if (!GetAllAffectedMaps().Contains(location))
                 return;
 
             //action button works for right click on mouse and action button for controllers
             if (!e.Button.IsActionButton() && !e.Button.IsUseToolButton())
                 return;
+
             //check if the clicked tile contains a Farm Renderer
             Vector2 tile = Helper.Input.GetCursorPosition().GrabTile;
-            Game1.currentLocation.Objects.TryGetValue(tile, out StardewValley.Object obj);
-            if (obj != null && obj.bigCraftable.Value)
+            if (location.Objects.TryGetValue(tile, out Object obj) && obj.QualifiedItemId == HayBaleQualifiedId)
             {
-                if (obj.Name == "Ornamental Hay Bale")
+                if (location.getBuildingByType("Silo") is null)
                 {
-                    if (Utility.numSilos() == 0)
-                    {
-                        Game1.showRedMessage(Game1.content.LoadString("Strings\\Buildings:NeedSilo"));
-                        return;
-                    }
-
-                    if (e.Button.IsActionButton())
-                    {
-
-                        Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Buildings:PiecesOfHay",
-                            Game1.getFarm().piecesOfHay.Value,
-                            (Utility.numSilos() * 240)));
-                    }
-                    else if (e.Button.IsUseToolButton())
-                    {
-                        //if holding hay, try to add it
-                        if (Game1.player.ActiveObject != null && Game1.player.ActiveObject.Name == "Hay")
-                        {
-                            int stack = Game1.player.ActiveObject.Stack;
-                            int tryToAddHay = Game1.getFarm().tryToAddHay(Game1.player.ActiveObject.Stack);
-                            Game1.player.ActiveObject.Stack = tryToAddHay;
-
-                            if (Game1.player.ActiveObject.Stack < stack)
-                            {
-                                Game1.playSound("Ship");
-                                DelayedAction.playSoundAfterDelay("grassyStep", 100, (GameLocation)null, -1);
-                                Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Buildings:AddedHay", (object)(stack - Game1.player.ActiveObject.Stack)));
-                            }
-                            if (Game1.player.ActiveObject.Stack <= 0)
-                                Game1.player.removeItemFromInventory((Item)Game1.player.ActiveObject);
-                        }
-                    }
+                    Game1.showRedMessage(Game1.content.LoadString("Strings\\Buildings:NeedSilo"));
+                    return;
                 }
 
+                if (e.Button.IsActionButton())
+                    Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Buildings:PiecesOfHay", location.piecesOfHay.Value, location.GetHayCapacity()));
+                else if (e.Button.IsUseToolButton())
+                {
+                    //if holding hay, try to add it
+                    if (Game1.player.ActiveObject != null && Game1.player.ActiveObject.Name == "Hay")
+                    {
+                        int stack = Game1.player.ActiveObject.Stack;
+                        int tryToAddHay = location.tryToAddHay(Game1.player.ActiveObject.Stack);
+                        Game1.player.ActiveObject.Stack = tryToAddHay;
+
+                        if (Game1.player.ActiveObject.Stack < stack)
+                        {
+                            Game1.playSound("Ship");
+                            DelayedAction.playSoundAfterDelay("grassyStep", 100);
+                            Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Buildings:AddedHay", stack - Game1.player.ActiveObject.Stack));
+                        }
+                        if (Game1.player.ActiveObject.Stack <= 0)
+                            Game1.player.removeItemFromInventory(Game1.player.ActiveObject);
+                    }
+                }
             }
         }
 
         private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
         {
-            if (e.NameWithoutLocale.IsEquivalentTo("Data/BigCraftablesInformation"))
+            // edit hay bale text
+            if (e.NameWithoutLocale.IsEquivalentTo("Strings/BigCraftables"))
             {
                 e.Edit(asset =>
                 {
-                    IDictionary<int, string> data = asset.AsDictionary<int, string>().Data;
-                    string[] fields = data[45].Split('/');
+                    int capacityPerBale = 240 * Config.HayBaleEquivalentToHowManySilos;
 
-                    fields[4] = Helper.Translation.Get("Description",
-                        new { capacity = 240 * Config.HayBaleEquivalentToHowManySilos }); //description
-                    fields[8] = Helper.Translation.Get("DisplayName"); //display name
-
-                    data[45] = string.Join("/", fields);
+                    var data = asset.AsDictionary<string, string>().Data;
+                    
+                    data["OrnamentalHayBale_Name"] = this.Helper.Translation.Get("DisplayName");
+                    data["OrnamentalHayBale_Description"] = this.Helper.Translation.Get("Description").ToString().Replace("{{capacity}}", capacityPerBale.ToString());
                 });
             }
 
-            throw new System.NotImplementedException();
+            // add to shop
+            else if (e.NameWithoutLocale.IsEquivalentTo("Data/Shops"))
+            {
+                e.Edit(asset =>
+                {
+                    var data = asset.AsDictionary<string, ShopData>().Data;
+
+                    if (data.TryGetValue(Game1.shop_animalSupplies, out ShopData shop))
+                    {
+                        shop.Items.Add(new ShopItemData
+                        {
+                            Id = HayBaleId,
+                            ItemId = HayBaleId,
+                            Price = Config.HaybalePrice,
+                            Condition = "PLAYER_HAS_MAIL Current FarmRearrangerMail Received"
+                        });
+                    }
+                });
+            }
         }
 
         internal static IEnumerable<GameLocation> GetAllAffectedMaps()
@@ -136,28 +125,8 @@ namespace HayBalesSilo
             yield return Game1.getFarm();
             foreach (Building building in Game1.getFarm().buildings.Where(building => building.indoors.Value != null))
             {
-                    yield return building.indoors.Value;
+                yield return building.indoors.Value;
             }
-        }
-        internal static int NumHayBales()
-        {
-            int numHayBales = 0;
-
-            foreach (var loc in GetAllAffectedMaps())
-            {
-                foreach (var temp in loc.Objects)
-                {
-                    foreach (var obj in temp.Values)
-                    {
-                        if (obj.Name == "Ornamental Hay Bale")
-                        {
-                            numHayBales++;
-                        }
-                    }
-                }
-            }
-
-            return numHayBales;
         }
     }
 }

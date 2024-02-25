@@ -1,11 +1,8 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using ShopTileFramework.Framework.Utility;
 using StardewModdingAPI;
 using StardewValley;
-using StardewValley.Objects;
-using StardewValley.Tools;
-using System.Collections.Generic;
 using Object = StardewValley.Object;
 
 namespace ShopTileFramework.Framework.ItemPriceAndStock
@@ -30,41 +27,23 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             this._itemPriceAndStock = itemPriceAndStock;
         }
 
-        /// <summary>
-        /// Takes an item name, and adds that item to the stock
-        /// </summary>
-        /// <param name="itemName">name of the item</param>
+        /// <summary>Add an item to the stock.</summary>
+        /// <param name="itemIdOrName">The item ID or internal item name.</param>
         /// <param name="priceMultiplier"></param>
-        /// <returns></returns>
-        public bool AddItemToStock(string itemName, double priceMultiplier = 1)
+        public bool AddItemToStock(string itemIdOrName, double priceMultiplier = 1)
         {
-            int id = ItemsUtil.GetIndexByName(itemName, _itemStock.ItemType);
-            if (id < 0)
+            string itemId =
+                ItemRegistry.GetData(itemIdOrName)?.ItemId
+                ?? ItemsUtil.GetItemIdByName(itemIdOrName, _itemStock.ItemType);
+
+            if (itemId is null)
             {
-                ModEntry.monitor.Log($"{_itemStock.ItemType} named \"{itemName}\" could not be added to the Shop {_itemStock.ShopName}", LogLevel.Trace);
+                ModEntry.monitor.Log($"{_itemStock.ItemType} with the name or ID \"{itemIdOrName}\" could not be added to the shop {_itemStock.ShopName}", LogLevel.Trace);
                 return false;
             }
-
-            return AddItemToStock(id, priceMultiplier);
-        }
-
-        /// <summary>
-        /// Takes an item id, and adds that item to the stock
-        /// </summary>
-        /// <param name="itemId">the id of the item</param>
-        /// <param name="priceMultiplier"></param>
-        /// <returns></returns>
-        public bool AddItemToStock(int itemId, double priceMultiplier = 1)
-        {
 
             if (ModEntry.VerboseLogging)
                 ModEntry.monitor.Log($"Adding item ID {itemId} to {_itemStock.ShopName}", LogLevel.Debug);
-
-            if (itemId < 0)
-            {
-                ModEntry.monitor.Log($"{_itemStock.ItemType} of ID {itemId} could not be added to the Shop {_itemStock.ShopName}", LogLevel.Trace);
-                return false;
-            }
 
             if (_itemStock.ItemType == "Seed" && _itemStock.FilterSeedsBySeason)
             {
@@ -97,29 +76,14 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// </summary>
         /// <param name="itemId"></param>
         /// <returns></returns>
-        private ISalable CreateItem(int itemId)
+        private Item CreateItem(string itemId)
         {
-            switch (_itemStock.ItemType)
-            {
-                case "Object":
-                case "Seed":
-                    return new Object(itemId, _itemStock.Stock, _itemStock.IsRecipe, quality: _itemStock.Quality);
-                case "BigCraftable":
-                    return new Object(Vector2.Zero, itemId) { Stack = _itemStock.Stock, IsRecipe = _itemStock.IsRecipe };
-                case "Clothing":
-                    return new Clothing(itemId);
-                case "Ring":
-                    return new Ring(itemId);
-                case "Hat":
-                    return new Hat(itemId);
-                case "Boot":
-                    return new Boots(itemId);
-                case "Furniture":
-                    return new Furniture(itemId, Vector2.Zero);
-                case "Weapon":
-                    return new MeleeWeapon(itemId);
-                default: return null;
-            }
+            Item item = ItemRegistry.Create(itemId, _itemStock.Stock, _itemStock.Quality);
+
+            if (item is Object obj)
+                obj.IsRecipe = _itemStock.IsRecipe;
+
+            return item;
         }
 
         /// <summary>

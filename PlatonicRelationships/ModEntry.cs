@@ -35,21 +35,21 @@ namespace PlatonicRelationships
 
             try
             {
-                this.Monitor.Log("Transpile patching SocialPage.drawNPCSlot", StardewModdingAPI.LogLevel.Debug);
+                this.Monitor.Log("Transpile patching SocialPage.drawNPCSlotHeart");
                 harmony.Patch(
-                    original: AccessTools.Method(typeof(SocialPage), name: "drawNPCSlot"),
-                    transpiler: new HarmonyMethod(methodType: typeof(PatchDrawNPCSlot), nameof(PatchDrawNPCSlot.Transpiler))
+                    original: AccessTools.Method(typeof(SocialPage), name: "drawNPCSlotHeart"),
+                    prefix: new HarmonyMethod(methodType: typeof(PatchDrawNpcSlotHeart), nameof(PatchDrawNpcSlotHeart.Prefix))
                 );
             }
             catch (Exception e)
             {
-                Monitor.Log($"Failed in Patching SocialPage.drawNPCSlot: \n{e}", LogLevel.Error);
+                Monitor.Log($"Failed in Patching SocialPage.drawNPCSlotHeart: \n{e}", LogLevel.Error);
                 return;
             }
 
             try
             {
-                this.Monitor.Log("Postfix patching Utility.GetMaximumHeartsForCharacter", StardewModdingAPI.LogLevel.Debug);
+                this.Monitor.Log("Postfix patching Utility.GetMaximumHeartsForCharacter");
                 harmony.Patch(
                     original: AccessTools.Method(typeof(Utility), name: "GetMaximumHeartsForCharacter"),
                     postfix: new HarmonyMethod(typeof(patchGetMaximumHeartsForCharacter), nameof(patchGetMaximumHeartsForCharacter.Postfix))

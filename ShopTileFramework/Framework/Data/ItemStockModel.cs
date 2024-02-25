@@ -8,7 +8,7 @@
         public string StockItemCurrency { get; set; } = "Money";
         public int StockCurrencyStack { get; set; } = 1;
         public int Quality { get; set; } = 0;
-        public int[] ItemIDs { get; set; } = null;
+        public string[] ItemIDs { get; set; } = null;
         public string[] JAPacks { get; set; } = null;
         public string[] ExcludeFromJAPacks { get; set; } = null;
         public string[] ItemNames { get; set; } = null;

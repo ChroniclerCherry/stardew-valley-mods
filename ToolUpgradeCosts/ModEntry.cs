@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.GameData.Shops;
 using StardewValley.Internal;
 using StardewValley.Tools;
 using ToolUpgradeCosts.Framework;
@@ -14,12 +16,12 @@ namespace ToolUpgradeCosts
 	{
 		private static ModEntry _instance;
 
-		private readonly Dictionary<UpgradeMaterials, int> _defaultMaterials = new Dictionary<UpgradeMaterials, int>
+		private readonly Dictionary<UpgradeMaterials, string> _defaultMaterials = new()
 		{
-			{UpgradeMaterials.Copper,334},
-			{UpgradeMaterials.Steel, 335},
-			{UpgradeMaterials.Gold, 336},
-			{UpgradeMaterials.Iridium, 337}
+			{UpgradeMaterials.Copper, "334"},
+			{UpgradeMaterials.Steel, "335"},
+			{UpgradeMaterials.Gold, "336"},
+			{UpgradeMaterials.Iridium, "337"}
 		};
 
 		private Config _config;
@@ -33,7 +35,7 @@ namespace ToolUpgradeCosts
             Harmony harmony = new Harmony(ModManifest.UniqueID);
 
 			harmony.Patch(
-                AccessTools.Method(typeof(ShopBuilder), nameof(ShopBuilder.GetShopStock)),
+                AccessTools.Method(typeof(ShopBuilder), nameof(ShopBuilder.GetShopStock), new[] { typeof(string), typeof(ShopData) }),
                 postfix:new HarmonyMethod(typeof(ModEntry), nameof(ShopBuilder_GetShopStock_Postfix))
             );
 		}
@@ -43,13 +45,14 @@ namespace ToolUpgradeCosts
 			foreach (KeyValuePair<UpgradeMaterials, Upgrade> upgrade in _config.UpgradeCosts)
 			{
 				string name = upgrade.Value.MaterialName;
-				int index = Game1.objectInformation.FirstOrDefault(kvp => kvp.Value.Split('/')[0] == name).Key;
-				if (index == 0)
+
+				string id = Game1.objectData.FirstOrDefault(kvp => kvp.Value.Name == name).Key;
+				if (id is null)
 				{
 					Monitor.Log($"Object named \"{name}\" not found for the tool upgrade level of {upgrade.Key}. Vanilla upgrade item will be used", LogLevel.Error);
-					index = _defaultMaterials[upgrade.Key];
+					id = _defaultMaterials[upgrade.Key];
 				}
-				upgrade.Value.MaterialIndex = index;
+				upgrade.Value.MaterialId = id;
 			}
 		}
 
@@ -73,7 +76,7 @@ namespace ToolUpgradeCosts
 						editedStock[tool] = stockInfo with
 						{
 							Price = _instance._config.UpgradeCosts[upgradeLevel].Cost,
-							TradeItem = _instance._config.UpgradeCosts[upgradeLevel].MaterialIndex,
+							TradeItem = _instance._config.UpgradeCosts[upgradeLevel].MaterialId,
 							TradeItemCount = _instance._config.UpgradeCosts[upgradeLevel].MaterialStack
 						};
 					}

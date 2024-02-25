@@ -33,10 +33,11 @@ namespace MultiYieldCrops.Framework
 
             try
             {
-                int cropId = __instance.indexOfHarvest.Value;
-                string cropName = new StardewValley.Object(cropId, 1, false).Name;
-                ModEntry.instance.SpawnHarvest(new Vector2(xTile,yTile),
-                    cropName, soil.fertilizer.Value,junimoHarvester);
+                string cropId = __instance.indexOfHarvest.Value;
+                string cropName = ItemRegistry.GetDataOrErrorItem(cropId).InternalName;
+                int fertilizerQualityLevel = soil.GetFertilizerQualityBoostLevel();
+
+                ModEntry.instance.SpawnHarvest(new Vector2(xTile,yTile), cropName, fertilizerQualityLevel, junimoHarvester);
 
             } catch (Exception ex)
             {
@@ -44,15 +45,13 @@ namespace MultiYieldCrops.Framework
             }
         }
 
-        public static void BushPerformUseAction_postfix(Vector2 tileLocation, Bush __instance)
-        {
-            //not implemented yet
-            if ( __instance.inBloom(Game1.currentSeason, Game1.dayOfMonth) && __instance.size.Value == Bush.greenTeaBush)
-            {
-                ModEntry.instance.SpawnHarvest(tileLocation, "Tea Leaves", HoeDirt.noFertilizer);
-            }
-        }
-
+        //public static void BushPerformUseAction_postfix(Vector2 tileLocation, Bush __instance)
+        //{
+        //    //not implemented yet
+        //    if ( __instance.inBloom(Game1.currentSeason, Game1.dayOfMonth) && __instance.size.Value == Bush.greenTeaBush)
+        //    {
+        //        ModEntry.instance.SpawnHarvest(tileLocation, "Tea Leaves", HoeDirt.noFertilizer);
+        //    }
+        //}
     }
-
 }

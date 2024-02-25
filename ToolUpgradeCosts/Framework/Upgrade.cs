@@ -6,7 +6,7 @@ namespace ToolUpgradeCosts.Framework
 
 		public string MaterialName { get; set; }
 
-		internal int MaterialIndex { get; set; }
+		internal string MaterialId { get; set; }
 
 		public int MaterialStack { get; set; }
 	}

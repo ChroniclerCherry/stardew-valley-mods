@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
@@ -58,7 +57,7 @@ namespace UpgradeEmptyCabins
                 if (bed != null)
                 {
                     ((Cabin)cab.indoors.Value).furniture.Remove(bed);
-                    Monitor.Log("Bed removed from " + cab.nameOfIndoors, LogLevel.Info);
+                    Monitor.Log("Bed removed from " + cab.GetIndoorsName(), LogLevel.Info);
                 }
                     
             }
@@ -81,7 +80,7 @@ namespace UpgradeEmptyCabins
                     }
                     
                     ((Cabin)cab.indoors.Value).Objects.Remove(obj.Key);
-                    Monitor.Log("Seed box removed from " + cab.nameOfIndoors, LogLevel.Info);
+                    Monitor.Log("Seed box removed from " + cab.GetIndoorsName(), LogLevel.Info);
                 }
             }
         }
@@ -173,7 +172,7 @@ namespace UpgradeEmptyCabins
                         break;
                 }
                 if (displayInfo != null)
-                    cabinNames.Add(new Response(cabin.nameOfIndoors, displayInfo));
+                    cabinNames.Add(new Response(cabin.GetIndoorsName(), displayInfo));
             }
 
             if (cabinNames.Count > 0)
@@ -216,11 +215,11 @@ namespace UpgradeEmptyCabins
             switch (cabin.upgradeLevel)
             {
                 case 0:
-                    if (Game1.player.Money >= 10000 && Game1.player.hasItemInInventory(388, 450))
+                    if (Game1.player.Money >= 10000 && Game1.player.Items.ContainsId("(O)388", 450))
                     {
                         cab.daysUntilUpgrade.Value = 3;
                         Game1.player.Money -= 10000;
-                        Game1.player.removeItemsFromInventory(388, 450);
+                        Game1.player.Items.ReduceId("(O)388", 450);
                         Game1.getCharacterFromName("Robin").setNewDialogue(Game1.content.LoadString("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted"));
                         Game1.drawDialogue(Game1.getCharacterFromName("Robin"));
                         break;
@@ -233,11 +232,11 @@ namespace UpgradeEmptyCabins
                     Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Locations:ScienceHouse_Carpenter_NotEnoughWood1"));
                     break;
                 case 1:
-                    if (Game1.player.Money >= 50000 && Game1.player.hasItemInInventory(709, 150))
+                    if (Game1.player.Money >= 50000 && Game1.player.Items.ContainsId("(O)709", 150))
                     {
                         cab.daysUntilUpgrade.Value = 3;
                         Game1.player.Money -= 50000;
-                        Game1.player.removeItemsFromInventory(709, 150);
+                        Game1.player.Items.ReduceId("(O)709", 150);
                         Game1.getCharacterFromName("Robin").setNewDialogue(Game1.content.LoadString("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted"));
                         Game1.drawDialogue(Game1.getCharacterFromName("Robin"));
                         break;

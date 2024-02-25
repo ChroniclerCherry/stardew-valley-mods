@@ -1,20 +1,19 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using HarmonyLib;
+using Microsoft.Xna.Framework;
+using MultiYieldCrops.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Characters;
-using StardewValley.Objects;
-using StardewValley.Tools;
-using System;
-using System.Collections.Generic;
-using HarmonyLib;
-using MultiYieldCrops.Framework;
+using StardewValley.Extensions;
+using StardewValley.ItemTypeDefinitions;
 
 namespace MultiYieldCrops
 {
     class ModEntry : Mod
     {
         public static ModEntry instance;
-        private Dictionary<string, IDictionary<int, string>> ObjectInfoSource { get; set; }
 
         private Dictionary<string, List<Rule>> allHarvestRules;
 
@@ -31,14 +30,11 @@ namespace MultiYieldCrops
                 postfix: new HarmonyMethod(typeof(HarvestPatches), nameof(HarvestPatches.CropHarvest_postfix))
                 );
 
-            /* patch for handling tea leaves
-            harmony.Patch(
-                original: AccessTools.Method(typeof(StardewValley.TerrainFeatures.Bush), nameof(StardewValley.TerrainFeatures.Bush.performUseAction)),
-                postfix: new HarmonyMethod(typeof(HarvestPatches), nameof(HarvestPatches.BushPerformUseAction_postfix))
-                );
-                */
-
-            helper.Events.GameLoop.SaveLoaded += UpdateObjectInfoSource;
+            //// patch for handling tea leaves
+            //harmony.Patch(
+            //    original: AccessTools.Method(typeof(StardewValley.TerrainFeatures.Bush), nameof(StardewValley.TerrainFeatures.Bush.performUseAction)),
+            //    postfix: new HarmonyMethod(typeof(HarvestPatches), nameof(HarvestPatches.BushPerformUseAction_postfix))
+            //);
 
             InitializeHarvestRules();
         }
@@ -70,16 +66,15 @@ namespace MultiYieldCrops
 
         }
 
-        private IEnumerable<Item> SpawnItems(Rule data, int fertilizer)
+        private IEnumerable<Item> SpawnItems(Rule data, int fertilizerQualityLevel)
         {
-            int quality = fertilizer;
-            int itemID = GetIndexByName(data.ItemName, data.ExtraYieldItemType);
-            int xTile = Game1.player.getTileX();
-            int yTile = Game1.player.getTileY(); ;
+            int quality = fertilizerQualityLevel;
+            string itemId = GetIdByName(data.ItemName, data.ExtraYieldItemType);
+            Point tile = Game1.player.TilePoint;
 
             //stole this code from the game to calculate crop quality
-            Random random = new Random(xTile * 7 + yTile * 11 + (int)Game1.stats.DaysPlayed + (int)Game1.uniqueIDForThisGame);
-            double highQualityChance = 0.2 * (Game1.player.FarmingLevel / 10.0) + 0.2 * fertilizer * ((Game1.player.FarmingLevel + 2.0) / 12.0) + 0.01;
+            Random random = new Random(tile.X * 7 + tile.Y * 11 + (int)Game1.stats.DaysPlayed + (int)Game1.uniqueIDForThisGame);
+            double highQualityChance = 0.2 * (Game1.player.FarmingLevel / 10.0) + 0.2 * fertilizerQualityLevel * ((Game1.player.FarmingLevel + 2.0) / 12.0) + 0.01;
             double lowerQualityChance = Math.Min(0.75, highQualityChance * 2.0);
 
             //stole this code from the game to calculate # of crops
@@ -91,7 +86,7 @@ namespace MultiYieldCrops
             if (quantity < 0)
                 quantity = 0;
 
-            if (itemID < 0)
+            if (itemId is null)
             {
                 Monitor.Log($"No idea what {data.ExtraYieldItemType} {data.ItemName} is", LogLevel.Warn);
                 yield return null;
@@ -103,64 +98,68 @@ namespace MultiYieldCrops
                     quality = 2;
                 else if (random.NextDouble() < lowerQualityChance)
                     quality = 1;
-                yield return CreateItem(itemID, data.ExtraYieldItemType, quality);
-            }
-
-        }
-
-        private Item CreateItem(int itemID,string ItemType,int quality)
-        {
-            switch (ItemType)
-            {
-                case "Object":
-                    return new StardewValley.Object(itemID, 1, false, quality: quality);
-                case "BigCraftable":
-                    return new StardewValley.Object(Vector2.Zero, itemID);
-                case "Clothing":
-                    return new Clothing(itemID);
-                case "Ring":
-                    return new Ring(itemID);
-                case "Hat":
-                    return new Hat(itemID);
-                case "Boot":
-                    return new Boots(itemID);
-                case "Furniture":
-                    return new Furniture(itemID, Vector2.Zero);
-                case "Weapon":
-                    return new MeleeWeapon(itemID);
-                default: return null;
+                yield return ItemRegistry.Create(itemId, 1, quality);
             }
         }
 
-        public int GetIndexByName(string name,string itemType)
+        /// <summary>Get the qualified item ID to spawn given its name.</summary>
+        /// <param name="name">The item name.</param>
+        /// <param name="itemType">The item type, matching a key recognized by <see cref="GetItemDataDefinitionFromType"/>.</param>
+        /// <returns>Returns the item's qualified item ID, or <c>null</c> if not found.</returns>
+        public string GetIdByName(string name,string itemType)
         {
-            //there's multiple stone items and 390 is the one that works
+            // there's multiple stone items and 390 is the one that works
             if (itemType == "Object" && name == "Stone")
-                return 390;
+                return ItemRegistry.type_object + "390";
 
-            foreach (KeyValuePair<int, string> kvp in ObjectInfoSource[itemType])
+            foreach (IItemDataDefinition itemDataDefinition in this.GetItemDataDefinitionFromType(itemType))
             {
-                if (kvp.Value.Split('/')[0] == name)
+                foreach (ParsedItemData data in itemDataDefinition.GetAllData())
                 {
-                    return kvp.Key;
+                    if (data.InternalName == name)
+                        return data.QualifiedItemId;
                 }
             }
-            return -1;
+
+            return null;
         }
-        private void UpdateObjectInfoSource(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
+
+        /// <summary>Get the item data definition which provides items of a given type.</summary>
+        /// <param name="itemType">The Multi Yield Crops type ID.</param>
+        private IEnumerable<IItemDataDefinition> GetItemDataDefinitionFromType(string itemType)
         {
-            //load up all the object information into a static dictionary
-            ObjectInfoSource = new Dictionary<string, IDictionary<int, string>>
+            switch (itemType)
             {
-                ["Object"] = Game1.objectInformation,
-                ["BigCraftable"] = Game1.bigCraftablesInformation,
-                ["Clothing"] = Game1.clothingInformation,
-                ["Ring"] = Game1.objectInformation,
-                ["Hat"] = Helper.GameContent.Load<Dictionary<int, string>>("Data/hats"),
-                ["Boot"] = Helper.GameContent.Load<Dictionary<int, string>>("Data/Boots"),
-                ["Furniture"] = Helper.GameContent.Load<Dictionary<int, string>>("Data/Furniture"),
-                ["Weapon"] = Helper.GameContent.Load<Dictionary<int, string>>("Data/weapons")
-            };
+                case "BigCraftable":
+                    yield return ItemRegistry.GetTypeDefinition(ItemRegistry.type_bigCraftable);
+                    break;
+
+                case "Boot":
+                    yield return ItemRegistry.GetTypeDefinition(ItemRegistry.type_boots);
+                    break;
+
+                case "Clothing":
+                    yield return ItemRegistry.GetTypeDefinition(ItemRegistry.type_pants);
+                    yield return ItemRegistry.GetTypeDefinition(ItemRegistry.type_shirt);
+                    break;
+
+                case "Furniture":
+                    yield return ItemRegistry.GetTypeDefinition(ItemRegistry.type_furniture);
+                    break;
+
+                case "Hat":
+                    yield return ItemRegistry.GetTypeDefinition(ItemRegistry.type_hat);
+                    break;
+
+                case "Object":
+                case "Ring":
+                    yield return ItemRegistry.GetObjectTypeDefinition();
+                    break;
+
+                case "Weapon":
+                    yield return ItemRegistry.GetTypeDefinition(ItemRegistry.type_weapon);
+                    break;
+            }
         }
 
         private void InitializeHarvestRules()

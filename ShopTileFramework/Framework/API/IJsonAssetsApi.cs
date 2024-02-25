@@ -16,8 +16,8 @@ namespace ShopTileFramework.Framework.API
         List<string> GetAllWeaponsFromContentPack(string cp);
         List<string> GetAllClothingFromContentPack(string cp);
 
-        int GetCropId(string name);
-        int GetFruitTreeId(string name);
+        string GetCropId(string name);
+        string GetFruitTreeId(string name);
 
         event EventHandler AddedItemsToShop;
     }

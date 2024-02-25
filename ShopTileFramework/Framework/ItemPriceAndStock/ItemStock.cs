@@ -1,10 +1,10 @@
-﻿using ShopTileFramework.Framework.API;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ShopTileFramework.Framework.API;
 using ShopTileFramework.Framework.Data;
 using ShopTileFramework.Framework.Utility;
 using StardewModdingAPI;
 using StardewValley;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ShopTileFramework.Framework.ItemPriceAndStock
 {
@@ -45,7 +45,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
                 ModEntry.monitor.Log("Item quality can only be 0,1,2, or 4. Defaulting to 0", LogLevel.Warn);
             }
 
-            CurrencyObjectId = ItemsUtil.GetIndexByName(StockItemCurrency);
+            CurrencyObjectId = ItemsUtil.GetItemIdByName(StockItemCurrency);
 
             //sets price to the store price if no stock price is given
             if (StockPrice == -1)
@@ -121,7 +121,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
             if (ItemIDs == null)
                 return;
 
-            foreach (var itemId in ItemIDs)
+            foreach (string itemId in ItemIDs)
             {
                 _builder.AddItemToStock(itemId, pricemultiplier);
             }
@@ -169,8 +169,8 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
                         foreach (string crop in crops)
                         {
                             if (ExcludeFromJAPacks != null && ExcludeFromJAPacks.Contains(crop)) continue;
-                            int id = ItemsUtil.GetSeedId(crop);
-                            if (id >0)
+                            string id = ItemsUtil.GetSeedId(crop);
+                            if (id is not null)
                                 _builder.AddItemToStock(id, pricemultiplier);
                         }
                     }
@@ -181,8 +181,8 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
                         foreach (string tree in trees)
                         {
                             if (ExcludeFromJAPacks != null && ExcludeFromJAPacks.Contains(tree)) continue;
-                            int id = ItemsUtil.GetSaplingId(tree);
-                            if (id > 0)
+                            string id = ItemsUtil.GetSaplingId(tree);
+                            if (id is not null)
                                 _builder.AddItemToStock(id, pricemultiplier);
                         }
                     }

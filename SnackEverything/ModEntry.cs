@@ -1,8 +1,8 @@
 ﻿using SnackEverything.Framework;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.GameData.Objects;
 using System;
-using System.Collections.Generic;
 
 namespace SnackEverything
 {
@@ -17,15 +17,11 @@ namespace SnackEverything
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
             Config = Helper.ReadConfig<ModConfig>();
-            var ObjectInfo = new List<int>(Game1.objectInformation.Keys);
-            foreach (var key in ObjectInfo)
+
+            foreach ((string id, ObjectData data) in Game1.objectData)
             {
-                var info = Game1.objectInformation[key].Split('/');
-
-                if (int.Parse(info[2]) < 0 && (info[3] != "Arch" || Config.YummyArtefacts))
-                        info[2] = Math.Max((int.Parse(info[1])/3),1).ToString();
-
-                Game1.objectInformation[key] = string.Join("/", info);
+                if (data.Edibility < 0 && (data.Type != "Arch" || Config.YummyArtefacts))
+                    data.Edibility = Math.Max(data.Price / 3, 1);
             }
         }
     }
