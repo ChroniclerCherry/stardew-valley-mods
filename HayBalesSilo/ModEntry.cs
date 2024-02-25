@@ -31,7 +31,45 @@ namespace HayBalesSilo
             );
 
             helper.Events.Content.AssetRequested += this.OnAssetRequested;
+            helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
             helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
+        }
+
+        // Add GMCM compatibility
+        private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+        {
+            var configMenu = this.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
+            if (configMenu is null)
+                return;
+
+            configMenu.Register(
+                mod: this.ModManifest,
+                reset: () => Config = new ModConfig(),
+                save: () => this.Helper.WriteConfig(Config)
+            );
+
+            configMenu.AddBoolOption(
+                mod: this.ModManifest,
+                name: () => "RequiresConstructedSilo",
+                tooltip: () => "Whether you need to construct at least one Silo for hay bales to work",
+                getValue: () => Config.RequiresConstructedSilo,
+                setValue: value => Config.RequiresConstructedSilo = value
+            );
+
+            configMenu.AddNumberOption(
+                mod: this.ModManifest,
+                name: () => "HayBaleEquivalentToHowManySilos",
+                tooltip: () => "How many silos is each hay bale equivalent to in terms of adding hay capacity",
+                getValue: () => Config.HayBaleEquivalentToHowManySilos,
+                setValue: value => Config.HayBaleEquivalentToHowManySilos = value
+            );
+
+            configMenu.AddNumberOption(
+                mod: this.ModManifest,
+                name: () => "HaybalePrice",
+                getValue: () => Config.HaybalePrice,
+                setValue: value => Config.HaybalePrice = value
+            );
         }
 
         private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
