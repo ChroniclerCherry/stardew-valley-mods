@@ -399,7 +399,9 @@ namespace TrainStation
 
         private void Request_OnWarp()
         {
-            Game1.pauseThenMessage(3000, this.destinationMessage);
+            if (Game1.currentLocation?.currentEvent is null)
+                Game1.pauseThenMessage(3000, this.destinationMessage);
+
             this.finishedTrainWarp = true;
         }
 
