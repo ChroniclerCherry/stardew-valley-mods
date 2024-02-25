@@ -58,10 +58,10 @@ namespace HayBalesSilo
 
             configMenu.AddNumberOption(
                 mod: this.ModManifest,
-                name: () => "HayBaleEquivalentToHowManySilos",
-                tooltip: () => "How many silos is each hay bale equivalent to in terms of adding hay capacity",
-                getValue: () => Config.HayBaleEquivalentToHowManySilos,
-                setValue: value => Config.HayBaleEquivalentToHowManySilos = value
+                name: () => "HayPerBale",
+                tooltip: () => "How much hay each hay bale can hold.",
+                getValue: () => Config.HayPerBale,
+                setValue: value => Config.HayPerBale = value
             );
 
             configMenu.AddNumberOption(
@@ -128,12 +128,10 @@ namespace HayBalesSilo
             {
                 e.Edit(asset =>
                 {
-                    int capacityPerBale = 240 * Config.HayBaleEquivalentToHowManySilos;
-
                     var data = asset.AsDictionary<string, string>().Data;
 
                     data["OrnamentalHayBale_Name"] = this.Helper.Translation.Get("DisplayName");
-                    data["OrnamentalHayBale_Description"] = this.Helper.Translation.Get("Description").ToString().Replace("{{capacity}}", capacityPerBale.ToString());
+                    data["OrnamentalHayBale_Description"] = this.Helper.Translation.Get("Description").ToString().Replace("{{capacity}}", Config.HayPerBale.ToString());
                 });
             }
 

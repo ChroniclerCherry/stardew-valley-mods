@@ -1,6 +1,5 @@
 using System.Linq;
 using StardewValley;
-using StardewValley.GameData.Buildings;
 
 namespace HayBalesSilo.Framework
 {
@@ -17,11 +16,7 @@ namespace HayBalesSilo.Framework
                 if (hayBales == 0)
                     return;
 
-                int hayPerSilo = Game1.buildingData.TryGetValue("Silo", out BuildingData data)
-                    ? data.HayCapacity
-                    : 240;
-
-                __result += hayBales * (ModEntry.Config.HayBaleEquivalentToHowManySilos * hayPerSilo);
+                __result += hayBales * ModEntry.Config.HayPerBale;
             }
         }
     }

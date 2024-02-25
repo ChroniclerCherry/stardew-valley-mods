@@ -2,6 +2,7 @@
 ## Upcoming release
 - Updated for Stardew Valley 1.6 and SMAPI 4.0.0.
 - Added integration with Generic Mod Config Menu (thanks to holy-the-sea!).
+- Added "_hay per bale_" config option, which replaces the less flexible "_hay bale equivalent to how many silos_" option.
 
 ## 1.0.4
 Released 10 May 2020 for SMAPI 3.0.0 or later.
