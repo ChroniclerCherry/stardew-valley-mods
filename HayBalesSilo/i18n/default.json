@@ -1,4 +1,20 @@
 ﻿{
+    /*********
+    ** Item
+    *********/
     "DisplayName": "Hay Bale",
-    "Description": "Adds to the capacity of your existing Silos by {{capacity}}. Only works on the farm."
+    "Description": "Adds to the capacity of your existing Silos by {{capacity}}. Only works on the farm.",
+
+
+    /*********
+    ** Generic Mod Config Menu UI
+    *********/
+    "config.require-constructed-silo.name": "Require constructed silo",
+    "config.require-constructed-silo.desc": "Whether you need at least one silo in the location for hay bales to work there.",
+
+    "config.hay-per-bale.name": "Hay per bale",
+    "config.hay-per-bale.desc": "How much hay can be stored in each bale.",
+
+    "config.purchase-price.name": "Purchase price",
+    "config.purchase-price.desc": "The gold price to purchase a hay bale."
 }

@@ -50,23 +50,24 @@ namespace HayBalesSilo
 
             configMenu.AddBoolOption(
                 mod: this.ModManifest,
-                name: () => "RequiresConstructedSilo",
-                tooltip: () => "Whether you need to construct at least one Silo for hay bales to work",
+                name: () => this.Helper.Translation.Get("config.require-constructed-silo.name"),
+                tooltip: () => this.Helper.Translation.Get("config.require-constructed-silo.desc"),
                 getValue: () => Config.RequiresConstructedSilo,
                 setValue: value => Config.RequiresConstructedSilo = value
             );
 
             configMenu.AddNumberOption(
                 mod: this.ModManifest,
-                name: () => "HayPerBale",
-                tooltip: () => "How much hay each hay bale can hold.",
+                name: () => this.Helper.Translation.Get("config.hay-per-bale.name"),
+                tooltip: () => this.Helper.Translation.Get("config.hay-per-bale.desc"),
                 getValue: () => Config.HayPerBale,
                 setValue: value => Config.HayPerBale = value
             );
 
             configMenu.AddNumberOption(
                 mod: this.ModManifest,
-                name: () => "HaybalePrice",
+                name: () => this.Helper.Translation.Get("config.purchase-price.name"),
+                tooltip: () => this.Helper.Translation.Get("config.purchase-price.desc"),
                 getValue: () => Config.HaybalePrice,
                 setValue: value => Config.HaybalePrice = value
             );
