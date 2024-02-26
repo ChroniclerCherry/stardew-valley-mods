@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Harmony;
+using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewAquarium.Editors;
@@ -23,7 +23,7 @@ namespace StardewAquarium
         public const string PufferChickName = "Pufferchick";
         public const string LegendaryBaitName = "Legendary Bait";
         private readonly bool _isAndroid = Constants.TargetPlatform == GamePlatform.Android;
-        public static HarmonyInstance Harmony { get; } = HarmonyInstance.Create("Cherry.StardewAquarium");
+        public static Harmony Harmony { get; } = new Harmony("Cherry.StardewAquarium");
 
         private static int GameTick = 0;
         public static IJsonAssetsApi JsonAssets { get; set; }

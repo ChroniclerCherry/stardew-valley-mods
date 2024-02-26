@@ -1,5 +1,5 @@
 using System;
-using Harmony;
+using HarmonyLib;
 using StardewAquarium.Menus;
 using StardewModdingAPI;
 using StardewValley;
@@ -19,7 +19,7 @@ namespace StardewAquarium.Patches
             _helper = helper;
             _monitor = monitor;
 
-            HarmonyInstance harmony = ModEntry.Harmony;
+            Harmony harmony = ModEntry.Harmony;
             harmony.Patch(original: AccessTools.Method(typeof(DonateFishMenuAndroid), "tryToPurchaseItem"),
                 postfix: new HarmonyMethod(typeof(AndroidShopMenuPatch), nameof(tryToPurchaseItem_postfix))
             );
