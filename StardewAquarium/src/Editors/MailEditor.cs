@@ -3,11 +3,12 @@ using StardewValley;
 
 namespace StardewAquarium.Editors
 {
-    class MailEditor : IAssetEditor
+    class MailEditor
     {
         private IModHelper _helper;
         private const string AquariumOpenAfterLandslide = "StardewAquarium.Open";
         private const string AquariumOpenLater = "StardewAquarium.OpenLater";
+
         public MailEditor(IModHelper helper)
         {
             this._helper = helper;
@@ -26,12 +27,12 @@ namespace StardewAquarium.Editors
                 Game1.player.mailbox.Add(AquariumOpenLater);
         }
 
-        public bool CanEdit<T>(IAssetInfo asset)
+        public bool CanEdit(IAssetName asset)
         {
-            return asset.AssetNameEquals("Data\\mail");
+            return asset.IsEquivalentTo("Data/mail");
         }
 
-        public void Edit<T>(IAssetData asset)
+        public void Edit(IAssetData asset)
         {
             var data = asset.AsDictionary<string, string>().Data;
             data[AquariumOpenAfterLandslide] = this._helper.Translation.Get("AquariumOpenLandslide");

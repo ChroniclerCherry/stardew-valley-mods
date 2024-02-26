@@ -3,6 +3,7 @@ using System.Linq;
 using Netcode;
 using StardewAquarium.Models;
 using StardewModdingAPI;
+using StardewModdingAPI.Utilities;
 using StardewValley;
 using xTile.Layers;
 using xTile.Tiles;
@@ -124,7 +125,7 @@ namespace StardewAquarium
 
             if (objectsTilesheet == null)
             {
-                string tilesheetPath = this._helper.Content.GetActualAssetKey(@"Maps/springobjects", ContentSource.GameContent);
+                string tilesheetPath = PathUtilities.NormalizeAssetName("Maps/springobjects");
                 GameLocation location = Game1.getLocationFromName(ModEntry.Data.ExteriorMapName);
 
                 // Add the tilesheet.

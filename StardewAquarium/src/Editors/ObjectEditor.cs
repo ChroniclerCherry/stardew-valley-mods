@@ -2,24 +2,18 @@ using StardewModdingAPI;
 
 namespace StardewAquarium.Editors
 {
-    class ObjectEditor : IAssetEditor
+    class ObjectEditor
     {
-        private readonly IModHelper _helper;
-        private const string ObjInfoPath = "Data\\ObjectInformation";
+        private const string ObjInfoPath = "Data/ObjectInformation";
 
-        public ObjectEditor(IModHelper helper)
+        public bool CanEdit(IAssetName assetName)
         {
-            this._helper = helper;
+            return ModEntry.JsonAssets != null && assetName.IsEquivalentTo(ObjInfoPath);
         }
 
-        public bool CanEdit<T>(IAssetInfo asset)
+        public void Edit(IAssetData asset)
         {
-            return ModEntry.JsonAssets != null && asset.AssetNameEquals(ObjInfoPath);
-        }
-
-        public void Edit<T>(IAssetData asset)
-        {
-            if (asset.AssetNameEquals(ObjInfoPath))
+            if (asset.NameWithoutLocale.IsEquivalentTo(ObjInfoPath))
             {
                 int id = ModEntry.JsonAssets.GetObjectId(ModEntry.LegendaryBaitName);
                 var data = asset.AsDictionary<int, string>().Data;
