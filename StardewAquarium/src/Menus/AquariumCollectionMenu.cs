@@ -22,30 +22,30 @@ namespace StardewAquarium.Menus
 
         public AquariumCollectionMenu(string title)
         {
-            _title = title;
-            width = 700 + borderWidth * 2;
-            height = (IsAndroid ? 550 : 600) + borderWidth * 2;
+            this._title = title;
+            this.width = 700 + borderWidth * 2;
+            this.height = (this.IsAndroid ? 550 : 600) + borderWidth * 2;
 
-            if (IsAndroid)
+            if (this.IsAndroid)
             {
-                initializeUpperRightCloseButton();
+                this.initializeUpperRightCloseButton();
             }
 
-            xPositionOnScreen = Game1.viewport.Width / 2 - (800 + borderWidth * 2) / 2;
-            yPositionOnScreen = Game1.viewport.Height / 2 - (600 + borderWidth * 2) / 2;
+            this.xPositionOnScreen = Game1.viewport.Width / 2 - (800 + borderWidth * 2) / 2;
+            this.yPositionOnScreen = Game1.viewport.Height / 2 - (600 + borderWidth * 2) / 2;
 
             CollectionsPage.widthToMoveActiveTab = 8;
-            ClickableTextureComponent textureComponent9 = new ClickableTextureComponent(new Rectangle(xPositionOnScreen + 48, yPositionOnScreen + height - 80, 48, 44), Game1.mouseCursors, new Rectangle(352, 495, 12, 11), 4f, false);
+            ClickableTextureComponent textureComponent9 = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + 48, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(352, 495, 12, 11), 4f, false);
             textureComponent9.myID = 706;
             textureComponent9.rightNeighborID = -7777;
-            backButton = textureComponent9;
-            ClickableTextureComponent textureComponent10 = new ClickableTextureComponent(new Rectangle(xPositionOnScreen + width - 32 - 60, yPositionOnScreen + height - 80, 48, 44), Game1.mouseCursors, new Rectangle(365, 495, 12, 11), 4f, false);
+            this.backButton = textureComponent9;
+            ClickableTextureComponent textureComponent10 = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 32 - 60, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(365, 495, 12, 11), 4f, false);
             textureComponent10.myID = 707;
             textureComponent10.leftNeighborID = -7777;
-            forwardButton = textureComponent10;
+            this.forwardButton = textureComponent10;
             int[] numArray = new int[8];
-            int num2 = xPositionOnScreen + borderWidth + spaceToClearSideBorder;
-            int num3 = yPositionOnScreen + borderWidth + spaceToClearTopBorder - 16;
+            int num2 = this.xPositionOnScreen + borderWidth + spaceToClearSideBorder;
+            int num3 = this.yPositionOnScreen + borderWidth + spaceToClearTopBorder - 16;
             int num4 = 10;
             List<KeyValuePair<int, string>> keyValuePairList = new List<KeyValuePair<int, string>>(Game1.objectInformation);
             keyValuePairList.Sort((a, b) => a.Key.CompareTo(b.Key));
@@ -75,30 +75,30 @@ namespace StardewAquarium.Menus
 
                 int x1 = num2 + index % num4 * 68;
                 int y1 = num3 + index / num4 * 68;
-                if (y1 > yPositionOnScreen + height - 128)
+                if (y1 > this.yPositionOnScreen + this.height - 128)
                 {
-                    collections.Add(new List<ClickableTextureComponent>());
+                    this.collections.Add(new List<ClickableTextureComponent>());
                     index = 0;
                     x1 = num2;
                     y1 = num3;
                 }
-                if (collections.Count == 0)
-                    collections.Add(new List<ClickableTextureComponent>());
-                List<ClickableTextureComponent> textureComponentList = collections.Last();
+                if (this.collections.Count == 0)
+                    this.collections.Add(new List<ClickableTextureComponent>());
+                List<ClickableTextureComponent> textureComponentList = this.collections.Last();
                 ClickableTextureComponent textureComponent8 = new ClickableTextureComponent(keyValuePair.Key + " " + drawColour + " " + drawColorFaded, new Rectangle(x1, y1, 64, 64), null, "", Game1.objectSpriteSheet, Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, keyValuePair.Key, 16, 16), 4f, drawColour)
                 {
-                    myID = collections.Last().Count,
-                    rightNeighborID = (collections.Last().Count + 1) % num4 == 0 ? -1 : collections.Last().Count + 1,
-                    leftNeighborID = collections.Last().Count % num4 == 0 ? 7001 : collections.Last().Count - 1,
-                    downNeighborID = y1 + 68 > yPositionOnScreen + height - 128 ? -7777 : collections.Last().Count + num4,
-                    upNeighborID = collections.Last().Count < num4 ? 12345 : collections.Last().Count - num4,
+                    myID = this.collections.Last().Count,
+                    rightNeighborID = (this.collections.Last().Count + 1) % num4 == 0 ? -1 : this.collections.Last().Count + 1,
+                    leftNeighborID = this.collections.Last().Count % num4 == 0 ? 7001 : this.collections.Last().Count - 1,
+                    downNeighborID = y1 + 68 > this.yPositionOnScreen + this.height - 128 ? -7777 : this.collections.Last().Count + num4,
+                    upNeighborID = this.collections.Last().Count < num4 ? 12345 : this.collections.Last().Count - num4,
                     fullyImmutable = true
                 };
                 textureComponentList.Add(textureComponent8);
                 index++;
             }
 
-            initializeUpperRightCloseButton();
+            this.initializeUpperRightCloseButton();
         }
 
         protected override void customSnapBehavior(int direction, int oldRegion, int oldID)
@@ -107,22 +107,22 @@ namespace StardewAquarium.Menus
             switch (direction)
             {
                 case 1:
-                    if (oldID != 706 || collections.Count <= currentPage + 1)
+                    if (oldID != 706 || this.collections.Count <= this.currentPage + 1)
                         break;
-                    currentlySnappedComponent = getComponentWithID(707);
+                    this.currentlySnappedComponent = this.getComponentWithID(707);
                     break;
                 case 2:
-                    if (currentPage > 0)
-                        currentlySnappedComponent = getComponentWithID(706);
-                    else if (currentPage == 0 && collections.Count > 1)
-                        currentlySnappedComponent = getComponentWithID(707);
-                    backButton.upNeighborID = oldID;
-                    forwardButton.upNeighborID = oldID;
+                    if (this.currentPage > 0)
+                        this.currentlySnappedComponent = this.getComponentWithID(706);
+                    else if (this.currentPage == 0 && this.collections.Count > 1)
+                        this.currentlySnappedComponent = this.getComponentWithID(707);
+                    this.backButton.upNeighborID = oldID;
+                    this.forwardButton.upNeighborID = oldID;
                     break;
                 case 3:
-                    if (oldID != 707 || currentPage <= 0)
+                    if (oldID != 707 || this.currentPage <= 0)
                         break;
-                    currentlySnappedComponent = getComponentWithID(706);
+                    this.currentlySnappedComponent = this.getComponentWithID(706);
                     break;
             }
         }
@@ -130,58 +130,57 @@ namespace StardewAquarium.Menus
         public override void snapToDefaultClickableComponent()
         {
             base.snapToDefaultClickableComponent();
-            currentlySnappedComponent = getComponentWithID(0);
-            snapCursorToCurrentSnappedComponent();
+            this.currentlySnappedComponent = this.getComponentWithID(0);
+            this.snapCursorToCurrentSnappedComponent();
         }
 
         public override void receiveLeftClick(int x, int y, bool playSound = true)
         {
             base.receiveLeftClick(x, y, true);
 
-            if (currentPage > 0 && backButton.containsPoint(x, y))
+            if (this.currentPage > 0 && this.backButton.containsPoint(x, y))
             {
-                --currentPage;
+                --this.currentPage;
                 Game1.playSound("shwip");
-                backButton.scale = backButton.baseScale;
-                if (Game1.options.snappyMenus && Game1.options.gamepadControls && currentPage == 0)
+                this.backButton.scale = this.backButton.baseScale;
+                if (Game1.options.snappyMenus && Game1.options.gamepadControls && this.currentPage == 0)
                 {
-                    currentlySnappedComponent = forwardButton;
-                    Game1.setMousePosition(currentlySnappedComponent.bounds.Center);
+                    this.currentlySnappedComponent = this.forwardButton;
+                    Game1.setMousePosition(this.currentlySnappedComponent.bounds.Center);
                 }
             }
 
-            if (currentPage < collections.Count - 1 && forwardButton.containsPoint(x, y))
+            if (this.currentPage < this.collections.Count - 1 && this.forwardButton.containsPoint(x, y))
             {
-                ++currentPage;
+                ++this.currentPage;
                 Game1.playSound("shwip");
-                forwardButton.scale = forwardButton.baseScale;
-                if (Game1.options.snappyMenus && Game1.options.gamepadControls &&
-                    currentPage == collections.Count - 1)
+                this.forwardButton.scale = this.forwardButton.baseScale;
+                if (Game1.options.snappyMenus && Game1.options.gamepadControls && this.currentPage == this.collections.Count - 1)
                 {
-                    currentlySnappedComponent = backButton;
-                    Game1.setMousePosition(currentlySnappedComponent.bounds.Center);
+                    this.currentlySnappedComponent = this.backButton;
+                    Game1.setMousePosition(this.currentlySnappedComponent.bounds.Center);
                 }
             }
         }
 
         public override void performHoverAction(int x, int y)
         {
-            hoverText = "";
+            this.hoverText = "";
 
-            foreach (ClickableTextureComponent textureComponent in collections[currentPage])
+            foreach (ClickableTextureComponent textureComponent in this.collections[this.currentPage])
             {
                 if (textureComponent.containsPoint(x, y))
                 {
                     textureComponent.scale =
                         Math.Min(textureComponent.scale + 0.02f, textureComponent.baseScale + 0.1f);
-                    hoverText = createDescription(Convert.ToInt32(textureComponent.name.Split(' ')[0]));
+                    this.hoverText = this.createDescription(Convert.ToInt32(textureComponent.name.Split(' ')[0]));
                 }
                 else
                     textureComponent.scale = Math.Max(textureComponent.scale - 0.02f, textureComponent.baseScale);
             }
 
-            forwardButton.tryHover(x, y, 0.5f);
-            backButton.tryHover(x, y, 0.5f);
+            this.forwardButton.tryHover(x, y, 0.5f);
+            this.backButton.tryHover(x, y, 0.5f);
         }
 
         public string createDescription(int index)
@@ -205,18 +204,18 @@ namespace StardewAquarium.Menus
 
             base.draw(b);
 
-            Game1.drawDialogueBox(xPositionOnScreen, yPositionOnScreen, width, height, false, true);
+            Game1.drawDialogueBox(this.xPositionOnScreen, this.yPositionOnScreen, this.width, this.height, false, true);
 
-            if (currentPage > 0)
-                backButton.draw(b);
-            if (currentPage < collections.Count - 1)
-                forwardButton.draw(b);
+            if (this.currentPage > 0)
+                this.backButton.draw(b);
+            if (this.currentPage < this.collections.Count - 1)
+                this.forwardButton.draw(b);
 
-            SpriteText.drawStringWithScrollCenteredAt(b, _title, Game1.viewport.Width / 2 - 50, Game1.viewport.Height / 2 - 310, _title, 1f, -1, 0, 0.88f, false);
+            SpriteText.drawStringWithScrollCenteredAt(b, this._title, Game1.viewport.Width / 2 - 50, Game1.viewport.Height / 2 - 310, this._title, 1f, -1, 0, 0.88f, false);
 
             b.End();
             b.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
-            foreach (ClickableTextureComponent textureComponent in collections[currentPage])
+            foreach (ClickableTextureComponent textureComponent in this.collections[this.currentPage])
             {
                 /*
                  *bool drawColor = Convert.ToBoolean(c.name.Split(' ')[1]);
@@ -229,12 +228,12 @@ namespace StardewAquarium.Menus
             }
             b.End();
             b.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
-            if (!hoverText.Equals(""))
+            if (!this.hoverText.Equals(""))
             {
-                drawHoverText(b, hoverText, Game1.smallFont, 0, 0);
+                drawHoverText(b, this.hoverText, Game1.smallFont, 0, 0);
             }
 
-            drawMouse(b);
+            this.drawMouse(b);
         }
     }
 }

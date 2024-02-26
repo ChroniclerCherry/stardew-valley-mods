@@ -10,7 +10,7 @@ namespace StardewAquarium.Editors
 
         public MiscEditor(IModHelper helper)
         {
-            _helper = helper;
+            this._helper = helper;
         }
 
         public bool CanEdit<T>(IAssetInfo asset)
@@ -23,8 +23,8 @@ namespace StardewAquarium.Editors
             if (asset.AssetNameEquals(UIPath))
             {
                 var data = asset.AsDictionary<string, string>().Data;
-                data.Add("Chat_StardewAquarium.FishDonated", _helper.Translation.Get("FishDonatedMP"));
-                data.Add("Chat_StardewAquarium.AchievementUnlocked", _helper.Translation.Get("AchievementUnlockedMP"));
+                data.Add("Chat_StardewAquarium.FishDonated", this._helper.Translation.Get("FishDonatedMP"));
+                data.Add("Chat_StardewAquarium.AchievementUnlocked", this._helper.Translation.Get("AchievementUnlockedMP"));
             }
         }
     }

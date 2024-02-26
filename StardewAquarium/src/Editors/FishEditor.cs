@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
@@ -11,7 +11,7 @@ namespace StardewAquarium.Editors
 
         public FishEditor(IModHelper helper)
         {
-            _helper = helper;
+            this._helper = helper;
         }
         public bool CanEdit<T>(IAssetInfo asset)
         {
@@ -40,7 +40,7 @@ namespace StardewAquarium.Editors
             {
                 var editor = asset.AsImage();
 
-                Texture2D sourceImage = _helper.Content.Load<Texture2D>("data\\Objects\\Pufferchick\\object.png", ContentSource.ModFolder);
+                Texture2D sourceImage = this._helper.Content.Load<Texture2D>("data\\Objects\\Pufferchick\\object.png", ContentSource.ModFolder);
                 editor.PatchImage(sourceImage, targetArea: new Rectangle(4, 52, 16, 16));
             }
             else if (asset.AssetNameEquals("Data\\Locations"))

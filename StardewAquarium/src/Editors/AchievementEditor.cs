@@ -12,8 +12,8 @@ namespace StardewAquarium.Editors
 
         public AchievementEditor(IModHelper helper, IMonitor monitor)
         {
-            _helper = helper;
-            _monitor = monitor;
+            this._helper = helper;
+            this._monitor = monitor;
         }
 
         public bool CanEdit<T>(IAssetInfo asset)
@@ -25,7 +25,7 @@ namespace StardewAquarium.Editors
         {
             var data = asset.AsDictionary<int, string>().Data;
             data[AchievementId]
-                = $"{_helper.Translation.Get("AchievementName")}^{_helper.Translation.Get("AchievementDescription")}^true^-1^-1";
+                = $"{this._helper.Translation.Get("AchievementName")}^{this._helper.Translation.Get("AchievementDescription")}^true^-1^-1";
         }
     }
 }

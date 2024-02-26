@@ -21,14 +21,14 @@ namespace StardewAquarium
 
         public LastDonatedFishSign(IModHelper helper, IMonitor monitor)
         {
-            _helper = helper;
-            _monitor = monitor;
+            this._helper = helper;
+            this._monitor = monitor;
 
-            _helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
-            _helper.Events.Player.Warped += Player_Warped;
-            _helper.Events.Multiplayer.ModMessageReceived += Multiplayer_ModMessageReceived;
+            this._helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
+            this._helper.Events.Player.Warped += this.Player_Warped;
+            this._helper.Events.Multiplayer.ModMessageReceived += this.Multiplayer_ModMessageReceived;
 
-            _helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
+            this._helper.Events.GameLoop.DayStarted += this.GameLoop_DayStarted;
         }
 
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
@@ -38,27 +38,27 @@ namespace StardewAquarium
 
             var random = new Random((int)Game1.uniqueIDForThisGame + Game1.Date.TotalDays);
             int i = random.Next(0, Utils.FishIDs.Count - 1);
-            LastDonatedFish = Utils.FishIDs[i];
+            this.LastDonatedFish = Utils.FishIDs[i];
         }
 
         private void Multiplayer_ModMessageReceived(object sender, StardewModdingAPI.Events.ModMessageReceivedEventArgs e)
         {
             if (e.FromModID == "Cherry.StardewAquarium" && e.Type == "FishDonated")
             {
-                LastDonatedFish = e.ReadAs<int>();
-                _monitor.Log($"The player {e.FromPlayerID} donated the fish of ID {LastDonatedFish}");
+                this.LastDonatedFish = e.ReadAs<int>();
+                this._monitor.Log($"The player {e.FromPlayerID} donated the fish of ID {this.LastDonatedFish}");
             }
         }
 
         private void Player_Warped(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
         {
-            if (e?.NewLocation.Name == _data.ExteriorMapName)
-                UpdateLastDonatedFishSign();
+            if (e?.NewLocation.Name == this._data.ExteriorMapName)
+                this.UpdateLastDonatedFishSign();
         }
 
         private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
         {
-            SetLastDonatedFish();
+            this.SetLastDonatedFish();
         }
 
         public void UpdateLastDonatedFish(Item i)
@@ -69,16 +69,16 @@ namespace StardewAquarium
                 break;
             }
 
-            _monitor.Log($"The last donated fish is {i.Name}");
-            LastDonatedFish = i.ParentSheetIndex;
+            this._monitor.Log($"The last donated fish is {i.Name}");
+            this.LastDonatedFish = i.ParentSheetIndex;
             try
             {
-                _helper.Multiplayer.SendMessage(LastDonatedFish, "FishDonated",
+                this._helper.Multiplayer.SendMessage(this.LastDonatedFish, "FishDonated",
                     modIDs: new[] { "Cherry.StardewAquarium" });
             }
             catch
             {
-                _monitor.Log("Something went wrong trying to sync data with other players. Not everyone may be able to see the sign outside the Aquarium updated with the current donation.");
+                this._monitor.Log("Something went wrong trying to sync data with other players. Not everyone may be able to see the sign outside the Aquarium updated with the current donation.");
             }
 
             MasterPlayerMail.Add($"AquariumLastDonated:{i.Name}");
@@ -94,7 +94,7 @@ namespace StardewAquarium
 
             if (fish == null)
             {
-                LastDonatedFish = -1;
+                this.LastDonatedFish = -1;
                 return;
             }
 
@@ -102,19 +102,19 @@ namespace StardewAquarium
             {
                 if (kvp.Value.Split('/')[0] != fish) continue;
 
-                LastDonatedFish = kvp.Key;
+                this.LastDonatedFish = kvp.Key;
                 break;
             }
 
-            _monitor.Log($"The last donated fish on this file is {LastDonatedFish}");
+            this._monitor.Log($"The last donated fish on this file is {this.LastDonatedFish}");
         }
 
         internal void UpdateLastDonatedFishSign()
         {
-            if (LastDonatedFish < 0)
+            if (this.LastDonatedFish < 0)
                 return;
 
-            var map = Game1.getLocationFromName(_data.ExteriorMapName)?.Map;
+            var map = Game1.getLocationFromName(this._data.ExteriorMapName)?.Map;
 
             if (map == null)
                 return;
@@ -124,7 +124,7 @@ namespace StardewAquarium
 
             if (objectsTilesheet == null)
             {
-                string tilesheetPath = _helper.Content.GetActualAssetKey(@"Maps/springobjects", ContentSource.GameContent);
+                string tilesheetPath = this._helper.Content.GetActualAssetKey(@"Maps/springobjects", ContentSource.GameContent);
                 GameLocation location = Game1.getLocationFromName(ModEntry.Data.ExteriorMapName);
 
                 // Add the tilesheet.
@@ -140,7 +140,7 @@ namespace StardewAquarium
                 map.LoadTileSheets(Game1.mapDisplayDevice);
             }
 
-            layer.Tiles[_data.LastDonatedFishCoordinateX, _data.LastDonatedFishCoordinateY] = new StaticTile(layer, objectsTilesheet, BlendMode.Alpha, tileIndex: LastDonatedFish);
+            layer.Tiles[this._data.LastDonatedFishCoordinateX, this._data.LastDonatedFishCoordinateY] = new StaticTile(layer, objectsTilesheet, BlendMode.Alpha, tileIndex: this.LastDonatedFish);
         }
     }
 }

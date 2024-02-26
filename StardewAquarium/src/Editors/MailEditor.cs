@@ -10,8 +10,8 @@ namespace StardewAquarium.Editors
         private const string AquariumOpenLater = "StardewAquarium.OpenLater";
         public MailEditor(IModHelper helper)
         {
-            _helper = helper;
-            _helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
+            this._helper = helper;
+            this._helper.Events.GameLoop.DayStarted += this.GameLoop_DayStarted;
         }
 
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
@@ -34,8 +34,8 @@ namespace StardewAquarium.Editors
         public void Edit<T>(IAssetData asset)
         {
             var data = asset.AsDictionary<string, string>().Data;
-            data[AquariumOpenAfterLandslide] = _helper.Translation.Get("AquariumOpenLandslide");
-            data[AquariumOpenLater] = _helper.Translation.Get("AquariumOPenLater");
+            data[AquariumOpenAfterLandslide] = this._helper.Translation.Get("AquariumOpenLandslide");
+            data[AquariumOpenLater] = this._helper.Translation.Get("AquariumOPenLater");
         }
     }
 }
