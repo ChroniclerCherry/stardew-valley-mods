@@ -1,4 +1,4 @@
-﻿using StardewModdingAPI;
+using StardewModdingAPI;
 using StardewValley;
 
 namespace StardewAquarium.Editors
@@ -16,7 +16,6 @@ namespace StardewAquarium.Editors
 
         private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
         {
-
             if (Game1.player.hasOrWillReceiveMail(AquariumOpenAfterLandslide) || Game1.player.hasOrWillReceiveMail(AquariumOpenLater))
                 return;
 

@@ -1,6 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StardewModdingAPI;
 using StardewValley;
 
 namespace StardewAquarium
@@ -30,7 +29,7 @@ namespace StardewAquarium
         {
             timer += time.ElapsedGameTime.Milliseconds;
 
-            if (!(timer > (double) interval)) return false;
+            if (!(timer > (double)interval)) return false;
             ++currentParentTileIndex;
             timer = 0.0f;
 

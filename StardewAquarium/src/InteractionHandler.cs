@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using StardewAquarium.Editors;
 using StardewAquarium.Menus;
@@ -66,7 +66,6 @@ namespace StardewAquarium
 
         private void TryToOpenDonationMenu()
         {
-
             if (!Utils.DoesPlayerHaveDonatableFish())
             {
                 if (Game1.MasterPlayer.achievements.Contains(AchievementEditor.AchievementId))

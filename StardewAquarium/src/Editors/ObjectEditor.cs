@@ -1,4 +1,4 @@
-﻿using StardewModdingAPI;
+using StardewModdingAPI;
 
 namespace StardewAquarium.Editors
 {
@@ -14,20 +14,18 @@ namespace StardewAquarium.Editors
 
         public bool CanEdit<T>(IAssetInfo asset)
         {
-            return ModEntry.JsonAssets != null 
-                   && asset.AssetNameEquals(ObjInfoPath);
+            return ModEntry.JsonAssets != null && asset.AssetNameEquals(ObjInfoPath);
         }
 
         public void Edit<T>(IAssetData asset)
         {
             if (asset.AssetNameEquals(ObjInfoPath))
             {
-
                 int id = ModEntry.JsonAssets.GetObjectId(ModEntry.LegendaryBaitName);
                 var data = asset.AsDictionary<int, string>().Data;
                 if (data.ContainsKey(id))
                 {
-                    var fields = data[id].Split('/');
+                    string[] fields = data[id].Split('/');
                     fields[3] = "Basic -21";
                     data[id] = string.Join("/", fields);
                 }

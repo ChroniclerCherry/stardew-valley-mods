@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using Harmony;
 using StardewAquarium.Menus;
 using StardewModdingAPI;
@@ -22,7 +21,7 @@ namespace StardewAquarium.Patches
 
             HarmonyInstance harmony = ModEntry.Harmony;
             harmony.Patch(original: AccessTools.Method(typeof(DonateFishMenuAndroid), "tryToPurchaseItem"),
-                postfix: new HarmonyMethod(typeof(AndroidShopMenuPatch),nameof(tryToPurchaseItem_postfix))
+                postfix: new HarmonyMethod(typeof(AndroidShopMenuPatch), nameof(tryToPurchaseItem_postfix))
             );
 
             harmony.Patch(original: AccessTools.Method(typeof(DonateFishMenuAndroid), "setCurrentItem"),
@@ -34,8 +33,8 @@ namespace StardewAquarium.Patches
         {
             if (Game1.currentLocation?.Name != "FishMuseum") return;
 
-            var nameItem =_helper.Reflection.GetField<string>(__instance,"nameItem");
-            var nameItemString = nameItem.GetValue();
+            var nameItem = _helper.Reflection.GetField<string>(__instance, "nameItem");
+            string nameItemString = nameItem.GetValue();
             nameItem.SetValue(_helper.Translation.Get("Donate") + nameItemString);
 
             _helper.Reflection.GetField<string>(__instance, "descItem").SetValue(_helper.Translation.Get("DonateDescription"));
@@ -51,7 +50,7 @@ namespace StardewAquarium.Patches
                 if (!Utils.DonateFish(donatedFish)) return; //this also shouldnt happen
 
                 DonateFishMenuAndroid.Donated = true;
-                Game1.player.removeItemsFromInventory(donatedFish.ParentSheetIndex,1);
+                Game1.player.removeItemsFromInventory(donatedFish.ParentSheetIndex, 1);
 
                 if (donatedFish.ParentSheetIndex == PufferChickID)
                 {
@@ -62,9 +61,8 @@ namespace StardewAquarium.Patches
             }
             catch (Exception e)
             {
-                _monitor.Log($"Failed in {nameof(tryToPurchaseItem_postfix)}: {e.Message} {e.StackTrace}",LogLevel.Error);
+                _monitor.Log($"Failed in {nameof(tryToPurchaseItem_postfix)}: {e.Message} {e.StackTrace}", LogLevel.Error);
             }
-            
         }
     }
 }

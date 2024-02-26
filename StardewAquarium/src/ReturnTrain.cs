@@ -1,4 +1,4 @@
-﻿using StardewAquarium.Models;
+using StardewAquarium.Models;
 using StardewModdingAPI;
 using StardewValley;
 

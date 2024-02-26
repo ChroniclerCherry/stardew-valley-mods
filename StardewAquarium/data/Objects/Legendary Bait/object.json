@@ -1,41 +1,41 @@
 ﻿{
-	"Name": "Legendary Bait",
-	"Description": "Very rare fish are attracted to this...",
-	"Edibility": -300,
-	"EdibleIsDrink": false,
-	"EdibleBuffs": null,
-	"Price": 10,
-	"IsColored": false,
-	"ContextTags": [
-		"fish_legendary"
-	],
-	"GiftTastes": {
-		/*gift tastes go here*/
-	},
-	"NameLocalization": {
-		//"ko": "",
-		//"fr": "",
-		//"pt": "",
-		//"ru": "",
-		//"zh": "",
-		//"es": "",
-		//"de": "H",
-		//"hu": "", *Hungarian
-		//"it": "", *Italian
-		//"ja": "", *Japanese
-		//"tr": "", *Turkish
-	},
-	"DescriptionLocalization": {
-		//"ko": "",
-		//"fr": "",
-		//"pt": "",
-		//"ru": "",
-		//"zh": "",
-		//"es": "",
-		//"de": "",
-		//"hu": "", *Hungarian
-		//"it": "", *Italian
-		//"ja": "", *Japanese
-		//"tr": "", *Turkish
-	}
+    "Name": "Legendary Bait",
+    "Description": "Very rare fish are attracted to this...",
+    "Edibility": -300,
+    "EdibleIsDrink": false,
+    "EdibleBuffs": null,
+    "Price": 10,
+    "IsColored": false,
+    "ContextTags": [
+        "fish_legendary"
+    ],
+    "GiftTastes": {
+        /*gift tastes go here*/
+    },
+    "NameLocalization": {
+        //"ko": "",
+        //"fr": "",
+        //"pt": "",
+        //"ru": "",
+        //"zh": "",
+        //"es": "",
+        //"de": "H",
+        //"hu": "", *Hungarian
+        //"it": "", *Italian
+        //"ja": "", *Japanese
+        //"tr": "", *Turkish
+    },
+    "DescriptionLocalization": {
+        //"ko": "",
+        //"fr": "",
+        //"pt": "",
+        //"ru": "",
+        //"zh": "",
+        //"es": "",
+        //"de": "",
+        //"hu": "", *Hungarian
+        //"it": "", *Italian
+        //"ja": "", *Japanese
+        //"tr": "", *Turkish
+    }
 }

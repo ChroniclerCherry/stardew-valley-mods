@@ -1,5 +1,3 @@
-﻿using System.Linq;
-using StardewAquarium.Patches;
 using StardewModdingAPI;
 
 namespace StardewAquarium.Editors
@@ -21,7 +19,7 @@ namespace StardewAquarium.Editors
         }
 
         public void Edit<T>(IAssetData asset)
-        { 
+        {
             if (asset.AssetNameEquals(UIPath))
             {
                 var data = asset.AsDictionary<string, string>().Data;

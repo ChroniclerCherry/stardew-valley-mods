@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Netcode;
 using StardewAquarium.Models;
@@ -63,7 +63,7 @@ namespace StardewAquarium
 
         public void UpdateLastDonatedFish(Item i)
         {
-            foreach (var flag in MasterPlayerMail.Where(flag => flag.StartsWith("AquariumLastDonated:")))
+            foreach (string flag in MasterPlayerMail.Where(flag => flag.StartsWith("AquariumLastDonated:")))
             {
                 MasterPlayerMail.Remove(flag);
                 break;
@@ -74,7 +74,7 @@ namespace StardewAquarium
             try
             {
                 _helper.Multiplayer.SendMessage(LastDonatedFish, "FishDonated",
-                    modIDs: new[] {"Cherry.StardewAquarium"});
+                    modIDs: new[] { "Cherry.StardewAquarium" });
             }
             catch
             {
@@ -97,7 +97,6 @@ namespace StardewAquarium
                 LastDonatedFish = -1;
                 return;
             }
-                
 
             foreach (var kvp in Game1.objectInformation)
             {

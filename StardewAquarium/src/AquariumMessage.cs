@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -12,7 +12,7 @@ namespace StardewAquarium
         List<Response[]> _responsePages;
         private int _currentPage = 0;
 
-        public static  void Initialize(IModHelper helper)
+        public static void Initialize(IModHelper helper)
         {
             _helper = helper;
             _translation = helper.Translation;
@@ -21,7 +21,7 @@ namespace StardewAquarium
         public AquariumMessage(string[] args)
         {
             List<string> fishes = new List<string>();
-            foreach (var str in args)
+            foreach (string str in args)
             {
                 if (!Utils.IsUnDonatedFish(str))
                     fishes.Add(str);
@@ -32,7 +32,7 @@ namespace StardewAquarium
                 Game1.drawObjectDialogue(_translation.Get("EmptyTank"));
                 return;
             }
-            
+
             if (fishes.Count == 1)
             {
                 Game1.drawObjectDialogue(_translation.Get($"Tank_{fishes[0]}"));
@@ -48,7 +48,7 @@ namespace StardewAquarium
             _responsePages = new List<Response[]>();
             var responsesThisPage = new List<Response>();
 
-            for (var index = 0; index < fishes.Count; index++)
+            for (int index = 0; index < fishes.Count; index++)
             {
                 responsesThisPage.Add(new Response(fishes[index], Utils.FishDisplayNames[fishes[index]]));
 

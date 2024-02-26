@@ -1,7 +1,5 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
 using Netcode;
 using StardewAquarium.Editors;
 using StardewModdingAPI;
@@ -58,8 +56,8 @@ namespace StardewAquarium
                 if (info[3].Contains("-4"))
                 {
                     FishIDs.Add(kvp.Key);
-                    InternalNameToDonationName.Add(fishName, fishName.Replace(" ",string.Empty));
-                    FishDisplayNames.Add(fishName.Replace(" ", string.Empty),info[4]);
+                    InternalNameToDonationName.Add(fishName, fishName.Replace(" ", string.Empty));
+                    FishDisplayNames.Add(fishName.Replace(" ", string.Empty), info[4]);
                 }
             }
         }
@@ -78,7 +76,7 @@ namespace StardewAquarium
                 _monitor.Log($"An item in the inventory \"{i.Name}\" has a category of Fish but is not a valid fish object.", LogLevel.Error);
                 return false;
             }
-            
+
         }
 
         public static bool IsUnDonatedFish(string s)
@@ -99,9 +97,10 @@ namespace StardewAquarium
             string donatedFlag = GetDonatedMailFlag(i);
             if (!MasterPlayerMail.Contains(donatedFlag))
             {
-                if (!Context.IsMainPlayer){
+                if (!Context.IsMainPlayer)
+                {
                     _helper.Multiplayer.SendMessage(i.Name, DonateFishMessageType,
-                        modIDs: new[] {_manifest.UniqueID});
+                        modIDs: new[] { _manifest.UniqueID });
                     _fishSign.UpdateLastDonatedFish(i);
                     return true;
                 }
@@ -111,7 +110,7 @@ namespace StardewAquarium
                 MasterPlayerMail.Add(numDonated);
             }
 
-            
+
             if (ModEntry.Data.ConversationTopicsOnDonate.Contains(i.Name))
             {
                 foreach (var farmer in Game1.getAllFarmers())
@@ -189,7 +188,6 @@ namespace StardewAquarium
 
                 var mp = _helper.Reflection.GetField<Multiplayer>(typeof(Game1), "multiplayer").GetValue();
                 mp.globalChatInfoMessage("StardewAquarium.AchievementUnlocked");
-
             }
             else if (donated)
             {
@@ -211,7 +209,6 @@ namespace StardewAquarium
             }
         }
 
-
         private const string AchievementMessageType = "Achievement";
         public static bool CheckAchievement()
         {
@@ -232,7 +229,6 @@ namespace StardewAquarium
             {
                 _helper.Events.GameLoop.Saving += AddCompletionFlag;
             }
-
         }
 
         private static void AddCompletionFlag(object sender, SavingEventArgs e)
@@ -255,7 +251,7 @@ namespace StardewAquarium
                         FarmhandDonated(e);
                         break;
                 }
-                
+
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
@@ -9,7 +9,6 @@ namespace StardewAquarium.Menus
 {
     public class DonateFishMenu : InventoryMenu
     {
-
         private readonly IModHelper _helper;
         private readonly IMonitor _monitor;
         private bool _donated;
@@ -17,12 +16,12 @@ namespace StardewAquarium.Menus
 
         private static int PufferChickID { get => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName) ?? -1; }
 
-        public DonateFishMenu(IModHelper translate,IMonitor monitor) : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, true, null, Utils.IsUnDonatedFish, 36, 3)
+        public DonateFishMenu(IModHelper translate, IMonitor monitor) : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, true, null, Utils.IsUnDonatedFish, 36, 3)
         {
             showGrayedOutSlots = true;
             _helper = translate;
             _monitor = monitor;
-            exitFunction = () => Utils.DonationMenuExit(_donated,_pufferchickDonated);
+            exitFunction = () => Utils.DonationMenuExit(_donated, _pufferchickDonated);
         }
 
         public override void receiveLeftClick(int x, int y, bool playSound = true)
@@ -46,7 +45,7 @@ namespace StardewAquarium.Menus
                 }
 
                 var mp = _helper.Reflection.GetField<Multiplayer>(typeof(Game1), "multiplayer").GetValue();
-                mp.globalChatInfoMessage("StardewAquarium.FishDonated", new []{Game1.player.Name,item.Name});
+                mp.globalChatInfoMessage("StardewAquarium.FishDonated", new[] { Game1.player.Name, item.Name });
             }
         }
 
@@ -68,6 +67,5 @@ namespace StardewAquarium.Menus
             base.draw(b);
             drawMouse(b);
         }
-
     }
 }

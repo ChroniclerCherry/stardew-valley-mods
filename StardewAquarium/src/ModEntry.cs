@@ -1,17 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using StardewModdingAPI;
-using StardewAquarium.Models;
-using StardewValley;
 using Harmony;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StardewAquarium.Patches;
 using StardewAquarium.Editors;
 using StardewAquarium.Menus;
+using StardewAquarium.Models;
+using StardewAquarium.Patches;
+using StardewModdingAPI;
+using StardewValley;
 using StardewValley.Menus;
 using StardewValley.Objects;
 using Object = StardewValley.Object;
@@ -32,7 +30,7 @@ namespace StardewAquarium
         public static ISpaceCoreAPI SpaceCore { get; set; }
         public override void Entry(IModHelper helper)
         {
-            Utils.Initialize(Helper, Monitor,ModManifest);
+            Utils.Initialize(Helper, Monitor, ModManifest);
 
             Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
             Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
@@ -47,7 +45,7 @@ namespace StardewAquarium
             }
 
             new ReturnTrain(Helper, Monitor);
-            new InteractionHandler(Helper,Monitor);
+            new InteractionHandler(Helper, Monitor);
 
             Config = Helper.ReadConfig<ModConfig>();
 
@@ -175,7 +173,7 @@ namespace StardewAquarium
                 new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1) };
             foreach (var tile in tiles)
             {
-                if (loc.doesTileHaveProperty((int) ((position.X / 64) + tile.X), (int) ((position.Y/64) + tile.Y), "Water", "Back") == null)
+                if (loc.doesTileHaveProperty((int)((position.X / 64) + tile.X), (int)((position.Y / 64) + tile.Y), "Water", "Back") == null)
                 {
                     foundPosition = false;
                     break;
@@ -185,7 +183,7 @@ namespace StardewAquarium
             // Spawn if possible.
             if (foundPosition)
             {
-                loc.temporarySprites.Add(new DolphinAnimatedSprite (position, Helper.Content.Load<Texture2D>("data\\dolphin.png")));
+                loc.temporarySprites.Add(new DolphinAnimatedSprite(position, Helper.Content.Load<Texture2D>("data\\dolphin.png")));
             }
 
         }
@@ -239,7 +237,7 @@ namespace StardewAquarium
 
         private void OpenDonationMenuCommand(string arg1, string[] arg2)
         {
-            Game1.activeClickableMenu = new DonateFishMenu(Helper,Monitor);
+            Game1.activeClickableMenu = new DonateFishMenu(Helper, Monitor);
         }
 
         private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)

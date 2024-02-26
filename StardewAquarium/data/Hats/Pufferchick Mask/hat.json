@@ -1,8 +1,8 @@
 ﻿{
-	"Name": "Pufferchick Mask",
-	"Description": "Mask of the legendary Pufferchick.",
-	"ShowHair": false,
-	"IgnoreHairstyleOffset": true,
+    "Name": "Pufferchick Mask",
+    "Description": "Mask of the legendary Pufferchick.",
+    "ShowHair": false,
+    "IgnoreHairstyleOffset": true,
     "NameLocalization": {
         "ko": "복어닭 가면",
         "fr": "Masque de Poulet-Globe",
@@ -22,11 +22,11 @@
         "pt": "Máscara do lendário Galiacu.",
         "ru": "Маска легендарного Фугу-цыплёнка.",
         "zh": "传奇河豚鸡鱼面具。",
-		"es": "Máscara del legendario Globo-Pollo.",
-		"de": "Maske des legendären Kugelhuhns.",
-		//"hu": "", *Hungarian
-		//"it": "", *Italian
-		//"ja": "", *Japanese
-		//"tr": "", *Turkish
+        "es": "Máscara del legendario Globo-Pollo.",
+        "de": "Maske des legendären Kugelhuhns.",
+        //"hu": "", *Hungarian
+        //"it": "", *Italian
+        //"ja": "", *Japanese
+        //"tr": "", *Turkish
     }
 }

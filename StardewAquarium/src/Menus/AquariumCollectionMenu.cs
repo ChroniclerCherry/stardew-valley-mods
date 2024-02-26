@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -30,7 +30,6 @@ namespace StardewAquarium.Menus
             {
                 initializeUpperRightCloseButton();
             }
-                
 
             xPositionOnScreen = Game1.viewport.Width / 2 - (800 + borderWidth * 2) / 2;
             yPositionOnScreen = Game1.viewport.Height / 2 - (600 + borderWidth * 2) / 2;
@@ -226,7 +225,7 @@ namespace StardewAquarium.Menus
                  */
                 bool drawColor = Convert.ToBoolean(textureComponent.name.Split(' ')[1]);
                 bool drawColorFaded = Convert.ToBoolean(textureComponent.name.Split(' ')[2]);
-                textureComponent.draw(b, drawColorFaded ? Color.DimGray * 0.4f : drawColor ? Color.White : Color.Black * 0.2f, drawColorFaded? 0 : 0.86f);
+                textureComponent.draw(b, drawColorFaded ? Color.DimGray * 0.4f : drawColor ? Color.White : Color.Black * 0.2f, drawColorFaded ? 0 : 0.86f);
             }
             b.End();
             b.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
