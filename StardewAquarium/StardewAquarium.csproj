@@ -4,7 +4,7 @@
 		<AssemblyName>StardewAquarium</AssemblyName>
 		<RootNamespace>StardewAquarium</RootNamespace>
 		<Version>1.0.0</Version>
-		<TargetFramework>net452</TargetFramework>
+		<TargetFramework>net5.0</TargetFramework>
 		<Platforms>x86</Platforms>
 		<PlatformTarget>x86</PlatformTarget>
 
@@ -12,15 +12,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="src\IContentPatcherAPI.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="3.1.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Properties\" />
+		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="3.4.0-beta.20210813" />
 	</ItemGroup>
 
 	<ItemGroup>

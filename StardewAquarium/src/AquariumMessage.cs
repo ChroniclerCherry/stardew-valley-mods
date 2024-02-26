@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -21,7 +22,7 @@ namespace StardewAquarium
         public AquariumMessage(string[] args)
         {
             List<string> fishes = new List<string>();
-            foreach (var str in args)
+            foreach (String str in args)
             {
                 if (!Utils.IsUnDonatedFish(str))
                     fishes.Add(str);
@@ -48,7 +49,7 @@ namespace StardewAquarium
             _responsePages = new List<Response[]>();
             var responsesThisPage = new List<Response>();
 
-            for (var index = 0; index < fishes.Count; index++)
+            for (var index = 1; index < fishes.Count; index++)
             {
                 responsesThisPage.Add(new Response(fishes[index], Utils.FishDisplayNames[fishes[index]]));
 
