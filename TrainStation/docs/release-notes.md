@@ -14,13 +14,13 @@ Released 18 April 2021 for SMAPI 3.0.0 or later.
 ## 1.0.7
 Released 09 September 2020 for SMAPI 3.0.0 or later.
 
-- Added German, Spanish, and Chinese translations.
+- Improved translations. Thanks to chasqiu﻿ (added Chinese), Mary1504 (added German), Victoria512﻿ (added Spanish)!
 
 ## 1.0.6
 Released 23 August 2020 for SMAPI 3.0.0 or later.
 
 - Fixed an error with farmhands on warp.
-- Added Russian translations (thanks to follarru!).
+- Improved translations. Thanks to follarru (added Russian) and YuugenKyungMi2SV﻿ (added Portuguese)!
 
 ## 1.0.5
 Released 20 August 2020 for SMAPI 3.0.0 or later.
@@ -48,7 +48,7 @@ Released 18 July 2020 for SMAPI 3.0.0 or later.
 Released 14 July 2020 for SMAPI 3.0.0 or later.
 
 - Added simple mod API.
-- Added Korean translations (thanks to jina2ya!).
+- Improved translations. Thanks to jina2ya (added Korean)!
 
 ## 1.0.0
 Released 29 May 2020 for SMAPI 3.0.0 or later.

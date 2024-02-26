@@ -6,12 +6,12 @@
 ## 1.0.3
 Released 02 May 2023 for SMAPI 3.0.0 or later.
 
-- Added Chinese translation (thanks to asqwedcxz741!).
+- Improved translations. Thanks to asqwedcxz741 (added Chinese)!
 
 ## 1.0.2
 Released 26 January 2020 for SMAPI 3.0.0 or later.
 
-- Added Spanish, Italian, French, and Portuguese translations (thanks to Minakie!).
+- Improved translations. Thanks to Minakie (added French, Italian, Spanish, and Portuguese)!
 
 ## 1.0.1
 Released 07 January 2020 for SMAPI 3.0.0 or later.

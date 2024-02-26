@@ -5,7 +5,7 @@
 ## 1.0.1
 Released 20 August 2020 for SMAPI 3.0.0 or later.
 
-- Added Russian translations (thanks to Kionell!).
+- Improved translations. Thanks to Kionell (added Russian)!
 
 ## 1.0.0
 Released 10 August 2020 for SMAPI 3.0.0 or later.

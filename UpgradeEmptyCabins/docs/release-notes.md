@@ -18,14 +18,14 @@ Released 06 July 2020 for SMAPI 3.0.0 or later.
 ## 1.0.2
 Released 28 January 2020 for SMAPI 3.0.0 or later.
 
-- Added an instant build config with Generic Mod COnfig Menu support.
-- Added Korean translation (thanks to wally232!).
+- Added an instant build config with Generic Mod Config Menu support.
+- Improved translations. Thanks to wally232 (added Korean)!
 
 ## 1.0.1
 Released 26 January 2020 for SMAPI 3.0.0 or later.
 
 - Internal refactoring of the question dialogue menu to reduce on messy code.
-- Added Spanish, Italian, French, and Portuguese translations (thanks to Minakie!).
+- Improved translations. Thanks to Minakie (added French, Italian, Spanish, and Portuguese)!
 
 ## 1.0.0
 Released 22 January 2020 for SMAPI 3.0.0 or later.

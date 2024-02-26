@@ -5,21 +5,26 @@
 - Added "_hay per bale_" config option, which replaces the less flexible "_hay bale equivalent to how many silos_" option.
 - Renamed mod folder from `HayBalesSilo` to `HayBalesAsSilos` to match the mod name. You should delete the old folder when updating to avoid issues.
 
+## 1.0.5
+Released 20 August 2020 for SMAPI 3.0.0 or later.
+
+- Improved translations. Thanks to jina2ya (added Korean)!
+
 ## 1.0.4
 Released 10 May 2020 for SMAPI 3.0.0 or later.
 
-- Added German translation (thanks to LyaVanLou!).
+- Improved translations. Thanks to LyaVanLou (added German)!
 
 ## 1.0.3
 Released 26 January 2020 for SMAPI 3.0.0 or later.
 
-- Added Spanish, Italian, French, and Portuguese translations (thanks to Minakie!).
+- Improved translations. Thanks to Minakie (added French, Italian, Spanish, and Portuguese)!
 
 ## 1.0.2
 Released 20 January 2020 for SMAPI 3.0.0 or later.
 
 - Changed item description's capacity to accurately reflect config options.
-- Added Chinese translations (thanks to asqwedcxz741!).
+- Improved translations. Thanks to asqwedcxz741 (added Chinese)!
 
 
 ## 1.0.1

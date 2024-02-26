@@ -7,7 +7,7 @@
   network.
 
 * [Shop Tile Framework](https://www.nexusmods.com/stardewvalley/mods/5005) _([docs](ShopTileFramework/docs/README.md) • [release notes](ShopTileFramework/docs/release-notes.md))_  
-  Lets modders create new fully customizable shops and animal shops, and makes them interactable in-game via tile
+  Lets content packs create new fully customizable shops and animal shops, and make them interactable in-game via tile
   properties.
 
 * [Platonic Relationships](https://www.nexusmods.com/stardewvalley/mods/4668) _([release notes](PlatonicRelationships/docs/release-notes.md))_  
@@ -20,20 +20,19 @@
 
 ### Active
 * [Catalogues Anywhere](https://www.nexusmods.com/stardewvalley/mods/4949) _([release notes](CataloguesAnywhere/docs/release-notes.md))_  
-  Lets players open the furniture and wallpaper/flooring catalogues anywhere.
+  Lets you open the furniture and wallpaper/flooring catalogues from anywhere.
 
 * [Change Slime Hutch Limit](https://www.nexusmods.com/stardewvalley/mods/6455) _([release notes](ChangeSlimeHutchLimit/docs/release-notes.md))_  
   Lets you change the maximum number of slimes allowed in each slime hutch.
 
 * [Custom Crafting Stations](https://www.nexusmods.com/stardewvalley/mods/6293) _([docs](CustomCraftingStations/docs/README.md) • [release notes](CustomCraftingStations/docs/release-notes.md))_  
-  Lets modders add filtered crafting stations to the game.
+  Lets mod authors add filtered crafting stations to the game.
 
 * [Customize Anywhere](https://www.nexusmods.com/stardewvalley/mods/4734) _([release notes](CustomizeAnywhere/docs/release-notes.md))_  
-  Lets players customize access their characters and access a wardrobe with all clothing from anywhere, or via in-game
-  items.
+  Lets you customize your character and access a wardrobe with all clothing from anywhere, or via in-game items.
 
 * [Farm Rearranger](https://www.nexusmods.com/stardewvalley/mods/5142) _([release notes](FarmRearranger/docs/release-notes.md))_  
-  Adds an item to the game that lets players rearrange their farm buildings from the farm.
+  Adds an item to the game that lets players rearrange buildings from the farm.
 
 * [Hay Bales as Silos](https://www.nexusmods.com/stardewvalley/mods/5151) _([release notes](HayBalesAsSilos/docs/release-notes.md))_  
   Repurposes Ornamental Hay Bales to store hay like silos when placed around the farm.
