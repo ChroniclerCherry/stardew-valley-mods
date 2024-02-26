@@ -78,7 +78,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock
         /// <returns></returns>
         private Item CreateItem(string itemId)
         {
-            Item item = ItemRegistry.Create(itemId, this._itemStock.Stock, this._itemStock.Quality);
+            Item item = ItemRegistry.Create(itemId, 1, this._itemStock.Quality);
 
             if (item is Object obj)
                 obj.IsRecipe = this._itemStock.IsRecipe;
