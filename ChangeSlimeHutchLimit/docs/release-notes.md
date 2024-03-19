@@ -1,5 +1,7 @@
 ﻿# Release notes
-## Upcoming release
+## 1.0.1
+Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
+
 - Updated for Stardew Valley 1.6 and SMAPI 4.0.0.
 - Renamed mod folder from `SlimeHutchLimit` to `ChangeSlimeHutchLimit` to match the mod name. You should delete the old folder when updating to avoid issues.
 

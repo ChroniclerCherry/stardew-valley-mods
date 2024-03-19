@@ -1,5 +1,7 @@
 ﻿# Release notes
-## Upcoming release
+## 1.1.0
+Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
+
 - Updated for Stardew Valley 1.6 and SMAPI 4.0.0.
 - Rewrote mod. You now need to hold a key (default `LeftShift`) to eat otherwise-inedible items, and the mod no longer permanently changes items.
 

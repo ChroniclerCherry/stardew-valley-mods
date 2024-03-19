@@ -1,10 +1,23 @@
 ﻿[← back to readme](README.md)
 
 # Release notes
-## Upcoming release
+## 1.2.0
+Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
+
 - Updated for Stardew Valley 1.6 and SMAPI 4.0.0.
 - Json Assets is no longer required; the items are now added directly to the new item data in 1.6.
 - Improved compatibility with mods that change the dresser UI or character customization UI.
+
+**Breaking changes:**  
+If you already had the Customization Mirror or Clothing Catalogue from previous versions, they may become Error Items
+in Stardew Valley 1.6. That's a one-time issue due to the migration from Json Assets to the 1.6 item format.
+
+You can get rid of the broken items in-game (e.g. by trashing them), then run these commands in the SMAPI console
+window to get new ones:
+```sh
+player_add (BC)Cherry.CustomizeAnywhere_Mirror
+player_add (BC)Cherry.CustomizeAnywhere_Catalogue
+```
 
 ## 1.1.7
 Released 09 January 2020 for SMAPI 3.0.0 or later.

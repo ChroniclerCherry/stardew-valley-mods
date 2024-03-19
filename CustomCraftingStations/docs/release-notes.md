@@ -1,7 +1,9 @@
 ﻿[← back to readme](README.md)
 
 # Release notes
-## Upcoming release
+## 1.2.0
+Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
+
 - Updated for Stardew Valley 1.6 and SMAPI 4.0.0.
 - Improved compatibility with mods that change crafting menus.
 - Renamed mod folder from `CustomCraftingStation` to `CustomCraftingStations` (with an `s`) to match the mod name. You should delete the old folder when updating to avoid issues.

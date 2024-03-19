@@ -1,10 +1,10 @@
 ﻿{
     "Name": "Farm Rearranger",
     "Author": "Cherry & cel10e",
-    "Version": "1.0.3",
+    "Version": "1.1.0",
     "Description": "Lets you rearrange buildings on your farm!",
     "UniqueID": "cel10e.Cherry.FarmRearranger",
     "EntryDll": "FarmRearranger.dll",
-    "MinimumApiVersion": "3.0.0",
+    "MinimumApiVersion": "4.0.0",
     "UpdateKeys": [ "Nexus:5142" ]
 }

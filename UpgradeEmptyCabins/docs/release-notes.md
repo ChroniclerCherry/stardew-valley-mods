@@ -1,5 +1,7 @@
 ﻿# Release notes
-## Upcoming release
+## 1.1.0
+Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
+
 - Updated for Stardew Valley 1.6 and SMAPI 4.0.0.
 - Added new console commands to renovate cabins and set crib style (thanks to smileytechie!).  
   _You can enter `help` in the SMAPI console to see a list commands._

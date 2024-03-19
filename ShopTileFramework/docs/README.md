@@ -300,7 +300,6 @@ And the manifest:
   "Version": "1.0.0",
   "Description": "One or two sentences about the mod.",
   "UniqueID": "YourName.YourProjectName",
-  "MinimumApiVersion": "3.0.0",
   "UpdateKeys": [],
   "ContentPackFor": {
     "UniqueID": "Cherry.ShopTileFramework"
