@@ -75,19 +75,19 @@ on the wiki for help contributing translations.
 
 (❑ = untranslated, ↻ = partly translated, ✓ = fully translated)
 
-&nbsp;      | Customize Anywhere          | Farm Rearranger                  | Hay Bales as Silos             | Multiplayer Mod Checker                 | Train Station                  | Upgrade Empty Cabins
-:---------- | :-------------------------- | :------------------------------- | :----------------------------- | :-------------------------------------- | :----------------------------- | :-----------------------------------
-Chinese     | [❑](CustomizeAnywhere/i18n) | [✓](FarmRearranger/i18n/zh.json) | [↻](HayBalesSilo/i18n/zh.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/zh.json) | [❑](UpgradeEmptyCabins/i18n)
-French      | [❑](CustomizeAnywhere/i18n) | [↻](FarmRearranger/i18n/fr.json) | [↻](HayBalesSilo/i18n/fr.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/fr.json) | [✓](UpgradeEmptyCabins/i18n/fr.json)
-German      | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [↻](HayBalesSilo/i18n/de.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/de.json) | [❑](UpgradeEmptyCabins/i18n)
-Hungarian   | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesSilo/i18n)         | [❑](MultiplayerModChecker/i18n)         | [❑](TrainStation/i18n)         | [❑](UpgradeEmptyCabins/i18n)
-Italian     | [❑](CustomizeAnywhere/i18n) | [↻](FarmRearranger/i18n/it.json) | [↻](HayBalesSilo/i18n/it.json) | [❑](MultiplayerModChecker/i18n)         | [❑](TrainStation/i18n)         | [✓](UpgradeEmptyCabins/i18n/it.json)
-Japanese    | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesSilo/i18n)         | [❑](MultiplayerModChecker/i18n)         | [❑](TrainStation/i18n)         | [❑](UpgradeEmptyCabins/i18n)
-Korean      | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [↻](HayBalesSilo/i18n/ko.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/ko.json) | [✓](UpgradeEmptyCabins/i18n/ko.json)
-Portuguese  | [❑](CustomizeAnywhere/i18n) | [↻](FarmRearranger/i18n/pt.json) | [↻](HayBalesSilo/i18n/pt.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/pt.json) | [✓](UpgradeEmptyCabins/i18n/pt.json)
-Russian     | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesSilo/i18n)         | [✓](MultiplayerModChecker/i18n/ru.json) | [↻](TrainStation/i18n/ru.json) | [❑](UpgradeEmptyCabins/i18n)
-Spanish     | [❑](CustomizeAnywhere/i18n) | [↻](FarmRearranger/i18n/es.json) | [↻](HayBalesSilo/i18n/es.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/es.json) | [✓](UpgradeEmptyCabins/i18n/es.json)
-Turkish     | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesSilo/i18n)         | [❑](MultiplayerModChecker/i18n)         | [❑](TrainStation/i18n)         | [❑](UpgradeEmptyCabins/i18n)
-[Ukrainian] | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesSilo/i18n)         | [❑](MultiplayerModChecker/i18n)         | [✓](TrainStation/i18n/uk.json) | [❑](UpgradeEmptyCabins/i18n)
+&nbsp;      | Customize Anywhere          | Farm Rearranger                  | Hay Bales as Silos                | Multiplayer Mod Checker                 | Train Station                  | Upgrade Empty Cabins
+:---------- | :-------------------------- | :------------------------------- | :-------------------------------- | :-------------------------------------- | :----------------------------- | :-----------------------------------
+Chinese     | [❑](CustomizeAnywhere/i18n) | [✓](FarmRearranger/i18n/zh.json) | [↻](HayBalesAsSilos/i18n/zh.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/zh.json) | [❑](UpgradeEmptyCabins/i18n)
+French      | [❑](CustomizeAnywhere/i18n) | [↻](FarmRearranger/i18n/fr.json) | [↻](HayBalesAsSilos/i18n/fr.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/fr.json) | [✓](UpgradeEmptyCabins/i18n/fr.json)
+German      | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [↻](HayBalesAsSilos/i18n/de.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/de.json) | [❑](UpgradeEmptyCabins/i18n)
+Hungarian   | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesAsSilos/i18n)         | [❑](MultiplayerModChecker/i18n)         | [❑](TrainStation/i18n)         | [❑](UpgradeEmptyCabins/i18n)
+Italian     | [❑](CustomizeAnywhere/i18n) | [↻](FarmRearranger/i18n/it.json) | [↻](HayBalesAsSilos/i18n/it.json) | [❑](MultiplayerModChecker/i18n)         | [❑](TrainStation/i18n)         | [✓](UpgradeEmptyCabins/i18n/it.json)
+Japanese    | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesAsSilos/i18n)         | [❑](MultiplayerModChecker/i18n)         | [❑](TrainStation/i18n)         | [❑](UpgradeEmptyCabins/i18n)
+Korean      | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [↻](HayBalesAsSilos/i18n/ko.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/ko.json) | [✓](UpgradeEmptyCabins/i18n/ko.json)
+Portuguese  | [❑](CustomizeAnywhere/i18n) | [↻](FarmRearranger/i18n/pt.json) | [↻](HayBalesAsSilos/i18n/pt.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/pt.json) | [✓](UpgradeEmptyCabins/i18n/pt.json)
+Russian     | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesAsSilos/i18n)         | [✓](MultiplayerModChecker/i18n/ru.json) | [↻](TrainStation/i18n/ru.json) | [❑](UpgradeEmptyCabins/i18n)
+Spanish     | [❑](CustomizeAnywhere/i18n) | [↻](FarmRearranger/i18n/es.json) | [↻](HayBalesAsSilos/i18n/es.json) | [❑](MultiplayerModChecker/i18n)         | [↻](TrainStation/i18n/es.json) | [✓](UpgradeEmptyCabins/i18n/es.json)
+Turkish     | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesAsSilos/i18n)         | [❑](MultiplayerModChecker/i18n)         | [✓](TrainStation/i18n/tr.json) | [❑](UpgradeEmptyCabins/i18n)
+[Ukrainian] | [❑](CustomizeAnywhere/i18n) | [❑](FarmRearranger/i18n)         | [❑](HayBalesAsSilos/i18n)         | [❑](MultiplayerModChecker/i18n)         | [✓](TrainStation/i18n/uk.json) | [❑](UpgradeEmptyCabins/i18n)
 
 [Ukrainian]: https://www.nexusmods.com/stardewvalley/mods/8427
