@@ -1,4 +1,5 @@
-﻿using StardewModdingAPI;
+using ExpandedPreconditionsUtility.Framework;
+using StardewModdingAPI;
 
 namespace ExpandedPreconditionsUtility
 {
@@ -8,13 +9,13 @@ namespace ExpandedPreconditionsUtility
         private IMonitor _monitor;
         public override void Entry(IModHelper helper)
         {
-            _helper = Helper;
-            _monitor = Monitor;
+            this._helper = this.Helper;
+            this._monitor = this.Monitor;
         }
 
         public override object GetApi()
         {
-            return new ConditionsChecker(_monitor,_helper);
+            return new ConditionsChecker(this._monitor, this._helper);
         }
     }
 }

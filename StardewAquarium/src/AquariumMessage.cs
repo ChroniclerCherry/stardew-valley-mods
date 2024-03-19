@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -12,7 +12,7 @@ namespace StardewAquarium
         List<Response[]> _responsePages;
         private int _currentPage = 0;
 
-        public static  void Initialize(IModHelper helper)
+        public static void Initialize(IModHelper helper)
         {
             _helper = helper;
             _translation = helper.Translation;
@@ -21,7 +21,7 @@ namespace StardewAquarium
         public AquariumMessage(string[] args)
         {
             List<string> fishes = new List<string>();
-            foreach (var str in args)
+            foreach (string str in args)
             {
                 if (!Utils.IsUnDonatedFish(str))
                     fishes.Add(str);
@@ -32,23 +32,23 @@ namespace StardewAquarium
                 Game1.drawObjectDialogue(_translation.Get("EmptyTank"));
                 return;
             }
-            
+
             if (fishes.Count == 1)
             {
                 Game1.drawObjectDialogue(_translation.Get($"Tank_{fishes[0]}"));
                 return;
             }
 
-            BuildResponse(fishes);
-            Game1.currentLocation.createQuestionDialogue(_translation.Get("WhichFishInfo"), _responsePages[_currentPage], displayFishInfo);
+            this.BuildResponse(fishes);
+            Game1.currentLocation.createQuestionDialogue(_translation.Get("WhichFishInfo"), this._responsePages[this._currentPage], this.displayFishInfo);
         }
 
         private void BuildResponse(List<string> fishes)
         {
-            _responsePages = new List<Response[]>();
+            this._responsePages = new List<Response[]>();
             var responsesThisPage = new List<Response>();
 
-            for (var index = 0; index < fishes.Count; index++)
+            for (int index = 0; index < fishes.Count; index++)
             {
                 responsesThisPage.Add(new Response(fishes[index], Utils.FishDisplayNames[fishes[index]]));
 
@@ -57,12 +57,12 @@ namespace StardewAquarium
                 if (index < fishes.Count - 1)
                     responsesThisPage.Add(new Response("More", _translation.Get("More")));
                 responsesThisPage.Add(new Response("Exit", _translation.Get("Exit")));
-                _responsePages.Add(responsesThisPage.ToArray());
+                this._responsePages.Add(responsesThisPage.ToArray());
                 responsesThisPage = new List<Response>();
             }
 
             responsesThisPage.Add(new Response("Exit", _translation.Get("Exit")));
-            _responsePages.Add(responsesThisPage.ToArray());
+            this._responsePages.Add(responsesThisPage.ToArray());
 
         }
 
@@ -77,8 +77,8 @@ namespace StardewAquarium
             {
                 Game1.activeClickableMenu = null;
                 Game1.currentLocation.afterQuestion = null;
-                _currentPage++;
-                _helper.Events.GameLoop.UpdateTicked += OpenNextPage;
+                this._currentPage++;
+                _helper.Events.GameLoop.UpdateTicked += this.OpenNextPage;
                 return;
             }
             Game1.drawObjectDialogue(_translation.Get($"Tank_{whichAnswer}"));
@@ -86,8 +86,8 @@ namespace StardewAquarium
 
         private void OpenNextPage(object sender, UpdateTickedEventArgs e)
         {
-            Game1.currentLocation.createQuestionDialogue(_translation.Get("WhichFishInfo"), _responsePages[_currentPage], displayFishInfo);
-            _helper.Events.GameLoop.UpdateTicked -= OpenNextPage;
+            Game1.currentLocation.createQuestionDialogue(_translation.Get("WhichFishInfo"), this._responsePages[this._currentPage], this.displayFishInfo);
+            _helper.Events.GameLoop.UpdateTicked -= this.OpenNextPage;
         }
     }
 }

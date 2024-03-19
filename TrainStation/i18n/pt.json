@@ -1,0 +1,8 @@
+﻿{
+    "NotEnoughMoney": "Você não tem dinheiro suficiente para comprar a passagem para {{DestinationName}}",
+    "MenuCancelOption": "Cancelar",
+    "NoDestinations": "Não há destinos disponíveis",
+    "ChooseDestination": "Escolha o seu destino",
+    "TrainStationDisplayName": "Estação Stardew Valley",
+    "ArrivalMessage": "Você chegou a {{DestinationName}}"
+}

@@ -1,4 +1,7 @@
 ﻿{
     "robinletter": "Hey there @! ^Maru and I have been working on a new project, and we thought maybe you could get some use out of it. ^It's called a 'Rearranger': a handy set of blueprints you can use to change the layout of your farm buildings by yourself without having to call me in! ^I've added them to my shop, so feel free to come by and pick one up whenever you like. Take care! ^^-Robin[#]Rearranger Notice",
-    "CantBuildOffFarm" : "You can only rearrange your buildings from your farm."
+    "CantBuildOffFarm": "You can only rearrange your buildings from your farm.",
+
+    "FarmRearranger_Name": "Farm Rearranger",
+    "FarmRearranger_Description": "Lets you move your farm buildings around."
 }

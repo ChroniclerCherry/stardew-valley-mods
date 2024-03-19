@@ -1,0 +1,21 @@
+﻿{
+    /*********
+    ** Item
+    *********/
+    "DisplayName": "干草堆",
+    "Description": "将现有筒仓的容量扩充{{capacity}}。只在农场内工作。",
+
+
+    /*********
+    ** Generic Mod Config Menu UI
+    *********/
+    // TODO
+    "config.require-constructed-silo.name": "Require constructed silo",
+    "config.require-constructed-silo.desc": "Whether you need at least one silo in the location for hay bales to work there.",
+
+    "config.hay-per-bale.name": "Hay per bale",
+    "config.hay-per-bale.desc": "How much hay can be stored in each bale.",
+
+    "config.purchase-price.name": "Purchase price",
+    "config.purchase-price.desc": "The gold price to purchase a hay bale."
+}

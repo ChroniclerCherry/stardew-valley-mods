@@ -1,8 +1,0 @@
-﻿{
-	"NotEnoughMoney":"У Вас недостаточно денег, чтобы купить билет до {{DestinationName}}",
-	"MenuCancelOption":"Отмена",
-	"NoDestinations":"Нет доступных направлений",
-	"ChooseDestination":"Выберите место назначения",
-	"TrainStationDisplayName":"Станция долины Стардью",
-	"ArrivalMessage":"Вы прибыли на станцию {{DestinationName}}"
-}

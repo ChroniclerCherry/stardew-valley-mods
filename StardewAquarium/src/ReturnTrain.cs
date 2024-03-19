@@ -1,4 +1,4 @@
-﻿using StardewAquarium.Models;
+using StardewAquarium.Models;
 using StardewModdingAPI;
 using StardewValley;
 
@@ -11,22 +11,22 @@ namespace StardewAquarium
         private ITrainStationAPI TSApi;
         public ReturnTrain(IModHelper helper, IMonitor monitor)
         {
-            _helper = helper;
-            _monitor = monitor;
+            this._helper = helper;
+            this._monitor = monitor;
 
-            _helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
+            this._helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
         }
 
         private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
-            TSApi = _helper.ModRegistry.GetApi<ITrainStationAPI>("Cherry.TrainStation");
-            if (TSApi == null)
+            this.TSApi = this._helper.ModRegistry.GetApi<ITrainStationAPI>("Cherry.TrainStation");
+            if (this.TSApi == null)
             {
-                _monitor.Log("The train station API was not found. Warps back to the Railroad will default to a map warp.", LogLevel.Warn);
+                this._monitor.Log("The train station API was not found. Warps back to the Railroad will default to a map warp.", LogLevel.Warn);
                 return;
             }
 
-            _helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked;
+            this._helper.Events.GameLoop.UpdateTicked += this.GameLoop_UpdateTicked;
         }
 
         private void GameLoop_UpdateTicked(object sender, StardewModdingAPI.Events.UpdateTickedEventArgs e)
@@ -41,7 +41,7 @@ namespace StardewAquarium
                 return;
 
             Game1.player.position.Y += 32;
-            TSApi.OpenTrainMenu();
+            this.TSApi.OpenTrainMenu();
         }
     }
 }

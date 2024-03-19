@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using StardewAquarium.Editors;
 using StardewAquarium.Menus;
@@ -14,10 +14,10 @@ namespace StardewAquarium
 
         public InteractionHandler(IModHelper helper, IMonitor monitor)
         {
-            _helper = helper;
-            _monitor = monitor;
+            this._helper = helper;
+            this._monitor = monitor;
 
-            _helper.Events.Input.ButtonPressed += Input_ButtonPressed;
+            this._helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
 
         }
 
@@ -45,13 +45,13 @@ namespace StardewAquarium
 
             if (tileProperty == "AquariumDonationMenu")
             {
-                _monitor.Log("AquariumDonationMenu tile detected, opening donation menu...");
-                TryToOpenDonationMenu();
+                this._monitor.Log("AquariumDonationMenu tile detected, opening donation menu...");
+                this.TryToOpenDonationMenu();
             }
             else if (tileProperty == "AquariumCollectionMenu")
             {
-                _monitor.Log("AquariumCollectionMenu tile detected, opening collections menu...");
-                Game1.activeClickableMenu = new AquariumCollectionMenu(_helper.Translation.Get("CollectionsMenu"));
+                this._monitor.Log("AquariumCollectionMenu tile detected, opening collections menu...");
+                Game1.activeClickableMenu = new AquariumCollectionMenu(this._helper.Translation.Get("CollectionsMenu"));
             }
             else if (tileProperty.StartsWith("AquariumSign"))
             {
@@ -60,33 +60,31 @@ namespace StardewAquarium
             else if (tileProperty.StartsWith("AquariumString"))
             {
                 string strKey = tileProperty.Split(' ')[1];
-                Game1.drawObjectDialogue(_helper.Translation.Get(strKey));
+                Game1.drawObjectDialogue(this._helper.Translation.Get(strKey));
             }
         }
 
         private void TryToOpenDonationMenu()
         {
-
             if (!Utils.DoesPlayerHaveDonatableFish())
             {
                 if (Game1.MasterPlayer.achievements.Contains(AchievementEditor.AchievementId))
                 {
-                    Game1.drawObjectDialogue(_helper.Translation.Get("AquariumWelcome"));
+                    Game1.drawObjectDialogue(this._helper.Translation.Get("AquariumWelcome"));
                     return;
                 }
 
-                Game1.drawObjectDialogue(_helper.Translation.Get("NothingToDonate"));
+                Game1.drawObjectDialogue(this._helper.Translation.Get("NothingToDonate"));
                 return;
             }
 
             List<Response> options = new List<Response>
             {
-                new Response("OptionYes", _helper.Translation.Get("OptionYes")),
-                new Response("OptionNo", _helper.Translation.Get("OptionNo"))
+                new Response("OptionYes", this._helper.Translation.Get("OptionYes")),
+                new Response("OptionNo", this._helper.Translation.Get("OptionNo"))
             };
 
-            Game1.currentLocation.createQuestionDialogue(_helper.Translation.Get("DonationQuestion"), options.ToArray(),
-                HandleResponse);
+            Game1.currentLocation.createQuestionDialogue(this._helper.Translation.Get("DonationQuestion"), options.ToArray(), this.HandleResponse);
         }
 
         private void HandleResponse(Farmer who, string whichAnswer)
@@ -94,13 +92,13 @@ namespace StardewAquarium
             switch (whichAnswer)
             {
                 case "OptionNo":
-                    Game1.drawObjectDialogue(_helper.Translation.Get("DeclineToDonate"));
+                    Game1.drawObjectDialogue(this._helper.Translation.Get("DeclineToDonate"));
                     return;
                 case "OptionYes" when Constants.TargetPlatform == GamePlatform.Android:
-                    Game1.activeClickableMenu = new DonateFishMenuAndroid(_helper, _monitor);
+                    Game1.activeClickableMenu = new DonateFishMenuAndroid(this._helper, this._monitor);
                     break;
                 case "OptionYes":
-                    Game1.activeClickableMenu = new DonateFishMenu(_helper, _monitor);
+                    Game1.activeClickableMenu = new DonateFishMenu(this._helper, this._monitor);
                     break;
             }
         }

@@ -1,10 +1,10 @@
 ﻿{
-    "Author": "Cherry",
     "Name": "Tool Upgrade Costs",
+    "Author": "Cherry",
+    "Version": "1.0.1",
     "Description": "Allows the player to customize the cost of tool upgrades.",
-    "EntryDll": "ToolUpgradeCosts.dll",
-    "MinimumApiVersion": "3.5.0",
     "UniqueID": "Cherry.ToolUpgradeCosts",
-    "UpdateKeys": [ "Nexus:6576" ],
-    "Version": "1.0.0"
+    "EntryDll": "ToolUpgradeCosts.dll",
+    "MinimumApiVersion": "4.0.0",
+    "UpdateKeys": [ "Nexus:6576" ]
 }

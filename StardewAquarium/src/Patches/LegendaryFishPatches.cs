@@ -1,13 +1,10 @@
-﻿using Harmony;
+using System.Collections.Generic;
+using HarmonyLib;
 using StardewModdingAPI;
 using StardewValley;
-using StardewValley.Tools;
-using System.Collections.Generic;
 using StardewValley.Locations;
+using StardewValley.Tools;
 using Object = StardewValley.Object;
-using System;
-using Microsoft.Xna.Framework;
-using StardewValley.Network;
 
 namespace StardewAquarium.Patches
 {
@@ -40,7 +37,7 @@ namespace StardewAquarium.Patches
             _helper = helper;
             _monitor = monitor;
 
-            HarmonyInstance harmony = ModEntry.Harmony;
+            Harmony harmony = ModEntry.Harmony;
 
             //this patch returns the pufferchick as a legendary fish during the fishing minigame
             harmony.Patch(
@@ -99,7 +96,7 @@ namespace StardewAquarium.Patches
             if (Game1.player == null || !(Game1.player.CurrentTool is FishingRod rod) ||
                 rod.getBaitAttachmentIndex() != LegendaryBaitId) return true;
             if (!who.fishCaught.ContainsKey(MutantCarpId)) return true;
-            __result =  new Object(MutantCarpId, 1);
+            __result = new Object(MutantCarpId, 1);
             return false;
 
         }

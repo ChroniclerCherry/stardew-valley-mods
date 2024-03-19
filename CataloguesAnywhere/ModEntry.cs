@@ -1,8 +1,7 @@
-﻿using System;
+using CataloguesAnywhere.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
-using StardewValley.Menus;
 
 namespace CataloguesAnywhere
 {
@@ -17,29 +16,17 @@ namespace CataloguesAnywhere
 
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-            if (!Context.CanPlayerMove || !Config.Enabled)
+            if (!Context.CanPlayerMove || !this.Config.Enabled)
                 return;
 
             var input = this.Helper.Input;
             if (input.IsDown(this.Config.ActivateButton))
             {
                 if (input.IsDown(this.Config.furnitureButton))
-                {
-                    Game1.activeClickableMenu = (IClickableMenu)new ShopMenu(Utility.getAllFurnituresForFree(), 0, (string)null, (Func<ISalable, Farmer, int, bool>)null, (Func<ISalable, bool>)null, "Furniture Catalogue");
-                }
+                    Utility.TryOpenShopMenu("Furniture Catalogue", null as string);
                 else if (input.IsDown(this.Config.WallpaperButton))
-                {
-                    Game1.activeClickableMenu = (IClickableMenu)new ShopMenu(Utility.getAllWallpapersAndFloorsForFree(), 0, (string)null, (Func<ISalable, Farmer, int, bool>)null, (Func<ISalable, bool>)null, "Catalogue");
-                }
+                    Utility.TryOpenShopMenu("Catalogue", null as string);
             }
-        }
-
-        class ModConfig
-        {
-            public bool Enabled { get; set; } = true;
-            public SButton ActivateButton { get; set; } = SButton.LeftControl;
-            public SButton furnitureButton { get; set; } = SButton.D1;
-            public SButton WallpaperButton { get; set; } = SButton.D2;
         }
     }
 }

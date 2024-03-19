@@ -1,0 +1,10 @@
+﻿{
+    "NotEnoughMoney": "Ви не маєте достатньо грошей, аби придбати квиток до станції \"{{DestinationName}}\"",
+    "MenuCancelOption": "Назад",
+    "NoDestinations": "Немає доступних напрямків",
+    "ChooseDestination": "Оберіть місце призначення",
+    "TrainStationDisplayName": "Долина Стард'ю",
+    "BoatStationDisplayName": "Магазин Віллі",
+    "ArrivalMessage": "Ви прибули до станції \"{{DestinationName}}\"",
+    "GingerIsland": "Імбирний острів"
+}

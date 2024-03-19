@@ -1,0 +1,8 @@
+﻿{
+    "NotEnoughMoney": "Du hast nicht genug Geld für ein Ticket nach {{DestinationName}}",
+    "MenuCancelOption": "Verlassen",
+    "NoDestinations": "Es gibt keine Zielorte",
+    "ChooseDestination": "Wähle deinen Zielort",
+    "TrainStationDisplayName": "Sternentautal Bahnhof",
+    "ArrivalMessage": "Du hast {{DestinationName}} erreicht."
+}

@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 
 namespace StardewAquarium.Models
 {
@@ -15,6 +15,5 @@ namespace StardewAquarium.Models
         public Rectangle DolphinRange { get; set; }
 
         public int DolphinAnimationFrames { get; set; }
-
     }
 }

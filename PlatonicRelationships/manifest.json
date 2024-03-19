@@ -1,16 +1,16 @@
 ﻿{
-  "Name": "Platonic Relationships",
-  "Author": "Cherry",
-  "Version": "1.4.6",
-  "Description": "Allows you to reach 10 hearts with everyone",
-  "UniqueID": "Cherry.PlatonicRelationships",
-  "EntryDll": "PlatonicRelationships.dll",
-  "MinimumApiVersion": "3.0.0",
-  "UpdateKeys": ["Nexus:4668"],
-  "Dependencies": [
-       {
-          "UniqueID": "Pathoschild.ContentPatcher",
-          "IsRequired": false
-       }
-   ]
+    "Name": "Platonic Relationships",
+    "Author": "Cherry",
+    "Version": "1.4.7",
+    "Description": "Allows you to reach 10 hearts with everyone",
+    "UniqueID": "Cherry.PlatonicRelationships",
+    "EntryDll": "PlatonicRelationships.dll",
+    "MinimumApiVersion": "4.0.0",
+    "UpdateKeys": [ "Nexus:4668" ],
+    "Dependencies": [
+        {
+            "UniqueID": "Pathoschild.ContentPatcher",
+            "IsRequired": false
+        }
+    ]
 }

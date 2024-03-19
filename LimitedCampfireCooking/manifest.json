@@ -1,10 +1,10 @@
-{
-  "Name": "Limited Campfire Cooking",
-  "Author": "Cherry",
-  "Version": "1.0.3",
-  "Description": "Cook certain recipes from campfires",
-  "UniqueID": "Cherry.LimitedCampfireCooking",
-  "EntryDll": "LimitedCampfireCooking.dll",
-  "MinimumApiVersion": "3.0.0",
+﻿{
+    "Name": "Limited Campfire Cooking",
+    "Author": "Cherry",
+    "Version": "1.0.3",
+    "Description": "Cook certain recipes from campfires",
+    "UniqueID": "Cherry.LimitedCampfireCooking",
+    "EntryDll": "LimitedCampfireCooking.dll",
+    "MinimumApiVersion": "4.0.0",
     "UpdateKeys": [ "Nexus:4971" ]
 }

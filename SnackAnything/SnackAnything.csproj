@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Version>1.1.0</Version>
+
+    <EnableHarmony>true</EnableHarmony>
+  </PropertyGroup>
+</Project>

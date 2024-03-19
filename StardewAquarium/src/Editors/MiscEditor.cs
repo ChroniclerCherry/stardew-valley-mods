@@ -1,32 +1,29 @@
-﻿using System.Linq;
-using StardewAquarium.Patches;
 using StardewModdingAPI;
 
 namespace StardewAquarium.Editors
 {
-    class MiscEditor : IAssetEditor
+    class MiscEditor
     {
-        private const string UIPath = "Strings\\UI";
-        private const string NPCDispositions = "Data\\NPCDispositions";
+        private const string UIPath = "Strings/UI";
         private readonly IModHelper _helper;
 
         public MiscEditor(IModHelper helper)
         {
-            _helper = helper;
+            this._helper = helper;
         }
 
-        public bool CanEdit<T>(IAssetInfo asset)
+        public bool CanEdit(IAssetName assetName)
         {
-            return asset.AssetNameEquals(UIPath);
+            return assetName.IsEquivalentTo(UIPath);
         }
 
-        public void Edit<T>(IAssetData asset)
-        { 
-            if (asset.AssetNameEquals(UIPath))
+        public void Edit(IAssetData asset)
+        {
+            if (asset.NameWithoutLocale.IsEquivalentTo(UIPath))
             {
                 var data = asset.AsDictionary<string, string>().Data;
-                data.Add("Chat_StardewAquarium.FishDonated", _helper.Translation.Get("FishDonatedMP"));
-                data.Add("Chat_StardewAquarium.AchievementUnlocked", _helper.Translation.Get("AchievementUnlockedMP"));
+                data.Add("Chat_StardewAquarium.FishDonated", this._helper.Translation.Get("FishDonatedMP"));
+                data.Add("Chat_StardewAquarium.AchievementUnlocked", this._helper.Translation.Get("AchievementUnlockedMP"));
             }
         }
     }

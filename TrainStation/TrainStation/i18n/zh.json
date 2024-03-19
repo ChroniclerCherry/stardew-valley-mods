@@ -1,8 +1,0 @@
-﻿{
-    "NotEnoughMoney": "您没有足够的钱购买前往 {{DestinationName}} 的火车票",
-    "MenuCancelOption": "取消",
-    "NoDestinations": "没有可去的目的地",
-    "ChooseDestination": "请选择您的目的地",
-    "TrainStationDisplayName": "星露谷火车站",
-    "ArrivalMessage": "您已经抵达了 {{DestinationName}}"
-}
