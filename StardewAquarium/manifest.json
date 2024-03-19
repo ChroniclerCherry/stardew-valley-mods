@@ -1,0 +1,38 @@
+﻿{
+    "Name": "Stardew Aquarium Code",
+    "Author": "Cherry",
+    "Version": "1.3.0",
+    "Description": "The coding portion of the Stardew Aquarium mod",
+    "UniqueID": "Cherry.StardewAquarium",
+    "EntryDll": "StardewAquarium.dll",
+    "MinimumApiVersion": "3.5.0",
+    "UpdateKeys": [
+        "Nexus:6372"
+    ],
+    "Dependencies": [
+        {
+            "UniqueID": "Pathoschild.ContentPatcher",
+            "MinimumVersion": "1.17"
+        },
+        {
+            "UniqueID": "Cherry.ShopTileFramework"
+        },
+        {
+            "UniqueID": "Platonymous.TMXLoader"
+        },
+        {
+            "UniqueID": "spacechase0.JsonAssets"
+        },
+        {
+            "UniqueID": "spacechase0.SpaceCore",
+            "MinimumVersion": "1.4"
+        },
+        {
+            "UniqueID": "spacechase0.CustomNPCFixes"
+        },
+        {
+            "UniqueID": "Cherry.TrainStation",
+            "MinimumVersion": "1.0.3"
+        }
+    ]
+}

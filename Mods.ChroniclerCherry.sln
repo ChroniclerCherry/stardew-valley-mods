@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopTileFramework", "ShopTi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SnackAnything", "SnackAnything\SnackAnything.csproj", "{2118638D-2409-4A80-BA53-6AEF6E8D0948}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StardewAquarium", "StardewAquarium\StardewAquarium.csproj", "{6D2BEB21-D1F3-4ABF-B6FE-C39BAFB88F76}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToolUpgradeCosts", "ToolUpgradeCosts\ToolUpgradeCosts.csproj", "{D903D510-C920-4883-8137-BAF903FB4F72}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrainStation", "TrainStation\TrainStation.csproj", "{F1BF5124-965F-4ED8-AF2C-33283FD92EB0}"
@@ -109,6 +111,10 @@ Global
 		{2118638D-2409-4A80-BA53-6AEF6E8D0948}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2118638D-2409-4A80-BA53-6AEF6E8D0948}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2118638D-2409-4A80-BA53-6AEF6E8D0948}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D2BEB21-D1F3-4ABF-B6FE-C39BAFB88F76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D2BEB21-D1F3-4ABF-B6FE-C39BAFB88F76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D2BEB21-D1F3-4ABF-B6FE-C39BAFB88F76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D2BEB21-D1F3-4ABF-B6FE-C39BAFB88F76}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D903D510-C920-4883-8137-BAF903FB4F72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D903D510-C920-4883-8137-BAF903FB4F72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D903D510-C920-4883-8137-BAF903FB4F72}.Release|Any CPU.ActiveCfg = Release|Any CPU

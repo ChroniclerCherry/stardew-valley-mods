@@ -54,6 +54,10 @@
   Hold a button (default `LeftShift`) to allow eating almost any object. You'll gain health and energy proportional to
   the object's sell value.
 
+* [Stardew Aquarium](https://www.nexusmods.com/stardewvalley/mods/6372)
+  Adds an aquarium to Stardew Valley, where you can donate your fish to animated tanks for rewards. Includes a large
+  new beach location with new custom shops. (This repo only has the C# code, not the content packs.)
+
 * [Tool Upgrade Costs](https://www.nexusmods.com/stardewvalley/mods/6576) _([release notes](ToolUpgradeCosts/docs/release-notes.md))_  
   Lets the player fully customize the cost and needed materials to upgrade vanilla tools.
 
