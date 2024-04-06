@@ -22,6 +22,8 @@ namespace UpgradeEmptyCabins
             this.Helper.ConsoleCommands.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", this.RemoveSeedBoxesCommand);
             this.Helper.ConsoleCommands.Add("remove_cabin_beds", "Removes beds from all unclaimed cabins.", this.RemoveCabinBedsCommand);
             this.Helper.ConsoleCommands.Add("renovate_cabins", "Removes cribs and adds all the extra rooms to all unclaimed cabins.", this.RenovateCabinsCommand);
+            this.Helper.ConsoleCommands.Add("list_cabins", "Lists cabin names for toggle_renovate.", this.ListCabins);
+            this.Helper.ConsoleCommands.Add("list_renovations", "Lists renovation names for toggle_renovate.", this.ListRenovations);
             this.Helper.ConsoleCommands.Add("toggle_renovate", "Toggles a renovation for an unclaimed cabin.", this.ToggleRenovateCommand);
             this.Helper.ConsoleCommands.Add("set_crib_style", "Sets the crib style for an unclaimed cabin.", this.SetCribStyleCommand);
 
@@ -60,49 +62,119 @@ namespace UpgradeEmptyCabins
             }
         }
 
+        private void ListCabins(string arg1, string[] arg2)
+        {
+            this.Monitor.Log("Upgrade Level 2 required for renovations.", LogLevel.Info);
+            foreach (var cab in ModUtility.GetCabins())
+            {
+                if (((Cabin)cab.indoors.Value).owner.Name != "")
+                    continue;
+                this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
+                this.Monitor.Log("    Upgrade Level: " + ((Cabin)cab.indoors.Value).upgradeLevel, LogLevel.Info);
+                
+            }
+        }
+
+        private void ListRenovations(string arg1, string[] arg2)
+        {
+            this.Monitor.Log("renovation_bedroom_open, renovation_southern_open, renovation_corner_open, renovation_extendedcorner_open, renovation_dining_open, renovation_diningroomwall_open, renovation_cubby_open, renovation_farupperroom_open", LogLevel.Info);
+        }
+
         private void ToggleRenovateCommand(string arg1, string[] arg2)
         {
-            string cabin = arg2[0] + " Cabin"; //"Plank","Stone","Log"
-            string reno = arg2[1]; //"renovation_bedroom_open","renovation_southern_open","renovation_corner_open"
+            string cabin = arg2[0]; //"Plank","Stone","Log"
+            string reno = arg2[1]; //"renovation_bedroom_open", "renovation_southern_open", "renovation_corner_open", "renovation_extendedcorner_open", "renovation_dining_open", "renovation_diningroomwall_open", "renovation_cubby_open", "renovation_farupperroom_open"
 
             foreach (var cab in ModUtility.GetCabins())
             {
                 if (((Cabin)cab.indoors.Value).owner.Name != "")
                     continue;
-                if (cab.buildingType.ToString() == cabin)
+                if (cab.GetIndoorsName() == cabin)
                 {
                     var mail = ((Cabin)cab.indoors.Value).owner.mailReceived;
-                    if (mail.Contains(reno))
-                        mail.Remove(reno);
-                    else
-                        mail.Add(reno);
                     this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
-                    this.Monitor.Log("Cabin Type: " + cab.buildingType.Value, LogLevel.Info);
-                    this.Monitor.Log("Flags: " + mail, LogLevel.Info);
+                    
+                    if (reno == "renovation_diningroomwall_open")
+                    {
+                        if (!mail.Contains("renovation_dining_open"))
+                        {
+                            mail.Add("renovation_dining_open");
+                            mail.Remove(reno);
+                            this.Monitor.Log("Renovation Added: renovation_dining_open" + reno, LogLevel.Info);
+                            this.Monitor.Log("Renovation Removed: " + reno, LogLevel.Info);
+                        }
+                        else if (mail.Contains("renovation_dining_open") && !mail.Contains("renovation_diningroomwall_open"))
+                        {
+                            mail.Add(reno);
+                            this.Monitor.Log("Renovation Added: " + reno, LogLevel.Info);
+                        }
+                        else
+                        {
+                            mail.Remove(reno);
+                            this.Monitor.Log("Renovation Removed: " + reno, LogLevel.Info);
+                        }
+                    }
+                    else if (mail.Contains(reno))
+                    {
+                        if (reno == "renovation_corner_open")
+                        {
+                            mail.Remove("renovation_extendedcorner_open");
+                            this.Monitor.Log("Renovation Removed: renovation_extendedcorner_open", LogLevel.Info);
+                        }
+                        if (reno == "renovation_dining_open" && mail.Contains("renovation_diningroomwall_open"))
+                        {
+                            mail.Remove("renovation_diningroomwall_open");
+                            this.Monitor.Log("Renovation Removed: renovation_diningroomwall_open", LogLevel.Info);
+                        }
+                        mail.Remove(reno);
+                        this.Monitor.Log("Renovation Removed: " + reno, LogLevel.Info);
+                    }
+                    else
+                    {
+                        if (reno == "renovation_extendedcorner_open")
+                        {
+                            mail.Add("renovation_corner_open");
+                            this.Monitor.Log("Renovation Added: renovation_corner_open", LogLevel.Info);
+                        }
+                        mail.Add(reno);
+                        this.Monitor.Log("Renovation Added: " + reno, LogLevel.Info);
+                    }
                 }
             }
         }
 
         private void RenovateCabinsCommand(string arg1, string[] arg2)
         {
-            string[] renos = { "renovation_bedroom_open", "renovation_southern_open", "renovation_corner_open" };
+            string[] renos = { "renovation_bedroom_open", "renovation_southern_open", "renovation_corner_open", "renovation_extendedcorner_open", "renovation_dining_open", "renovation_diningroomwall_open", "renovation_cubby_open", "renovation_farupperroom_open" };
             foreach (var cab in ModUtility.GetCabins())
             {
                 if (((Cabin)cab.indoors.Value).owner.Name != "")
                     continue;
+                this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
+                this.Monitor.Log("    Type: " + cab.buildingType.Value, LogLevel.Info);
+                if (((Cabin)cab.indoors.Value).upgradeLevel < 2)
+                {
+                    this.Monitor.Log("    Upgrade Level: " + ((Cabin)cab.indoors.Value).upgradeLevel, LogLevel.Info);
+                    this.Monitor.Log("    Upgrade Level 2 required for renovations. Not Renovated.", LogLevel.Info);
+                    continue;
+                }
                 var mail = ((Cabin)cab.indoors.Value).owner.mailReceived;
                 foreach (string reno in renos)
                 {
                     if (mail.Contains(reno))
                         this.Monitor.Log("Renovation already done: " + reno + " " + cab.GetIndoorsName(), LogLevel.Info);
                     else
-                        mail.Add(reno);
+                    {
+                        if (reno == "renovation_diningroomwall_open")
+                            mail.Remove(reno);
+                        else
+                            mail.Add(reno);
+                    }
+                        
                 }
                 ((Cabin)cab.indoors.Value).cribStyle.Set(0);
-                this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
-                this.Monitor.Log("   Type: " + cab.buildingType.Value, LogLevel.Info);
-                this.Monitor.Log("   cribStyle:  " + ((Cabin)cab.indoors.Value).cribStyle.Value, LogLevel.Info);
-                this.Monitor.Log("   flags: " + mail, LogLevel.Info);
+                this.Monitor.Log("    cribStyle:  " + ((Cabin)cab.indoors.Value).cribStyle.Value, LogLevel.Info);
+                this.Monitor.Log("    flags: " + mail, LogLevel.Info);
             }
         }
 
@@ -201,7 +273,7 @@ namespace UpgradeEmptyCabins
         {
             var cabinIndoors = ((Cabin)cabin.indoors.Value);
             cabin.daysUntilUpgrade.Value = -1;
-            cabinIndoors.moveObjectsForHouseUpgrade(cabinIndoors.upgradeLevel);
+            cabinIndoors.moveObjectsForHouseUpgrade(cabinIndoors.upgradeLevel + 1);
             cabinIndoors.setMapForUpgradeLevel(cabinIndoors.upgradeLevel);
             cabinIndoors.upgradeLevel++;
         }
@@ -268,7 +340,7 @@ namespace UpgradeEmptyCabins
             if (this._config.InstantBuild)
             {
                 FinalUpgrade(cab);
-                Game1.getCharacterFromName("Robin").setNewDialogue(Game1.content.LoadString("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted"));
+                Game1.getCharacterFromName("Robin").setNewDialogue("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted");
                 Game1.drawDialogue(Game1.getCharacterFromName("Robin"));
                 return;
             }
@@ -284,7 +356,7 @@ namespace UpgradeEmptyCabins
                         cab.daysUntilUpgrade.Value = 3;
                         Game1.player.Money -= 10000;
                         Game1.player.Items.ReduceId("(O)388", 450);
-                        Game1.getCharacterFromName("Robin").setNewDialogue(Game1.content.LoadString("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted"));
+                        Game1.getCharacterFromName("Robin").setNewDialogue("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted");
                         Game1.drawDialogue(Game1.getCharacterFromName("Robin"));
                         break;
                     }
@@ -296,28 +368,28 @@ namespace UpgradeEmptyCabins
                     Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Locations:ScienceHouse_Carpenter_NotEnoughWood1"));
                     break;
                 case 1:
-                    if (Game1.player.Money >= 50000 && Game1.player.Items.ContainsId("(O)709", 150))
+                    if (Game1.player.Money >= 65000 && Game1.player.Items.ContainsId("(O)709", 100))
                     {
                         cab.daysUntilUpgrade.Value = 3;
-                        Game1.player.Money -= 50000;
-                        Game1.player.Items.ReduceId("(O)709", 150);
-                        Game1.getCharacterFromName("Robin").setNewDialogue(Game1.content.LoadString("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted"));
+                        Game1.player.Money -= 65000;
+                        Game1.player.Items.ReduceId("(O)709", 100);
+                        Game1.getCharacterFromName("Robin").setNewDialogue("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted");
                         Game1.drawDialogue(Game1.getCharacterFromName("Robin"));
                         break;
                     }
-                    if (Game1.player.Money < 50000)
+                    if (Game1.player.Money < 65000)
                     {
                         Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\UI:NotEnoughMoney3"));
                         break;
                     }
-                    Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Locations:ScienceHouse_Carpenter_NotEnoughWood2"));
+                    Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Locations:ScienceHouse_Carpenter_NotEnoughWood2", "100")); //TODO String says {0} hardwood.
                     break;
                 case 2:
                     if (Game1.player.Money >= 100000)
                     {
                         cab.daysUntilUpgrade.Value = 3;
                         Game1.player.Money -= 100000;
-                        Game1.getCharacterFromName("Robin").setNewDialogue(Game1.content.LoadString("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted"));
+                        Game1.getCharacterFromName("Robin").setNewDialogue("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted");
                         Game1.drawDialogue(Game1.getCharacterFromName("Robin"));
                         break;
                     }
