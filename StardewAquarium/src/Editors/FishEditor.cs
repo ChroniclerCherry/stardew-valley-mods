@@ -44,7 +44,7 @@ namespace StardewAquarium.Editors
             {
                 var editor = asset.AsImage();
 
-                Texture2D sourceImage = this._helper.GameContent.Load<Texture2D>("data/Objects/Pufferchick/object.png");
+                Texture2D sourceImage = this._helper.ModContent.Load<Texture2D>("data/Objects/Pufferchick/object.png");
                 editor.PatchImage(sourceImage, targetArea: new Rectangle(4, 52, 16, 16));
             }
             else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Locations"))
