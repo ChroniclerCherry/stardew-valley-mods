@@ -3,6 +3,7 @@ using HarmonyLib;
 using StardewAquarium.Menus;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Menus;
 
 namespace StardewAquarium.Patches
 {
@@ -11,7 +12,7 @@ namespace StardewAquarium.Patches
         private static IModHelper _helper;
         private static IMonitor _monitor;
 
-        private static int PufferChickID { get => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName) ?? -1; }
+        private static string? PufferChickID { get => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName); }
 
         public static void Initialize(IModHelper helper, IMonitor monitor)
         {
@@ -20,18 +21,18 @@ namespace StardewAquarium.Patches
             _monitor = monitor;
 
             Harmony harmony = ModEntry.Harmony;
-            harmony.Patch(original: AccessTools.Method(typeof(DonateFishMenuAndroid), "tryToPurchaseItem"),
+            harmony.Patch(original: AccessTools.Method(typeof(ShopMenu), "tryToPurchaseItem"),
                 postfix: new HarmonyMethod(typeof(AndroidShopMenuPatch), nameof(tryToPurchaseItem_postfix))
             );
 
-            harmony.Patch(original: AccessTools.Method(typeof(DonateFishMenuAndroid), "setCurrentItem"),
+            harmony.Patch(original: AccessTools.Method(typeof(ShopMenu), "setCurrentItem"),
                 postfix: new HarmonyMethod(typeof(AndroidShopMenuPatch), nameof(setCurrentItem_postfix))
             );
         }
 
-        private static void setCurrentItem_postfix(ref DonateFishMenuAndroid __instance)
+        private static void setCurrentItem_postfix(ref ShopMenu __instance)
         {
-            if (Game1.currentLocation?.Name != "FishMuseum") return;
+            if (Game1.currentLocation?.Name != "FishMuseum" || __instance is not DonateFishMenuAndroid) return;
 
             var nameItem = _helper.Reflection.GetField<string>(__instance, "nameItem");
             string nameItemString = nameItem.GetValue();
@@ -40,19 +41,19 @@ namespace StardewAquarium.Patches
             _helper.Reflection.GetField<string>(__instance, "descItem").SetValue(_helper.Translation.Get("DonateDescription"));
         }
 
-        private static void tryToPurchaseItem_postfix(ref DonateFishMenuAndroid __instance, ref ISalable item)
+        private static void tryToPurchaseItem_postfix(ref ShopMenu __instance, ref ISalable item)
         {
-            if (Game1.currentLocation?.Name != "FishMuseum") return;
+            if (Game1.currentLocation?.Name != "FishMuseum" || __instance is not DonateFishMenuAndroid) return;
             try
             {
-                if (!(item is Item donatedFish)) return; //this shouldn't happen but /shrug
+                if (!(item is Item donatedFish)) return; //this shouldn't happen but /shrug \\Better safe than sorry, I'm keeping this line
 
                 if (!Utils.DonateFish(donatedFish)) return; //this also shouldnt happen
 
                 DonateFishMenuAndroid.Donated = true;
-                Game1.player.removeItemsFromInventory(donatedFish.ParentSheetIndex, 1);
+                Game1.player.removeItemFromInventory(donatedFish);
 
-                if (donatedFish.ParentSheetIndex == PufferChickID)
+                if (donatedFish.ItemId == PufferChickID)
                 {
                     Game1.playSound("openChest");
                     DonateFishMenuAndroid.PufferchickDonated = true;

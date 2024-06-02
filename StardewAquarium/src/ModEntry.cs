@@ -70,7 +70,7 @@ namespace StardewAquarium
 
             if (Config.EnableDebugCommands)
             {
-                if (this._isAndroid)
+                if (this._isAndroid || true)
                     this.Helper.ConsoleCommands.Add("donatefish", "", this.AndroidDonateFish);
                 else
                     this.Helper.ConsoleCommands.Add("donatefish", "", this.OpenDonationMenuCommand);
@@ -94,7 +94,7 @@ namespace StardewAquarium
                 e.Edit(this.MiscEditor.Edit);
         }
 
-        private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
+        private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
         {
             if (Context.CanPlayerMove && Config.CheckDonationCollection == e.Button)
             {
@@ -102,7 +102,7 @@ namespace StardewAquarium
             }
         }
 
-        private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
+        private void GameLoop_DayStarted(object sender, DayStartedEventArgs e)
         {
             if (!Context.IsMainPlayer) return; //we don't want this running for every single logged in player, so just the host can handle the logic
 
@@ -131,9 +131,9 @@ namespace StardewAquarium
                                         (int)pot.TileLocation.Y);
 
                 // Search for suitable fish.
-                Dictionary<int, string> fishes = this.Helper.GameContent.Load<Dictionary<int, string>>("Data/Fish");
-                List<int> candidates = new List<int>();
-                foreach (KeyValuePair<int, string> fish in fishes)
+                Dictionary<string, string> fishes = this.Helper.GameContent.Load<Dictionary<string, string>>("Data/Fish");
+                List<string> candidates = new List<string>();
+                foreach (KeyValuePair<string, string> fish in fishes)
                 {
                     if (!fish.Value.Contains("trap"))
                         continue;
@@ -161,7 +161,7 @@ namespace StardewAquarium
 
         }
 
-        private void GameLoop_UpdateTicked(object sender, StardewModdingAPI.Events.UpdateTickedEventArgs e)
+        private void GameLoop_UpdateTicked(object sender, UpdateTickedEventArgs e)
         {
             if (Game1.currentLocation?.Name != Data.ExteriorMapName) return;
             if (Game1.isTimePaused) return;
@@ -203,7 +203,7 @@ namespace StardewAquarium
 
         }
 
-        private void AndroidPlsHaveMercyOnMe(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
+        private void AndroidPlsHaveMercyOnMe(object sender, MenuChangedEventArgs e)
         {
             //don't ask me what the heck is going on here but its the only way to get it to work
             if (!(e.OldMenu is DonateFishMenuAndroid androidMenu)) return;
@@ -218,7 +218,7 @@ namespace StardewAquarium
             Game1.activeClickableMenu = new DonateFishMenuAndroid(this.Helper, this.Monitor);
         }
 
-        private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
+        private void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
         {
             AquariumMessage.Initialize(this.Helper);
             if (Utils.CheckAchievement())
@@ -228,12 +228,10 @@ namespace StardewAquarium
 
         private void RemoveDonatedFish(string arg1, string[] arg2)
         {
-            var mail = Game1.MasterPlayer.mailReceived;
+            var mail = new List<string>(Game1.MasterPlayer.mailReceived);
             for (int i = mail.Count - 1; i >= 0; i--)
-            {
                 if (mail[i].StartsWith("AquariumDonated:") || mail[i].StartsWith("AquariumFishDonated:"))
-                    mail.RemoveAt(i);
-            }
+                    Game1.MasterPlayer.mailReceived.Remove(mail[i]);
         }
 
         private void OpenAquariumCollectionMenu(string arg1, string[] arg2)
@@ -246,26 +244,25 @@ namespace StardewAquarium
             Game1.activeClickableMenu = new DonateFishMenu(this.Helper, this.Monitor);
         }
 
-        private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+        private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
         {
             JsonAssets = this.Helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
             JsonAssets.LoadAssets(Path.Combine(this.Helper.DirectoryPath, "data"));
 
-            SpaceCore = this.Helper.ModRegistry.GetApi<ISpaceCoreAPI>("spacechase0.SpaceCore");
-            SpaceCore.AddEventCommand("GiveAquariumTrophy1", typeof(ModEntry).GetMethod(nameof(GiveAquariumTrophy1)));
-            SpaceCore.AddEventCommand("GiveAquariumTrophy2", typeof(ModEntry).GetMethod(nameof(GiveAquariumTrophy2)));
+            Event.RegisterCommand("GiveAquariumTrophy1", GiveAquariumTrophy1);
+            Event.RegisterCommand("GiveAquariumTrophy2", GiveAquariumTrophy2);
         }
 
-        public static void GiveAquariumTrophy1(Event e, GameLocation loc, GameTime time, string[] args)
+        public static void GiveAquariumTrophy1(Event e, string[] args, EventContext context)
         {
-            int id = JsonAssets.GetBigCraftableId("Stardew Aquarium Trophy");
-            Object trophy = new Object(Vector2.Zero, id);
+            string id = JsonAssets.GetBigCraftableId("Stardew Aquarium Trophy");
+            Object trophy = ItemRegistry.Create<Object>(id);
             e.farmer.holdUpItemThenMessage(trophy, true);
             ++e.CurrentCommand;
         }
-        public static void GiveAquariumTrophy2(Event e, GameLocation loc, GameTime time, string[] args)
+        public static void GiveAquariumTrophy2(Event e, string[] args, EventContext context)
         {
-            int id = JsonAssets.GetBigCraftableId("Stardew Aquarium Trophy");
+            string id = JsonAssets.GetBigCraftableId("Stardew Aquarium Trophy");
             Object trophy = new Object(Vector2.Zero, id);
             e.farmer.addItemByMenuIfNecessary(trophy);
             if (Game1.activeClickableMenu == null)

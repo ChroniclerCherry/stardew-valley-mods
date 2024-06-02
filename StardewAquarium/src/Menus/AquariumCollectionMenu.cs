@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
+using StardewValley.GameData.Objects;
+using StardewValley.ItemTypeDefinitions;
 using StardewValley.Menus;
 
 namespace StardewAquarium.Menus
@@ -47,18 +49,18 @@ namespace StardewAquarium.Menus
             int num2 = this.xPositionOnScreen + borderWidth + spaceToClearSideBorder;
             int num3 = this.yPositionOnScreen + borderWidth + spaceToClearTopBorder - 16;
             int num4 = 10;
-            List<KeyValuePair<int, string>> keyValuePairList = new List<KeyValuePair<int, string>>(Game1.objectInformation);
+            List<KeyValuePair<string, ObjectData>> keyValuePairList = new List<KeyValuePair<string, ObjectData>>(Game1.objectData);
             keyValuePairList.Sort((a, b) => a.Key.CompareTo(b.Key));
             int index = 0;
-            foreach (KeyValuePair<int, string> keyValuePair in keyValuePairList)
+            foreach (KeyValuePair<string, ObjectData> keyValuePair in keyValuePairList)
             {
-                string str = keyValuePair.Value.Split('/')[3];
+                int category = keyValuePair.Value.Category;
                 bool drawColour = false;
                 bool drawColorFaded = false;
 
-                if (str.Contains("-4"))
+                if (category == -4)
                 {
-                    string name = keyValuePair.Value.Split('/')[0];
+                    string name = keyValuePair.Value.Name;
                     if (Game1.player.fishCaught.ContainsKey(keyValuePair.Key))
                     {
                         drawColorFaded = true;
@@ -85,7 +87,8 @@ namespace StardewAquarium.Menus
                 if (this.collections.Count == 0)
                     this.collections.Add(new List<ClickableTextureComponent>());
                 List<ClickableTextureComponent> textureComponentList = this.collections.Last();
-                ClickableTextureComponent textureComponent8 = new ClickableTextureComponent(keyValuePair.Key + " " + drawColour + " " + drawColorFaded, new Rectangle(x1, y1, 64, 64), null, "", Game1.objectSpriteSheet, Game1.getSourceRectForStandardTileSheet(Game1.objectSpriteSheet, keyValuePair.Key, 16, 16), 4f, drawColour)
+                var texture = Game1.content.Load<Texture2D>(keyValuePair.Value.Texture ?? Game1.objectSpriteSheetName);
+                ClickableTextureComponent textureComponent8 = new ClickableTextureComponent(keyValuePair.Key + " " + drawColour + " " + drawColorFaded, new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, keyValuePair.Value.SpriteIndex, 16, 16), 4f, drawColour)
                 {
                     myID = this.collections.Last().Count,
                     rightNeighborID = (this.collections.Last().Count + 1) % num4 == 0 ? -1 : this.collections.Last().Count + 1,
@@ -173,7 +176,7 @@ namespace StardewAquarium.Menus
                 {
                     textureComponent.scale =
                         Math.Min(textureComponent.scale + 0.02f, textureComponent.baseScale + 0.1f);
-                    this.hoverText = this.createDescription(Convert.ToInt32(textureComponent.name.Split(' ')[0]));
+                    this.hoverText = this.createDescription(textureComponent.name.Split(' ')[0]);
                 }
                 else
                     textureComponent.scale = Math.Max(textureComponent.scale - 0.02f, textureComponent.baseScale);
@@ -183,15 +186,15 @@ namespace StardewAquarium.Menus
             this.backButton.tryHover(x, y, 0.5f);
         }
 
-        public string createDescription(int index)
+        public string createDescription(string key)
         {
-            string[] strArray = Game1.objectInformation[index].Split('/');
+            ParsedItemData data = ItemRegistry.GetDataOrErrorItem(key);
 
-            string name = strArray[0];
-            if (Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]) && !Game1.player.fishCaught.ContainsKey(index))
+            string name = data.InternalName;
+            if (Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]) && !Game1.player.fishCaught.ContainsKey(key))
                 return "???";
 
-            string returnStr = strArray[4] + Environment.NewLine + Environment.NewLine + Game1.parseText(strArray[5], Game1.smallFont, 256) + Environment.NewLine;
+            string returnStr = data.DisplayName + Environment.NewLine + Environment.NewLine + Game1.parseText(data.Description, Game1.smallFont, 256) + Environment.NewLine;
             return returnStr;
         }
 
@@ -211,7 +214,7 @@ namespace StardewAquarium.Menus
             if (this.currentPage < this.collections.Count - 1)
                 this.forwardButton.draw(b);
 
-            SpriteText.drawStringWithScrollCenteredAt(b, this._title, Game1.viewport.Width / 2 - 50, Game1.viewport.Height / 2 - 310, this._title, 1f, -1, 0, 0.88f, false);
+            SpriteText.drawStringWithScrollCenteredAt(b, this._title, Game1.viewport.Width / 2 - 50, Game1.viewport.Height / 2 - 310, SpriteText.getWidthOfString(this._title) + 16, 1f, null, 0, 0.88f, false);
 
             b.End();
             b.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
