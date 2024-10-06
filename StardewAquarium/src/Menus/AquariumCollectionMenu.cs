@@ -9,6 +9,7 @@ using StardewValley.BellsAndWhistles;
 using StardewValley.GameData.Objects;
 using StardewValley.ItemTypeDefinitions;
 using StardewValley.Menus;
+using Object = StardewValley.Object;
 
 using SObject = StardewValley.Object;
 
@@ -59,12 +60,11 @@ namespace StardewAquarium.Menus
 
             // apply sort earlier.
             List<KeyValuePair<string, ObjectData>> fishes = new(Game1.objectData.Where(kvp => kvp.Value?.Category == SObject.FishCategory));
-            fishes.Sort((a, b) => a.Key.CompareTo(b.Key));
 
             this.collections.Add([]);
             List<ClickableTextureComponent> textureComponentList = this.collections.Last();
             int index = 0;
-            foreach (var (id, data) in fishes)
+            foreach (var (id, data) in fishes.OrderBy(kvp=>kvp.Key))
             {
                 bool drawColour = false;
                 bool drawColorFaded = false;
@@ -91,7 +91,6 @@ namespace StardewAquarium.Menus
                     y1 = top_left_y;
                     textureComponentList = this.collections.Last();
                 }
-
                 var texture = Game1.content.Load<Texture2D>(data.Texture ?? Game1.objectSpriteSheetName);
                 ClickableTextureComponent textureComponent8 = new(id + " " + drawColour + " " + drawColorFaded, new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, data.SpriteIndex, 16, 16), 4f, drawColour)
                 {

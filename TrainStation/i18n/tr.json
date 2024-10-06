@@ -3,8 +3,8 @@
     "MenuCancelOption": "İptal",
     "NoDestinations": "Mevcut varış noktası yok",
     "ChooseDestination": "Varış Noktanı Seç",
-    "TrainStationDisplayName": "Yıldızçiyi Vadisi İstasyonu",
     "BoatStationDisplayName": "Willy'nin Dükkanı",
+    "TrainStationDisplayName": "Yıldızçiyi Vadisi İstasyonu",
     "ArrivalMessage": "{{DestinationName}}'na vardın",
     "GingerIsland": "Zencefil Adası"
 }

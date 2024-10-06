@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using HarmonyLib;
-using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Tools;
@@ -10,9 +8,6 @@ namespace StardewAquarium.Patches
 {
     static class LegendaryFishPatches
     {
-        private static IModHelper _helper;
-        private static IMonitor _monitor;
-
         private static string? PufferChickID => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName);
         private static string? LegendaryBaitId => ModEntry.JsonAssets?.GetObjectId(ModEntry.LegendaryBaitName);
 
@@ -22,21 +17,8 @@ namespace StardewAquarium.Patches
         private const string MutantCarpId = "682";
         private const string GlacierFishId = "775";
 
-        private static Dictionary<string, string> LegendaryFish = new Dictionary<string, string>()
+        public static void Initialize()
         {
-            {CrimsonFishId,"Crimsonfish"},
-            {AnglerId,"Angler"},
-            {LegendId,"Legend"},
-            {MutantCarpId,"MutantCarp"},
-            {GlacierFishId,"Glacierfish"}
-        };
-
-        public static void Initialize(IModHelper helper, IMonitor monitor)
-        {
-
-            _helper = helper;
-            _monitor = monitor;
-
             Harmony harmony = ModEntry.Harmony;
 
             //patch handles making the pufferchick catchable
@@ -44,89 +26,87 @@ namespace StardewAquarium.Patches
                 AccessTools.Method(typeof(GameLocation), nameof(GameLocation.getFish)),
                 new HarmonyMethod(typeof(LegendaryFishPatches), nameof(GameLocation_getFish_Prefix))
             );
-
-            //All of the below patches were absolved into GameLocation.getFish, so the patch above will handle location based checks
-
-            //makes crimsonfish recatchable
-            /*harmony.Patch(
-                AccessTools.Method(typeof(Beach), nameof(Beach.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Beach_getFish_prefix))
-            );
-
-            //makes Angler recatchable
-            harmony.Patch(
-                AccessTools.Method(typeof(Town), nameof(Town.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Town_getFish_prefix))
-            );
-
-            //makes Legend recatchable
-            harmony.Patch(
-                AccessTools.Method(typeof(Mountain), nameof(Mountain.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Mountain_getFish_prefix))
-            );
-            //makes MutantCarp recatchable
-            harmony.Patch(
-                AccessTools.Method(typeof(Sewer), nameof(Sewer.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Sewer_getFish_prefix))
-            );
-            //makes GlacierFish recatchable
-            harmony.Patch(
-                AccessTools.Method(typeof(Forest), nameof(Forest.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Forest_getFish_prefix))
-            );*/
-
         }
 
         public static bool Forest_getFish_prefix(int waterDepth, Farmer who, ref Item __result)
         {
-            if (who == null || !(who.CurrentTool is FishingRod rod) ||
-                rod.GetBait().ItemId != LegendaryBaitId) return true;
-            if (who.Tile.X != 58 || who.Tile.Y != 87 || who.FishingLevel < 6 || waterDepth < 3) return true;
-            if (!who.fishCaught.ContainsKey(GlacierFishId) || (!Game1.currentSeason.Equals("winter"))) return true;
+            if (
+                who?.CurrentTool is not FishingRod rod
+                || rod.GetBait()?.ItemId != LegendaryBaitId
+                || who.Tile.X != 58
+                || who.Tile.Y != 87
+                || who.FishingLevel < 6
+                || waterDepth < 3
+                || !who.fishCaught.ContainsKey(GlacierFishId)
+                || Game1.season != Season.Winter
+            )
+                return true;
+
             __result = new Object(GlacierFishId, 1);
             return false;
-
         }
+
         public static bool Sewer_getFish_prefix(Farmer who, ref Item __result)
         {
-            if (Game1.player == null || !(Game1.player.CurrentTool is FishingRod rod) ||
-                rod.GetBait().ItemId != LegendaryBaitId) return true;
-            if (!who.fishCaught.ContainsKey(MutantCarpId)) return true;
+            if (
+                Game1.player?.CurrentTool is not FishingRod rod
+                || rod.GetBait()?.ItemId != LegendaryBaitId
+                || !who.fishCaught.ContainsKey(MutantCarpId)
+            )
+                return true;
+
             __result = new Object(MutantCarpId, 1);
             return false;
 
         }
         public static bool Mountain_getFish_prefix(int waterDepth, Farmer who, ref Item __result)
         {
-            if (Game1.player == null || !(Game1.player.CurrentTool is FishingRod rod) ||
-                rod.GetBait().ItemId != LegendaryBaitId) return true;
-            if (!Game1.isRaining || who.FishingLevel < 10 || waterDepth < 4) return true;
-            if (!who.fishCaught.ContainsKey(LegendId) || (!Game1.currentSeason.Equals("spring"))) return true;
+            if (
+                Game1.player?.CurrentTool is not FishingRod rod
+                || rod.GetBait()?.ItemId != LegendaryBaitId
+                || !Game1.isRaining
+                || who.FishingLevel < 10
+                || waterDepth < 4
+                || !who.fishCaught.ContainsKey(LegendId)
+                || Game1.season != Season.Spring
+            )
+                return true;
+
             __result = new Object(LegendId, 1);
             return false;
-
         }
 
         public static bool Town_getFish_prefix(Farmer who, ref Item __result)
         {
-            if (Game1.player == null || !(Game1.player.CurrentTool is FishingRod rod) ||
-                rod.GetBait().ItemId != LegendaryBaitId) return true;
-            if (!(who.Tile.Y < 15f) || who.FishingLevel < 3) return true;
-            if (!who.fishCaught.ContainsKey(AnglerId) || (!Game1.currentSeason.Equals("fall"))) return true;
+            if (
+                Game1.player?.CurrentTool is not FishingRod rod
+                || rod.GetBait()?.ItemId != LegendaryBaitId
+                || !(who.Tile.Y < 15f)
+                || who.FishingLevel < 3
+                || !who.fishCaught.ContainsKey(AnglerId)
+                || Game1.season != Season.Fall
+            )
+                return true;
+
             __result = new Object(AnglerId, 1);
             return false;
-
         }
 
         public static bool Beach_getFish_prefix(int waterDepth, Farmer who, ref Item __result)
         {
-            if (Game1.player == null || !(Game1.player.CurrentTool is FishingRod rod) ||
-                rod.GetBait().ItemId != LegendaryBaitId) return true;
-            if (who.Tile.X < 82 || who.FishingLevel < 5 || waterDepth < 3) return true;
-            if (!who.fishCaught.ContainsKey(CrimsonFishId) || (!Game1.currentSeason.Equals("summer"))) return true;
+            if (
+                Game1.player?.CurrentTool is not FishingRod rod
+                || rod.GetBait()?.ItemId != LegendaryBaitId
+                || who.Tile.X < 82
+                || who.FishingLevel < 5
+                || waterDepth < 3
+                || !who.fishCaught.ContainsKey(CrimsonFishId)
+                || Game1.season != Season.Summer
+            )
+                return true;
+
             __result = new Object(CrimsonFishId, 1);
             return false;
-
         }
 
         public static bool GameLocation_getFish_Prefix(GameLocation __instance, Farmer who, int waterDepth, ref Item __result)
@@ -136,22 +116,29 @@ namespace StardewAquarium.Patches
             {
                 case Beach:
                     return Beach_getFish_prefix(waterDepth, who, ref __result);
+
                 case Town:
                     return Town_getFish_prefix(who, ref __result);
+
                 case Mountain:
                     return Mountain_getFish_prefix(waterDepth, who, ref __result);
+
                 case Sewer:
                     return Sewer_getFish_prefix(who, ref __result);
+
                 case Forest:
                     return Forest_getFish_prefix(waterDepth, who, ref __result);
+
+                default:
+                    {
+                        Object pufferchick = GetFishPufferchick(__instance, who);
+                        if (pufferchick is null)
+                            return true;
+
+                        __result = pufferchick;
+                        return false;
+                    }
             }
-            var puff = GetFishPufferchick(__instance, who);
-            if (puff == null)
-                return true;
-
-            __result = puff;
-            return false;
-
         }
 
         private static Object GetFishPufferchick(GameLocation loc, Farmer who)
@@ -165,8 +152,7 @@ namespace StardewAquarium.Patches
             if (who.stats.ChickenEggsLayed == 0) //has had a chicken lay at least one egg
                 return null;
 
-            if (who.CurrentTool is FishingRod rod &&
-                rod.GetBait().ItemId == LegendaryBaitId)
+            if (who.CurrentTool is FishingRod rod && rod.GetBait()?.ItemId == LegendaryBaitId)
             {
                 return new Object(PufferChickID, 1);
             }
@@ -178,10 +164,9 @@ namespace StardewAquarium.Patches
             if (Game1.random.NextDouble() > pufferChance)
                 return null;
 
-            var puffer = new Object(PufferChickID, 1);
-            puffer.SetTempData("IsBossFish", true); //Make pufferchick boss fish in 1.6+
-
-            return puffer;
+            var pufferchick = new Object(PufferChickID, 1);
+            pufferchick.SetTempData("IsBossFish", true); //Make pufferchick boss fish in 1.6+
+            return pufferchick;
         }
     }
 }

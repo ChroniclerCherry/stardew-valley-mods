@@ -3,8 +3,8 @@
     "MenuCancelOption": "Назад",
     "NoDestinations": "Немає доступних напрямків",
     "ChooseDestination": "Оберіть місце призначення",
-    "TrainStationDisplayName": "Долина Стард'ю",
     "BoatStationDisplayName": "Магазин Віллі",
+    "TrainStationDisplayName": "Долина Стард'ю",
     "ArrivalMessage": "Ви прибули до станції \"{{DestinationName}}\"",
     "GingerIsland": "Імбирний острів"
 }

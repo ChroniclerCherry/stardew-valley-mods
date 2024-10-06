@@ -57,7 +57,7 @@ namespace StardewAquarium
             foreach ((string key, ObjectData info) in Game1.objectData)
             {
                 string fishName = info.Name;
-                if (info.Category == -4)
+                if (info.Category == Object.FishCategory)
                 {
                     FishIDs.Add(key);
                     InternalNameToDonationName.Add(fishName, fishName.Replace(" ", string.Empty));
@@ -156,7 +156,8 @@ namespace StardewAquarium
         {
             foreach (var item in Game1.player.Items)
             {
-                if (IsUnDonatedFish(item)) yield return item.ItemId;
+                if (IsUnDonatedFish(item))
+                    yield return item.ItemId;
             }
         }
 

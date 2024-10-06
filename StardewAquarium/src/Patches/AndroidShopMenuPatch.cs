@@ -46,7 +46,7 @@ namespace StardewAquarium.Patches
             if (Game1.currentLocation?.Name != "FishMuseum" || __instance is not DonateFishMenuAndroid) return;
             try
             {
-                if (!(item is Item donatedFish)) return; //this shouldn't happen but /shrug \\Better safe than sorry, I'm keeping this line
+                if (!(item is Item donatedFish)) return; //this shouldn't happen but /shrug
 
                 if (!Utils.DonateFish(donatedFish)) return; //this also shouldnt happen
 

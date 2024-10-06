@@ -3,6 +3,8 @@
     "MenuCancelOption": "Verlassen",
     "NoDestinations": "Es gibt keine Zielorte",
     "ChooseDestination": "Wähle deinen Zielort",
+    "BoatStationDisplayName": "Willy's shop", // TODO
     "TrainStationDisplayName": "Sternentautal Bahnhof",
-    "ArrivalMessage": "Du hast {{DestinationName}} erreicht."
+    "ArrivalMessage": "Du hast {{DestinationName}} erreicht.",
+    "GingerIsland": "Ginger Island" // TODO
 }

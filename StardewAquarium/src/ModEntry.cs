@@ -20,7 +20,7 @@ using SObject = StardewValley.Object;
 
 namespace StardewAquarium;
 
-public partial class ModEntry : Mod
+public class ModEntry : Mod
 {
     public static ModConfig Config;
     public static ModData Data;
@@ -55,7 +55,6 @@ public partial class ModEntry : Mod
         this.Helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
         this.Helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
         this.Helper.Events.GameLoop.UpdateTicked += this.GameLoop_UpdateTicked;
-        this.Helper.Events.GameLoop.DayStarted += this.GameLoop_DayStarted;
         this.Helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
 
         if (this._isAndroid)
@@ -70,8 +69,6 @@ public partial class ModEntry : Mod
 
         string dataPath = Path.Combine("data", "data.json");
         Data = helper.Data.ReadJsonFile<ModData>(dataPath);
-
-        LegendaryFishPatches.Initialize(this.Helper, this.Monitor);
 
         if (Config.EnableDebugCommands
 #if DEBUG
@@ -106,66 +103,6 @@ public partial class ModEntry : Mod
         if (Context.CanPlayerMove && Config.CheckDonationCollection == e.Button)
         {
             Game1.activeClickableMenu = new AquariumCollectionMenu(this.Helper.Translation.Get("CollectionsMenu"));
-        }
-    }
-
-    private void GameLoop_DayStarted(object sender, DayStartedEventArgs e)
-    {
-        if (!Context.IsMainPlayer) return; //we don't want this running for every single logged in player, so just the host can handle the logic
-
-        //all credit to kdau, i lifted this code from East Scarpe
-        var loc = Game1.getLocationFromName(Data.ExteriorMapName);
-        if (loc is null)
-            return;
-        foreach (SObject obj in loc.objects.Values)
-        {
-            // Must be a Crab Pot.
-            if (obj is not CrabPot pot)
-                continue;
-
-            // Must have a non-trash catch already.
-            if (pot.heldObject.Value == null ||
-                pot.heldObject.Value.Category == SObject.junkCategory)
-                continue;
-
-            // Check for the Mariner profession.
-            Farmer player = (pot.owner.Value != 0L)
-                ? Game1.getFarmer(pot.owner.Value) : Game1.player;
-            bool mariner = player?.professions?.Contains(Farmer.mariner) ?? false;
-
-            // Seed the RNG.
-            Random rng = new((int)Game1.stats.DaysPlayed +
-                                    (int)Game1.uniqueIDForThisGame / 2 +
-                                    (int)pot.TileLocation.X * 1000 +
-                                    (int)pot.TileLocation.Y);
-
-            // Search for suitable fish.
-            Dictionary<string, string> fishes = this.Helper.GameContent.Load<Dictionary<string, string>>("Data/Fish");
-            List<string> candidates = new List<string>();
-            foreach (KeyValuePair<string, string> fish in fishes)
-            {
-                if (!fish.Value.Contains("trap"))
-                    continue;
-
-                string[] fields = fish.Value.Split('/');
-                if (fields[4].Equals("freshwater"))
-                    continue;
-
-                candidates.Add(fish.Key);
-
-                if (!mariner && rng.NextDouble() < Convert.ToDouble(fields[2]))
-                {
-                    pot.heldObject.Value = new SObject(fish.Key, 1);
-                    candidates.Clear();
-                    break;
-                }
-            }
-
-            if (candidates.Count > 0)
-            {
-                pot.heldObject.Value = new SObject
-                    (candidates[rng.Next(candidates.Count)], 1);
-            }
         }
     }
 
@@ -234,7 +171,7 @@ public partial class ModEntry : Mod
             Utils.UnlockAchievement();
 
     }
-
+    
     private void RemoveDonatedFish(string arg1, string[] arg2)
     {
         Game1.MasterPlayer.mailReceived.RemoveWhere(item => item.StartsWith("AquariumDonated:") || item.StartsWith("AquariumFishDonated:"));
