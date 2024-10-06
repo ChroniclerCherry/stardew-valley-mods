@@ -22,4 +22,9 @@ internal sealed class AquariumClickableComponent : ClickableTextureComponent
         : base(name, bounds, label, hoverText, texture, sourceRect, scale, drawShadow)
     {
     }
+
+    public override void draw(SpriteBatch b)
+    {
+        base.draw(b);
+    }
 }

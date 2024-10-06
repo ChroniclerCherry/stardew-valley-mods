@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Version>1.0.0</Version>
+    <Version>1.6.0</Version>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <EnableHarmony>true</EnableHarmony>
   </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="Pathoschild.Stardew.ModTranslationClassBuilder" Version="2.2.0" />
   </ItemGroup>
@@ -15,7 +16,7 @@
 
   <PropertyGroup>
     <IgnoreModFilePatterns>
-      \.xcf$, <!-- GIMP files-->
+      \.xcf$ <!-- GIMP files-->
     </IgnoreModFilePatterns>
   </PropertyGroup>
 </Project>

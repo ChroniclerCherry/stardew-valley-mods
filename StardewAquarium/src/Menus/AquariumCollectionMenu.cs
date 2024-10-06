@@ -10,14 +10,18 @@ using StardewValley.GameData.Objects;
 using StardewValley.ItemTypeDefinitions;
 using StardewValley.Menus;
 
+using SObject = StardewValley.Object;
+
 namespace StardewAquarium.Menus
 {
     class AquariumCollectionMenu : IClickableMenu
     {
         private string hoverText = "";
+
         public List<List<ClickableTextureComponent>> collections = new List<List<ClickableTextureComponent>>();
         public ClickableTextureComponent backButton;
         public ClickableTextureComponent forwardButton;
+
         private int currentPage;
         private string _title;
         private readonly bool IsAndroid = Constants.TargetPlatform == GamePlatform.Android;
@@ -49,58 +53,53 @@ namespace StardewAquarium.Menus
                 leftNeighborID = -7777
             };
 
-            int[] numArray = new int[8];
-            int num2 = this.xPositionOnScreen + borderWidth + spaceToClearSideBorder;
-            int num3 = this.yPositionOnScreen + borderWidth + spaceToClearTopBorder - 16;
-            int num4 = 10;
+            int top_left_x = this.xPositionOnScreen + borderWidth + spaceToClearSideBorder;
+            int top_left_y = this.yPositionOnScreen + borderWidth + spaceToClearTopBorder - 16;
+            const int square_size = 10;
 
             // apply sort earlier.
-            List<KeyValuePair<string, ObjectData>> keyValuePairList = new(Game1.objectData.Where(kvp => kvp.Value?.Category == -4));
-            keyValuePairList.Sort((a, b) => a.Key.CompareTo(b.Key));
+            List<KeyValuePair<string, ObjectData>> fishes = new(Game1.objectData.Where(kvp => kvp.Value?.Category == SObject.FishCategory));
+            fishes.Sort((a, b) => a.Key.CompareTo(b.Key));
+
+            this.collections.Add([]);
+            List<ClickableTextureComponent> textureComponentList = this.collections.Last();
             int index = 0;
-            foreach (KeyValuePair<string, ObjectData> keyValuePair in keyValuePairList)
+            foreach (var (id, data) in fishes)
             {
-                int category = keyValuePair.Value.Category;
                 bool drawColour = false;
                 bool drawColorFaded = false;
 
-                if (category == -4)
+                string name = data.Name;
+                if (Game1.player.fishCaught.ContainsKey(id))
                 {
-                    string name = keyValuePair.Value.Name;
-                    if (Game1.player.fishCaught.ContainsKey(keyValuePair.Key))
-                    {
-                        drawColorFaded = true;
-                    }
-
-                    if (!Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]))
-                    {
-                        drawColour = true;
-                        drawColorFaded = false;
-                    }
+                    drawColorFaded = true;
                 }
-                else
-                    continue;
 
-                int x1 = num2 + index % num4 * 68;
-                int y1 = num3 + index / num4 * 68;
+                if (!Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]))
+                {
+                    drawColour = true;
+                    drawColorFaded = false;
+                }
+
+                int x1 = top_left_x + index % square_size * 68;
+                int y1 = top_left_y + index / square_size * 68;
                 if (y1 > this.yPositionOnScreen + this.height - 128)
                 {
                     this.collections.Add([]);
                     index = 0;
-                    x1 = num2;
-                    y1 = num3;
+                    x1 = top_left_x;
+                    y1 = top_left_y;
+                    textureComponentList = this.collections.Last();
                 }
-                if (this.collections.Count == 0)
-                    this.collections.Add(new List<ClickableTextureComponent>());
-                List<ClickableTextureComponent> textureComponentList = this.collections.Last();
-                var texture = Game1.content.Load<Texture2D>(keyValuePair.Value.Texture ?? Game1.objectSpriteSheetName);
-                ClickableTextureComponent textureComponent8 = new(keyValuePair.Key + " " + drawColour + " " + drawColorFaded, new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, keyValuePair.Value.SpriteIndex, 16, 16), 4f, drawColour)
+
+                var texture = Game1.content.Load<Texture2D>(data.Texture ?? Game1.objectSpriteSheetName);
+                ClickableTextureComponent textureComponent8 = new(id + " " + drawColour + " " + drawColorFaded, new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, data.SpriteIndex, 16, 16), 4f, drawColour)
                 {
                     myID = this.collections.Last().Count,
-                    rightNeighborID = (this.collections.Last().Count + 1) % num4 == 0 ? -1 : this.collections.Last().Count + 1,
-                    leftNeighborID = this.collections.Last().Count % num4 == 0 ? 7001 : this.collections.Last().Count - 1,
-                    downNeighborID = y1 + 68 > this.yPositionOnScreen + this.height - 128 ? -7777 : this.collections.Last().Count + num4,
-                    upNeighborID = this.collections.Last().Count < num4 ? 12345 : this.collections.Last().Count - num4,
+                    rightNeighborID = (this.collections.Last().Count + 1) % square_size == 0 ? -1 : this.collections.Last().Count + 1,
+                    leftNeighborID = this.collections.Last().Count % square_size == 0 ? 7001 : this.collections.Last().Count - 1,
+                    downNeighborID = y1 + 68 > this.yPositionOnScreen + this.height - 128 ? -7777 : this.collections.Last().Count + square_size,
+                    upNeighborID = this.collections.Last().Count < square_size ? 12345 : this.collections.Last().Count - square_size,
                     fullyImmutable = true
                 };
                 textureComponentList.Add(textureComponent8);
@@ -232,7 +231,8 @@ namespace StardewAquarium.Menus
             }
             b.End();
             b.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
-            if (!this.hoverText.Equals(""))
+
+            if (!string.IsNullOrEmpty(this.hoverText))
             {
                 drawHoverText(b, this.hoverText, Game1.smallFont, 0, 0);
             }

@@ -95,8 +95,6 @@ public partial class ModEntry : Mod
             e.Edit(this.AchievementEditor.Edit);
         else if (this.FishEditor.CanEdit(e.NameWithoutLocale))
             e.Edit(this.FishEditor.Edit);
-        else if (this.MailEditor.CanEdit(e.NameWithoutLocale))
-            e.Edit(this.MailEditor.Edit);
         else if (this.ObjectEditor.CanEdit(e.NameWithoutLocale))
             e.Edit(this.ObjectEditor.Edit);
         else if (this.MiscEditor.CanEdit(e.NameWithoutLocale))
