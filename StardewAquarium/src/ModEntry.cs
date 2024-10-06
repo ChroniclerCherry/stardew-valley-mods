@@ -31,7 +31,6 @@ public partial class ModEntry : Mod
 
     private AchievementEditor AchievementEditor;
     private FishEditor FishEditor;
-    private MailEditor MailEditor;
     private ObjectEditor ObjectEditor;
     private MiscEditor MiscEditor;
 
@@ -49,7 +48,6 @@ public partial class ModEntry : Mod
 
         this.AchievementEditor = new(this.Helper);
         this.FishEditor = new(this.Helper);
-        this.MailEditor = new(this.Helper);
         this.ObjectEditor = new();
         this.MiscEditor = new(this.Helper);
 

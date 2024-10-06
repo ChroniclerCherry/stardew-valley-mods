@@ -10,6 +10,7 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 
 using StardewValley;
+using StardewValley.GameData;
 using StardewValley.GameData.Locations;
 using StardewValley.GameData.Shirts;
 
@@ -21,6 +22,9 @@ internal static class AssetEditor
     private static Dictionary<IAssetName, string> _textureLoaders;
     private static IMonitor Monitor;
 
+    private const string AquariumOpenAfterLandslide = "StardewAquarium.Open";
+    private const string AquariumOpenLater = "StardewAquarium.OpenLater";
+
     internal static void Init(IGameContentHelper parser, IContentEvents events, IMonitor monitor)
     {
         Monitor = monitor;
@@ -28,30 +32,36 @@ internal static class AssetEditor
         _handlers[parser.ParseAssetName("Data/Locations")] = EditDataLocations;
         _handlers[parser.ParseAssetName("Data/Shirts")] = EditShirtData;
         _handlers[parser.ParseAssetName("Strings/Shirts")] = EditShirtStrings;
+        _handlers[parser.ParseAssetName("Data/mail")] = EditDataMail;
+        _handlers[parser.ParseAssetName("Data/TriggerActions")] = EditTriggerActions;
 
         _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Shirts")] = "assets/shirts.png";
         _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Items")] = "assets/items.png";
 
     }
 
-    private static void EditShirtStrings(IAssetData asset)
+    private static void EditTriggerActions(IAssetData asset)
     {
-        var data = asset.AsDictionary<string, string>().Data;
-        data["StardewAquarium_Pufferchick_Shirt_Name"] = I18n.Pufferchick_Shirt_Name();
-    }
+        var data = asset.GetData<List<TriggerActionData>>();
 
-    private static void EditShirtData(IAssetData asset)
-    {
-        var data = asset.AsDictionary<string, ShirtData>().Data;
-        data["Cherry.StardewAquarium_PufferchickShirt"] = new()
-        {
-            Name = "Pufferchick Shirt",
-            DisplayName = "[LocalizedText Strings\\Shirts:StardewAquarium_Pufferchick_Shirt_Name]",
-            Description = "[LocalizedText Strings\\Shirts:StardewAquarium_Pufferchick_Shirt_Description]",
-            Price = 200,
-            Texture = "Mods/StardewAquarium/Shirts",
-            SpriteIndex = 0,
-        };
+        // add aquarium mail.
+        data.Add(
+            new()
+            {
+                Trigger = "DayStarted",
+                Action = $"AddMail Current {AquariumOpenAfterLandslide} Now, !PLAYER_HAS_MAIL Current {AquariumOpenLater} Any",
+                Condition = "DAYS_PLAYED 30 30",
+                Id = $"{AquariumOpenAfterLandslide}_Trigger"
+            });
+
+        data.Add(
+            new()
+            {
+                Trigger = "DayStarted",
+                Action = $"AddMail Current {AquariumOpenLater} Now, !PLAYER_HAS_MAIL Current {AquariumOpenAfterLandslide} Any",
+                Condition = "DAYS_PLAYED 31",
+                Id = $"{AquariumOpenLater}_Trigger"
+            });
     }
 
     private static void Handle(object sender, AssetRequestedEventArgs e)
@@ -105,6 +115,34 @@ internal static class AssetEditor
         museumData.Forage ??= [];
         museumData.Forage.AddRange(beachData.Forage ?? Enumerable.Empty<SpawnForageData>());
 
+    }
+
+    private static void EditDataMail(IAssetData asset)
+    {
+        var data = asset.AsDictionary<string, string>().Data;
+        data[AquariumOpenAfterLandslide] = I18n.AquariumOpenLandslide();
+        data[AquariumOpenLater] = I18n.AquariumOPenLater();
+    }
+
+    private static void EditShirtStrings(IAssetData asset)
+    {
+        var data = asset.AsDictionary<string, string>().Data;
+        data["StardewAquarium_Pufferchick_Shirt_Name"] = I18n.PufferchickShirtName();
+        data["StardewAquarium_Pufferchick_Shirt_Description"] = I18n.PufferchickShirtDescription();
+    }
+
+    private static void EditShirtData(IAssetData asset)
+    {
+        var data = asset.AsDictionary<string, ShirtData>().Data;
+        data["Cherry.StardewAquarium_PufferchickShirt"] = new()
+        {
+            Name = "Pufferchick Shirt",
+            DisplayName = "[LocalizedText Strings\\Shirts:StardewAquarium_Pufferchick_Shirt_Name]",
+            Description = "[LocalizedText Strings\\Shirts:StardewAquarium_Pufferchick_Shirt_Description]",
+            Price = 200,
+            Texture = "Mods/StardewAquarium/Shirts",
+            SpriteIndex = 0,
+        };
     }
 
     #endregion
