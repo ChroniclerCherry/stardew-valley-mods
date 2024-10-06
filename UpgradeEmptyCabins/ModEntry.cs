@@ -71,7 +71,6 @@ namespace UpgradeEmptyCabins
                     continue;
                 this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
                 this.Monitor.Log("    Upgrade Level: " + ((Cabin)cab.indoors.Value).upgradeLevel, LogLevel.Info);
-                
             }
         }
 
@@ -93,7 +92,7 @@ namespace UpgradeEmptyCabins
                 {
                     var mail = ((Cabin)cab.indoors.Value).owner.mailReceived;
                     this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
-                    
+
                     if (reno == "renovation_diningroomwall_open")
                     {
                         if (!mail.Contains("renovation_dining_open"))
@@ -170,8 +169,8 @@ namespace UpgradeEmptyCabins
                         else
                             mail.Add(reno);
                     }
-                        
                 }
+
                 ((Cabin)cab.indoors.Value).cribStyle.Set(0);
                 this.Monitor.Log("    cribStyle:  " + ((Cabin)cab.indoors.Value).cribStyle.Value, LogLevel.Info);
                 this.Monitor.Log("    flags: " + mail, LogLevel.Info);
@@ -382,7 +381,7 @@ namespace UpgradeEmptyCabins
                         Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\UI:NotEnoughMoney3"));
                         break;
                     }
-                    Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Locations:ScienceHouse_Carpenter_NotEnoughWood2", "100")); //TODO String says {0} hardwood.
+                    Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Locations:ScienceHouse_Carpenter_NotEnoughWood2", "100"));
                     break;
                 case 2:
                     if (Game1.player.Money >= 100000)
