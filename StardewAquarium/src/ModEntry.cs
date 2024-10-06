@@ -34,7 +34,6 @@ internal sealed class ModEntry : Mod
     private readonly bool _isAndroid = Constants.TargetPlatform == GamePlatform.Android;
     public static Harmony Harmony { get; } = new Harmony("Cherry.StardewAquarium");
 
-    private AchievementEditor AchievementEditor;
     private FishEditor FishEditor;
     private ObjectEditor ObjectEditor;
 
@@ -50,7 +49,6 @@ internal sealed class ModEntry : Mod
 
         AssetEditor.Init(this.Helper.GameContent, this.Helper.Events.Content, this.Monitor);
 
-        this.AchievementEditor = new(this.Helper);
         this.FishEditor = new(this.Helper);
         this.ObjectEditor = new();
 
@@ -154,9 +152,7 @@ internal sealed class ModEntry : Mod
 
     private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
     {
-        if (this.AchievementEditor.CanEdit(e.NameWithoutLocale))
-            e.Edit(this.AchievementEditor.Edit);
-        else if (this.FishEditor.CanEdit(e.NameWithoutLocale))
+        if (this.FishEditor.CanEdit(e.NameWithoutLocale))
             e.Edit(this.FishEditor.Edit);
         else if (this.ObjectEditor.CanEdit(e.NameWithoutLocale))
             e.Edit(this.ObjectEditor.Edit);

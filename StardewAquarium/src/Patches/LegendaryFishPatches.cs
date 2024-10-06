@@ -11,11 +11,9 @@ namespace StardewAquarium.Patches
         private static string? PufferChickID => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName);
         private static string? LegendaryBaitId => ModEntry.JsonAssets?.GetObjectId(ModEntry.LegendaryBaitName);
 
-        private const string CrimsonFishId = "159";
         private const string AnglerId = "160";
         private const string LegendId = "163";
         private const string MutantCarpId = "682";
-        private const string GlacierFishId = "775";
 
         public static void Initialize()
         {
@@ -28,23 +26,6 @@ namespace StardewAquarium.Patches
             );
         }
 
-        public static bool Forest_getFish_prefix(int waterDepth, Farmer who, ref Item __result)
-        {
-            if (
-                who?.CurrentTool is not FishingRod rod
-                || rod.GetBait()?.ItemId != LegendaryBaitId
-                || who.Tile.X != 58
-                || who.Tile.Y != 87
-                || who.FishingLevel < 6
-                || waterDepth < 3
-                || !who.fishCaught.ContainsKey(GlacierFishId)
-                || Game1.season != Season.Winter
-            )
-                return true;
-
-            __result = new Object(GlacierFishId, 1);
-            return false;
-        }
 
         public static bool Sewer_getFish_prefix(Farmer who, ref Item __result)
         {
@@ -92,31 +73,11 @@ namespace StardewAquarium.Patches
             return false;
         }
 
-        public static bool Beach_getFish_prefix(int waterDepth, Farmer who, ref Item __result)
-        {
-            if (
-                Game1.player?.CurrentTool is not FishingRod rod
-                || rod.GetBait()?.ItemId != LegendaryBaitId
-                || who.Tile.X < 82
-                || who.FishingLevel < 5
-                || waterDepth < 3
-                || !who.fishCaught.ContainsKey(CrimsonFishId)
-                || Game1.season != Season.Summer
-            )
-                return true;
-
-            __result = new Object(CrimsonFishId, 1);
-            return false;
-        }
-
         public static bool GameLocation_getFish_Prefix(GameLocation __instance, Farmer who, int waterDepth, ref Item __result)
         {
             //checks if player should get pufferchick
             switch (__instance)
             {
-                case Beach:
-                    return Beach_getFish_prefix(waterDepth, who, ref __result);
-
                 case Town:
                     return Town_getFish_prefix(who, ref __result);
 
@@ -125,9 +86,6 @@ namespace StardewAquarium.Patches
 
                 case Sewer:
                     return Sewer_getFish_prefix(who, ref __result);
-
-                case Forest:
-                    return Forest_getFish_prefix(waterDepth, who, ref __result);
 
                 default:
                     {

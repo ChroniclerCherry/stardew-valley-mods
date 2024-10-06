@@ -6,6 +6,8 @@ using Force.DeepCloner;
 
 using Microsoft.Xna.Framework.Graphics;
 
+using StardewAquarium.Editors;
+
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 
@@ -39,6 +41,8 @@ internal static class AssetEditor
 
         _handlers[parser.ParseAssetName("Data/mail")] = EditDataMail;
         _handlers[parser.ParseAssetName("Data/TriggerActions")] = EditTriggerActions;
+
+        _handlers[parser.ParseAssetName("Data/Achievements")] = AchievementEditor.Edit;
 
         _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Shirts")] = "assets/shirts.png";
         _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Items")] = "assets/items.png";
@@ -76,7 +80,15 @@ internal static class AssetEditor
 
         IDictionary<string, LocationData> data = asset.AsDictionary<string, LocationData>().Data;
 
-
+        if (data.TryGetValue("Forest", out var forestData))
+        {
+            var glacerfish = forestData.Fish?.FirstOrDefault(item => item.Id == "(O)775");
+            if (glacerfish is not null && legendaryBaitQID is not null)
+            {
+                Monitor.Log($"Adding copy of glacierfish for legendary bait");
+                forestData.Fish.Add(glacerfish.MakeLegendaryBaitEntry(legendaryBaitQID));
+            }
+        }
 
         if (!data.TryGetValue("Beach", out LocationData beachData))
         {
