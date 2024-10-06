@@ -53,7 +53,7 @@ namespace StardewAquarium
             {
                 var info = kvp.Value;
                 string fishName = info.Name;
-                if (info.Category == -4)
+                if (info.Category == Object.FishCategory)
                 {
                     FishIDs.Add(kvp.Key);
                     InternalNameToDonationName.Add(fishName, fishName.Replace(" ", string.Empty));
@@ -171,7 +171,8 @@ namespace StardewAquarium
         {
             foreach (var item in Game1.player.Items)
             {
-                if (IsUnDonatedFish(item)) yield return item.ItemId;
+                if (IsUnDonatedFish(item))
+                    yield return item.ItemId;
             }
         }
 

@@ -227,10 +227,7 @@ namespace StardewAquarium
 
         private void RemoveDonatedFish(string arg1, string[] arg2)
         {
-            var mail = new List<string>(Game1.MasterPlayer.mailReceived);
-            for (int i = mail.Count - 1; i >= 0; i--)
-                if (mail[i].StartsWith("AquariumDonated:") || mail[i].StartsWith("AquariumFishDonated:"))
-                    Game1.MasterPlayer.mailReceived.Remove(mail[i]);
+            Game1.MasterPlayer.mailReceived.RemoveWhere(id => id.StartsWith("AquariumDonated:") || id.StartsWith("AquariumFishDonated:"));
         }
 
         private void OpenAquariumCollectionMenu(string arg1, string[] arg2)

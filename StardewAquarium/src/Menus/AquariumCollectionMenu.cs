@@ -9,6 +9,7 @@ using StardewValley.BellsAndWhistles;
 using StardewValley.GameData.Objects;
 using StardewValley.ItemTypeDefinitions;
 using StardewValley.Menus;
+using Object = StardewValley.Object;
 
 namespace StardewAquarium.Menus
 {
@@ -49,19 +50,18 @@ namespace StardewAquarium.Menus
             int num2 = this.xPositionOnScreen + borderWidth + spaceToClearSideBorder;
             int num3 = this.yPositionOnScreen + borderWidth + spaceToClearTopBorder - 16;
             int num4 = 10;
-            List<KeyValuePair<string, ObjectData>> keyValuePairList = new List<KeyValuePair<string, ObjectData>>(Game1.objectData);
-            keyValuePairList.Sort((a, b) => a.Key.CompareTo(b.Key));
+
             int index = 0;
-            foreach (KeyValuePair<string, ObjectData> keyValuePair in keyValuePairList)
+            foreach ((string itemId, ObjectData objData) in Game1.objectData.OrderBy(p => p.Key))
             {
-                int category = keyValuePair.Value.Category;
+                int category = objData.Category;
                 bool drawColour = false;
                 bool drawColorFaded = false;
 
-                if (category == -4)
+                if (category == Object.FishCategory)
                 {
-                    string name = keyValuePair.Value.Name;
-                    if (Game1.player.fishCaught.ContainsKey(keyValuePair.Key))
+                    string name = objData.Name;
+                    if (Game1.player.fishCaught.ContainsKey(itemId))
                     {
                         drawColorFaded = true;
                     }
@@ -87,8 +87,8 @@ namespace StardewAquarium.Menus
                 if (this.collections.Count == 0)
                     this.collections.Add(new List<ClickableTextureComponent>());
                 List<ClickableTextureComponent> textureComponentList = this.collections.Last();
-                var texture = Game1.content.Load<Texture2D>(keyValuePair.Value.Texture ?? Game1.objectSpriteSheetName);
-                ClickableTextureComponent textureComponent8 = new ClickableTextureComponent(keyValuePair.Key + " " + drawColour + " " + drawColorFaded, new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, keyValuePair.Value.SpriteIndex, 16, 16), 4f, drawColour)
+                var texture = Game1.content.Load<Texture2D>(objData.Texture ?? Game1.objectSpriteSheetName);
+                ClickableTextureComponent textureComponent8 = new ClickableTextureComponent(itemId + " " + drawColour + " " + drawColorFaded, new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, objData.SpriteIndex, 16, 16), 4f, drawColour)
                 {
                     myID = this.collections.Last().Count,
                     rightNeighborID = (this.collections.Last().Count + 1) % num4 == 0 ? -1 : this.collections.Last().Count + 1,

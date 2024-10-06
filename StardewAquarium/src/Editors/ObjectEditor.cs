@@ -1,4 +1,5 @@
 using StardewModdingAPI;
+using StardewValley;
 using StardewValley.GameData.Objects;
 
 namespace StardewAquarium.Editors
@@ -18,13 +19,8 @@ namespace StardewAquarium.Editors
             {
                 string id = ModEntry.JsonAssets.GetObjectId(ModEntry.LegendaryBaitName);
                 var data = asset.AsDictionary<string, ObjectData>().Data;
-                if (data.ContainsKey(id))
-                {
-                    data[id].Category = -21;
-                    /*string[] fields = data[id].Split('/');
-                    fields[3] = "Basic -21";
-                    data[id] = string.Join("/", fields);*/
-                }
+                if (data.TryGetValue(id, out ObjectData entry))
+                    entry.Category = Object.baitCategory;
 
             }
         }
