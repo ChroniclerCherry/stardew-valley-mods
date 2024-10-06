@@ -5,6 +5,9 @@
     <LangVersion>latest</LangVersion>
     <EnableHarmony>true</EnableHarmony>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Pathoschild.Stardew.ModTranslationClassBuilder" Version="2.2.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Update="data\**\*.*" CopyToOutputDirectory="PreserveNewest" />

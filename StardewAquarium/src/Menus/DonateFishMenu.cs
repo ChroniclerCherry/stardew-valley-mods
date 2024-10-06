@@ -14,7 +14,9 @@ namespace StardewAquarium.Menus
         private bool _donated;
         private bool _pufferchickDonated;
 
-        private static string? PufferChickID { get => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName); }
+        private readonly string title;
+
+        private static string? PufferChickID => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName);
 
         public DonateFishMenu(IModHelper translate, IMonitor monitor) : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, false, null, Utils.IsUnDonatedFish, 36, 3)
         {
@@ -22,6 +24,8 @@ namespace StardewAquarium.Menus
             this._helper = translate;
             this._monitor = monitor;
             this.exitFunction = () => Utils.DonationMenuExit(this._donated, this._pufferchickDonated);
+
+            this.title = I18n.DonationMenuTitle();
         }
 
         public override void receiveLeftClick(int x, int y, bool playSound = true)
@@ -44,8 +48,7 @@ namespace StardewAquarium.Menus
                     this._pufferchickDonated = true;
                 }
 
-                var mp = this._helper.Reflection.GetField<Multiplayer>(typeof(Game1), "multiplayer").GetValue();
-                mp.globalChatInfoMessage("StardewAquarium.FishDonated", new[] { Game1.player.Name, item.Name });
+                Game1.Multiplayer.globalChatInfoMessage("StardewAquarium.FishDonated", [Game1.player.Name, item.Name]);
             }
         }
 
@@ -57,9 +60,8 @@ namespace StardewAquarium.Menus
             else
                 base.drawBackground(b);
 
-            string title = this._helper.Translation.Get("DonationMenuTitle");
-            SpriteText.drawStringWithScrollCenteredAt(b, title, Game1.viewport.Width / 2,
-                Game1.viewport.Height / 2 - 128, SpriteText.getWidthOfString(title) + 16, 1f, null, 0, 0.88f, false);
+            SpriteText.drawStringWithScrollCenteredAt(b, this.title, Game1.viewport.Width / 2,
+                Game1.viewport.Height / 2 - 128, SpriteText.getWidthOfString(this.title) + 16, 1f, null, 0, 0.88f, false);
 
             Game1.drawDialogueBox(this.xPositionOnScreen - 64, this.yPositionOnScreen - 128, this.width + 128, this.height + 176, false, true);
 

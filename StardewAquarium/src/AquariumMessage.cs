@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -18,9 +19,9 @@ namespace StardewAquarium
             _translation = helper.Translation;
         }
 
-        public AquariumMessage(string[] args)
+        public AquariumMessage(Span<string> args)
         {
-            List<string> fishes = new List<string>();
+            List<string> fishes = [];
             foreach (string str in args)
             {
                 if (!Utils.IsUnDonatedFish(str))
@@ -29,13 +30,13 @@ namespace StardewAquarium
 
             if (fishes.Count == 0)
             {
-                Game1.drawObjectDialogue(_translation.Get("EmptyTank"));
+                Game1.drawObjectDialogue(I18n.EmptyTank());
                 return;
             }
 
             if (fishes.Count == 1)
             {
-                Game1.drawObjectDialogue(_translation.Get($"Tank_{fishes[0]}"));
+                Game1.drawObjectDialogue(I18n.GetByKey($"Tank_{fishes[0]}"));
                 return;
             }
 
@@ -45,8 +46,8 @@ namespace StardewAquarium
 
         private void BuildResponse(List<string> fishes)
         {
-            this._responsePages = new List<Response[]>();
-            var responsesThisPage = new List<Response>();
+            this._responsePages = [];
+            List<Response> responsesThisPage = new();
 
             for (int index = 0; index < fishes.Count; index++)
             {
@@ -58,7 +59,7 @@ namespace StardewAquarium
                     responsesThisPage.Add(new Response("More", _translation.Get("More")));
                 responsesThisPage.Add(new Response("Exit", _translation.Get("Exit")));
                 this._responsePages.Add(responsesThisPage.ToArray());
-                responsesThisPage = new List<Response>();
+                responsesThisPage = [];
             }
 
             responsesThisPage.Add(new Response("Exit", _translation.Get("Exit")));

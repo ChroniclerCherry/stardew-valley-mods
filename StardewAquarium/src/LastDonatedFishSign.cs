@@ -33,6 +33,11 @@ namespace StardewAquarium
             this._helper.Events.GameLoop.DayStarted += this.GameLoop_DayStarted;
         }
 
+        /// <summary>
+        /// Pick a random fish when the museum is complete.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GameLoop_DayStarted(object sender, DayStartedEventArgs e)
         {
             if (!MasterPlayerMail.Contains("AquariumCompleted"))
