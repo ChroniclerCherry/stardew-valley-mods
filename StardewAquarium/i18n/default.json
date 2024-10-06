@@ -125,7 +125,6 @@
     "Tank_Butterfish": "The Butterfish is a freshwater fish, it can be found in different waters around Stardew Valley depending on the season.",
 
     //1.1.0 fish descriptions
-
     "Tank_DottedAbalone": "Abalone is a name for a group of molluscs. They are also known by other names, such as; Ear Shells, Sea Ears, Muttonfish, Muttonshells, Ormer, Perlemoen and Paua.",
     "Tank_Scallop": "Scallop is a name for a wide variety of molluscs. They are closely related to another group of molluscs commonly called Oysters.",
     "Tank_DewdropFish": "The Dewdrop Fish, it's waterdrop or rather dewdrop shape gives this fish it's unique name.",
@@ -137,11 +136,9 @@
     "Tank_Frog": "Frogs belong to a large and diverse group of amphibians. Using their vocal cords, frogs can make a variety of croaking sounds.",
 
     //1.1.0 dialogue boxes
-
     "LASV_TP": "Stepping into these magical sparkles, will teleport you to a new magical world!",
 
     //1.2.0 Fish descriptions
-
     "Tank_SonOfCrimsonfish": "This young Crimsonfish has a flamboyant tail, but it is simply a phase.",
     "Tank_RadioactiveCarp": "This fish is radioactive, but don't worry it is safely contained in this tank.",
     "Tank_Ms.Angler": "This anglerfish seems to be wearing makeup...",
@@ -152,7 +149,6 @@
     "Tank_Lionfish": "The Lionfish or also known 'zebrafish' or 'firefish' is a venomous marine fish. It is an effective predator that feeds on smaller fish and molluscs. In some areas some Lionfish are considered an invasive species. There are 12 known species of Lionfish currently.",
 
     //1.3.0 dialogue boxes
-
     "WaterfallCave": "This is just the mandatory cave behind the waterfall. Nothing to see here, move on.",
     "KoiRoom": "The sign next to the door says: Koi Pond.",
     "PrettyFlower": "You stop and smell the flowers.",
@@ -169,7 +165,6 @@
     "Coconut": "You try to shake the tree. But nothing happens... What did you expect, a coconut would fall down?",
 
     //1.3.0 MNF fish descriptions
-
     "Tank_Glassfish": "The Glass Fish has an extraordinary transparent body, it feeds on crustaceans, annelid worms and other invertebrates. It is usually prey for larger fish.",
     "Tank_Coelacanth": "Coelacanth is an order of fish with only 2 currently living species. The order was long thought to be extinct but was later rediscovered.",
     "Tank_Cavefish": "Cavefish or cave fish is a generic term for fish adapted to living in caves. They have unusual adaptations known as Troglomorphism. Adaptations for animals living in constant darkness, such adaptations usually include loss of pigment, eyesight or possible blindness.",
@@ -292,9 +287,7 @@
     "Tank_Tui": "The Moon spirit Tui, crossed over from the spirit world to create the Spirit Oasis. Here it assumed the form of a white Koi fish. Should it be disconnected from the Ocean Spirit the world will be out of balance, returning both fish to this pond will restore the balance.",
     "Tank_La": "The Ocean spirit La, crossed over from the spirit world to create the Spirit Oasis. Here it assumed the form of a black Koi fish. Should it be disconnected from the Moon Spirit the world will be out of balance, returning both fish to this pond will restore the balance.",
 
-
     //npc dialogue such long
-
     "SPRINGNPC_1": "Tourist: What should I buy from the giftshop?",
     "SPRINGNPC_2": "Tourist: Hi there, first time visiting the Aquarium?",
     "SPRINGNPC_3": "The woman doesn't notice you, she is busy.",

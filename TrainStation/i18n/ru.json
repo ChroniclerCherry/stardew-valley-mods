@@ -3,6 +3,8 @@
     "MenuCancelOption": "Отмена",
     "NoDestinations": "Нет доступных направлений",
     "ChooseDestination": "Выберите место назначения",
+    "BoatStationDisplayName": "Willy's shop", // TODO
     "TrainStationDisplayName": "Станция долины Стардью",
-    "ArrivalMessage": "Вы прибыли на станцию {{DestinationName}}"
+    "ArrivalMessage": "Вы прибыли на станцию {{DestinationName}}",
+    "GingerIsland": "Ginger Island" // TODO
 }

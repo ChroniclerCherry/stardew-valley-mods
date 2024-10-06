@@ -3,8 +3,8 @@
     "MenuCancelOption": "Cancel",
     "NoDestinations": "There are no available destinations",
     "ChooseDestination": "Choose your destination",
-    "TrainStationDisplayName": "Stardew Valley Station",
     "BoatStationDisplayName": "Willy's shop",
+    "TrainStationDisplayName": "Stardew Valley Station",
     "ArrivalMessage": "You have arrived at {{DestinationName}}",
     "GingerIsland": "Ginger Island"
 }
