@@ -27,6 +27,9 @@
     "WhichFishInfo": "Which fish would you like to know more about?",
     "EmptyTank": "Just an empty tank...",
 
+    // items.
+    "Decor": "Decor", // used as the override category name for one item.
+
     //dialogue boxes
     "Ice": "All this ice... it's used for cooling the tank with that machine.",
     "IceMachine": "This machine keeps the tank cooled under very low temperatures.",

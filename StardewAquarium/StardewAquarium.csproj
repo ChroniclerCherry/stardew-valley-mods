@@ -12,4 +12,10 @@
   <ItemGroup>
     <None Update="data\**\*.*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <IgnoreModFilePatterns>
+      \.xcf$, <!-- GIMP files-->
+    </IgnoreModFilePatterns>
+  </PropertyGroup>
 </Project>

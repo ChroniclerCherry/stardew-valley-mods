@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.Xna.Framework.Graphics;
+
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 
@@ -14,6 +16,7 @@ internal static class AssetEditor
 {
 
     private static Dictionary<IAssetName, Action<IAssetData>> _handlers;
+    private static Dictionary<IAssetName, string> _textureLoaders;
     private static IMonitor Monitor;
 
     internal static void Init(IGameContentHelper parser, IContentEvents events, IMonitor monitor)
@@ -21,6 +24,10 @@ internal static class AssetEditor
         Monitor = monitor;
         events.AssetRequested += Handle;
         _handlers[parser.ParseAssetName("Data/Locations")] = EditDataLocations;
+
+        _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Shirts")] = "assets/shirts.png";
+        _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Items")] = "assets/items.png";
+
     }
 
     private static void Handle(object sender, AssetRequestedEventArgs e)
@@ -28,6 +35,10 @@ internal static class AssetEditor
         if (_handlers.TryGetValue(e.NameWithoutLocale, out Action<IAssetData> action))
         {
             e.Edit(action, AssetEditPriority.Late);
+        }
+        if (_textureLoaders.TryGetValue(e.NameWithoutLocale, out string path))
+        {
+            e.LoadFromModFile<Texture2D>(path, AssetLoadPriority.Exclusive);
         }
     }
 
