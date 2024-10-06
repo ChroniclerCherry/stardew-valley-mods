@@ -18,7 +18,8 @@ namespace StardewAquarium.Menus
 
         private static string? PufferChickID => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName);
 
-        public DonateFishMenu(IModHelper translate, IMonitor monitor) : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, false, null, Utils.IsUnDonatedFish, 36, 3)
+        public DonateFishMenu(IModHelper translate, IMonitor monitor)
+            : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, false, null, Utils.IsUnDonatedFish, 36, 3)
         {
             this.showGrayedOutSlots = true;
             this._helper = translate;

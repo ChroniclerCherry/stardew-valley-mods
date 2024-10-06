@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 
 namespace StardewAquarium.Models
 {
-    public class ModData
+    public sealed class ModData
     {
         public int LastDonatedFishCoordinateX { get; set; }
         public int LastDonatedFishCoordinateY { get; set; }

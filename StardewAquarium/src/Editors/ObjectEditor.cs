@@ -21,9 +21,6 @@ namespace StardewAquarium.Editors
                 if (data.ContainsKey(id))
                 {
                     data[id].Category = -21;
-                    /*string[] fields = data[id].Split('/');
-                    fields[3] = "Basic -21";
-                    data[id] = string.Join("/", fields);*/
                 }
 
             }

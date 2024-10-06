@@ -38,7 +38,7 @@ internal static class Extensions
 
                 // else, we've run out of entries
                 // and return an empty span to mark as failure.
-                return ReadOnlySpan<char>.Empty;
+                return [];
             }
 
             if (index > -1)
@@ -57,7 +57,9 @@ internal static class Extensions
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static int GetIndexOfWhiteSpace(this string str)
-        => str.AsSpan().GetIndexOfWhiteSpace();
+    {
+        return str.AsSpan().GetIndexOfWhiteSpace();
+    }
 
     /// <summary>
     /// Gets the index of the next whitespace character.

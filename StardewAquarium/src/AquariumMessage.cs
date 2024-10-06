@@ -51,20 +51,24 @@ namespace StardewAquarium
 
             for (int index = 0; index < fishes.Count; index++)
             {
-                responsesThisPage.Add(new Response(fishes[index], Utils.FishDisplayNames[fishes[index]]));
+                if (!Utils.FishDisplayNames.TryGetValue(fishes[index], out string translated))
+                {
+                    continue;
+                }
+                responsesThisPage.Add(new Response(fishes[index], translated));
 
                 //Max of 3 options per page, with more pages added as needed
-                if (responsesThisPage.Count < 4) continue;
+                if (responsesThisPage.Count < 4)
+                    continue;
                 if (index < fishes.Count - 1)
-                    responsesThisPage.Add(new Response("More", _translation.Get("More")));
-                responsesThisPage.Add(new Response("Exit", _translation.Get("Exit")));
+                    responsesThisPage.Add(new Response("More", I18n.More()));
+                responsesThisPage.Add(new Response("Exit", I18n.Exit()));
                 this._responsePages.Add(responsesThisPage.ToArray());
                 responsesThisPage = [];
             }
 
             responsesThisPage.Add(new Response("Exit", _translation.Get("Exit")));
             this._responsePages.Add(responsesThisPage.ToArray());
-
         }
 
         private void displayFishInfo(Farmer who, string whichAnswer)
@@ -87,7 +91,7 @@ namespace StardewAquarium
 
         private void OpenNextPage(object sender, UpdateTickedEventArgs e)
         {
-            Game1.currentLocation.createQuestionDialogue(_translation.Get("WhichFishInfo"), this._responsePages[this._currentPage], this.displayFishInfo);
+            Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages[this._currentPage], this.displayFishInfo);
             _helper.Events.GameLoop.UpdateTicked -= this.OpenNextPage;
         }
     }

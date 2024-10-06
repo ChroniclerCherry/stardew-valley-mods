@@ -5,6 +5,7 @@ using StardewAquarium.Editors;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.GameData.Objects;
 using StardewValley.Menus;
 
 using Object = StardewValley.Object;
@@ -23,13 +24,14 @@ namespace StardewAquarium
         /// Maps the InternalName of the fish to its internalname without spaces, eg. Rainbow Trout to RainbowTrout
         /// </summary>
         /// 
-        public static Dictionary<string, string> InternalNameToDonationName { get; set; } = new Dictionary<string, string>();
-        public static List<string> FishIDs = new List<string>();
+        public static Dictionary<string, string> InternalNameToDonationName { get; set; } = [];
+
+        public static List<string> FishIDs { get; set; } = [];
 
         /// <summary>
         /// Maps the internal name without spaces to its localized display name
         /// </summary>
-        public static Dictionary<string, string> FishDisplayNames { get; set; } = new Dictionary<string, string>();
+        public static Dictionary<string, string> FishDisplayNames { get; set; } = [];
 
         private static LastDonatedFishSign _fishSign;
 
@@ -51,13 +53,12 @@ namespace StardewAquarium
             InternalNameToDonationName.Clear();
             FishDisplayNames.Clear();
 
-            foreach (var kvp in Game1.objectData)
+            foreach ((string key, ObjectData info) in Game1.objectData)
             {
-                var info = kvp.Value;
                 string fishName = info.Name;
                 if (info.Category == -4)
                 {
-                    FishIDs.Add(kvp.Key);
+                    FishIDs.Add(key);
                     InternalNameToDonationName.Add(fishName, fishName.Replace(" ", string.Empty));
                     FishDisplayNames.Add(fishName.Replace(" ", string.Empty), info.DisplayName);
                 }

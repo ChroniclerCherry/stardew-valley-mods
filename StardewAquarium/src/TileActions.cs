@@ -23,7 +23,7 @@ internal static class TileActions
         GameLocation.RegisterTileAction("AquariumDonationMenu", DonationMenu);
         GameLocation.RegisterTileAction("AquariumSign", AquariumSign);
         GameLocation.RegisterTileAction("AquariumString", AquariumString);
-        GameLocation.RegisterTileAction("AquariumCollectionMenu", ShowAquariumCollectionMenu)
+        GameLocation.RegisterTileAction("AquariumCollectionMenu", ShowAquariumCollectionMenu);
     }
 
     private static bool ShowAquariumCollectionMenu(GameLocation location, string[] arg2, Farmer farmer, Point point)
