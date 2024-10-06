@@ -17,8 +17,10 @@ namespace StardewAquarium
     {
         private readonly IModHelper _helper;
         private readonly IMonitor _monitor;
-        private ModData _data { get => ModEntry.Data; }
+        private ModData _data => ModEntry.Data;
 
+        // the last donated fish is stored as a member of farm's moddata.
+        // this avoids us having to do our own multiplayer handling.
         private const string LastDonatedFishKey = "Cherry.StardewAquarium.LastDonatedFish";
 
         public LastDonatedFishSign(IModHelper helper, IMonitor monitor)

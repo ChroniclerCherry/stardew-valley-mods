@@ -45,7 +45,7 @@ public partial class ModEntry : Mod
         TileActions.Init(helper, this.Monitor);
         AquariumMessage.Initialize(this.Helper);
 
-        AssetEditor.Init(this.Helper.GameContent, this.Helper.Events.Content);
+        AssetEditor.Init(this.Helper.GameContent, this.Helper.Events.Content, this.Monitor);
 
         this.AchievementEditor = new(this.Helper);
         this.FishEditor = new(this.Helper);
@@ -224,6 +224,16 @@ public partial class ModEntry : Mod
 
     private void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
     {
+        if (!Context.IsMainPlayer)
+        {
+            var master = this.Helper.Multiplayer.GetConnectedPlayer(Game1.MasterPlayer.UniqueMultiplayerID);
+            var us = master.GetMod(this.ModManifest.UniqueID);
+            if (us is null)
+            {
+                this.Monitor.Log($"Host seems to be missing Stardew Aquarium. Certain features may not work as advertised.", LogLevel.Error);
+            }
+        }
+
         if (Utils.CheckAchievement())
             Utils.UnlockAchievement();
 
@@ -236,7 +246,7 @@ public partial class ModEntry : Mod
 
     private void OpenAquariumCollectionMenu(string arg1, string[] arg2)
     {
-        Game1.activeClickableMenu = new AquariumCollectionMenu(this.Helper.Translation.Get("CollectionsMenu"));
+        Game1.activeClickableMenu = new AquariumCollectionMenu(I18n.CollectionsMenu());
     }
 
     private void OpenDonationMenuCommand(string arg1, string[] arg2)
@@ -263,7 +273,7 @@ public partial class ModEntry : Mod
     public static void GiveAquariumTrophy2(Event e, string[] args, EventContext context)
     {
         string id = JsonAssets.GetBigCraftableId("Stardew Aquarium Trophy");
-        SObject trophy = new SObject(Vector2.Zero, id);
+        SObject trophy = new(Vector2.Zero, id);
         e.farmer.addItemByMenuIfNecessary(trophy);
         if (Game1.activeClickableMenu == null)
             ++e.CurrentCommand;

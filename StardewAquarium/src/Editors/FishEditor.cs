@@ -24,7 +24,6 @@ namespace StardewAquarium.Editors
                     assetName.IsEquivalentTo("Data/Fish")
                     || assetName.IsEquivalentTo("Data/AquariumFish")
                     || assetName.IsEquivalentTo("LooseSprites/AquariumFish")
-                    || assetName.IsEquivalentTo("Data/Locations")
                 );
         }
 
@@ -47,19 +46,6 @@ namespace StardewAquarium.Editors
 
                 IRawTextureData sourceImage = this._helper.ModContent.Load<IRawTextureData>("data/Objects/Pufferchick/object.png");
                 editor.PatchImage(sourceImage, targetArea: new Rectangle(4, 52, 16, 16));
-            }
-            else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Locations"))
-            {
-                var data = asset.AsDictionary<string, LocationData>().Data;
-                var beachData = data["Beach"];
-                if (!data.TryGetValue(ModEntry.Data.ExteriorMapName, out var exterior))
-                {
-                    // log failure.
-                    data[ModEntry.Data.ExteriorMapName] = beachData;
-                    return;
-                }
-
-                exterior.ArtifactSpots = beachData.ArtifactSpots;
             }
 
         }
