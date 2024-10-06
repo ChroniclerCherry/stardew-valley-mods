@@ -37,19 +37,25 @@ namespace StardewAquarium.Menus
             this.yPositionOnScreen = Game1.viewport.Height / 2 - (600 + borderWidth * 2) / 2;
 
             CollectionsPage.widthToMoveActiveTab = 8;
-            ClickableTextureComponent textureComponent9 = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + 48, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(352, 495, 12, 11), 4f, false);
-            textureComponent9.myID = 706;
-            textureComponent9.rightNeighborID = -7777;
-            this.backButton = textureComponent9;
-            ClickableTextureComponent textureComponent10 = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 32 - 60, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(365, 495, 12, 11), 4f, false);
-            textureComponent10.myID = 707;
-            textureComponent10.leftNeighborID = -7777;
-            this.forwardButton = textureComponent10;
+            this.backButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + 48, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(352, 495, 12, 11), 4f, false)
+            {
+                myID = 706,
+                rightNeighborID = -7777
+            };
+
+            this.forwardButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 32 - 60, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(365, 495, 12, 11), 4f, false)
+            {
+                myID = 707,
+                leftNeighborID = -7777
+            };
+
             int[] numArray = new int[8];
             int num2 = this.xPositionOnScreen + borderWidth + spaceToClearSideBorder;
             int num3 = this.yPositionOnScreen + borderWidth + spaceToClearTopBorder - 16;
             int num4 = 10;
-            List<KeyValuePair<string, ObjectData>> keyValuePairList = new List<KeyValuePair<string, ObjectData>>(Game1.objectData);
+
+            // apply sort earlier.
+            List<KeyValuePair<string, ObjectData>> keyValuePairList = new(Game1.objectData.Where(kvp => kvp.Value?.Category == -4));
             keyValuePairList.Sort((a, b) => a.Key.CompareTo(b.Key));
             int index = 0;
             foreach (KeyValuePair<string, ObjectData> keyValuePair in keyValuePairList)
@@ -79,7 +85,7 @@ namespace StardewAquarium.Menus
                 int y1 = num3 + index / num4 * 68;
                 if (y1 > this.yPositionOnScreen + this.height - 128)
                 {
-                    this.collections.Add(new List<ClickableTextureComponent>());
+                    this.collections.Add([]);
                     index = 0;
                     x1 = num2;
                     y1 = num3;
@@ -88,7 +94,7 @@ namespace StardewAquarium.Menus
                     this.collections.Add(new List<ClickableTextureComponent>());
                 List<ClickableTextureComponent> textureComponentList = this.collections.Last();
                 var texture = Game1.content.Load<Texture2D>(keyValuePair.Value.Texture ?? Game1.objectSpriteSheetName);
-                ClickableTextureComponent textureComponent8 = new ClickableTextureComponent(keyValuePair.Key + " " + drawColour + " " + drawColorFaded, new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, keyValuePair.Value.SpriteIndex, 16, 16), 4f, drawColour)
+                ClickableTextureComponent textureComponent8 = new(keyValuePair.Key + " " + drawColour + " " + drawColorFaded, new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, keyValuePair.Value.SpriteIndex, 16, 16), 4f, drawColour)
                 {
                     myID = this.collections.Last().Count,
                     rightNeighborID = (this.collections.Last().Count + 1) % num4 == 0 ? -1 : this.collections.Last().Count + 1,
@@ -220,11 +226,6 @@ namespace StardewAquarium.Menus
             b.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
             foreach (ClickableTextureComponent textureComponent in this.collections[this.currentPage])
             {
-                /*
-                 *bool drawColor = Convert.ToBoolean(c.name.Split(' ')[1]);
-                bool drawColorFaded = this.currentTab == 4 && Convert.ToBoolean(c.name.Split(' ')[2]);
-                c.draw(b, drawColorFaded ? (Color.DimGray * 0.4f) : (drawColor ? Color.White : (Color.Black * 0.2f)), 0.86f);
-                 */
                 bool drawColor = Convert.ToBoolean(textureComponent.name.Split(' ')[1]);
                 bool drawColorFaded = Convert.ToBoolean(textureComponent.name.Split(' ')[2]);
                 textureComponent.draw(b, drawColorFaded ? Color.DimGray * 0.4f : drawColor ? Color.White : Color.Black * 0.2f, drawColorFaded ? 0 : 0.86f);

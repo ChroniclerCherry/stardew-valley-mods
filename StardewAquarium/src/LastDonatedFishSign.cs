@@ -13,7 +13,7 @@ using StardewValley.ItemTypeDefinitions;
 
 namespace StardewAquarium
 {
-    public class LastDonatedFishSign
+    internal sealed class LastDonatedFishSign
     {
         private readonly IModHelper _helper;
         private readonly IMonitor _monitor;
@@ -32,6 +32,12 @@ namespace StardewAquarium
             this._helper.Events.GameLoop.DayStarted += this.GameLoop_DayStarted;
         }
 
+        internal void UpdateLastDonatedFish(Item i)
+        {
+            Game1.getFarm().modData[LastDonatedFishKey] = i.QualifiedItemId;
+            this._monitor.Log($"The last donated fish is {i.Name}");
+        }
+
         /// <summary>
         /// Pick a random fish when the museum is complete.
         /// </summary>
@@ -45,6 +51,11 @@ namespace StardewAquarium
             Game1.getFarm().modData[LastDonatedFishKey] = ItemRegistry.ManuallyQualifyItemId(Utility.CreateDaySaveRandom().ChooseFrom(Utils.FishIDs), ItemRegistry.type_object);
         }
 
+        /// <summary>
+        /// Updates the fishing sign when players arrive at our location.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Player_Warped(object sender, WarpedEventArgs e)
         {
             if (e.NewLocation?.Name == this._data.ExteriorMapName && Game1.getFarm().modData.TryGetValue(LastDonatedFishKey, out string qid))
@@ -84,13 +95,7 @@ namespace StardewAquarium
                 this.MigrateLastDonatedFish();
         }
 
-        public void UpdateLastDonatedFish(Item i)
-        {
-            Game1.getFarm().modData[LastDonatedFishKey] = i.QualifiedItemId;
-            this._monitor.Log($"The last donated fish is {i.Name}");
-        }
-
-        public void MigrateLastDonatedFish()
+        private void MigrateLastDonatedFish()
         {
 
             if (Game1.getFarm().modData.ContainsKey(LastDonatedFishKey))
