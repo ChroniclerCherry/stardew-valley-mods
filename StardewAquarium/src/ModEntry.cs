@@ -87,6 +87,32 @@ internal sealed class ModEntry : Mod
 
             this.Helper.ConsoleCommands.Add("aquariumprogress", "", this.OpenAquariumCollectionMenu);
             this.Helper.ConsoleCommands.Add("removedonatedfish", "", this.RemoveDonatedFish);
+            this.Helper.ConsoleCommands.Add("spawn_missing_fishes", string.Empty, this.SpawnMissingFish);
+        }
+    }
+
+    /// <summary>
+    /// fills the inventory with undonated fish.
+    /// </summary>
+    /// <param name="arg1"></param>
+    /// <param name="arg2"></param>
+    private void SpawnMissingFish(string arg1, string[] arg2)
+    {
+        if (!Context.IsWorldReady)
+            return;
+
+        foreach (var (key, data) in Game1.objectData)
+        {
+            if (data.Category != -4)
+                continue;
+
+            if (Utils.IsUnDonatedFish(data.Name))
+            {
+                if (!Game1.player.addItemToInventoryBool(ItemRegistry.Create(ItemRegistry.ManuallyQualifyItemId(key, ItemRegistry.type_object))))
+                {
+                    break;
+                }
+            }
         }
     }
 
