@@ -12,7 +12,7 @@ namespace StardewAquarium.Patches
         private static IModHelper _helper;
         private static IMonitor _monitor;
 
-        private static string? PufferChickID { get => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName); }
+        private static string? PufferChickID => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName);
 
         public static void Initialize(IModHelper helper, IMonitor monitor)
         {
@@ -34,7 +34,7 @@ namespace StardewAquarium.Patches
         {
             if (Game1.currentLocation?.Name != "FishMuseum" || __instance is not DonateFishMenuAndroid) return;
 
-            var nameItem = _helper.Reflection.GetField<string>(__instance, "nameItem");
+            IReflectedField<string> nameItem = _helper.Reflection.GetField<string>(__instance, "nameItem");
             string nameItemString = nameItem.GetValue();
             nameItem.SetValue(_helper.Translation.Get("Donate") + nameItemString);
 

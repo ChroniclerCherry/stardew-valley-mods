@@ -31,7 +31,7 @@ namespace StardewAquarium.Menus
 
         public override void receiveLeftClick(int x, int y, bool playSound = true)
         {
-            var item = this.getItemAt(x, y);
+            Item item = this.getItemAt(x, y);
             if (!Utils.IsUnDonatedFish(item))
                 return;
 

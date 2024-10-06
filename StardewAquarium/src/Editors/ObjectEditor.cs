@@ -18,7 +18,7 @@ namespace StardewAquarium.Editors
             if (asset.NameWithoutLocale.IsEquivalentTo(ObjInfoPath))
             {
                 string id = ModEntry.JsonAssets.GetObjectId(ModEntry.LegendaryBaitName);
-                var data = asset.AsDictionary<string, ObjectData>().Data;
+                System.Collections.Generic.IDictionary<string, ObjectData> data = asset.AsDictionary<string, ObjectData>().Data;
                 if (data.TryGetValue(id, out ObjectData entry))
                     entry.Category = Object.baitCategory;
             }

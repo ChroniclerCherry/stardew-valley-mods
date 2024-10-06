@@ -53,7 +53,6 @@ internal sealed class ModEntry : Mod
         this.AchievementEditor = new(this.Helper);
         this.FishEditor = new(this.Helper);
         this.ObjectEditor = new();
-        this.MiscEditor = new(this.Helper);
 
         this.Helper.Events.Content.AssetRequested += this.OnAssetRequested;
         this.Helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
@@ -98,7 +97,7 @@ internal sealed class ModEntry : Mod
     /// <param name="e"></param>
     private void OnDayStart(object sender, DayStartedEventArgs e)
     {
-        var loc = Game1.getLocationFromName(Data.ExteriorMapName);
+        GameLocation loc = Game1.getLocationFromName(Data.ExteriorMapName);
         if (loc is null)
             return;
 
@@ -108,7 +107,7 @@ internal sealed class ModEntry : Mod
         // HOWEVER that wasn't actually what it did. Instead, it just...caught something. Even if not baited.
         // We will mimic this by baiting the crabpots ourselves.
 
-        foreach (var obj in loc.objects.Values)
+        foreach (SObject obj in loc.objects.Values)
         {
             if (obj is not CrabPot pot || (pot.heldObject.Value is null || pot.heldObject.Value.Category != SObject.junkCategory))
             {
@@ -141,7 +140,7 @@ internal sealed class ModEntry : Mod
     {
         if (Context.CanPlayerMove && Config.CheckDonationCollection == e.Button)
         {
-            Game1.activeClickableMenu = new AquariumCollectionMenu(this.Helper.Translation.Get("CollectionsMenu"));
+            Game1.activeClickableMenu = new AquariumCollectionMenu(I18n.CollectionsMenu());
         }
     }
 
@@ -163,12 +162,12 @@ internal sealed class ModEntry : Mod
             Game1.random.Next(Data.DolphinRange.Top,
                 Data.DolphinRange.Bottom + 1));
 
-        var loc = Game1.currentLocation;
+        GameLocation loc = Game1.currentLocation;
 
         // Confirm there is water tiles in the 3x2 area the dolphin spawns in
         Vector2[] tiles = [ new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0),
             new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1) ];
-        foreach (var tile in tiles)
+        foreach (Vector2 tile in tiles)
         {
             if (loc.doesTileHaveProperty((int)((position.X / 64) + tile.X), (int)((position.Y / 64) + tile.Y), "Water", "Back") == null)
             {

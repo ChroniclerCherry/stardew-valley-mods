@@ -116,7 +116,7 @@ namespace StardewAquarium
 
             if (ModEntry.Data.ConversationTopicsOnDonate.Contains(i.Name))
             {
-                foreach (var farmer in Game1.getAllFarmers())
+                foreach (Farmer farmer in Game1.getAllFarmers())
                 {
                     farmer.activeDialogueEvents[donatedFlag] = 3;
                 }
@@ -144,7 +144,7 @@ namespace StardewAquarium
 
         public static bool DoesPlayerHaveDonatableFish()
         {
-            foreach (var item in Game1.player.Items)
+            foreach (Item item in Game1.player.Items)
             {
                 if (IsUnDonatedFish(item)) return true;
             }
@@ -154,7 +154,7 @@ namespace StardewAquarium
 
         public static IEnumerable<string> GetUndonatedFishInInventory()
         {
-            foreach (var item in Game1.player.Items)
+            foreach (Item item in Game1.player.Items)
             {
                 if (IsUnDonatedFish(item))
                     yield return item.ItemId;
@@ -243,7 +243,7 @@ namespace StardewAquarium
             MasterPlayerMail.Add(numDonated);
             if (ModEntry.Data.ConversationTopicsOnDonate.Contains(fishName))
             {
-                foreach (var farmer in Game1.getAllFarmers())
+                foreach (Farmer farmer in Game1.getAllFarmers())
                 {
                     farmer.activeDialogueEvents[donatedFlag] = 3;
                 }

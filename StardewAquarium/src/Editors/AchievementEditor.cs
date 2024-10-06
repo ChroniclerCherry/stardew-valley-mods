@@ -20,7 +20,7 @@ namespace StardewAquarium.Editors
 
         public void Edit(IAssetData asset)
         {
-            var data = asset.AsDictionary<int, string>().Data;
+            System.Collections.Generic.IDictionary<int, string> data = asset.AsDictionary<int, string>().Data;
             data[AchievementId] = $"{this._helper.Translation.Get("AchievementName")}^{this._helper.Translation.Get("AchievementDescription")}^true^-1^-1";
         }
     }

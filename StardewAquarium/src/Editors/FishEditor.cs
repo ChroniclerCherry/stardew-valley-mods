@@ -37,12 +37,12 @@ namespace StardewAquarium.Editors
             }
             else if (asset.NameWithoutLocale.IsEquivalentTo("Data/AquariumFish"))
             {
-                var data = asset.AsDictionary<string, string>().Data;
+                IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
                 data.Add(id, "20/float");
             }
             else if (asset.NameWithoutLocale.IsEquivalentTo("LooseSprites/AquariumFish"))
             {
-                var editor = asset.AsImage();
+                IAssetDataForImage editor = asset.AsImage();
 
                 IRawTextureData sourceImage = this._helper.ModContent.Load<IRawTextureData>("data/Objects/Pufferchick/object.png");
                 editor.PatchImage(sourceImage, targetArea: new Rectangle(4, 52, 16, 16));

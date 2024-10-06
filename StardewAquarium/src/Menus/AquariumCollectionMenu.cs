@@ -59,7 +59,7 @@ namespace StardewAquarium.Menus
             const int square_size = 10;
 
             // apply sort earlier.
-            var fishes = Game1.objectData.Where(kvp => kvp.Value?.Category == SObject.FishCategory).OrderBy(kvp => kvp.Key);
+            IOrderedEnumerable<KeyValuePair<string, ObjectData>> fishes = Game1.objectData.Where(kvp => kvp.Value?.Category == SObject.FishCategory).OrderBy(kvp => kvp.Key);
 
             this.collections.Add([]);
             List<ClickableTextureComponent> textureComponentList = this.collections.Last();
@@ -91,7 +91,7 @@ namespace StardewAquarium.Menus
                     y1 = top_left_y;
                     textureComponentList = this.collections.Last();
                 }
-                var texture = Game1.content.Load<Texture2D>(data.Texture ?? Game1.objectSpriteSheetName);
+                Texture2D texture = Game1.content.Load<Texture2D>(data.Texture ?? Game1.objectSpriteSheetName);
                 ClickableTextureComponent textureComponent8 = new(id + " " + drawColour + " " + drawColorFaded, new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, data.SpriteIndex, 16, 16), 4f, drawColour)
                 {
                     myID = this.collections.Last().Count,

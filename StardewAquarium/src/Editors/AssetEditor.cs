@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using Force.DeepCloner;
 
 using Microsoft.Xna.Framework.Graphics;
 
@@ -17,9 +17,10 @@ using StardewValley.GameData.Shirts;
 namespace StardewAquarium.src.Editors;
 internal static class AssetEditor
 {
+    private static string? LegendaryBaitId => ModEntry.JsonAssets?.GetObjectId(ModEntry.LegendaryBaitName);
 
-    private static Dictionary<IAssetName, Action<IAssetData>> _handlers;
-    private static Dictionary<IAssetName, string> _textureLoaders;
+    private readonly static Dictionary<IAssetName, Action<IAssetData>> _handlers = [];
+    private readonly static Dictionary<IAssetName, string> _textureLoaders = [];
     private static IMonitor Monitor;
 
     private const string AquariumOpenAfterLandslide = "StardewAquarium.Open";
@@ -46,6 +47,12 @@ internal static class AssetEditor
 
     private static void Handle(object sender, AssetRequestedEventArgs e)
     {
+        // move fish descriptions OUT.
+        if (e.NameWithoutLocale.IsEquivalentTo("Mods/StardewAquarium/FishDescriptions"))
+        {
+            e.LoadFrom(static () => new Dictionary<string, string>(), AssetLoadPriority.Exclusive);
+        }
+
         if (_handlers.TryGetValue(e.NameWithoutLocale, out Action<IAssetData> action))
         {
             e.Edit(action, AssetEditPriority.Late);
@@ -64,14 +71,28 @@ internal static class AssetEditor
     /// <param name="asset"></param>
     private static void EditDataLocations(IAssetData asset)
     {
-        var data = asset.AsDictionary<string, LocationData>().Data;
-        if (!data.TryGetValue("Beach", out var beachData))
+        // TODO: don't do this once JA integration is fully removed.
+        string? legendaryBaitQID = LegendaryBaitId is not null ? ItemRegistry.ManuallyQualifyItemId(LegendaryBaitId, ItemRegistry.type_object) : null;
+
+        IDictionary<string, LocationData> data = asset.AsDictionary<string, LocationData>().Data;
+
+
+
+        if (!data.TryGetValue("Beach", out LocationData beachData))
         {
             Monitor.Log("Beach data seems missing, cannot copy.", LogLevel.Warn);
             return;
         }
 
-        if (!data.TryGetValue(ModEntry.Data.ExteriorMapName, out var museumData))
+        // add entry for legendary bait and crimsonfish.
+        var crimsonfish = beachData.Fish?.FirstOrDefault(item => item.Id == "(O)159");
+        if (crimsonfish is not null && legendaryBaitQID is not null)
+        {
+            Monitor.Log($"Adding copy of crimsonfish for legendary bait.");
+            beachData.Fish.Add(crimsonfish.MakeLegendaryBaitEntry(legendaryBaitQID));
+        }
+
+        if (!data.TryGetValue(ModEntry.Data.ExteriorMapName, out LocationData museumData))
         {
             Monitor.Log("MuseumExterior data seems missing, cannot copy.", LogLevel.Warn);
             return;
@@ -83,7 +104,7 @@ internal static class AssetEditor
         if (beachData.FishAreas is not null)
         {
             museumData.FishAreas ??= [];
-            foreach (var (key, fisharea) in beachData.FishAreas)
+            foreach ((string key, FishAreaData fisharea) in beachData.FishAreas)
             {
                 beachData.FishAreas.TryAdd(key, fisharea);
             }
@@ -99,21 +120,21 @@ internal static class AssetEditor
 
     private static void EditDataMail(IAssetData asset)
     {
-        var data = asset.AsDictionary<string, string>().Data;
+        IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
         data[AquariumOpenAfterLandslide] = I18n.AquariumOpenLandslide();
         data[AquariumOpenLater] = I18n.AquariumOPenLater();
     }
 
     private static void EditShirtStrings(IAssetData asset)
     {
-        var data = asset.AsDictionary<string, string>().Data;
+        IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
         data["StardewAquarium_Pufferchick_Shirt_Name"] = I18n.PufferchickShirtName();
         data["StardewAquarium_Pufferchick_Shirt_Description"] = I18n.PufferchickShirtDescription();
     }
 
     private static void EditShirtData(IAssetData asset)
     {
-        var data = asset.AsDictionary<string, ShirtData>().Data;
+        IDictionary<string, ShirtData> data = asset.AsDictionary<string, ShirtData>().Data;
         data["Cherry.StardewAquarium_PufferchickShirt"] = new()
         {
             Name = "Pufferchick Shirt",
@@ -127,14 +148,14 @@ internal static class AssetEditor
 
     private static void EditStringsUi(IAssetData asset)
     {
-        var data = asset.AsDictionary<string, string>().Data;
+        IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
         data.Add("Chat_StardewAquarium.FishDonated", I18n.FishDonatedMP());
         data.Add("Chat_StardewAquarium.AchievementUnlocked", I18n.AchievementUnlockedMP());
     }
 
     private static void EditTriggerActions(IAssetData asset)
     {
-        var data = asset.GetData<List<TriggerActionData>>();
+        List<TriggerActionData> data = asset.GetData<List<TriggerActionData>>();
 
         // add aquarium mail.
         data.Add(
@@ -157,4 +178,28 @@ internal static class AssetEditor
     }
 
     #endregion
+}
+
+file static class AssetEditExtensions
+{
+    internal static void AddCondition(this GenericSpawnItemDataWithCondition spawnable, string newCondition)
+    {
+        if (string.IsNullOrWhiteSpace(spawnable.Condition))
+        {
+            spawnable.Condition = newCondition;
+        }
+        else
+        {
+            spawnable.Condition += $", {newCondition}";
+        }
+    }
+
+    internal static SpawnFishData MakeLegendaryBaitEntry(this SpawnFishData spawnable, string legendaryBaitQID)
+    {
+        var copy = spawnable.DeepClone();
+        copy.AddCondition($"{AquariumGameStateQuery.HasBaitQuery} Current {legendaryBaitQID}");
+        copy.CatchLimit = -1;
+
+        return copy;
+    }
 }

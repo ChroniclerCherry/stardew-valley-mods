@@ -164,7 +164,7 @@ namespace StardewAquarium.Patches
             if (Game1.random.NextDouble() > pufferChance)
                 return null;
 
-            var pufferchick = new Object(PufferChickID, 1);
+            Object pufferchick = new Object(PufferChickID, 1);
             pufferchick.SetTempData("IsBossFish", true); //Make pufferchick boss fish in 1.6+
             return pufferchick;
         }
