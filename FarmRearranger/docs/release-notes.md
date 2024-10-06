@@ -1,4 +1,7 @@
 ﻿# Release notes
+## Upcoming release
+- Improved translations. Thanks to CaranudLapin (updated French)!
+
 ## 1.0.4
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
 

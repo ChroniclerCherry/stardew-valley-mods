@@ -1,4 +1,8 @@
 ﻿# Release notes
+## Upcoming release
+- Updated for Stardew Valley 1.6 (thanks to MindMeltMax!).
+- Fixed menu scrolls cutting off text (thanks to MindMeltMax!).
+
 ## 1.5.4
 Released 15 March 2022 for SMAPI ? or later.
 

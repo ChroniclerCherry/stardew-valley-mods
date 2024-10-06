@@ -1,4 +1,11 @@
 ﻿# Release notes
+## Upcoming release
+- Added two commands: `list_cabins` and `list_renovations` (thanks to XTFOX!).
+- The `renovate_cabins` command now adds all renovations to all cabins that are level 2 or higher, including removing walls (thanks to XTFOX!).
+- Updated for the new 1.6 renovations and renovation costs (thanks to XTFOX!).
+- Fixed furniture not moved correctly when upgrading a cabin (thanks to XTFOX!).
+- Fixed dialogue issues (thanks to XTFOX!).
+
 ## 1.1.0
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
 

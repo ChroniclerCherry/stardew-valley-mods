@@ -1,6 +1,7 @@
-{
+﻿{
     "robinletter": "Héy @! ^Maru et moi avons travaillé sur un nouveau projet, et nous avons pensé que tu pourrais peut-être t’en servir. ^C'est ce qu'on appelle un 'Réarrangeur': un ensemble pratique de plans que tu peux utiliser pour changer la disposition de tes bâtiments de ferme par toi-même sans avoir à me téléphoner! ^Je les ai ajoutés à ma boutique, alors n'hésite pas à venir en chercher un quand tu le souhaites. À bientôt ! ^^-Robin[#]Avis de réarrangeur",
-    "CantBuildOffFarm" : "Vous ne pouvez réorganiser vos bâtiments qu'à partir de votre ferme."
-	"FarmRearranger_Name": "Réarrangeur de ferme",
+    "CantBuildOffFarm": "Vous ne pouvez réorganiser vos bâtiments qu'à partir de votre ferme.",
+
+    "FarmRearranger_Name": "Réarrangeur de ferme",
     "FarmRearranger_Description": "Vous permet de modifier l’emplacement de vos bâtiments de ferme."
 }
