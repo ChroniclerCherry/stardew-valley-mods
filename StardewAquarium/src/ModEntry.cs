@@ -130,22 +130,21 @@ namespace StardewAquarium
                                         (int)pot.TileLocation.Y);
 
                 // Search for suitable fish.
-                Dictionary<string, string> fishes = this.Helper.GameContent.Load<Dictionary<string, string>>("Data/Fish");
                 List<string> candidates = new List<string>();
-                foreach (KeyValuePair<string, string> fish in fishes)
+                foreach ((string fishId, string fishData) in DataLoader.Fish(Game1.content))
                 {
-                    if (!fish.Value.Contains("trap"))
+                    if (!fishData.Contains("trap"))
                         continue;
 
-                    string[] fields = fish.Value.Split('/');
+                    string[] fields = fishData.Split('/');
                     if (fields[4].Equals("freshwater"))
                         continue;
 
-                    candidates.Add(fish.Key);
+                    candidates.Add(fishId);
 
                     if (!mariner && rng.NextDouble() < Convert.ToDouble(fields[2]))
                     {
-                        pot.heldObject.Value = new Object(fish.Key, 1);
+                        pot.heldObject.Value = new Object(fishId, 1);
                         candidates.Clear();
                         break;
                     }
