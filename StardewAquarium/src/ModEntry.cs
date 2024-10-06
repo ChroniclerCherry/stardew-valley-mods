@@ -24,10 +24,11 @@ using SObject = StardewValley.Object;
 
 namespace StardewAquarium;
 
-public class ModEntry : Mod
+internal sealed class ModEntry : Mod
 {
-    public static ModConfig Config;
-    public static ModData Data;
+    internal static ModConfig Config { get; private set; } = null!;
+    internal static ModData Data { get; private set; } = null!;
+
     public const string PufferChickName = "Pufferchick";
     public const string LegendaryBaitName = "Legendary Bait";
     private readonly bool _isAndroid = Constants.TargetPlatform == GamePlatform.Android;
