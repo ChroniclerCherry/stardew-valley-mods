@@ -17,7 +17,7 @@ using Object = StardewValley.Object;
 
 namespace StardewAquarium
 {
-    public partial class ModEntry : Mod
+    public class ModEntry : Mod
     {
         public static ModConfig Config;
         public static ModData Data;
@@ -33,7 +33,6 @@ namespace StardewAquarium
         private MiscEditor MiscEditor;
 
         public static IJsonAssetsApi JsonAssets { get; set; }
-        public static ISpaceCoreAPI SpaceCore { get; set; }
         public override void Entry(IModHelper helper)
         {
             Utils.Initialize(this.Helper, this.Monitor, this.ModManifest);
@@ -65,7 +64,7 @@ namespace StardewAquarium
             string dataPath = Path.Combine("data", "data.json");
             Data = helper.Data.ReadJsonFile<ModData>(dataPath);
 
-            LegendaryFishPatches.Initialize(this.Helper, this.Monitor);
+            LegendaryFishPatches.Initialize();
 
 
             if (Config.EnableDebugCommands)

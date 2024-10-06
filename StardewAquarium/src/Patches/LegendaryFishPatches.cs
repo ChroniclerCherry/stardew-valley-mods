@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using HarmonyLib;
-using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Tools;
@@ -10,9 +8,6 @@ namespace StardewAquarium.Patches
 {
     static class LegendaryFishPatches
     {
-        private static IModHelper _helper;
-        private static IMonitor _monitor;
-
         private static string? PufferChickID => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName);
         private static string? LegendaryBaitId => ModEntry.JsonAssets?.GetObjectId(ModEntry.LegendaryBaitName);
 
@@ -22,21 +17,8 @@ namespace StardewAquarium.Patches
         private const string MutantCarpId = "682";
         private const string GlacierFishId = "775";
 
-        private static Dictionary<string, string> LegendaryFish = new Dictionary<string, string>()
+        public static void Initialize()
         {
-            {CrimsonFishId,"Crimsonfish"},
-            {AnglerId,"Angler"},
-            {LegendId,"Legend"},
-            {MutantCarpId,"MutantCarp"},
-            {GlacierFishId,"Glacierfish"}
-        };
-
-        public static void Initialize(IModHelper helper, IMonitor monitor)
-        {
-
-            _helper = helper;
-            _monitor = monitor;
-
             Harmony harmony = ModEntry.Harmony;
 
             //patch handles making the pufferchick catchable
@@ -44,37 +26,6 @@ namespace StardewAquarium.Patches
                 AccessTools.Method(typeof(GameLocation), nameof(GameLocation.getFish)),
                 new HarmonyMethod(typeof(LegendaryFishPatches), nameof(GameLocation_getFish_Prefix))
             );
-
-            //All of the below patches were absolved into GameLocation.getFish, so the patch above will handle location based checks
-
-            //makes crimsonfish recatchable
-            /*harmony.Patch(
-                AccessTools.Method(typeof(Beach), nameof(Beach.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Beach_getFish_prefix))
-            );
-
-            //makes Angler recatchable
-            harmony.Patch(
-                AccessTools.Method(typeof(Town), nameof(Town.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Town_getFish_prefix))
-            );
-
-            //makes Legend recatchable
-            harmony.Patch(
-                AccessTools.Method(typeof(Mountain), nameof(Mountain.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Mountain_getFish_prefix))
-            );
-            //makes MutantCarp recatchable
-            harmony.Patch(
-                AccessTools.Method(typeof(Sewer), nameof(Sewer.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Sewer_getFish_prefix))
-            );
-            //makes GlacierFish recatchable
-            harmony.Patch(
-                AccessTools.Method(typeof(Forest), nameof(Forest.getFish)),
-                new HarmonyMethod(typeof(LegendaryFishPatches), nameof(Forest_getFish_prefix))
-            );*/
-
         }
 
         public static bool Forest_getFish_prefix(int waterDepth, Farmer who, ref Item __result)
