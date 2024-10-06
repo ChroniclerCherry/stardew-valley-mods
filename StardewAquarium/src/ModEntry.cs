@@ -9,6 +9,7 @@ using StardewAquarium.Menus;
 using StardewAquarium.Models;
 using StardewAquarium.Patches;
 using StardewAquarium.src;
+using StardewAquarium.src.Editors;
 
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -43,6 +44,8 @@ public partial class ModEntry : Mod
         Utils.Initialize(this.Helper, this.Monitor, this.ModManifest);
         TileActions.Init(helper, this.Monitor);
         AquariumMessage.Initialize(this.Helper);
+
+        AssetEditor.Init(this.Helper.GameContent, this.Helper.Events.Content);
 
         this.AchievementEditor = new(this.Helper);
         this.FishEditor = new(this.Helper);

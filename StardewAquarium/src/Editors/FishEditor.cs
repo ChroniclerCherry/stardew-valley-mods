@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
@@ -31,9 +33,8 @@ namespace StardewAquarium.Editors
             string id = ModEntry.JsonAssets.GetObjectId(ModEntry.PufferChickName);
             if (asset.NameWithoutLocale.IsEquivalentTo("Data/Fish"))
             {
-                var data = asset.AsDictionary<string, string>().Data;
-                string localizedName = Game1.objectData[id].DisplayName;
-                data.Add(id, $"{localizedName}/95/mixed/28/28/0 2600/spring summer fall winter/both/688 .05/5/0/0/0");
+                IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
+                data.Add(id, $"{Game1.objectData[id].Name}/95/mixed/28/28/0 2600/spring summer fall winter/both/688 .05/5/0/0/0/false");
             }
             else if (asset.NameWithoutLocale.IsEquivalentTo("Data/AquariumFish"))
             {
@@ -54,7 +55,7 @@ namespace StardewAquarium.Editors
                 if (!data.TryGetValue(ModEntry.Data.ExteriorMapName, out var exterior))
                 {
                     // log failure.
-                    exterior = beachData;
+                    data[ModEntry.Data.ExteriorMapName] = beachData;
                     return;
                 }
 
