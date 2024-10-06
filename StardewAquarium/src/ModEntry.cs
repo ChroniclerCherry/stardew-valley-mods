@@ -70,7 +70,7 @@ namespace StardewAquarium
 
             if (Config.EnableDebugCommands)
             {
-                if (this._isAndroid || true)
+                if (this._isAndroid)
                     this.Helper.ConsoleCommands.Add("donatefish", "", this.AndroidDonateFish);
                 else
                     this.Helper.ConsoleCommands.Add("donatefish", "", this.OpenDonationMenuCommand);
