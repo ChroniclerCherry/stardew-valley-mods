@@ -104,14 +104,14 @@ internal sealed class ModEntry : Mod
             return;
 
         // the original method actually flat out re-implemented the code for crab pots. We're...not going to do that anymore.
-        // it was meant to mimick crabpot behavior on the beach, which is now in the data.
+        // it was meant to mimic crabpot behavior on the beach, which is now in the data.
 
         // HOWEVER that wasn't actually what it did. Instead, it just...caught something. Even if not baited.
         // We will mimic this by baiting the crabpots ourselves.
 
         foreach (var obj in loc.objects.Values)
         {
-            if (obj is not CrabPot pot || (pot.heldObject.Value is not null && pot.heldObject.Value.Category != SObject.junkCategory))
+            if (obj is not CrabPot pot || (pot.heldObject.Value is null || pot.heldObject.Value.Category != SObject.junkCategory))
             {
                 continue;
             }
