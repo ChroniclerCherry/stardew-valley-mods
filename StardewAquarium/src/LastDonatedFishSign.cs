@@ -9,13 +9,14 @@ using StardewModdingAPI.Events;
 
 using StardewValley;
 using StardewValley.Extensions;
+using StardewValley.ItemTypeDefinitions;
 
 namespace StardewAquarium
 {
     public class LastDonatedFishSign
     {
-        private IModHelper _helper;
-        private IMonitor _monitor;
+        private readonly IModHelper _helper;
+        private readonly IMonitor _monitor;
         private ModData _data { get => ModEntry.Data; }
 
         private const string LastDonatedFishKey = "Cherry.StardewAquarium.LastDonatedFish";
@@ -54,25 +55,24 @@ namespace StardewAquarium
 
         private void UpdateFishSign(string qid, GameLocation loc)
         {
-            var parsedItem = ItemRegistry.GetData(qid);
+            ParsedItemData parsedItem = ItemRegistry.GetData(qid);
+            this._monitor.Log($"Updating sign with {parsedItem?.QualifiedItemId}");
             if (parsedItem is null)
                 return;
 
-            var position = new Vector2(this._data.LastDonatedFishCoordinateX * 64f, this._data.LastDonatedFishCoordinateY * 64f);
-            var rect = parsedItem.GetSourceRect();
+            Vector2 position = new(this._data.LastDonatedFishCoordinateX * 64f, this._data.LastDonatedFishCoordinateY * 64f);
+            Rectangle rect = parsedItem.GetSourceRect();
 
-            var tas = new TemporaryAnimatedSprite
+            TemporaryAnimatedSprite tas = new(parsedItem.GetTextureName(), rect, position, false, 0, Color.White)
             {
-                texture = parsedItem.GetTexture(),
-                sourceRect = rect,
                 animationLength = 1,
                 sourceRectStartingPos = new(rect.X, rect.Y),
                 interval = 50000f,
                 totalNumberOfLoops = 9999,
                 position = position,
                 scale = Game1.pixelZoom,
-                layerDepth = (((position.Y) * Game1.tileSize) / 10000f) + 0.01f, // a little offset so it doesn't show up on the floor.
-                id = 777,
+                layerDepth = (this._data.LastDonatedFishCoordinateY / 10000f) + 0.01f, // a little offset so it doesn't show up on the floor.
+                id = 777
             };
 
             loc.temporarySprites.Add(tas);
@@ -99,8 +99,7 @@ namespace StardewAquarium
             }
 
             string fish = Game1.MasterPlayer.mailReceived
-                .Where(flag => flag
-                    .StartsWith("AquariumLastDonated:"))
+                .Where(flag => flag.StartsWith("AquariumLastDonated:"))
                 .Select(flag => flag.Split(':')[1])
                 .FirstOrDefault();
 
@@ -111,6 +110,12 @@ namespace StardewAquarium
 
             string qid = Game1.objectData.FirstOrDefault(kvp => kvp.Value.Name == fish).Key;
             this._monitor.Log($"The last donated fish on this file is {qid}");
+            if (qid is null)
+            {
+                return;
+            }
+
+            qid = ItemRegistry.ManuallyQualifyItemId(qid, ItemRegistry.type_object);
 
             Game1.getFarm().modData[LastDonatedFishKey] = qid;
             Game1.MasterPlayer.mailReceived.RemoveWhere(flag => flag.StartsWith("AquariumLastDonated:"));

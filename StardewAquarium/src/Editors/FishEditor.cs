@@ -44,13 +44,21 @@ namespace StardewAquarium.Editors
             {
                 var editor = asset.AsImage();
 
-                Texture2D sourceImage = this._helper.ModContent.Load<Texture2D>("data/Objects/Pufferchick/object.png");
+                IRawTextureData sourceImage = this._helper.ModContent.Load<IRawTextureData>("data/Objects/Pufferchick/object.png");
                 editor.PatchImage(sourceImage, targetArea: new Rectangle(4, 52, 16, 16));
             }
             else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Locations"))
             {
                 var data = asset.AsDictionary<string, LocationData>().Data;
-                data[ModEntry.Data.ExteriorMapName] = data["Beach"];
+                var beachData = data["Beach"];
+                if (!data.TryGetValue(ModEntry.Data.ExteriorMapName, out var exterior))
+                {
+                    // log failure.
+                    exterior = beachData;
+                    return;
+                }
+
+                exterior.ArtifactSpots = beachData.ArtifactSpots;
             }
 
         }

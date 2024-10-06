@@ -7,6 +7,7 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.GameData.Objects;
 using StardewValley.Menus;
+using StardewValley.TokenizableStrings;
 
 using Object = StardewValley.Object;
 
@@ -60,7 +61,7 @@ namespace StardewAquarium
                 {
                     FishIDs.Add(key);
                     InternalNameToDonationName.Add(fishName, fishName.Replace(" ", string.Empty));
-                    FishDisplayNames.Add(fishName.Replace(" ", string.Empty), info.DisplayName);
+                    FishDisplayNames.Add(fishName.Replace(" ", string.Empty), TokenParser.ParseText(info.DisplayName));
                 }
             }
         }

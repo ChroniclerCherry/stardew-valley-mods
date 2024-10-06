@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Principal;
+
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.TokenizableStrings;
 
 namespace StardewAquarium
 {
