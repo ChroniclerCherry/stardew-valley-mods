@@ -29,39 +29,19 @@ internal static class AssetEditor
     {
         Monitor = monitor;
         events.AssetRequested += Handle;
+
+        _handlers[parser.ParseAssetName("Strings/UI")] = EditStringsUi;
+
         _handlers[parser.ParseAssetName("Data/Locations")] = EditDataLocations;
         _handlers[parser.ParseAssetName("Data/Shirts")] = EditShirtData;
         _handlers[parser.ParseAssetName("Strings/Shirts")] = EditShirtStrings;
+
         _handlers[parser.ParseAssetName("Data/mail")] = EditDataMail;
         _handlers[parser.ParseAssetName("Data/TriggerActions")] = EditTriggerActions;
 
         _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Shirts")] = "assets/shirts.png";
         _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Items")] = "assets/items.png";
 
-    }
-
-    private static void EditTriggerActions(IAssetData asset)
-    {
-        var data = asset.GetData<List<TriggerActionData>>();
-
-        // add aquarium mail.
-        data.Add(
-            new()
-            {
-                Trigger = "DayStarted",
-                Action = $"AddMail Current {AquariumOpenAfterLandslide} Now, !PLAYER_HAS_MAIL Current {AquariumOpenLater} Any",
-                Condition = "DAYS_PLAYED 30 30",
-                Id = $"{AquariumOpenAfterLandslide}_Trigger"
-            });
-
-        data.Add(
-            new()
-            {
-                Trigger = "DayStarted",
-                Action = $"AddMail Current {AquariumOpenLater} Now, !PLAYER_HAS_MAIL Current {AquariumOpenAfterLandslide} Any",
-                Condition = "DAYS_PLAYED 31",
-                Id = $"{AquariumOpenLater}_Trigger"
-            });
     }
 
     private static void Handle(object sender, AssetRequestedEventArgs e)
@@ -143,6 +123,37 @@ internal static class AssetEditor
             Texture = "Mods/StardewAquarium/Shirts",
             SpriteIndex = 0,
         };
+    }
+
+    private static void EditStringsUi(IAssetData asset)
+    {
+        var data = asset.AsDictionary<string, string>().Data;
+        data.Add("Chat_StardewAquarium.FishDonated", I18n.FishDonatedMP());
+        data.Add("Chat_StardewAquarium.AchievementUnlocked", I18n.AchievementUnlockedMP());
+    }
+
+    private static void EditTriggerActions(IAssetData asset)
+    {
+        var data = asset.GetData<List<TriggerActionData>>();
+
+        // add aquarium mail.
+        data.Add(
+            new()
+            {
+                Trigger = "DayStarted",
+                Action = $"AddMail Current {AquariumOpenAfterLandslide} Now, !PLAYER_HAS_MAIL Current {AquariumOpenLater} Any",
+                Condition = "DAYS_PLAYED 30 30",
+                Id = $"{AquariumOpenAfterLandslide}_Trigger"
+            });
+
+        data.Add(
+            new()
+            {
+                Trigger = "DayStarted",
+                Action = $"AddMail Current {AquariumOpenLater} Now, !PLAYER_HAS_MAIL Current {AquariumOpenAfterLandslide} Any",
+                Condition = "DAYS_PLAYED 31",
+                Id = $"{AquariumOpenLater}_Trigger"
+            });
     }
 
     #endregion

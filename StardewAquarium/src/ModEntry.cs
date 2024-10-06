@@ -37,7 +37,6 @@ internal sealed class ModEntry : Mod
     private AchievementEditor AchievementEditor;
     private FishEditor FishEditor;
     private ObjectEditor ObjectEditor;
-    private MiscEditor MiscEditor;
 
     public static IJsonAssetsApi JsonAssets { get; set; }
 
@@ -136,8 +135,6 @@ internal sealed class ModEntry : Mod
             e.Edit(this.FishEditor.Edit);
         else if (this.ObjectEditor.CanEdit(e.NameWithoutLocale))
             e.Edit(this.ObjectEditor.Edit);
-        else if (this.MiscEditor.CanEdit(e.NameWithoutLocale))
-            e.Edit(this.MiscEditor.Edit);
     }
 
     private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
@@ -185,11 +182,13 @@ internal sealed class ModEntry : Mod
     private void AndroidPlsHaveMercyOnMe(object sender, MenuChangedEventArgs e)
     {
         //don't ask me what the heck is going on here but its the only way to get it to work
-        if (e.OldMenu is not DonateFishMenuAndroid androidMenu) return;
+        if (e.OldMenu is not DonateFishMenuAndroid androidMenu)
+            return;
         //80% sure this is a DonateFishMenuAndroid but it won't work if i check for that but the harmony patch seems to work on it so idk
-        if (e.NewMenu is not ShopMenu menu) return;
+        if (e.NewMenu is not ShopMenu menu)
+            return;
 
-        menu.exitFunction = androidMenu.OnExit;
+        menu.exitFunction += androidMenu.OnExit;
     }
 
     private void AndroidDonateFish(string arg1, string[] arg2)
@@ -231,6 +230,8 @@ internal sealed class ModEntry : Mod
 
     private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
     {
+        AquariumGameStateQuery.Init();
+
         JsonAssets = this.Helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
         JsonAssets.LoadAssets(Path.Combine(this.Helper.DirectoryPath, "data"));
 
