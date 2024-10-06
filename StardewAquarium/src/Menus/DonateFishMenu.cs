@@ -14,9 +14,9 @@ namespace StardewAquarium.Menus
         private bool _donated;
         private bool _pufferchickDonated;
 
-        private static int PufferChickID { get => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName) ?? -1; }
+        private static string? PufferChickID { get => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName); }
 
-        public DonateFishMenu(IModHelper translate, IMonitor monitor) : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, true, null, Utils.IsUnDonatedFish, 36, 3)
+        public DonateFishMenu(IModHelper translate, IMonitor monitor) : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, false, null, Utils.IsUnDonatedFish, 36, 3)
         {
             this.showGrayedOutSlots = true;
             this._helper = translate;
@@ -38,7 +38,7 @@ namespace StardewAquarium.Menus
                 if (item.Stack == 0)
                     Game1.player.removeItemFromInventory(item);
 
-                if (item.ParentSheetIndex == PufferChickID)
+                if (item.ItemId == PufferChickID)
                 {
                     Game1.playSound("openChest");
                     this._pufferchickDonated = true;
@@ -59,9 +59,9 @@ namespace StardewAquarium.Menus
 
             string title = this._helper.Translation.Get("DonationMenuTitle");
             SpriteText.drawStringWithScrollCenteredAt(b, title, Game1.viewport.Width / 2,
-                Game1.viewport.Height / 2 - 128, title, 1f, -1, 0, 0.88f, false);
+                Game1.viewport.Height / 2 - 128, SpriteText.getWidthOfString(title) + 16, 1f, null, 0, 0.88f, false);
 
-            Game1.drawDialogueBox(this.xPositionOnScreen - 64, this.yPositionOnScreen - 160, this.width + 128, this.height + 192, false, true);
+            Game1.drawDialogueBox(this.xPositionOnScreen - 64, this.yPositionOnScreen - 128, this.width + 128, this.height + 176, false, true);
 
             base.draw(b);
             this.drawMouse(b);

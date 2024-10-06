@@ -2,8 +2,8 @@ namespace StardewAquarium.Models
 {
     public interface IJsonAssetsApi
     {
-        int GetObjectId(string name);
-        int GetBigCraftableId(string name);
+        string GetObjectId(string name);
+        string GetBigCraftableId(string name);
         void LoadAssets(string path);
     }
 }

@@ -3,7 +3,6 @@ using StardewModdingAPI;
 namespace StardewAquarium.Editors
 {
     class AchievementEditor
-
     {
         private IModHelper _helper;
 

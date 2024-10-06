@@ -15,14 +15,14 @@ namespace StardewAquarium
         private static IMonitor _monitor;
         private static IManifest _manifest;
 
-        private static NetStringList MasterPlayerMail => Game1.MasterPlayer.mailReceived;
+        private static NetStringHashSet MasterPlayerMail => Game1.MasterPlayer.mailReceived;
 
         /// <summary>
         /// Maps the InternalName of the fish to its internalname without spaces, eg. Rainbow Trout to RainbowTrout
         /// </summary>
         /// 
         public static Dictionary<string, string> InternalNameToDonationName { get; set; } = new Dictionary<string, string>();
-        public static List<int> FishIDs = new List<int>();
+        public static List<string> FishIDs = new List<string>();
 
         /// <summary>
         /// Maps the internal name without spaces to its localized display name
@@ -49,15 +49,15 @@ namespace StardewAquarium
             InternalNameToDonationName.Clear();
             FishDisplayNames.Clear();
 
-            foreach (var kvp in Game1.objectInformation)
+            foreach (var kvp in Game1.objectData)
             {
-                var info = kvp.Value.Split('/');
-                var fishName = info[0];
-                if (info[3].Contains("-4"))
+                var info = kvp.Value;
+                string fishName = info.Name;
+                if (info.Category == Object.FishCategory)
                 {
                     FishIDs.Add(kvp.Key);
                     InternalNameToDonationName.Add(fishName, fishName.Replace(" ", string.Empty));
-                    FishDisplayNames.Add(fishName.Replace(" ", string.Empty), info[4]);
+                    FishDisplayNames.Add(fishName.Replace(" ", string.Empty), info.DisplayName);
                 }
             }
         }
@@ -167,11 +167,12 @@ namespace StardewAquarium
             return false;
         }
 
-        public static IEnumerable<int> GetUndonatedFishInInventory()
+        public static IEnumerable<string> GetUndonatedFishInInventory()
         {
             foreach (var item in Game1.player.Items)
             {
-                if (IsUnDonatedFish(item)) yield return item.ParentSheetIndex;
+                if (IsUnDonatedFish(item))
+                    yield return item.ItemId;
             }
         }
 
@@ -220,7 +221,7 @@ namespace StardewAquarium
             if (Game1.player.achievements.Contains(AchievementEditor.AchievementId))
                 return;
 
-            Game1.addHUDMessage(new HUDMessage(_helper.Translation.Get("AchievementName"), true));
+            Game1.addHUDMessage(HUDMessage.ForAchievement(_helper.Translation.Get("AchievementName")));
             Game1.playSound("achievement");
             Game1.player.achievements.Add(AchievementEditor.AchievementId);
 

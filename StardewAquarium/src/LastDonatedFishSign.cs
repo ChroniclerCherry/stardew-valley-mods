@@ -3,6 +3,7 @@ using System.Linq;
 using Netcode;
 using StardewAquarium.Models;
 using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
 using StardewValley;
 using xTile.Layers;
@@ -15,10 +16,10 @@ namespace StardewAquarium
         private IModHelper _helper;
         private IMonitor _monitor;
         private ModData _data { get => ModEntry.Data; }
-        public int LastDonatedFish { get; set; } = -1;
+        public string LastDonatedFish { get; set; } = null;
 
         private const string objTilesheetName = "z_objects";
-        private static NetStringList MasterPlayerMail => Game1.MasterPlayer.mailReceived;
+        private static NetStringHashSet MasterPlayerMail => Game1.MasterPlayer.mailReceived;
 
         public LastDonatedFishSign(IModHelper helper, IMonitor monitor)
         {
@@ -32,7 +33,7 @@ namespace StardewAquarium
             this._helper.Events.GameLoop.DayStarted += this.GameLoop_DayStarted;
         }
 
-        private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
+        private void GameLoop_DayStarted(object sender, DayStartedEventArgs e)
         {
             if (!MasterPlayerMail.Contains("AquariumCompleted"))
                 return;
@@ -42,22 +43,22 @@ namespace StardewAquarium
             this.LastDonatedFish = Utils.FishIDs[i];
         }
 
-        private void Multiplayer_ModMessageReceived(object sender, StardewModdingAPI.Events.ModMessageReceivedEventArgs e)
+        private void Multiplayer_ModMessageReceived(object sender, ModMessageReceivedEventArgs e)
         {
             if (e.FromModID == "Cherry.StardewAquarium" && e.Type == "FishDonated")
             {
-                this.LastDonatedFish = e.ReadAs<int>();
+                this.LastDonatedFish = e.ReadAs<string>();
                 this._monitor.Log($"The player {e.FromPlayerID} donated the fish of ID {this.LastDonatedFish}");
             }
         }
 
-        private void Player_Warped(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
+        private void Player_Warped(object sender, WarpedEventArgs e)
         {
             if (e?.NewLocation.Name == this._data.ExteriorMapName)
                 this.UpdateLastDonatedFishSign();
         }
 
-        private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
+        private void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
         {
             this.SetLastDonatedFish();
         }
@@ -71,7 +72,7 @@ namespace StardewAquarium
             }
 
             this._monitor.Log($"The last donated fish is {i.Name}");
-            this.LastDonatedFish = i.ParentSheetIndex;
+            this.LastDonatedFish = i.ItemId;
             try
             {
                 this._helper.Multiplayer.SendMessage(this.LastDonatedFish, "FishDonated",
@@ -95,13 +96,14 @@ namespace StardewAquarium
 
             if (fish == null)
             {
-                this.LastDonatedFish = -1;
+                this.LastDonatedFish = null;
                 return;
             }
 
-            foreach (var kvp in Game1.objectInformation)
+            foreach (var kvp in Game1.objectData)
             {
-                if (kvp.Value.Split('/')[0] != fish) continue;
+                if (kvp.Value.Name != fish)
+                    continue;
 
                 this.LastDonatedFish = kvp.Key;
                 break;
@@ -112,7 +114,7 @@ namespace StardewAquarium
 
         internal void UpdateLastDonatedFishSign()
         {
-            if (this.LastDonatedFish < 0)
+            if (this.LastDonatedFish is null)
                 return;
 
             var map = Game1.getLocationFromName(this._data.ExteriorMapName)?.Map;
@@ -141,7 +143,7 @@ namespace StardewAquarium
                 map.LoadTileSheets(Game1.mapDisplayDevice);
             }
 
-            layer.Tiles[this._data.LastDonatedFishCoordinateX, this._data.LastDonatedFishCoordinateY] = new StaticTile(layer, objectsTilesheet, BlendMode.Alpha, tileIndex: this.LastDonatedFish);
+            layer.Tiles[this._data.LastDonatedFishCoordinateX, this._data.LastDonatedFishCoordinateY] = new StaticTile(layer, objectsTilesheet, BlendMode.Alpha, tileIndex: ItemRegistry.GetDataOrErrorItem(this.LastDonatedFish).SpriteIndex);
         }
     }
 }

@@ -12,9 +12,9 @@ namespace StardewAquarium.Menus
         public static bool Donated;
         public static bool PufferchickDonated;
 
-        private Dictionary<ISalable, int[]> donations = new Dictionary<ISalable, int[]>();
+        private Dictionary<ISalable, ItemStockInformation> donations = new Dictionary<ISalable, ItemStockInformation>();
 
-        public DonateFishMenuAndroid(IModHelper helper, IMonitor monitor) : base(new Dictionary<ISalable, int[]>())
+        public DonateFishMenuAndroid(IModHelper helper, IMonitor monitor) : base("-1", new Dictionary<ISalable, ItemStockInformation>())
         {
             //look android forced me to do this terrible thing don't judge me just pretend they're not static
             Donated = PufferchickDonated = false;
@@ -25,18 +25,18 @@ namespace StardewAquarium.Menus
              * I'll come back and readdress this someday probably, when I have more sanity to spend. I'm all out atm
             */
 
-            List<int> fishes = Utils.GetUndonatedFishInInventory().Distinct().ToList();
+            List<string> fishes = Utils.GetUndonatedFishInInventory().Distinct().ToList();
             if (fishes.Count == 0)
                 return;
 
-            foreach (int fish in fishes)
+            foreach (string fish in fishes)
             {
                 Object display = new Object(fish, 1);
-                display.DisplayName = "Donate " + display.DisplayName;
-                this.donations.Add(display, new int[] { 0, 1, fish, 1 });
+                display.displayName = "Donate " + display.DisplayName;
+                this.donations.Add(display, new(0, 1, fish, 1));
             }
 
-            setItemPriceAndStock(this.donations);
+            this.setItemPriceAndStock(this.donations);
         }
 
         public void OnExit()
