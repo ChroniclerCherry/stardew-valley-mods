@@ -27,6 +27,11 @@
     "WhichFishInfo": "你想进一步了解哪种鱼？",
     "EmptyTank": "只是一个水箱...",
 
+    // items.
+    "Decor": "Decor", // used as the override category name for one item.
+    "pufferchick-shirt-name": "河豚鸡鱼T恤",
+    "pufferchick-shirt-description": "去了水族馆，捐赠了鱼，还买了件T恤。",
+
     //dialogue boxes
     "Ice": "所有这些冰...用于用该机器冷却水箱。",
     "IceMachine": "这台机器可在非常低的温度下保持水箱冷却。",

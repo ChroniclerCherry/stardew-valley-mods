@@ -9,7 +9,9 @@ using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 
+using StardewValley;
 using StardewValley.GameData.Locations;
+using StardewValley.GameData.Shirts;
 
 namespace StardewAquarium.src.Editors;
 internal static class AssetEditor
@@ -24,10 +26,32 @@ internal static class AssetEditor
         Monitor = monitor;
         events.AssetRequested += Handle;
         _handlers[parser.ParseAssetName("Data/Locations")] = EditDataLocations;
+        _handlers[parser.ParseAssetName("Data/Shirts")] = EditShirtData;
+        _handlers[parser.ParseAssetName("Strings/Shirts")] = EditShirtStrings;
 
         _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Shirts")] = "assets/shirts.png";
         _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Items")] = "assets/items.png";
 
+    }
+
+    private static void EditShirtStrings(IAssetData asset)
+    {
+        var data = asset.AsDictionary<string, string>().Data;
+        data["StardewAquarium_Pufferchick_Shirt_Name"] = I18n.Pufferchick_Shirt_Name();
+    }
+
+    private static void EditShirtData(IAssetData asset)
+    {
+        var data = asset.AsDictionary<string, ShirtData>().Data;
+        data["Cherry.StardewAquarium_PufferchickShirt"] = new()
+        {
+            Name = "Pufferchick Shirt",
+            DisplayName = "[LocalizedText Strings\\Shirts:StardewAquarium_Pufferchick_Shirt_Name]",
+            Description = "[LocalizedText Strings\\Shirts:StardewAquarium_Pufferchick_Shirt_Description]",
+            Price = 200,
+            Texture = "Mods/StardewAquarium/Shirts",
+            SpriteIndex = 0,
+        };
     }
 
     private static void Handle(object sender, AssetRequestedEventArgs e)

@@ -27,6 +27,11 @@
     "WhichFishInfo": "Sobre quais peixes você gostaria de saber mais?",
     "EmptyTank": "Apenas um tanque vazio...",
 
+    // items.
+    "Decor": "Decor", // used as the override category name for one item.
+    "pufferchick-shirt-name": "Camiseta de Galiacu",
+    "pufferchick-shirt-description": "Galiacu!",
+
     //dialogue boxes
     "Ice": "Todo esse gelo... é usado para resfriar o tanque com aquela máquina.",
     "IceMachine": "Esta máquina mantém o tanque resfriado em temperaturas muito baixas.",

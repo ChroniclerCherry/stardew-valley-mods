@@ -29,6 +29,8 @@
 
     // items.
     "Decor": "Decor", // used as the override category name for one item.
+    "pufferchick-shirt-name": "Pufferchick Shirt",
+    "pufferchick-shirt-description": "Been there, done that, got the T-shirt.",
 
     //dialogue boxes
     "Ice": "All this ice... it's used for cooling the tank with that machine.",
@@ -195,7 +197,7 @@
     "Tank_ClownKnifefish": "Clown Knifefish also goes by other names such as Clown Featherback or Spotted Knifefish. This nocturnal freshwater fish is usually found in lakes.",
     "Tank_RedtailShark": "The Redtail Shark or 'Redtail Sharkminnow' is a species of freshwater fish from the carp family. It has a black body with a characteristic orange tail. Even though its name might suggest that it is related to sharks, it is not.",
     "Tank_ClownLoach": "The Clown Loach or 'Tiger Botia' as it is also known as, is a species of freshwater fish belonging to the botiid loach family. It has a long orange to yellow body with black bands. Its mouth is faced downwards with 4 barbels.",
-    "Tank_Sauger": "The Sauger is a freshwater fish that is closely related to the Walleye. It is a well-adapted predatory that is capable of swimming in fast streams. Saugers on a variety of invertebrates and small fish.	",
+    "Tank_Sauger": "The Sauger is a freshwater fish that is closely related to the Walleye. It is a well-adapted predatory that is capable of swimming in fast streams. Saugers on a variety of invertebrates and small fish.\t",
     "Tank_Elephantfish": "Elephantfish or rather the 'Freshwater Elephantfish', not to be confused with the marine elephantfish, is a family of freshwater fish. Some species have a modified mouthparts to feed on small invertebrates in muddy substrates.",
     "Tank_FlameAngelfish": "The Flame Angelfish or Flaming Angelfish is a species of angelfish. It has a bright orange-red colourization, black bars on its side with dorsal and anal fins that are blue. Its diet can vary from algae to crustaceans.",
     "Tank_ThreespotAngelfish": "The Threespot Angelfish is a species of angelfish. It has a bright yellow colourization with three dark spots on its body. The females of this species can change their sex at one point during their lifetime.",
