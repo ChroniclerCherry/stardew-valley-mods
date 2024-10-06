@@ -1,9 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
+
 using HarmonyLib;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using StardewAquarium.Editors;
 using StardewAquarium.Menus;
 using StardewAquarium.Models;
@@ -13,9 +15,11 @@ using StardewAquarium.src.Editors;
 
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+
 using StardewValley;
 using StardewValley.Menus;
 using StardewValley.Objects;
+
 using SObject = StardewValley.Object;
 
 namespace StardewAquarium;
@@ -35,7 +39,7 @@ public class ModEntry : Mod
     private MiscEditor MiscEditor;
 
     public static IJsonAssetsApi JsonAssets { get; set; }
-    public static ISpaceCoreAPI SpaceCore { get; set; }
+
     public override void Entry(IModHelper helper)
     {
         I18n.Init(helper.Translation);
@@ -56,6 +60,7 @@ public class ModEntry : Mod
         this.Helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
         this.Helper.Events.GameLoop.UpdateTicked += this.GameLoop_UpdateTicked;
         this.Helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
+        this.Helper.Events.GameLoop.DayStarted += this.OnDayStart;
 
         if (this._isAndroid)
         {
@@ -83,6 +88,42 @@ public class ModEntry : Mod
 
             this.Helper.ConsoleCommands.Add("aquariumprogress", "", this.OpenAquariumCollectionMenu);
             this.Helper.ConsoleCommands.Add("removedonatedfish", "", this.RemoveDonatedFish);
+        }
+    }
+
+    /// <summary>
+    /// Updates crab pots
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void OnDayStart(object sender, DayStartedEventArgs e)
+    {
+        var loc = Game1.getLocationFromName(Data.ExteriorMapName);
+        if (loc is null)
+            return;
+
+        // the original method actually flat out re-implemented the code for crab pots. We're...not going to do that anymore.
+        // it was meant to mimick crabpot behavior on the beach, which is now in the data.
+
+        // HOWEVER that wasn't actually what it did. Instead, it just...caught something. Even if not baited.
+        // We will mimic this by baiting the crabpots ourselves.
+
+        foreach (var obj in loc.objects.Values)
+        {
+            if (obj is not CrabPot pot || (pot.heldObject.Value is not null && pot.heldObject.Value.Category != SObject.junkCategory))
+            {
+                continue;
+            }
+
+            try
+            {
+                pot.bait.Value ??= new SObject("685", 1); // normal bait.
+                pot.DayUpdate();
+            }
+            catch (Exception ex)
+            {
+                this.Monitor.Log(ex.ToString());
+            }
         }
     }
 
@@ -159,8 +200,8 @@ public class ModEntry : Mod
     {
         if (!Context.IsMainPlayer)
         {
-            var master = this.Helper.Multiplayer.GetConnectedPlayer(Game1.MasterPlayer.UniqueMultiplayerID);
-            var us = master.GetMod(this.ModManifest.UniqueID);
+            IMultiplayerPeer master = this.Helper.Multiplayer.GetConnectedPlayer(Game1.MasterPlayer.UniqueMultiplayerID);
+            IMultiplayerPeerMod us = master.GetMod(this.ModManifest.UniqueID);
             if (us is null)
             {
                 this.Monitor.Log($"Host seems to be missing Stardew Aquarium. Certain features may not work as advertised.", LogLevel.Error);

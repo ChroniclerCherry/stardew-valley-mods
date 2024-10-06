@@ -59,12 +59,12 @@ namespace StardewAquarium.Menus
             const int square_size = 10;
 
             // apply sort earlier.
-            List<KeyValuePair<string, ObjectData>> fishes = new(Game1.objectData.Where(kvp => kvp.Value?.Category == SObject.FishCategory));
+            var fishes = Game1.objectData.Where(kvp => kvp.Value?.Category == SObject.FishCategory).OrderBy(kvp => kvp.Key);
 
             this.collections.Add([]);
             List<ClickableTextureComponent> textureComponentList = this.collections.Last();
             int index = 0;
-            foreach (var (id, data) in fishes.OrderBy(kvp=>kvp.Key))
+            foreach ((string id, ObjectData data) in fishes)
             {
                 bool drawColour = false;
                 bool drawColorFaded = false;
