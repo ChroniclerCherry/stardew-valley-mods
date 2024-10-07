@@ -70,7 +70,7 @@ namespace StardewAquarium
                 responsesThisPage = [];
             }
 
-            responsesThisPage.Add(new Response("Exit", _translation.Get("Exit")));
+            responsesThisPage.Add(new Response("Exit", I18n.Exit()));
             this._responsePages.Add(responsesThisPage.ToArray());
         }
 
@@ -89,7 +89,7 @@ namespace StardewAquarium
                 _helper.Events.GameLoop.UpdateTicked += this.OpenNextPage;
                 return;
             }
-            Game1.drawObjectDialogue(_translation.Get($"Tank_{whichAnswer}"));
+            Game1.drawObjectDialogue(I18n.GetByKey($"Tank_{whichAnswer}"));
         }
 
         private void OpenNextPage(object sender, UpdateTickedEventArgs e)
