@@ -1,15 +1,13 @@
 using System;
 
 using Microsoft.Xna.Framework;
-
 using StardewAquarium.Editors;
 using StardewAquarium.Menus;
-
 using StardewModdingAPI;
 
 using StardewValley;
 
-namespace StardewAquarium.src;
+namespace StardewAquarium.src.Framework;
 
 internal static class TileActions
 {
@@ -80,7 +78,7 @@ internal static class TileActions
         switch (whichAnswer)
         {
             case "OptionNo":
-                Game1.drawObjectDialogue(I18n.DeclineToDonate() );
+                Game1.drawObjectDialogue(I18n.DeclineToDonate());
                 return;
             case "OptionYes" when Constants.TargetPlatform == GamePlatform.Android:
                 Game1.activeClickableMenu = new DonateFishMenuAndroid(Helper, Monitor);

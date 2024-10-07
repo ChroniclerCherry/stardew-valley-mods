@@ -38,7 +38,7 @@ namespace StardewAquarium.Patches
             string nameItemString = nameItem.GetValue();
             nameItem.SetValue(_helper.Translation.Get("Donate") + nameItemString);
 
-            _helper.Reflection.GetField<string>(__instance, "descItem").SetValue(_helper.Translation.Get("DonateDescription"));
+            _helper.Reflection.GetField<string>(__instance, "descItem").SetValue(I18n.DonateDescription());
         }
 
         private static void tryToPurchaseItem_postfix(ref ShopMenu __instance, ref ISalable item)
