@@ -88,14 +88,19 @@ namespace StardewAquarium
 
         }
 
-        public static bool IsUnDonatedFish(string s)
+        /// <summary>
+        /// Checks to see if a fish can be donated.
+        /// </summary>
+        /// <param name="name">the internal name of the fish.</param>
+        /// <returns>Whether or not that fish has been donated.</returns>
+        public static bool IsUnDonatedFish(string? name)
         {
-            if (s is null)
+            if (name is null)
                 return false;
 
-            if (InternalNameToDonationName.ContainsValue(s))
+            if (InternalNameToDonationName.ContainsValue(name))
             {
-                return !MasterPlayerMail.Contains($"AquariumDonated:{s}");
+                return !MasterPlayerMail.Contains($"AquariumDonated:{name}");
             }
             return false;
         }

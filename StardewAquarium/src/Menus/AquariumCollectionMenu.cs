@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
+using StardewValley.Extensions;
 using StardewValley.GameData.Objects;
 using StardewValley.ItemTypeDefinitions;
 using StardewValley.Menus;
@@ -64,21 +65,19 @@ namespace StardewAquarium.Menus
             this.collections.Add([]);
             List<ClickableTextureComponent> textureComponentList = this.collections.Last();
             int index = 0;
-            foreach ((string id, ObjectData data) in fishes)
+            foreach (var data in ItemRegistry.GetObjectTypeDefinition().GetAllData().Where(static data => data.Category == SObject.FishCategory).OrderBy(static data => (data.TextureName, data.ItemId)))
             {
-                bool drawColour = false;
+                bool drawColor = false;
                 bool drawColorFaded = false;
 
-                string name = data.Name;
-                if (Game1.player.fishCaught.ContainsKey(id))
+                if (!Utils.IsUnDonatedFish(data.InternalName))
+                {
+                    drawColor = true;
+                    drawColorFaded = false;
+                }
+                else if (Game1.player.fishCaught.ContainsKey(data.QualifiedItemId))
                 {
                     drawColorFaded = true;
-                }
-
-                if (!Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]))
-                {
-                    drawColour = true;
-                    drawColorFaded = false;
                 }
 
                 int x1 = top_left_x + index % square_size * 68;
@@ -91,8 +90,8 @@ namespace StardewAquarium.Menus
                     y1 = top_left_y;
                     textureComponentList = this.collections.Last();
                 }
-                Texture2D texture = Game1.content.Load<Texture2D>(data.Texture ?? Game1.objectSpriteSheetName);
-                ClickableTextureComponent textureComponent8 = new(id + " " + drawColour + " " + drawColorFaded, new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, data.SpriteIndex, 16, 16), 4f, drawColour)
+                Texture2D texture = data.GetTexture();
+                ClickableTextureComponent textureComponent8 = new($"{data.ItemId} {drawColor} {drawColorFaded}", new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, data.SpriteIndex, 16, 16), 4f, drawColor)
                 {
                     myID = this.collections.Last().Count,
                     rightNeighborID = (this.collections.Last().Count + 1) % square_size == 0 ? -1 : this.collections.Last().Count + 1,
@@ -192,14 +191,7 @@ namespace StardewAquarium.Menus
 
         public string createDescription(string key)
         {
-            ParsedItemData data = ItemRegistry.GetDataOrErrorItem(key);
-
-            string name = data.InternalName;
-            if (Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]) && !Game1.player.fishCaught.ContainsKey(key))
-                return "???";
-
-            string returnStr = data.DisplayName + Environment.NewLine + Environment.NewLine + Game1.parseText(data.Description, Game1.smallFont, 256) + Environment.NewLine;
-            return returnStr;
+            return CreateDescription(ItemRegistry.GetDataOrErrorItem(key));
         }
 
         public override void draw(SpriteBatch b)
@@ -237,6 +229,16 @@ namespace StardewAquarium.Menus
             }
 
             this.drawMouse(b);
+        }
+
+        internal static string CreateDescription(ParsedItemData data)
+        {
+            string name = data.InternalName;
+            if (Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]) && !Game1.player.fishCaught.ContainsKey(data.QualifiedItemId))
+                return "???";
+
+            string returnStr = data.DisplayName + Environment.NewLine + Environment.NewLine + Game1.parseText(data.Description, Game1.smallFont, 256) + Environment.NewLine;
+            return returnStr;
         }
     }
 }
