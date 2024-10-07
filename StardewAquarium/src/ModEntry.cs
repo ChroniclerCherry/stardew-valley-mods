@@ -43,7 +43,6 @@ internal sealed class ModEntry : Mod
 
         Utils.Initialize(this.Helper, this.Monitor, this.ModManifest);
         TileActions.Init(helper, this.Monitor);
-        AquariumMessage.Initialize(this.Helper);
 
         AssetEditor.Init(this.Helper.GameContent, this.Helper.Events.Content, this.Monitor);
 

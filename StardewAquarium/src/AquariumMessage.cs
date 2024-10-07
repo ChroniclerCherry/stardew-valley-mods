@@ -11,8 +11,8 @@ namespace StardewAquarium;
 
 internal sealed class AquariumMessage
 {
-    private PerScreen<List<Response[]>?> _responsePages = new();
-    private PerScreen<int> _currentPage = new();
+    private List<Response[]>?_responsePages = null;
+    private int _currentPage = 0;
 
     public AquariumMessage(Span<string> args)
     {
@@ -36,13 +36,13 @@ internal sealed class AquariumMessage
         }
 
         this.BuildResponse(fishes);
-        Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages.Value[this._currentPage.Value], this.displayFishInfo);
+        Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages[this._currentPage], this.displayFishInfo);
     }
 
     private void BuildResponse(List<string> fishes)
     {
-        this._responsePages.Value = [];
-        this._currentPage.Value = 0;
+        this._responsePages = [];
+        this._currentPage = 0;
         List<Response> responsesThisPage = [];
 
         for (int index = 0; index < fishes.Count; index++)
@@ -59,12 +59,12 @@ internal sealed class AquariumMessage
             if (index < fishes.Count - 1)
                 responsesThisPage.Add(new Response("More", I18n.More()));
             responsesThisPage.Add(new Response("Exit", I18n.Exit()));
-            this._responsePages.Value.Add(responsesThisPage.ToArray());
+            this._responsePages.Add(responsesThisPage.ToArray());
             responsesThisPage = [];
         }
 
         responsesThisPage.Add(new Response("Exit", I18n.Exit()));
-        this._responsePages.Value.Add(responsesThisPage.ToArray());
+        this._responsePages.Add(responsesThisPage.ToArray());
     }
 
     private void displayFishInfo(Farmer who, string whichAnswer)
@@ -78,12 +78,12 @@ internal sealed class AquariumMessage
         {
             Game1.activeClickableMenu = null;
             Game1.currentLocation.afterQuestion = null;
-            this._currentPage.Value++;
+            this._currentPage++;
 
             // delays until the next tick.
             DelayedAction.functionAfterDelay(() =>
             {
-                Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages.Value[this._currentPage.Value], this.displayFishInfo);
+                Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages[this._currentPage], this.displayFishInfo);
             }, 10);
             return;
         }
