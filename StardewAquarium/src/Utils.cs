@@ -15,6 +15,8 @@ namespace StardewAquarium
 {
     internal static class Utils
     {
+        internal const string StatsKey = "Cherry.StardewAquarium.FishDonated";
+
         private static IModHelper _helper;
         private static IMonitor _monitor;
         private static IManifest _manifest;
@@ -64,6 +66,9 @@ namespace StardewAquarium
                     FishDisplayNames.Add(fishName.Replace(" ", string.Empty), TokenParser.ParseText(info.DisplayName));
                 }
             }
+
+            // update stats
+            Game1.player.stats.Set(StatsKey, GetNumDonatedFish());
         }
 
         public static bool IsUnDonatedFish(Item i)
@@ -137,7 +142,7 @@ namespace StardewAquarium
 
         public static string GetDonatedMailFlag(Item i)
         {
-            return $"AquariumDonated:{InternalNameToDonationName[i.Name]}";
+            return GetDonatedMailFlag(i.Name);
         }
 
         public static string GetDonatedMailFlag(string name)
