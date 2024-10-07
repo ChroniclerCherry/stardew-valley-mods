@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 using HarmonyLib;
@@ -69,8 +70,16 @@ internal sealed class ModEntry : Mod
 
         Config = this.Helper.ReadConfig<ModConfig>();
 
-        string dataPath = Path.Combine("data", "data.json");
-        Data = helper.Data.ReadJsonFile<ModData>(dataPath);
+        try
+        {
+            string dataPath = Path.Combine("data", "data.json");
+            Data = helper.Data.ReadJsonFile<ModData>(dataPath) ?? throw new FileNotFoundException(dataPath);
+        }
+        catch (Exception ex)
+        {
+            this.Monitor.Log($"Could not read data file. Please reinstall the mod! Things may behave weirdly.", LogLevel.Warn);
+            this.Monitor.Log(ex.ToString());
+        }
 
         if (Config.EnableDebugCommands
 #if DEBUG
@@ -193,6 +202,22 @@ internal sealed class ModEntry : Mod
 
         if (Context.IsMainPlayer)
         {
+            // check my location references.
+            void CheckMap(string? map)
+            {
+                if (map is null || Game1.getLocationFromName(map) is null)
+                {
+                    this.Monitor.Log($"{map} cannot be found, there seems to be an issue with the data file.");
+                }
+            }
+
+            CheckMap(Data.ExteriorMapName);
+            if (Constants.TargetPlatform == GamePlatform.Android)
+            {
+                CheckMap(Data.ExteriorMapName);
+            }
+
+            // migrate old item data.
             if (Game1.player.modData.TryAdd(MigrationKey, "migrated"))
             {
                 Utility.ForEachItem((item) =>

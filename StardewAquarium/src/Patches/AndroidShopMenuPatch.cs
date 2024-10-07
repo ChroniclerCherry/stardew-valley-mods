@@ -32,7 +32,7 @@ namespace StardewAquarium.Patches
 
         private static void setCurrentItem_postfix(ref ShopMenu __instance)
         {
-            if (Game1.currentLocation?.Name != "FishMuseum" || __instance is not DonateFishMenuAndroid) return;
+            if (Game1.currentLocation?.Name != ModEntry.Data.MuseumMapName || __instance is not DonateFishMenuAndroid) return;
 
             IReflectedField<string> nameItem = _helper.Reflection.GetField<string>(__instance, "nameItem");
             string nameItemString = nameItem.GetValue();
@@ -43,7 +43,7 @@ namespace StardewAquarium.Patches
 
         private static void tryToPurchaseItem_postfix(ref ShopMenu __instance, ref ISalable item)
         {
-            if (Game1.currentLocation?.Name != "FishMuseum" || __instance is not DonateFishMenuAndroid) return;
+            if (Game1.currentLocation?.Name != ModEntry.Data.MuseumMapName || __instance is not DonateFishMenuAndroid) return;
             try
             {
                 if (!(item is Item donatedFish)) return; //this shouldn't happen but /shrug
