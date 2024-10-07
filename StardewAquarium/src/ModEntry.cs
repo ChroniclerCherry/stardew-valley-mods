@@ -12,6 +12,7 @@ using StardewAquarium.Models;
 using StardewAquarium.Patches;
 using StardewAquarium.src;
 using StardewAquarium.src.Editors;
+using StardewAquarium.src.Framework;
 
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -57,7 +58,9 @@ internal sealed class ModEntry : Mod
         this.Helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
         this.Helper.Events.GameLoop.UpdateTicked += this.GameLoop_UpdateTicked;
         this.Helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
-        this.Helper.Events.GameLoop.DayStarted += this.OnDayStart;
+
+
+        CrabPotHandler.Init(this.Helper.Events.GameLoop, this.Monitor);
 
         if (this._isAndroid)
         {
@@ -110,42 +113,6 @@ internal sealed class ModEntry : Mod
                 {
                     break;
                 }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Updates crab pots
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void OnDayStart(object sender, DayStartedEventArgs e)
-    {
-        GameLocation loc = Game1.getLocationFromName(Data.ExteriorMapName);
-        if (loc is null)
-            return;
-
-        // the original method actually flat out re-implemented the code for crab pots. We're...not going to do that anymore.
-        // it was meant to mimic crabpot behavior on the beach, which is now in the data.
-
-        // HOWEVER that wasn't actually what it did. Instead, it just...caught something. Even if not baited.
-        // We will mimic this by baiting the crabpots ourselves.
-
-        foreach (SObject obj in loc.objects.Values)
-        {
-            if (obj is not CrabPot pot || (pot.heldObject.Value is not null && pot.heldObject.Value.Category != SObject.junkCategory))
-            {
-                continue;
-            }
-
-            try
-            {
-                pot.bait.Value ??= new SObject("685", 1); // normal bait.
-                pot.DayUpdate();
-            }
-            catch (Exception ex)
-            {
-                this.Monitor.Log(ex.ToString());
             }
         }
     }
