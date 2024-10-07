@@ -29,7 +29,6 @@ internal sealed class ModEntry : Mod
     internal static ModConfig Config { get; private set; } = null!;
     internal static ModData Data { get; private set; } = null!;
 
-    public const string PufferChickName = "Pufferchick";
     internal const string DonationMenu = "Cherry.StardewAquarium.DonationMenu";
 
     public static Harmony Harmony { get; } = new Harmony("Cherry.StardewAquarium");
@@ -207,7 +206,7 @@ internal sealed class ModEntry : Mod
 
     private void OpenDonationMenuCommand(string arg1, string[] arg2)
     {
-        Game1.activeClickableMenu = new DonateFishMenu(this.Helper, this.Monitor);
+        Game1.activeClickableMenu = new DonateFishMenu();
     }
 
     private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)

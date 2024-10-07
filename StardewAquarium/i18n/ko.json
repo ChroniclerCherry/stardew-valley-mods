@@ -35,6 +35,9 @@
     "legendary-bait-name": "Legendary Bait", // new!
     "legendary-bait-description": "Very rare fish are attracted to this...", // new!
 
+    "pufferchick-name": "복어닭",
+    "pufferchick-description": "반은 복어고 반은 닭입니다.",
+
     //dialogue boxes
     "Ice": "얼음으로 가득 찼다...수조의 기계를 냉각할 때 쓰는걸거야.",
     "IceMachine": "이 기계는 탱크를 매우 낮은 온도로 냉각시킨다.",

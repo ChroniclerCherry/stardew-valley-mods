@@ -35,6 +35,9 @@
     "legendary-bait-name": "Legendary Bait",
     "legendary-bait-description": "Very rare fish are attracted to this...",
 
+    "pufferchick-name": "Pufferchick",
+    "pufferchick-description": "Half chicken, half pufferfish.",
+
     //dialogue boxes
     "Ice": "All this ice... it's used for cooling the tank with that machine.",
     "IceMachine": "This machine keeps the tank cooled under very low temperatures.",

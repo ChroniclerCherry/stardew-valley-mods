@@ -9,8 +9,6 @@ namespace StardewAquarium.Menus
 {
     public class DonateFishMenu : InventoryMenu
     {
-        private readonly IModHelper _helper;
-        private readonly IMonitor _monitor;
         private bool _donated;
         private bool _pufferchickDonated;
 
@@ -18,12 +16,10 @@ namespace StardewAquarium.Menus
 
         private static string? PufferChickID => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName);
 
-        public DonateFishMenu(IModHelper translate, IMonitor monitor)
+        public DonateFishMenu()
             : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, false, null, Utils.IsUnDonatedFish, 36, 3)
         {
             this.showGrayedOutSlots = true;
-            this._helper = translate;
-            this._monitor = monitor;
             this.exitFunction = () => Utils.DonationMenuExit(this._donated, this._pufferchickDonated);
 
             this.title = I18n.DonationMenuTitle();
@@ -55,7 +51,7 @@ namespace StardewAquarium.Menus
 
         public override void draw(SpriteBatch b)
         {
-            base.draw(b);
+            // base.draw(b);
             if (!Game1.options.showMenuBackground)
                 b.Draw(Game1.fadeToBlackRect, Game1.graphics.GraphicsDevice.Viewport.Bounds, Color.Black * 0.4f);
             else

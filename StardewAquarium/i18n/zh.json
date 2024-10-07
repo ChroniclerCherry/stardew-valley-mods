@@ -35,6 +35,10 @@
     "legendary-bait-name": "Legendary Bait", // new!
     "legendary-bait-description": "Very rare fish are attracted to this...", // new!
 
+
+    "pufferchick-name": "河豚鸡鱼",
+    "pufferchick-description": "一半是鸡，一半是河豚。",
+
     //dialogue boxes
     "Ice": "所有这些冰...用于用该机器冷却水箱。",
     "IceMachine": "这台机器可在非常低的温度下保持水箱冷却。",

@@ -26,7 +26,9 @@ internal static class AssetEditor
     internal const string LegendaryBaitID = "Cherry.StardewAquarium_LegendaryBait";
     internal const string LegendaryBaitQID = $"{ItemRegistry.type_object}{LegendaryBaitID}";
 
-    private static string? PufferChickID => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName);
+
+    internal const string PufferchickID = "Cherry.StardewAquarium_Pufferchick";
+    internal const string PufferchickQID = $"{ItemRegistry.type_object}{PufferchickID}";
 
     private readonly static Dictionary<IAssetName, Action<IAssetData>> _handlers = [];
     private readonly static Dictionary<IAssetName, string> _textureLoaders = [];
@@ -55,8 +57,12 @@ internal static class AssetEditor
 
         _handlers[parser.ParseAssetName("Data/Achievements")] = AchievementEditor.Edit;
 
+        _handlers[parser.ParseAssetName("Data/AquariumFish")] = EditAquariumFish;
+        _handlers[parser.ParseAssetName("Data/Fish")] = EditFish;
+
         _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Shirts")] = "assets/shirts.png";
         _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Items")] = "assets/items.png";
+        _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/AquariumFish")] = "assets/aquarium.png";
 
     }
 
@@ -85,6 +91,8 @@ internal static class AssetEditor
         IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
         data["StardewAquarium_Legendary_Bait_Name"] = I18n.LegendaryBaitName();
         data["StardewAquarium_Legendary_Bait_Description"] = I18n.LegendaryBaitDescription();
+        data["StardewAquarium_Pufferchick_Name"] = I18n.PufferchickName();
+        data["StardewAquarium_Pufferchick_Description"] = I18n.PufferchickDescription();
     }
 
     private static void EditObjectData(IAssetData asset)
@@ -108,6 +116,32 @@ internal static class AssetEditor
             ExcludeFromShippingCollection = true,
             ExcludeFromRandomSale = true,
         };
+        data[PufferchickID] = new()
+        {
+            Name = "Pufferchick",
+            Type = "Fish",
+            SpriteIndex = 2,
+            Category = SObject.FishCategory,
+            Edibility = -200,
+            Texture = texture,
+            Price = 2000,
+            DisplayName = "[LocalizedText Strings\\Objects:StardewAquarium_Pufferchick_Name]",
+            Description = "[LocalizedText Strings\\Objects:StardewAquarium_Pufferchick_Description]",
+            ContextTags = ["fish_legendary"],
+        };
+    }
+
+    private static void EditFish(IAssetData asset)
+    {
+        IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
+        data.Add(PufferchickQID, $"{ItemRegistry.GetDataOrErrorItem(PufferchickQID).InternalName}/95/mixed/28/28/0 2600/spring summer fall winter/both/688 .05/5/0/0/0/false");
+    }
+
+
+    private static void EditAquariumFish(IAssetData asset)
+    {
+        IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
+        data.Add(PufferchickQID, $"0/float/////Mods\\StardewAquarium\\AquariumFish");
     }
 
     /// <summary>
@@ -171,17 +205,11 @@ internal static class AssetEditor
         museumData.Forage ??= [];
         museumData.Forage.AddRange(beachData.Forage ?? Enumerable.Empty<SpawnForageData>());
 
-        // add pufferfish
-        if (PufferChickID is null)
-            return;
-
-        string pufferqid = ItemRegistry.ManuallyQualifyItemId(PufferChickID, ItemRegistry.type_object);
-
         string original_condition = $"PLAYER_HAS_CAUGHT_FISH Current (O)128, PLAYER_STAT Host {StatKeys.ChickenEggsLayed} 1";
         SpawnFishData basePuffer = new()
         {
-            ItemId = pufferqid,
-            Id = pufferqid,
+            ItemId = PufferchickQID,
+            Id = PufferchickQID,
             IsBossFish = true,
             CatchLimit = 1,
             Condition = $"{original_condition}, {AquariumGameStateQuery.RandomChanceForPuffer}"

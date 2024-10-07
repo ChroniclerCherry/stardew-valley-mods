@@ -35,6 +35,9 @@
     "legendary-bait-name": "Legendary Bait", // new!
     "legendary-bait-description": "Very rare fish are attracted to this...", // new!
 
+    "pufferchick-name": "Poulet-Globe",
+    "pufferchick-description": "Moitié poulet, moitié poisson-globe",
+
     //dialogue boxes
     "Ice": "Toute cette glace... elle est utilisée pour garder l'aquarium frais avec cette machine.",
     "IceMachine": "Cette machine gârde l'aquarium en dessous de températures très basses.",

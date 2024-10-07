@@ -34,6 +34,10 @@
     "legendary-bait-name": "Legendary Bait", // new!
     "legendary-bait-description": "Very rare fish are attracted to this...", // new!
 
+
+    "pufferchick-name": "Kugelhuhn",
+    "pufferchick-description": "Halb Huhn, halb Kugelfisch",
+
     //dialogue boxes
     "Ice": "All dieses Eis... es wird dazu benutzt, das Becken mit dieser Maschine zu kühlen.",
     "IceMachine": "Diese Maschine hält das Becken bei sehr niedrigen Temperaturen gekühlt.",

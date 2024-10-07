@@ -84,7 +84,7 @@ internal static class TileActions
                 Game1.activeClickableMenu = new DonateFishMenuAndroid(Helper, Monitor);
                 break;
             case "OptionYes":
-                Game1.activeClickableMenu = new DonateFishMenu(Helper, Monitor);
+                Game1.activeClickableMenu = new DonateFishMenu();
                 break;
         }
     }

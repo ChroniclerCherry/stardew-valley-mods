@@ -35,6 +35,9 @@
     "legendary-bait-name": "Legendary Bait", // new!
     "legendary-bait-description": "Very rare fish are attracted to this...", // new!
 
+    "pufferchick-name": "Globo-Pollo",
+    "pufferchick-description": "Mitad pollo, mitad Pez Globo.",
+
     //dialogue boxes
     "Ice": "Todo este hielo... es usado para enfriar la pecera con esa máquina.",
     "IceMachine": "Esta máquina mantiene la pecera congelado sobre temperaturas muy bajas.",
