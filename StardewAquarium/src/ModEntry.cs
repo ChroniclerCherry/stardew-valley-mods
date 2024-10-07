@@ -19,6 +19,7 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.GameData.Objects;
 using StardewValley.Menus;
+using StardewValley.Objects;
 
 using SObject = StardewValley.Object;
 
@@ -26,6 +27,8 @@ namespace StardewAquarium;
 
 internal sealed class ModEntry : Mod
 {
+    private const string MigrationKey = "Cherry.StardewAquarium.16Migration";
+
     internal static ModConfig Config { get; private set; } = null!;
     internal static ModData Data { get; private set; } = null!;
 
@@ -185,6 +188,45 @@ internal sealed class ModEntry : Mod
             if (us is null)
             {
                 this.Monitor.Log($"Host seems to be missing Stardew Aquarium. Certain features may not work as advertised.", LogLevel.Error);
+            }
+        }
+
+        if (Context.IsMainPlayer)
+        {
+            if (Game1.player.modData.TryAdd(MigrationKey, "migrated"))
+            {
+                Utility.ForEachItem((item) =>
+                {
+                    switch (item.TypeDefinitionId)
+                    {
+                        case ItemRegistry.type_shirt:
+                        {
+                            if (item.Name == "Pufferchick Shirt")
+                            {
+                                item.ItemId = "Cherry.StardewAquarium_PufferchickShirt";
+                                (item as Clothing).LoadData(forceReload: true);
+                            }
+                            break;
+                        }    
+                        case ItemRegistry.type_object:
+                        {
+                            switch (item.Name)
+                            {
+                                case "Pufferchick":
+                                    item.ItemId = AssetEditor.PufferchickID;
+                                    item.ResetParentSheetIndex();
+                                    break;
+                                case "Legendary Bait":
+                                    item.ItemId = AssetEditor.LegendaryBaitID;
+                                    item.ResetParentSheetIndex();
+                                    break;
+                            }
+                            break;
+                        }
+                    };
+
+                    return true;
+                });
             }
         }
 
