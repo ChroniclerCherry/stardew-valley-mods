@@ -52,7 +52,7 @@ internal static class TileActions
     private static bool DonationMenu(GameLocation location, string[] actions, Farmer farmer, Point point)
     {
         Monitor.Log("AquariumDonationMenu tile detected, opening donation menu...");
-        if (!Utils.DoesPlayerHaveDonatableFish())
+        if (!Utils.DoesPlayerHaveDonatableFish(farmer))
         {
             if (Game1.MasterPlayer.achievements.Contains(AchievementEditor.AchievementId))
             {

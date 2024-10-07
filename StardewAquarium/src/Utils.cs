@@ -140,15 +140,9 @@ namespace StardewAquarium
             return $"AquariumDonated:{InternalNameToDonationName[name]}";
         }
 
-        public static bool DoesPlayerHaveDonatableFish()
+        public static bool DoesPlayerHaveDonatableFish(Farmer farmer)
         {
-            foreach (Item item in Game1.player.Items)
-            {
-                if (IsUnDonatedFish(item))
-                    return true;
-            }
-
-            return false;
+            return farmer.Items?.Any(static item => IsUnDonatedFish(item)) == true;
         }
 
         public static IEnumerable<string> GetUndonatedFishInInventory()
