@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+
 using StardewModdingAPI;
+
 using StardewValley;
-using StardewValley.GameData.Locations;
 
 namespace StardewAquarium.Editors
 {

@@ -15,12 +15,17 @@ using StardewValley;
 using StardewValley.Constants;
 using StardewValley.GameData;
 using StardewValley.GameData.Locations;
+using StardewValley.GameData.Objects;
 using StardewValley.GameData.Shirts;
+
+using SObject = StardewValley.Object;
 
 namespace StardewAquarium.src.Editors;
 internal static class AssetEditor
 {
-    private static string? LegendaryBaitId => ModEntry.JsonAssets?.GetObjectId(ModEntry.LegendaryBaitName);
+    internal const string LegendaryBaitID = "Cherry.StardewAquarium_LegendaryBait";
+    internal const string LegendaryBaitQID = $"{ItemRegistry.type_object}{LegendaryBaitID}";
+
     private static string? PufferChickID => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName);
 
     private readonly static Dictionary<IAssetName, Action<IAssetData>> _handlers = [];
@@ -38,8 +43,12 @@ internal static class AssetEditor
         _handlers[parser.ParseAssetName("Strings/UI")] = EditStringsUi;
 
         _handlers[parser.ParseAssetName("Data/Locations")] = EditDataLocations;
+
         _handlers[parser.ParseAssetName("Data/Shirts")] = EditShirtData;
         _handlers[parser.ParseAssetName("Strings/Shirts")] = EditShirtStrings;
+
+        _handlers[parser.ParseAssetName("Data/Objects")] = EditObjectData;
+        _handlers[parser.ParseAssetName("Strings/Objects")] = EditObjectStrings;
 
         _handlers[parser.ParseAssetName("Data/mail")] = EditDataMail;
         _handlers[parser.ParseAssetName("Data/TriggerActions")] = EditTriggerActions;
@@ -71,41 +80,64 @@ internal static class AssetEditor
 
     #region editors
 
+    private static void EditObjectStrings(IAssetData asset)
+    {
+        IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
+        data["StardewAquarium_Legendary_Bait_Name"] = I18n.LegendaryBaitName();
+        data["StardewAquarium_Legendary_Bait_Description"] = I18n.LegendaryBaitDescription();
+    }
+
+    private static void EditObjectData(IAssetData asset)
+    {
+        var data = asset.AsDictionary<string, ObjectData>().Data;
+        const string texture = "Mods/StardewAquarium/Items";
+
+        data[LegendaryBaitID] = new()
+        {
+            Name = "Legendary Bait",
+            Type = "Basic",
+            SpriteIndex = 4,
+            Category = SObject.baitCategory,
+            Texture = texture,
+            Price = 10,
+            DisplayName = "[LocalizedText Strings\\Objects:StardewAquarium_Legendary_Bait_Name]",
+            Description = "[LocalizedText Strings\\Objects:StardewAquarium_Legendary_Bait_Description]",
+            ContextTags = ["fish_legendary"],
+            CanBeGivenAsGift = false,
+            CanBeTrashed = false,
+            ExcludeFromShippingCollection = true,
+            ExcludeFromRandomSale = true,
+        };
+    }
+
     /// <summary>
-    /// copies over 1.5 data from beach data.
+    /// copies over 1.5 data from beach data, edits fish data for legendaries.
     /// </summary>
     /// <param name="asset"></param>
     private static void EditDataLocations(IAssetData asset)
     {
-        // TODO: don't do this once JA integration is fully removed.
-        string? legendaryBaitQID = LegendaryBaitId is not null ? ItemRegistry.ManuallyQualifyItemId(LegendaryBaitId, ItemRegistry.type_object) : null;
-
         IDictionary<string, LocationData> data = asset.AsDictionary<string, LocationData>().Data;
 
-        // add legendary bait entries.
-        if (legendaryBaitQID is not null)
+        foreach (var (key, values) in data)
         {
-            foreach (var (key, values) in data)
+            if (values.Fish?.Count is 0 or null)
             {
-                if (values.Fish?.Count is 0 or null)
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                List<SpawnFishData> newEntries = [];
-                foreach (var fish in values.Fish)
+            List<SpawnFishData> newEntries = [];
+            foreach (var fish in values.Fish)
+            {
+                if (fish.IsBossFish && fish.CatchLimit == 1)
                 {
-                    if (fish.IsBossFish && fish.CatchLimit == 1)
-                    {
-                        newEntries.Add(fish.MakeLegendaryBaitEntry(legendaryBaitQID));
-                    }
+                    newEntries.Add(fish.MakeLegendaryBaitEntry());
                 }
+            }
 
-                if (newEntries.Count > 0)
-                {
-                    Monitor.Log($"Added {newEntries.Count} entries for legendary bait in {key}");
-                    values.Fish.AddRange(newEntries);
-                }
+            if (newEntries.Count > 0)
+            {
+                Monitor.Log($"Added {newEntries.Count} entries for legendary bait in {key}.");
+                values.Fish.AddRange(newEntries);
             }
         }
 
@@ -114,7 +146,6 @@ internal static class AssetEditor
             Monitor.Log("Beach data seems missing, cannot copy.", LogLevel.Warn);
             return;
         }
-
 
         if (!data.TryGetValue(ModEntry.Data.ExteriorMapName, out LocationData museumData))
         {
@@ -157,12 +188,10 @@ internal static class AssetEditor
         };
         museumData.Fish.Add(basePuffer);
 
-        if (legendaryBaitQID is not null)
-        {
-            var puffer_copy = basePuffer.MakeLegendaryBaitEntry(legendaryBaitQID);
-            puffer_copy.Condition = $"{original_condition}, {AquariumGameStateQuery.HasBaitQuery} Current {legendaryBaitQID}";
-            museumData.Fish.Add(puffer_copy);
-        }
+        var puffer_copy = basePuffer.MakeLegendaryBaitEntry();
+        puffer_copy.Condition = $"{original_condition}, {AquariumGameStateQuery.HasBaitQuery} Current {LegendaryBaitQID}";
+        museumData.Fish.Add(puffer_copy);
+
     }
 
     private static void EditDataMail(IAssetData asset)
@@ -241,10 +270,10 @@ file static class AssetEditExtensions
         }
     }
 
-    internal static SpawnFishData MakeLegendaryBaitEntry(this SpawnFishData spawnable, string legendaryBaitQID)
+    internal static SpawnFishData MakeLegendaryBaitEntry(this SpawnFishData spawnable)
     {
-        var copy = spawnable.DeepClone();
-        copy.AddCondition($"{AquariumGameStateQuery.HasBaitQuery} Current {legendaryBaitQID}");
+        SpawnFishData copy = spawnable.DeepClone();
+        copy.AddCondition($"{AquariumGameStateQuery.HasBaitQuery} Current {AssetEditor.LegendaryBaitQID}");
         copy.CatchLimit = -1;
 
         return copy;

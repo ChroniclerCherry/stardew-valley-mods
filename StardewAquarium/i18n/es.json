@@ -32,6 +32,9 @@
     "pufferchick-shirt-name": "Camiseta de Globo-Pollo",
     "pufferchick-shirt-description": "He estado allí, he hecho eso, y ya tengo la camiseta.",
 
+    "legendary-bait-name": "Legendary Bait", // new!
+    "legendary-bait-description": "Very rare fish are attracted to this...", // new!
+
     //dialogue boxes
     "Ice": "Todo este hielo... es usado para enfriar la pecera con esa máquina.",
     "IceMachine": "Esta máquina mantiene la pecera congelado sobre temperaturas muy bajas.",

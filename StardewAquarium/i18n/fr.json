@@ -32,6 +32,9 @@
     "pufferchick-shirt-name": "PT-Shirt de Poulet-Globe",
     "pufferchick-shirt-description": "J'étais là-bas, j'ai fait ça, j'ai eu le T-Shirt.",
 
+    "legendary-bait-name": "Legendary Bait", // new!
+    "legendary-bait-description": "Very rare fish are attracted to this...", // new!
+
     //dialogue boxes
     "Ice": "Toute cette glace... elle est utilisée pour garder l'aquarium frais avec cette machine.",
     "IceMachine": "Cette machine gârde l'aquarium en dessous de températures très basses.",

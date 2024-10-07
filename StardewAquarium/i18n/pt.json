@@ -32,6 +32,9 @@
     "pufferchick-shirt-name": "Camiseta de Galiacu",
     "pufferchick-shirt-description": "Galiacu!",
 
+    "legendary-bait-name": "Legendary Bait", // new!
+    "legendary-bait-description": "Very rare fish are attracted to this...", // new!
+
     //dialogue boxes
     "Ice": "Todo esse gelo... é usado para resfriar o tanque com aquela máquina.",
     "IceMachine": "Esta máquina mantém o tanque resfriado em temperaturas muito baixas.",

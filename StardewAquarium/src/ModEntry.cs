@@ -31,12 +31,10 @@ internal sealed class ModEntry : Mod
     internal static ModData Data { get; private set; } = null!;
 
     public const string PufferChickName = "Pufferchick";
-    public const string LegendaryBaitName = "Legendary Bait";
     private readonly bool _isAndroid = Constants.TargetPlatform == GamePlatform.Android;
     public static Harmony Harmony { get; } = new Harmony("Cherry.StardewAquarium");
 
     private FishEditor FishEditor;
-    private ObjectEditor ObjectEditor;
 
     public static IJsonAssetsApi JsonAssets { get; set; }
 
@@ -51,14 +49,12 @@ internal sealed class ModEntry : Mod
         AssetEditor.Init(this.Helper.GameContent, this.Helper.Events.Content, this.Monitor);
 
         this.FishEditor = new(this.Helper);
-        this.ObjectEditor = new();
 
         this.Helper.Events.Content.AssetRequested += this.OnAssetRequested;
         this.Helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
         this.Helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
         this.Helper.Events.GameLoop.UpdateTicked += this.GameLoop_UpdateTicked;
         this.Helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
-
 
         CrabPotHandler.Init(this.Helper.Events.GameLoop, this.Monitor);
 
@@ -121,8 +117,6 @@ internal sealed class ModEntry : Mod
     {
         if (this.FishEditor.CanEdit(e.NameWithoutLocale))
             e.Edit(this.FishEditor.Edit);
-        else if (this.ObjectEditor.CanEdit(e.NameWithoutLocale))
-            e.Edit(this.ObjectEditor.Edit);
     }
 
     private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
