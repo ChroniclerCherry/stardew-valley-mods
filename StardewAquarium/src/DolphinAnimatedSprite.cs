@@ -6,7 +6,6 @@ namespace StardewAquarium
 {
     class DolphinAnimatedSprite : TemporaryAnimatedSprite
     {
-
         public DolphinAnimatedSprite(Vector2 position, Texture2D tex)
             : base(-666, 250, ModEntry.Data.DolphinAnimationFrames, 1, position, false, false)
         {
@@ -29,7 +28,8 @@ namespace StardewAquarium
         {
             this.timer += time.ElapsedGameTime.Milliseconds;
 
-            if (!(this.timer > (double) this.interval)) return false;
+            if (this.timer <= this.interval)
+                return false;
             ++this.currentParentTileIndex;
             this.timer = 0.0f;
 

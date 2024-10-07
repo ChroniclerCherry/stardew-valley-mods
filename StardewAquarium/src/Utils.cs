@@ -149,7 +149,8 @@ namespace StardewAquarium
         {
             foreach (Item item in Game1.player.Items)
             {
-                if (IsUnDonatedFish(item)) return true;
+                if (IsUnDonatedFish(item))
+                    return true;
             }
 
             return false;
