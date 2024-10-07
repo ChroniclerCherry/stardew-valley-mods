@@ -89,7 +89,7 @@ internal static class AssetEditor
 
     private static void EditObjectData(IAssetData asset)
     {
-        var data = asset.AsDictionary<string, ObjectData>().Data;
+        IDictionary<string, ObjectData> data = asset.AsDictionary<string, ObjectData>().Data;
         const string texture = "Mods/StardewAquarium/Items";
 
         data[LegendaryBaitID] = new()
@@ -118,7 +118,7 @@ internal static class AssetEditor
     {
         IDictionary<string, LocationData> data = asset.AsDictionary<string, LocationData>().Data;
 
-        foreach (var (key, values) in data)
+        foreach ((string key, LocationData values) in data)
         {
             if (values.Fish?.Count is 0 or null)
             {
@@ -126,7 +126,7 @@ internal static class AssetEditor
             }
 
             List<SpawnFishData> newEntries = [];
-            foreach (var fish in values.Fish)
+            foreach (SpawnFishData fish in values.Fish)
             {
                 if (fish.IsBossFish && fish.CatchLimit == 1)
                 {
@@ -188,7 +188,7 @@ internal static class AssetEditor
         };
         museumData.Fish.Add(basePuffer);
 
-        var puffer_copy = basePuffer.MakeLegendaryBaitEntry();
+        SpawnFishData puffer_copy = basePuffer.MakeLegendaryBaitEntry();
         puffer_copy.Condition = $"{original_condition}, {AquariumGameStateQuery.HasBaitQuery} Current {LegendaryBaitQID}";
         museumData.Fish.Add(puffer_copy);
 

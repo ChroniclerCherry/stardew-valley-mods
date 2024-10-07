@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 
 using HarmonyLib;
@@ -18,8 +17,8 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 
 using StardewValley;
+using StardewValley.GameData.Objects;
 using StardewValley.Menus;
-using StardewValley.Objects;
 
 using SObject = StardewValley.Object;
 
@@ -31,7 +30,8 @@ internal sealed class ModEntry : Mod
     internal static ModData Data { get; private set; } = null!;
 
     public const string PufferChickName = "Pufferchick";
-    private readonly bool _isAndroid = Constants.TargetPlatform == GamePlatform.Android;
+    internal const string DonationMenu = "Cherry.StardewAquarium.DonationMenu";
+
     public static Harmony Harmony { get; } = new Harmony("Cherry.StardewAquarium");
 
     private FishEditor FishEditor;
@@ -58,7 +58,7 @@ internal sealed class ModEntry : Mod
 
         CrabPotHandler.Init(this.Helper.Events.GameLoop, this.Monitor);
 
-        if (this._isAndroid)
+        if (Constants.TargetPlatform == GamePlatform.Android)
         {
             AndroidShopMenuPatch.Initialize(this.Helper, this.Monitor);
             this.Helper.Events.Display.MenuChanged += this.AndroidPlsHaveMercyOnMe;
@@ -77,7 +77,7 @@ internal sealed class ModEntry : Mod
 #endif
             )
         {
-            if (this._isAndroid || true)
+            if (Constants.TargetPlatform == GamePlatform.Android || true)
                 this.Helper.ConsoleCommands.Add("donatefish", "", this.AndroidDonateFish);
             else
                 this.Helper.ConsoleCommands.Add("donatefish", "", this.OpenDonationMenuCommand);
@@ -98,7 +98,7 @@ internal sealed class ModEntry : Mod
         if (!Context.IsWorldReady)
             return;
 
-        foreach (var (key, data) in Game1.objectData)
+        foreach ((string key, ObjectData data) in Game1.objectData)
         {
             if (data.Category != -4)
                 continue;
