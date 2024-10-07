@@ -65,19 +65,22 @@ namespace StardewAquarium.Menus
             this.collections.Add([]);
             List<ClickableTextureComponent> textureComponentList = this.collections.Last();
             int index = 0;
-            foreach (var data in ItemRegistry.GetObjectTypeDefinition().GetAllData().Where(static data => data.Category == SObject.FishCategory).OrderBy(static data => (data.TextureName, data.ItemId)))
+            foreach (ParsedItemData data in ItemRegistry.GetObjectTypeDefinition().GetAllData().Where(static data => data.Category == SObject.FishCategory).OrderBy(static data => (data.TextureName, data.ItemId)))
             {
-                bool drawColor = false;
-                bool drawColorFaded = false;
+                bool farmerHas = false;
+                bool farmerHasButNotDonated = false;
 
                 if (!Utils.IsUnDonatedFish(data.InternalName))
                 {
-                    drawColor = true;
-                    drawColorFaded = false;
+                    farmerHas = true;
                 }
                 else if (Game1.player.fishCaught.ContainsKey(data.QualifiedItemId))
                 {
-                    drawColorFaded = true;
+                    farmerHasButNotDonated = true;
+                }
+                else if (data.RawData is ObjectData { ExcludeFromFishingCollection: true})
+                {
+                    continue;
                 }
 
                 int x1 = top_left_x + index % square_size * 68;
@@ -91,16 +94,16 @@ namespace StardewAquarium.Menus
                     textureComponentList = this.collections.Last();
                 }
                 Texture2D texture = data.GetTexture();
-                ClickableTextureComponent textureComponent8 = new($"{data.ItemId} {drawColor} {drawColorFaded}", new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, data.SpriteIndex, 16, 16), 4f, drawColor)
+                ClickableTextureComponent itemClickable = new($"{data.ItemId} {farmerHas} {farmerHasButNotDonated}", new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, data.SpriteIndex, 16, 16), 4f, farmerHas)
                 {
-                    myID = this.collections.Last().Count,
-                    rightNeighborID = (this.collections.Last().Count + 1) % square_size == 0 ? -1 : this.collections.Last().Count + 1,
-                    leftNeighborID = this.collections.Last().Count % square_size == 0 ? 7001 : this.collections.Last().Count - 1,
-                    downNeighborID = y1 + 68 > this.yPositionOnScreen + this.height - 128 ? -7777 : this.collections.Last().Count + square_size,
-                    upNeighborID = this.collections.Last().Count < square_size ? 12345 : this.collections.Last().Count - square_size,
+                    myID = textureComponentList.Count,
+                    rightNeighborID = (textureComponentList.Count + 1) % square_size == 0 ? -1 : textureComponentList.Count + 1,
+                    leftNeighborID = textureComponentList.Count % square_size == 0 ? 7001 : textureComponentList.Count - 1,
+                    downNeighborID = y1 + 68 > this.yPositionOnScreen + this.height - 128 ? -7777 : textureComponentList.Count + square_size,
+                    upNeighborID = textureComponentList.Count < square_size ? 12345 : textureComponentList.Count - square_size,
                     fullyImmutable = true
                 };
-                textureComponentList.Add(textureComponent8);
+                textureComponentList.Add(itemClickable);
                 index++;
             }
 
