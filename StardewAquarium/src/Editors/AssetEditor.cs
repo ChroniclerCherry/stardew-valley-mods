@@ -80,13 +80,30 @@ internal static class AssetEditor
 
         IDictionary<string, LocationData> data = asset.AsDictionary<string, LocationData>().Data;
 
-        if (data.TryGetValue("Forest", out var forestData))
+        // add legendary bait entries.
+        if (legendaryBaitQID is not null)
         {
-            var glacerfish = forestData.Fish?.FirstOrDefault(item => item.Id == "(O)775");
-            if (glacerfish is not null && legendaryBaitQID is not null)
+            foreach (var (key, values) in data)
             {
-                Monitor.Log($"Adding copy of glacierfish for legendary bait");
-                forestData.Fish.Add(glacerfish.MakeLegendaryBaitEntry(legendaryBaitQID));
+                if (values.Fish?.Count is 0 or null)
+                {
+                    continue;
+                }
+
+                List<SpawnFishData> newEntries = [];
+                foreach (var fish in values.Fish)
+                {
+                    if (fish.IsBossFish && fish.CatchLimit == 1)
+                    {
+                        newEntries.Add(fish.MakeLegendaryBaitEntry(legendaryBaitQID));
+                    }
+                }
+
+                if (newEntries.Count > 0)
+                {
+                    Monitor.Log($"Added {newEntries.Count} entries for legendary bait in {key}");
+                    values.Fish.AddRange(newEntries);
+                }
             }
         }
 
@@ -96,13 +113,6 @@ internal static class AssetEditor
             return;
         }
 
-        // add entry for legendary bait and crimsonfish.
-        var crimsonfish = beachData.Fish?.FirstOrDefault(item => item.Id == "(O)159");
-        if (crimsonfish is not null && legendaryBaitQID is not null)
-        {
-            Monitor.Log($"Adding copy of crimsonfish for legendary bait.");
-            beachData.Fish.Add(crimsonfish.MakeLegendaryBaitEntry(legendaryBaitQID));
-        }
 
         if (!data.TryGetValue(ModEntry.Data.ExteriorMapName, out LocationData museumData))
         {
