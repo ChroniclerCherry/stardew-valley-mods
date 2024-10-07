@@ -12,6 +12,7 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 
 using StardewValley;
+using StardewValley.Constants;
 using StardewValley.GameData;
 using StardewValley.GameData.Locations;
 using StardewValley.GameData.Shirts;
@@ -20,6 +21,7 @@ namespace StardewAquarium.src.Editors;
 internal static class AssetEditor
 {
     private static string? LegendaryBaitId => ModEntry.JsonAssets?.GetObjectId(ModEntry.LegendaryBaitName);
+    private static string? PufferChickID => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName);
 
     private readonly static Dictionary<IAssetName, Action<IAssetData>> _handlers = [];
     private readonly static Dictionary<IAssetName, string> _textureLoaders = [];
@@ -138,6 +140,29 @@ internal static class AssetEditor
         museumData.Forage ??= [];
         museumData.Forage.AddRange(beachData.Forage ?? Enumerable.Empty<SpawnForageData>());
 
+        // add pufferfish
+        if (PufferChickID is null)
+            return;
+
+        string pufferqid = ItemRegistry.ManuallyQualifyItemId(PufferChickID, ItemRegistry.type_object);
+
+        string original_condition = $"PLAYER_HAS_CAUGHT_FISH Current (O)128, PLAYER_STAT Host {StatKeys.ChickenEggsLayed} 1";
+        SpawnFishData basePuffer = new()
+        {
+            ItemId = pufferqid,
+            Id = pufferqid,
+            IsBossFish = true,
+            CatchLimit = 1,
+            Condition = $"{original_condition}, {AquariumGameStateQuery.RandomChanceForPuffer}"
+        };
+        museumData.Fish.Add(basePuffer);
+
+        if (legendaryBaitQID is not null)
+        {
+            var puffer_copy = basePuffer.MakeLegendaryBaitEntry(legendaryBaitQID);
+            puffer_copy.Condition = $"{original_condition}, {AquariumGameStateQuery.HasBaitQuery} Current {legendaryBaitQID}";
+            museumData.Fish.Add(puffer_copy);
+        }
     }
 
     private static void EditDataMail(IAssetData asset)

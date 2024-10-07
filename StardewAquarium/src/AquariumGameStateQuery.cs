@@ -2,6 +2,7 @@ using System;
 
 using StardewValley;
 using StardewValley.Delegates;
+using StardewValley.Extensions;
 using StardewValley.Tools;
 
 using SObject = StardewValley.Object;
@@ -10,9 +11,17 @@ namespace StardewAquarium.src;
 internal static class AquariumGameStateQuery
 {
     internal const string HasBaitQuery = "StardewValleyAquarium_PLAYER_HAS_BAIT";
+    internal const string RandomChanceForPuffer = "StardewValleyAquarium_RANDOM_CHANCE_FOR_PUFFER";
     internal static void Init()
     {
         GameStateQuery.Register(HasBaitQuery, HasBait);
+        GameStateQuery.Register(RandomChanceForPuffer, PufferChance);
+    }
+
+    private static bool PufferChance(string[] query, GameStateQueryContext context)
+    {
+        double pufferChance = 0.01 + 0.005 * Utils.GetNumDonatedFish();
+        return Random.Shared.NextBool(pufferChance);
     }
 
     /// <summary>
