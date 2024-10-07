@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using StardewModdingAPI.Events;
 using StardewValley.Objects;
@@ -38,6 +34,8 @@ internal static class CrabPotHandler
         // HOWEVER that wasn't actually what it did. Instead, it just...caught something. Even if not baited.
         // We will mimic this by baiting the crabpots ourselves.
 
+        // This map also apparently will remove trash if that's what's rolled.
+
         foreach (SObject obj in loc.objects.Values)
         {
             if (obj is not CrabPot pot || (pot.heldObject.Value is not null && pot.heldObject.Value.Category != SObject.junkCategory))
@@ -47,6 +45,7 @@ internal static class CrabPotHandler
 
             try
             {
+                pot.heldObject.Value = null;
                 pot.bait.Value ??= new SObject("685", 1); // normal bait.
                 pot.DayUpdate();
             }
