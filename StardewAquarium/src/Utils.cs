@@ -108,29 +108,19 @@ namespace StardewAquarium
                 return false;
 
             string donatedFlag = GetDonatedMailFlag(i);
-            if (MasterPlayerMail.Add(donatedFlag))
+            if (!MasterPlayerMail.Contains(donatedFlag))
             {
+                _fishSign.UpdateLastDonatedFish(i);
                 if (!Context.IsMainPlayer)
                 {
                     _helper.Multiplayer.SendMessage(i.Name, DonateFishMessageType,
                         modIDs: new[] { _manifest.UniqueID });
-                    _fishSign.UpdateLastDonatedFish(i);
                     return true;
                 }
 
-                string numDonated = $"AquariumFishDonated:{GetNumDonatedFish()}";
-                MasterPlayerMail.Add(numDonated);
+                ProcessDonationOnHost(donatedFlag);
+                
             }
-
-            if (ModEntry.Data.ConversationTopicsOnDonate.Contains(i.Name))
-            {
-                foreach (Farmer farmer in Game1.getAllFarmers())
-                {
-                    farmer.activeDialogueEvents[donatedFlag] = 3;
-                }
-            }
-
-            _fishSign.UpdateLastDonatedFish(i);
 
             return true;
         }
@@ -224,18 +214,18 @@ namespace StardewAquarium
 
         private static void Multiplayer_ModMessageReceived(object sender, ModMessageReceivedEventArgs e)
         {
-            if (e.FromModID == _manifest.UniqueID)
+            if (e.FromModID != _manifest.UniqueID)
             {
-                switch (e.Type)
-                {
-                    case AchievementMessageType:
-                        UnlockAchievement();
-                        break;
-                    case DonateFishMessageType:
-                        FarmhandDonated(e);
-                        break;
-                }
-
+                return;
+            }
+            switch (e.Type)
+            {
+                case AchievementMessageType:
+                    UnlockAchievement();
+                    break;
+                case DonateFishMessageType:
+                    FarmhandDonated(e);
+                    break;
             }
         }
 
@@ -245,6 +235,11 @@ namespace StardewAquarium
                 return;
 
             string fishName = e.ReadAs<string>();
+            ProcessDonationOnHost(fishName);
+        }
+
+        private static void ProcessDonationOnHost(string fishName)
+        {
             string donatedFlag = GetDonatedMailFlag(fishName);
             MasterPlayerMail.Add(donatedFlag);
             string numDonated = $"AquariumFishDonated:{GetNumDonatedFish()}";
