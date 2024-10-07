@@ -133,7 +133,7 @@ internal sealed class ModEntry : Mod
 
         foreach (SObject obj in loc.objects.Values)
         {
-            if (obj is not CrabPot pot || (pot.heldObject.Value is null || pot.heldObject.Value.Category != SObject.junkCategory))
+            if (obj is not CrabPot pot || (pot.heldObject.Value is not null && pot.heldObject.Value.Category != SObject.junkCategory))
             {
                 continue;
             }
