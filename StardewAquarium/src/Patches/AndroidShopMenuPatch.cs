@@ -1,6 +1,8 @@
 using System;
 using HarmonyLib;
 using StardewAquarium.Menus;
+using StardewAquarium.src.Editors;
+
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
@@ -11,8 +13,6 @@ namespace StardewAquarium.Patches
     {
         private static IModHelper _helper;
         private static IMonitor _monitor;
-
-        private static string? PufferChickID => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName);
 
         public static void Initialize(IModHelper helper, IMonitor monitor)
         {
@@ -53,7 +53,7 @@ namespace StardewAquarium.Patches
                 DonateFishMenuAndroid.Donated = true;
                 Game1.player.removeItemFromInventory(donatedFish);
 
-                if (donatedFish.ItemId == PufferChickID)
+                if (donatedFish.QualifiedItemId == AssetEditor.PufferchickQID)
                 {
                     Game1.playSound("openChest");
                     DonateFishMenuAndroid.PufferchickDonated = true;

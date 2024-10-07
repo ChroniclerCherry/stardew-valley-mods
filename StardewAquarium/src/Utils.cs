@@ -203,9 +203,8 @@ namespace StardewAquarium
             Game1.playSound("achievement");
             Game1.player.achievements.Add(AchievementEditor.AchievementId);
 
-            if (!Context.IsMainPlayer)
-                return;
-            if (!MasterPlayerMail.Contains("AquariumCompleted"))
+            // defer adding this flag until the night.
+            if (Context.IsMainPlayer && !MasterPlayerMail.Contains("AquariumCompleted"))
             {
                 _helper.Events.GameLoop.Saving += AddCompletionFlag;
             }

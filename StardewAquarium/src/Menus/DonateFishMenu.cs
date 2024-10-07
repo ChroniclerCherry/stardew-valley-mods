@@ -1,5 +1,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
+using StardewAquarium.src.Editors;
+
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
@@ -13,8 +16,6 @@ namespace StardewAquarium.Menus
         private bool _pufferchickDonated;
 
         private readonly string title;
-
-        private static string? PufferChickID => ModEntry.JsonAssets?.GetObjectId(ModEntry.PufferChickName);
 
         public DonateFishMenu()
             : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, false, null, Utils.IsUnDonatedFish, 36, 3)
@@ -39,7 +40,7 @@ namespace StardewAquarium.Menus
                 if (item.Stack == 0)
                     Game1.player.removeItemFromInventory(item);
 
-                if (item.ItemId == PufferChickID)
+                if (item.QualifiedItemId == AssetEditor.PufferchickQID)
                 {
                     Game1.playSound("openChest");
                     this._pufferchickDonated = true;
