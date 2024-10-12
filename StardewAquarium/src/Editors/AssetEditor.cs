@@ -175,15 +175,32 @@ internal static class AssetEditor
             }
         }
 
-        if (!data.TryGetValue("Beach", out LocationData beachData))
-        {
-            Monitor.Log("Beach data seems missing, cannot copy.", LogLevel.Warn);
-            return;
-        }
 
         if (!data.TryGetValue(ModEntry.Data.ExteriorMapName, out LocationData museumData))
         {
             Monitor.Log("MuseumExterior data seems missing, cannot copy.", LogLevel.Warn);
+            return;
+        }
+
+        // add pufferchick.
+        string original_condition = $"PLAYER_HAS_CAUGHT_FISH Current (O)128, PLAYER_STAT Host {StatKeys.ChickenEggsLayed} 1";
+        SpawnFishData basePuffer = new()
+        {
+            ItemId = PufferchickQID,
+            Id = PufferchickQID,
+            IsBossFish = true,
+            CatchLimit = 1,
+            Condition = $"{original_condition}, {AquariumGameStateQuery.RandomChanceForPuffer}"
+        };
+        museumData.Fish.Add(basePuffer);
+
+        SpawnFishData puffer_copy = basePuffer.MakeLegendaryBaitEntry();
+        puffer_copy.Condition = $"{original_condition}, {AquariumGameStateQuery.HasBaitQuery} Current {LegendaryBaitQID}";
+        museumData.Fish.Add(puffer_copy);
+
+        if (!data.TryGetValue("Beach", out LocationData beachData))
+        {
+            Monitor.Log("Beach data seems missing, cannot copy.", LogLevel.Warn);
             return;
         }
 
@@ -204,22 +221,6 @@ internal static class AssetEditor
 
         museumData.Forage ??= [];
         museumData.Forage.AddRange(beachData.Forage ?? Enumerable.Empty<SpawnForageData>());
-
-        string original_condition = $"PLAYER_HAS_CAUGHT_FISH Current (O)128, PLAYER_STAT Host {StatKeys.ChickenEggsLayed} 1";
-        SpawnFishData basePuffer = new()
-        {
-            ItemId = PufferchickQID,
-            Id = PufferchickQID,
-            IsBossFish = true,
-            CatchLimit = 1,
-            Condition = $"{original_condition}, {AquariumGameStateQuery.RandomChanceForPuffer}"
-        };
-        museumData.Fish.Add(basePuffer);
-
-        SpawnFishData puffer_copy = basePuffer.MakeLegendaryBaitEntry();
-        puffer_copy.Condition = $"{original_condition}, {AquariumGameStateQuery.HasBaitQuery} Current {LegendaryBaitQID}";
-        museumData.Fish.Add(puffer_copy);
-
     }
 
     private static void EditDataMail(IAssetData asset)

@@ -119,11 +119,11 @@ namespace StardewAquarium
                 if (!Context.IsMainPlayer)
                 {
                     _helper.Multiplayer.SendMessage(i.Name, DonateFishMessageType,
-                        modIDs: new[] { _manifest.UniqueID });
+                        modIDs: [_manifest.UniqueID]);
                     return true;
                 }
 
-                ProcessDonationOnHost(donatedFlag);
+                ProcessDonationOnHost(i.Name);
                 
             }
 
