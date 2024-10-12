@@ -303,6 +303,8 @@ file static class AssetEditExtensions
         SpawnFishData copy = spawnable.DeepClone();
         copy.AddCondition($"{AquariumGameStateQuery.HasBaitQuery} Current {AssetEditor.LegendaryBaitQID}");
         copy.CatchLimit = -1;
+        copy.Chance = 1;
+        copy.IgnoreFishDataRequirements = true;
 
         return copy;
     }

@@ -37,8 +37,6 @@ internal sealed class ModEntry : Mod
 
     public static Harmony Harmony { get; } = new Harmony("Cherry.StardewAquarium");
 
-    private FishEditor FishEditor;
-
     public static IJsonAssetsApi JsonAssets { get; set; }
 
     public override void Entry(IModHelper helper)
@@ -50,9 +48,6 @@ internal sealed class ModEntry : Mod
 
         AssetEditor.Init(this.Helper.GameContent, this.Helper.Events.Content, this.Monitor);
 
-        this.FishEditor = new(this.Helper);
-
-        this.Helper.Events.Content.AssetRequested += this.OnAssetRequested;
         this.Helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
         this.Helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
         this.Helper.Events.GameLoop.UpdateTicked += this.GameLoop_UpdateTicked;
@@ -94,16 +89,16 @@ internal sealed class ModEntry : Mod
 
             this.Helper.ConsoleCommands.Add("aquariumprogress", "", this.OpenAquariumCollectionMenu);
             this.Helper.ConsoleCommands.Add("removedonatedfish", "", this.RemoveDonatedFish);
-            this.Helper.ConsoleCommands.Add("spawn_missing_fishes", string.Empty, this.SpawnMissingFish);
+            this.Helper.ConsoleCommands.Add("spawn_missing_fishes", "Fills the player's inventory with fishes they have not donated yet.", this.SpawnMissingFish);
         }
     }
 
     /// <summary>
     /// fills the inventory with undonated fish.
     /// </summary>
-    /// <param name="arg1"></param>
-    /// <param name="arg2"></param>
-    private void SpawnMissingFish(string arg1, string[] arg2)
+    /// <param name="command"></param>
+    /// <param name="args"></param>
+    private void SpawnMissingFish(string command, string[] args)
     {
         if (!Context.IsWorldReady)
             return;
@@ -121,12 +116,6 @@ internal sealed class ModEntry : Mod
                 }
             }
         }
-    }
-
-    private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
-    {
-        if (this.FishEditor.CanEdit(e.NameWithoutLocale))
-            e.Edit(this.FishEditor.Edit);
     }
 
     private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)

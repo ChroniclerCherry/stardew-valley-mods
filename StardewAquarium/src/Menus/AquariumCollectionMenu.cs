@@ -78,10 +78,6 @@ namespace StardewAquarium.Menus
                 {
                     farmerHasButNotDonated = true;
                 }
-                else if (data.RawData is ObjectData { ExcludeFromFishingCollection: true})
-                {
-                    continue;
-                }
 
                 int x1 = top_left_x + index % square_size * 68;
                 int y1 = top_left_y + index / square_size * 68;
