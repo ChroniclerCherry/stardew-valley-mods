@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 
 using HarmonyLib;
 
@@ -18,6 +19,7 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 
 using StardewValley;
+using StardewValley.Constants;
 using StardewValley.GameData.Objects;
 using StardewValley.Menus;
 using StardewValley.Objects;
@@ -52,6 +54,7 @@ internal sealed class ModEntry : Mod
         this.Helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
         this.Helper.Events.GameLoop.UpdateTicked += this.GameLoop_UpdateTicked;
         this.Helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
+        this.Helper.Events.GameLoop.DayStarted += this.OnDayStart;
 
         CrabPotHandler.Init(this.Helper.Events.GameLoop, this.Monitor);
 
@@ -91,6 +94,38 @@ internal sealed class ModEntry : Mod
             this.Helper.ConsoleCommands.Add("removedonatedfish", "", this.RemoveDonatedFish);
             this.Helper.ConsoleCommands.Add("spawn_missing_fishes", "Fills the player's inventory with fishes they have not donated yet.", this.SpawnMissingFish);
         }
+    }
+
+    private void OnDayStart(object sender, DayStartedEventArgs e)
+    {
+        if (Game1.player.hasOrWillReceiveMail(AssetEditor.AquariumPlayerHasChicken))
+            return;
+
+        Farmer player = Game1.player;
+        Utility.ForEachLocation((loc) =>
+        {
+            if (loc.Animals?.Count() is 0 or null)
+                return true;
+
+            foreach (FarmAnimal animal in loc.Animals.Values)
+            {
+                if (animal.isAdult() && animal.ownerID?.Value == Game1.player.UniqueMultiplayerID)
+                {
+                    StardewValley.GameData.FarmAnimals.FarmAnimalData data = animal.GetAnimalData();
+                    if (data is null)
+                        continue;
+
+                    if (data.StatToIncrementOnProduce.Any(stat => StatKeys.ChickenEggsLayed.Equals(stat.StatName, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        player.mailReceived.Add(AssetEditor.AquariumPlayerHasChicken);
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        },
+        includeInteriors: true);
     }
 
     /// <summary>

@@ -17,6 +17,7 @@ using StardewValley.GameData;
 using StardewValley.GameData.Locations;
 using StardewValley.GameData.Objects;
 using StardewValley.GameData.Shirts;
+using StardewValley.Network.NetEvents;
 
 using SObject = StardewValley.Object;
 
@@ -25,7 +26,6 @@ internal static class AssetEditor
 {
     internal const string LegendaryBaitID = "Cherry.StardewAquarium_LegendaryBait";
     internal const string LegendaryBaitQID = $"{ItemRegistry.type_object}{LegendaryBaitID}";
-
 
     internal const string PufferchickID = "Cherry.StardewAquarium_Pufferchick";
     internal const string PufferchickQID = $"{ItemRegistry.type_object}{PufferchickID}";
@@ -36,6 +36,7 @@ internal static class AssetEditor
 
     private const string AquariumOpenAfterLandslide = "StardewAquarium.Open";
     private const string AquariumOpenLater = "StardewAquarium.OpenLater";
+    internal const string AquariumPlayerHasChicken = "StardewAquarium.PlayerHasChicken";
 
     internal static void Init(IGameContentHelper parser, IContentEvents events, IMonitor monitor)
     {
@@ -183,7 +184,7 @@ internal static class AssetEditor
         }
 
         // add pufferchick.
-        string original_condition = $"PLAYER_HAS_CAUGHT_FISH Current (O)128, PLAYER_STAT Host {StatKeys.ChickenEggsLayed} 1";
+        string original_condition = $"PLAYER_HAS_CAUGHT_FISH Current (O)128, PLAYER_HAS_MAIL Current {AquariumPlayerHasChicken} Any";
         SpawnFishData basePuffer = new()
         {
             ItemId = PufferchickQID,
@@ -267,8 +268,8 @@ internal static class AssetEditor
             new()
             {
                 Trigger = "DayStarted",
-                Action = $"AddMail Current {AquariumOpenAfterLandslide} Now, !PLAYER_HAS_MAIL Current {AquariumOpenLater} Any",
-                Condition = "DAYS_PLAYED 30 30",
+                Action = $"AddMail Current {AquariumOpenAfterLandslide} {nameof(MailType.Now)}",
+                Condition = $"DAYS_PLAYED 30 30, !PLAYER_HAS_MAIL Current {AquariumOpenLater} Any",
                 Id = $"{AquariumOpenAfterLandslide}_Trigger"
             });
 
@@ -276,8 +277,8 @@ internal static class AssetEditor
             new()
             {
                 Trigger = "DayStarted",
-                Action = $"AddMail Current {AquariumOpenLater} Now, !PLAYER_HAS_MAIL Current {AquariumOpenAfterLandslide} Any",
-                Condition = "DAYS_PLAYED 31",
+                Action = $"AddMail Current {AquariumOpenLater} {nameof(MailType.Now)}",
+                Condition = $"DAYS_PLAYED 31, !PLAYER_HAS_MAIL Current {AquariumOpenAfterLandslide} Any",
                 Id = $"{AquariumOpenLater}_Trigger"
             });
     }
