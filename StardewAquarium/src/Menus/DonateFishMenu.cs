@@ -7,6 +7,7 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Menus;
+using StardewValley.TokenizableStrings;
 
 namespace StardewAquarium.Menus
 {
@@ -37,7 +38,7 @@ namespace StardewAquarium.Menus
                 this._donated = true;
                 Game1.playSound("newArtifact");
                 item.Stack--;
-                if (item.Stack == 0)
+                if (item.Stack <= 0)
                     Game1.player.removeItemFromInventory(item);
 
                 if (item.QualifiedItemId == AssetEditor.PufferchickQID)
@@ -46,7 +47,7 @@ namespace StardewAquarium.Menus
                     this._pufferchickDonated = true;
                 }
 
-                Game1.Multiplayer.globalChatInfoMessage("StardewAquarium.FishDonated", [Game1.player.Name, item.Name]);
+                Game1.Multiplayer.globalChatInfoMessage("StardewAquarium.FishDonated", [Game1.player.Name, item.DisplayName]); // TokenStringBuilder.ItemNameFor(item)
             }
         }
 

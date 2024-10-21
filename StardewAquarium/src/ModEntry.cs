@@ -7,7 +7,6 @@ using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using StardewAquarium.Editors;
 using StardewAquarium.Menus;
 using StardewAquarium.Models;
 using StardewAquarium.Patches;
@@ -79,6 +78,8 @@ internal sealed class ModEntry : Mod
             this.Monitor.Log(ex.ToString());
         }
 
+
+
         if (Config.EnableDebugCommands
 #if DEBUG
             || true
@@ -96,8 +97,11 @@ internal sealed class ModEntry : Mod
         }
     }
 
+    /// <inheritdoc cref="IGameLoopEvents.DayStarted"/>
     private void OnDayStart(object sender, DayStartedEventArgs e)
     {
+        // stats are not reliable in multiplayer
+        // thus, we set a flag when the stat WOULD be set instead.
         if (Game1.player.hasOrWillReceiveMail(AssetEditor.AquariumPlayerHasChicken))
             return;
 
@@ -109,13 +113,10 @@ internal sealed class ModEntry : Mod
 
             foreach (FarmAnimal animal in loc.Animals.Values)
             {
-                if (animal.isAdult() && animal.ownerID?.Value == Game1.player.UniqueMultiplayerID)
+                if (animal.ownerID?.Value == player.UniqueMultiplayerID && animal.isAdult())
                 {
-                    StardewValley.GameData.FarmAnimals.FarmAnimalData data = animal.GetAnimalData();
-                    if (data is null)
-                        continue;
-
-                    if (data.StatToIncrementOnProduce.Any(stat => StatKeys.ChickenEggsLayed.Equals(stat.StatName, StringComparison.OrdinalIgnoreCase)))
+                    if (animal.GetAnimalData()?.StatToIncrementOnProduce
+                        ?.Any(static stat => StatKeys.ChickenEggsLayed.Equals(stat.StatName, StringComparison.OrdinalIgnoreCase)) == true)
                     {
                         player.mailReceived.Add(AssetEditor.AquariumPlayerHasChicken);
                         return false;

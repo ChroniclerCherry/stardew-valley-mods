@@ -135,7 +135,7 @@ internal static class AssetEditor
     private static void EditFish(IAssetData asset)
     {
         IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
-        data.Add(PufferchickQID, $"{ItemRegistry.GetDataOrErrorItem(PufferchickQID).InternalName}/95/mixed/28/28/0 2600/spring summer fall winter/both/688 .05/5/0/0/0/false");
+        data.Add(PufferchickID, $"{ItemRegistry.GetDataOrErrorItem(PufferchickQID).InternalName}/95/mixed/28/28/0 2600/spring summer fall winter/both/688 .05/5/0/0/0/false");
     }
 
 
