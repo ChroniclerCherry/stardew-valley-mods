@@ -98,9 +98,9 @@ namespace StardewAquarium
             if (name is null)
                 return false;
 
-            if (InternalNameToDonationName.ContainsValue(name))
+            if (InternalNameToDonationName.TryGetValue(name, out string donation_name))
             {
-                return !MasterPlayerMail.Contains($"AquariumDonated:{name}");
+                return !MasterPlayerMail.Contains($"AquariumDonated:{donation_name}");
             }
             return false;
         }
@@ -167,7 +167,7 @@ namespace StardewAquarium
             {
                 mainMessage = I18n.AchievementCongratulations();
                 UnlockAchievement();
-                _helper.Multiplayer.SendMessage(true, AchievementMessageType, modIDs: new[] { _manifest.UniqueID });
+                _helper.Multiplayer.SendMessage(true, AchievementMessageType, modIDs: [_manifest.UniqueID]);
                 Game1.Multiplayer.globalChatInfoMessage("StardewAquarium.AchievementUnlocked");
             }
             else
