@@ -12,7 +12,6 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 
 using StardewValley;
-using StardewValley.Constants;
 using StardewValley.GameData;
 using StardewValley.GameData.Locations;
 using StardewValley.GameData.Objects;
@@ -138,11 +137,10 @@ internal static class AssetEditor
         data.Add(PufferchickID, $"{ItemRegistry.GetDataOrErrorItem(PufferchickQID).InternalName}/95/mixed/28/28/0 2600/spring summer fall winter/both/688 .05/5/0/0/0/false");
     }
 
-
     private static void EditAquariumFish(IAssetData asset)
     {
         IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
-        data.Add(PufferchickQID, $"0/float/////Mods\\StardewAquarium\\AquariumFish");
+        data[PufferchickID] = $"0/float/////Mods\\StardewAquarium\\AquariumFish";
     }
 
     /// <summary>
@@ -189,6 +187,7 @@ internal static class AssetEditor
         {
             ItemId = PufferchickQID,
             Id = PufferchickQID,
+            CanUseTrainingRod = false,
             IsBossFish = true,
             CatchLimit = 1,
             Condition = $"{original_condition}, {AquariumGameStateQuery.RandomChanceForPuffer}"

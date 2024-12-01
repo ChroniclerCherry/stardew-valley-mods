@@ -239,7 +239,7 @@ internal sealed class ModEntry : Mod
             CheckMap(Data.ExteriorMapName);
             if (Constants.TargetPlatform == GamePlatform.Android)
             {
-                CheckMap(Data.ExteriorMapName);
+                CheckMap(Data.MuseumMapName);
             }
 
             // migrate old item data.
@@ -305,7 +305,9 @@ internal sealed class ModEntry : Mod
         AquariumGameStateQuery.Init();
 
         JsonAssets = this.Helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
-        JsonAssets.LoadAssets(Path.Combine(this.Helper.DirectoryPath, "data"));
+
+        if (JsonAssets is not null)
+            JsonAssets.LoadAssets(Path.Combine(this.Helper.DirectoryPath, "data"));
 
         Event.RegisterCommand("GiveAquariumTrophy1", GiveAquariumTrophy1);
         Event.RegisterCommand("GiveAquariumTrophy2", GiveAquariumTrophy2);

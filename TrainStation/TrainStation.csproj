@@ -2,4 +2,7 @@
   <PropertyGroup>
     <Version>1.2.0</Version>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="TrainStation\" />
+  </ItemGroup>
 </Project>

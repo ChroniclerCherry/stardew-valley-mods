@@ -1,9 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+
 using Netcode;
+
 using StardewAquarium.Editors;
+
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+
 using StardewValley;
 using StardewValley.GameData.Objects;
 using StardewValley.Menus;
@@ -17,6 +21,8 @@ namespace StardewAquarium
     {
         internal const string StatsKey = "Cherry.StardewAquarium.FishDonated";
 
+        internal const string AquariumPrefix = "AquariumDonated:";
+
         private static IModHelper _helper;
         private static IMonitor _monitor;
         private static IManifest _manifest;
@@ -27,14 +33,14 @@ namespace StardewAquarium
         /// Maps the InternalName of the fish to its internalname without spaces, eg. Rainbow Trout to RainbowTrout
         /// </summary>
         /// 
-        public static Dictionary<string, string> InternalNameToDonationName { get; set; } = [];
+        public static Dictionary<string, string> InternalNameToDonationName { get; private set; } = [];
 
         public static List<string> FishIDs { get; set; } = [];
 
         /// <summary>
         /// Maps the internal name without spaces to its localized display name
         /// </summary>
-        public static Dictionary<string, string> FishDisplayNames { get; set; } = [];
+        internal static Dictionary<string, string> FishDisplayNames { get; private set; } = [];
 
         private static LastDonatedFishSign _fishSign;
 
@@ -100,9 +106,15 @@ namespace StardewAquarium
 
             if (InternalNameToDonationName.TryGetValue(name, out string donation_name))
             {
-                return !MasterPlayerMail.Contains($"AquariumDonated:{donation_name}");
+                return !MasterPlayerMail.Contains($"{AquariumPrefix}{donation_name}");
             }
+
             return false;
+        }
+
+        internal static bool HasDonatedFishKey(string internal_fish_key)
+        {
+            return MasterPlayerMail.Contains($"{AquariumPrefix}{internal_fish_key}");
         }
 
         private const string DonateFishMessageType = "DonateFish";
@@ -132,7 +144,7 @@ namespace StardewAquarium
 
         public static int GetNumDonatedFish()
         {
-            return MasterPlayerMail.Count(flag => flag.StartsWith("AquariumDonated:"));
+            return MasterPlayerMail.Count(flag => flag.StartsWith(AquariumPrefix));
         }
 
         public static string GetDonatedMailFlag(Item i)
@@ -142,7 +154,7 @@ namespace StardewAquarium
 
         public static string GetDonatedMailFlag(string name)
         {
-            return $"AquariumDonated:{InternalNameToDonationName[name]}";
+            return $"{AquariumPrefix}{InternalNameToDonationName[name]}";
         }
 
         public static bool DoesPlayerHaveDonatableFish(Farmer farmer)
