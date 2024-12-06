@@ -16,10 +16,11 @@ internal sealed class AquariumMessage
 
     public AquariumMessage(Span<string> args)
     {
-        List<string> fishes = [];
+
+        List<string> fishes = new(args.Length);
         foreach (string str in args)
         {
-            if (!Utils.IsUnDonatedFish(str))
+            if (Utils.HasDonatedFishKey(str))
                 fishes.Add(str);
         }
 
@@ -36,7 +37,7 @@ internal sealed class AquariumMessage
         }
 
         this.BuildResponse(fishes);
-        Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages[this._currentPage], this.displayFishInfo);
+        Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages[this._currentPage], this.DisplayFishInfo);
     }
 
     private void BuildResponse(List<string> fishes)
@@ -67,7 +68,7 @@ internal sealed class AquariumMessage
         this._responsePages.Add(responsesThisPage.ToArray());
     }
 
-    private void displayFishInfo(Farmer who, string whichAnswer)
+    private void DisplayFishInfo(Farmer who, string whichAnswer)
     {
         if (whichAnswer == "Exit")
         {
@@ -83,7 +84,7 @@ internal sealed class AquariumMessage
             // delays until the next tick.
             DelayedAction.functionAfterDelay(() =>
             {
-                Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages[this._currentPage], this.displayFishInfo);
+                Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages[this._currentPage], this.DisplayFishInfo);
             }, 10);
             return;
         }
@@ -92,7 +93,7 @@ internal sealed class AquariumMessage
 
     private static string GetDescription(string key)
     {
-        var overrideContent = Game1.content.Load<Dictionary<string, string>>("Mods/StardewAquarium/FishDescriptions");
+        Dictionary<string, string> overrideContent = Game1.content.Load<Dictionary<string, string>>("Mods/StardewAquarium/FishDescriptions");
         if (overrideContent.TryGetValue(key, out string value))
             return value;
 

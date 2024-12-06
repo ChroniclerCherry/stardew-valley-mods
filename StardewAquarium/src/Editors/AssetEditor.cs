@@ -177,7 +177,7 @@ internal static class AssetEditor
 
         if (!data.TryGetValue(ModEntry.Data.ExteriorMapName, out LocationData museumData))
         {
-            Monitor.Log("MuseumExterior data seems missing, cannot copy.", LogLevel.Warn);
+            Monitor.Log($"{ModEntry.Data.ExteriorMapName} data seems missing, cannot copy.", LogLevel.Warn);
             return;
         }
 
