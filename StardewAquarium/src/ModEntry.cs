@@ -73,13 +73,11 @@ internal sealed class ModEntry : Mod
 
 
 
-        if (Config.EnableDebugCommands
-#if DEBUG
-            || true
+#if !DEBUG
+        if (Config.EnableDebugCommands)
 #endif
-            )
         {
-            if (Constants.TargetPlatform == GamePlatform.Android || true)
+            if (Constants.TargetPlatform == GamePlatform.Android)
                 this.Helper.ConsoleCommands.Add("donatefish", "", this.AndroidDonateFish);
             else
                 this.Helper.ConsoleCommands.Add("donatefish", "", this.OpenDonationMenuCommand);
