@@ -1,16 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
 using StardewValley.ItemTypeDefinitions;
 using StardewValley.Menus;
 
-namespace StardewAquarium.src.Menus;
+namespace StardewAquarium.Menus;
+
 internal sealed class AquariumClickableComponent : ClickableTextureComponent
 {
     public AquariumClickableComponent(Rectangle bounds, ParsedItemData data, float scale, bool drawShadow = false)

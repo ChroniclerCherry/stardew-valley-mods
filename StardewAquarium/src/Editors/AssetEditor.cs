@@ -1,26 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Force.DeepCloner;
-
 using Microsoft.Xna.Framework.Graphics;
-
-using StardewAquarium.Editors;
-
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
-
 using StardewValley;
 using StardewValley.GameData;
 using StardewValley.GameData.Locations;
 using StardewValley.GameData.Objects;
 using StardewValley.GameData.Shirts;
 using StardewValley.Network.NetEvents;
-
 using SObject = StardewValley.Object;
 
-namespace StardewAquarium.src.Editors;
+namespace StardewAquarium.Editors;
+
 internal static class AssetEditor
 {
     internal const string LegendaryBaitID = "Cherry.StardewAquarium_LegendaryBait";
@@ -63,7 +57,6 @@ internal static class AssetEditor
         _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Shirts")] = "assets/shirts.png";
         _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Items")] = "assets/items.png";
         _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/AquariumFish")] = "assets/aquarium.png";
-
     }
 
     private static void Handle(object sender, AssetRequestedEventArgs e)

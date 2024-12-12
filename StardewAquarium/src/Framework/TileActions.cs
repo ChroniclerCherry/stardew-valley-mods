@@ -1,13 +1,11 @@
 using System;
-
 using Microsoft.Xna.Framework;
 using StardewAquarium.Editors;
 using StardewAquarium.Menus;
 using StardewModdingAPI;
-
 using StardewValley;
 
-namespace StardewAquarium.src.Framework;
+namespace StardewAquarium.Framework;
 
 internal static class TileActions
 {

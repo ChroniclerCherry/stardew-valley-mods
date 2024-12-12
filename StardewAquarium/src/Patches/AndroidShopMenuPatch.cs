@@ -1,8 +1,7 @@
 using System;
 using HarmonyLib;
+using StardewAquarium.Editors;
 using StardewAquarium.Menus;
-using StardewAquarium.src.Editors;
-
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;

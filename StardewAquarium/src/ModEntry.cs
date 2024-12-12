@@ -1,28 +1,21 @@
 using System;
 using System.IO;
 using System.Linq;
-
 using HarmonyLib;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using StardewAquarium.Editors;
+using StardewAquarium.Framework;
 using StardewAquarium.Menus;
 using StardewAquarium.Models;
 using StardewAquarium.Patches;
-using StardewAquarium.src;
-using StardewAquarium.src.Editors;
-using StardewAquarium.src.Framework;
-
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
-
 using StardewValley;
 using StardewValley.Constants;
 using StardewValley.GameData.Objects;
 using StardewValley.Menus;
 using StardewValley.Objects;
-
 using SObject = StardewValley.Object;
 
 namespace StardewAquarium;
@@ -284,7 +277,7 @@ internal sealed class ModEntry : Mod
             Utils.UnlockAchievement();
 
     }
-    
+
     private void RemoveDonatedFish(string arg1, string[] arg2)
     {
         Game1.MasterPlayer.mailReceived.RemoveWhere(item => item.StartsWith("AquariumDonated:") || item.StartsWith("AquariumFishDonated:"));

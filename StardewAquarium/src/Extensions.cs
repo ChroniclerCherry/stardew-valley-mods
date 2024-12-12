@@ -2,7 +2,8 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
-namespace StardewAquarium.src;
+namespace StardewAquarium;
+
 internal static class Extensions
 {
 

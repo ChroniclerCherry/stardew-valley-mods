@@ -1,13 +1,12 @@
 using System;
-
 using StardewValley;
 using StardewValley.Delegates;
 using StardewValley.Extensions;
 using StardewValley.Tools;
-
 using SObject = StardewValley.Object;
 
-namespace StardewAquarium.src;
+namespace StardewAquarium;
+
 internal static class AquariumGameStateQuery
 {
     internal const string HasBaitQuery = "StardewValleyAquarium_PLAYER_HAS_BAIT";

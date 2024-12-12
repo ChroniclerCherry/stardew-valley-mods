@@ -1,13 +1,12 @@
 using System;
-
-using StardewModdingAPI.Events;
-using StardewValley.Objects;
-using StardewValley;
-
-using SObject = StardewValley.Object;
 using StardewModdingAPI;
+using StardewModdingAPI.Events;
+using StardewValley;
+using StardewValley.Objects;
+using SObject = StardewValley.Object;
 
-namespace StardewAquarium.src.Framework;
+namespace StardewAquarium.Framework;
+
 internal static class CrabPotHandler
 {
     private static IMonitor Monitor = null!;

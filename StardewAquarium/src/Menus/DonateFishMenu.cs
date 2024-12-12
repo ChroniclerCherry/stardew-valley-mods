@@ -1,13 +1,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
-using StardewAquarium.src.Editors;
-
-using StardewModdingAPI;
+using StardewAquarium.Editors;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Menus;
-using StardewValley.TokenizableStrings;
 
 namespace StardewAquarium.Menus
 {
