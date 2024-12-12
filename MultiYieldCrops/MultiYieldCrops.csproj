@@ -4,4 +4,8 @@
 
     <EnableHarmony>true</EnableHarmony>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" />
+  </ItemGroup>
 </Project>
