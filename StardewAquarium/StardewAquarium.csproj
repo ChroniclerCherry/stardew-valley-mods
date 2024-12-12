@@ -13,8 +13,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <IgnoreModFilePatterns>
-      \.xcf$ <!-- GIMP files-->
-    </IgnoreModFilePatterns>
+    <!-- GIMP files -->
+    <IgnoreModFilePatterns>\.xcf$</IgnoreModFilePatterns>
   </PropertyGroup>
 </Project>
