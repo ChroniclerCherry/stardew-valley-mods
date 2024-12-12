@@ -1,7 +1,10 @@
 ﻿# Release notes
 ## Upcoming release
-- Updated for Stardew Valley 1.6 (thanks to MindMeltMax!).
+- Updated for Stardew Valley 1.6 (thanks to MindMeltMax!) and 1.6.14 (thanks to Atravita!).
 - Fixed menu scrolls cutting off text (thanks to MindMeltMax!).
+- Removed dependency on Json Assets (thanks to Atravita!).
+- Internal refactoring to improve performance and stability (thanks to Atravita!).
+- Added log message when the host player doesn't have Stardew Aquarium installed (thanks to Atravita!).
 
 ## 1.5.4
 Released 15 March 2022 for SMAPI ? or later.
