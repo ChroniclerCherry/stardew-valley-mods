@@ -5,12 +5,19 @@ using StardewAquarium.Editors;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.GameData.Objects;
+using StardewValley.Menus;
+using StardewValley.TokenizableStrings;
 using Object = StardewValley.Object;
 
 namespace StardewAquarium
 {
     internal static class Utils
     {
+        internal const string StatsKey = "Cherry.StardewAquarium.FishDonated";
+
+        internal const string AquariumPrefix = "AquariumDonated:";
+
         private static IModHelper _helper;
         private static IMonitor _monitor;
         private static IManifest _manifest;
@@ -21,13 +28,14 @@ namespace StardewAquarium
         /// Maps the InternalName of the fish to its internalname without spaces, eg. Rainbow Trout to RainbowTrout
         /// </summary>
         /// 
-        public static Dictionary<string, string> InternalNameToDonationName { get; set; } = new Dictionary<string, string>();
-        public static List<string> FishIDs = new List<string>();
+        public static Dictionary<string, string> InternalNameToDonationName { get; private set; } = [];
+
+        public static List<string> FishIDs { get; set; } = [];
 
         /// <summary>
         /// Maps the internal name without spaces to its localized display name
         /// </summary>
-        public static Dictionary<string, string> FishDisplayNames { get; set; } = new Dictionary<string, string>();
+        internal static Dictionary<string, string> FishDisplayNames { get; private set; } = [];
 
         private static LastDonatedFishSign _fishSign;
 
@@ -49,17 +57,19 @@ namespace StardewAquarium
             InternalNameToDonationName.Clear();
             FishDisplayNames.Clear();
 
-            foreach (var kvp in Game1.objectData)
+            foreach ((string key, ObjectData info) in Game1.objectData)
             {
-                var info = kvp.Value;
                 string fishName = info.Name;
                 if (info.Category == Object.FishCategory)
                 {
-                    FishIDs.Add(kvp.Key);
+                    FishIDs.Add(key);
                     InternalNameToDonationName.Add(fishName, fishName.Replace(" ", string.Empty));
-                    FishDisplayNames.Add(fishName.Replace(" ", string.Empty), info.DisplayName);
+                    FishDisplayNames.Add(fishName.Replace(" ", string.Empty), TokenParser.ParseText(info.DisplayName));
                 }
             }
+
+            // update stats
+            Game1.player.stats.Set(StatsKey, GetNumDonatedFish());
         }
 
         public static bool IsUnDonatedFish(Item i)
@@ -79,16 +89,28 @@ namespace StardewAquarium
 
         }
 
-        public static bool IsUnDonatedFish(string s)
+        /// <summary>Get whether a fish can be donated.</summary>
+        /// <param name="name">the internal name of the fish.</param>
+        public static bool IsUnDonatedFish(string? name)
         {
-            if (InternalNameToDonationName.ContainsValue(s))
+            if (name is null)
+                return false;
+
+            if (InternalNameToDonationName.TryGetValue(name, out string donationName))
             {
-                return !MasterPlayerMail.Contains($"AquariumDonated:{s}");
+                return !MasterPlayerMail.Contains($"{AquariumPrefix}{donationName}");
             }
+
             return false;
         }
 
+        internal static bool HasDonatedFishKey(string internalFishKey)
+        {
+            return MasterPlayerMail.Contains($"{AquariumPrefix}{internalFishKey}");
+        }
+
         private const string DonateFishMessageType = "DonateFish";
+
         public static bool DonateFish(Item i)
         {
             if (!IsUnDonatedFish(i))
@@ -97,79 +119,43 @@ namespace StardewAquarium
             string donatedFlag = GetDonatedMailFlag(i);
             if (!MasterPlayerMail.Contains(donatedFlag))
             {
+                _fishSign.UpdateLastDonatedFish(i);
                 if (!Context.IsMainPlayer)
                 {
                     _helper.Multiplayer.SendMessage(i.Name, DonateFishMessageType,
-                        modIDs: new[] { _manifest.UniqueID });
-                    _fishSign.UpdateLastDonatedFish(i);
+                        modIDs: [_manifest.UniqueID]);
                     return true;
                 }
 
-                MasterPlayerMail.Add(donatedFlag);
-                string numDonated = $"AquariumFishDonated:{GetNumDonatedFish()}";
-                MasterPlayerMail.Add(numDonated);
+                ProcessDonationOnHost(i.Name);
             }
-
-
-            if (ModEntry.Data.ConversationTopicsOnDonate.Contains(i.Name))
-            {
-                foreach (var farmer in Game1.getAllFarmers())
-                {
-                    if (farmer.activeDialogueEvents.ContainsKey(donatedFlag))
-                    {
-                        farmer.activeDialogueEvents[donatedFlag] = 3;
-                    }
-                    else
-                    {
-                        farmer.activeDialogueEvents.Add(donatedFlag, 3);
-                    }
-                }
-            }
-
-            _fishSign.UpdateLastDonatedFish(i);
 
             return true;
         }
 
-        internal static bool PlayerInventoryContains(int fishId)
-        {
-            foreach (Item item in Game1.player.Items)
-            {
-                if (item is Object obj && obj.ParentSheetIndex == fishId)
-                    return true;
-            }
-
-            return false;
-        }
-
         public static int GetNumDonatedFish()
         {
-            return MasterPlayerMail.Count(flag => flag.StartsWith("AquariumDonated:"));
+            return MasterPlayerMail.Count(flag => flag.StartsWith(AquariumPrefix));
         }
 
         public static string GetDonatedMailFlag(Item i)
         {
-            return $"AquariumDonated:{InternalNameToDonationName[i.Name]}";
+            return GetDonatedMailFlag(i.Name);
         }
 
         public static string GetDonatedMailFlag(string name)
         {
-            return $"AquariumDonated:{InternalNameToDonationName[name]}";
+            return $"{AquariumPrefix}{InternalNameToDonationName[name]}";
         }
 
-        public static bool DoesPlayerHaveDonatableFish()
+        public static bool DoesPlayerHaveDonatableFish(Farmer farmer)
         {
-            foreach (var item in Game1.player.Items)
-            {
-                if (IsUnDonatedFish(item)) return true;
-            }
-
-            return false;
+            return farmer.Items?.Any(static item => IsUnDonatedFish(item)) == true;
         }
 
         public static IEnumerable<string> GetUndonatedFishInInventory()
         {
-            foreach (var item in Game1.player.Items)
+            foreach (Item item in Game1.player.Items)
             {
                 if (IsUnDonatedFish(item))
                     yield return item.ItemId;
@@ -182,31 +168,20 @@ namespace StardewAquarium
 
             if (CheckAchievement())
             {
-                mainMessage = _helper.Translation.Get("AchievementCongratulations");
+                mainMessage = I18n.AchievementCongratulations();
                 UnlockAchievement();
-                _helper.Multiplayer.SendMessage(true, AchievementMessageType, modIDs: new[] { _manifest.UniqueID });
-
-
-                var mp = _helper.Reflection.GetField<Multiplayer>(typeof(Game1), "multiplayer").GetValue();
-                mp.globalChatInfoMessage("StardewAquarium.AchievementUnlocked");
-            }
-            else if (donated)
-            {
-                mainMessage = _helper.Translation.Get("MenuCloseFishDonated");
+                _helper.Multiplayer.SendMessage(true, AchievementMessageType, modIDs: [_manifest.UniqueID]);
+                Game1.Multiplayer.globalChatInfoMessage("StardewAquarium.AchievementUnlocked");
             }
             else
             {
-                mainMessage = _helper.Translation.Get("MenuCloseNoFishDonated");
+                mainMessage = donated ? I18n.MenuCloseFishDonated() : I18n.MenuCloseNoFishDonated();
             }
-
             Game1.drawObjectDialogue(mainMessage);
-            var dialoguesField = _helper.Reflection.GetField<List<string>>(Game1.activeClickableMenu, "dialogues");
 
             if (pufferchickDonated)
             {
-                var dialogues = dialoguesField.GetValue();
-                dialogues.Add(_helper.Translation.Get("PufferchickDonated"));
-                dialoguesField.SetValue(dialogues);
+                (Game1.activeClickableMenu as DialogueBox)?.dialogues?.Add(I18n.PufferchickDonated());
             }
         }
 
@@ -221,12 +196,12 @@ namespace StardewAquarium
             if (Game1.player.achievements.Contains(AchievementEditor.AchievementId))
                 return;
 
-            Game1.addHUDMessage(HUDMessage.ForAchievement(_helper.Translation.Get("AchievementName")));
+            Game1.addHUDMessage(HUDMessage.ForAchievement(I18n.AchievementName()));
             Game1.playSound("achievement");
             Game1.player.achievements.Add(AchievementEditor.AchievementId);
 
-            if (!Context.IsMainPlayer) return;
-            if (!MasterPlayerMail.Contains("AquariumCompleted"))
+            // defer adding this flag until the night.
+            if (Context.IsMainPlayer && !MasterPlayerMail.Contains("AquariumCompleted"))
             {
                 _helper.Events.GameLoop.Saving += AddCompletionFlag;
             }
@@ -241,42 +216,41 @@ namespace StardewAquarium
 
         private static void Multiplayer_ModMessageReceived(object sender, ModMessageReceivedEventArgs e)
         {
-            if (e.FromModID == _manifest.UniqueID)
-            {
-                switch (e.Type)
-                {
-                    case AchievementMessageType:
-                        UnlockAchievement();
-                        break;
-                    case DonateFishMessageType:
-                        FarmhandDonated(e);
-                        break;
-                }
+            if (e.FromModID != _manifest.UniqueID)
+                return;
 
+            switch (e.Type)
+            {
+                case AchievementMessageType:
+                    UnlockAchievement();
+                    break;
+
+                case DonateFishMessageType:
+                    FarmhandDonated(e);
+                    break;
             }
         }
 
         private static void FarmhandDonated(ModMessageReceivedEventArgs e)
         {
-            if (!Context.IsMainPlayer) return;
+            if (!Context.IsMainPlayer)
+                return;
 
             string fishName = e.ReadAs<string>();
+            ProcessDonationOnHost(fishName);
+        }
+
+        private static void ProcessDonationOnHost(string fishName)
+        {
             string donatedFlag = GetDonatedMailFlag(fishName);
             MasterPlayerMail.Add(donatedFlag);
             string numDonated = $"AquariumFishDonated:{GetNumDonatedFish()}";
             MasterPlayerMail.Add(numDonated);
             if (ModEntry.Data.ConversationTopicsOnDonate.Contains(fishName))
             {
-                foreach (var farmer in Game1.getAllFarmers())
+                foreach (Farmer farmer in Game1.getAllFarmers())
                 {
-                    if (farmer.activeDialogueEvents.ContainsKey(donatedFlag))
-                    {
-                        farmer.activeDialogueEvents[donatedFlag] = 3;
-                    }
-                    else
-                    {
-                        farmer.activeDialogueEvents.Add(donatedFlag, 3);
-                    }
+                    farmer.activeDialogueEvents[donatedFlag] = 3;
                 }
             }
         }

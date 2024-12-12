@@ -27,6 +27,17 @@
     "WhichFishInfo": "¿Sobre qué pez te gustaría saber más?",
     "EmptyTank": "Solo un tanque vacío...",
 
+    // items.
+    "Decor": "Decor", // used as the override category name for one item.
+    "pufferchick-shirt-name": "Camiseta de Globo-Pollo",
+    "pufferchick-shirt-description": "He estado allí, he hecho eso, y ya tengo la camiseta.",
+
+    "legendary-bait-name": "Legendary Bait", // TODO
+    "legendary-bait-description": "Very rare fish are attracted to this...", // TODO
+
+    "pufferchick-name": "Globo-Pollo",
+    "pufferchick-description": "Mitad pollo, mitad Pez Globo.",
+
     //dialogue boxes
     "Ice": "Todo este hielo... es usado para enfriar la pecera con esa máquina.",
     "IceMachine": "Esta máquina mantiene la pecera congelado sobre temperaturas muy bajas.",

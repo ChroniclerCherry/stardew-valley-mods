@@ -27,6 +27,17 @@
     "WhichFishInfo": "Sur quel poisson voudriez vous en savoir plus?",
     "EmptyTank": "Juste un aquarium vide...",
 
+    // items.
+    "Decor": "Decor", // used as the override category name for one item.
+    "pufferchick-shirt-name": "PT-Shirt de Poulet-Globe",
+    "pufferchick-shirt-description": "J'étais là-bas, j'ai fait ça, j'ai eu le T-Shirt.",
+
+    "legendary-bait-name": "Legendary Bait", // TODO
+    "legendary-bait-description": "Very rare fish are attracted to this...", // TODO
+
+    "pufferchick-name": "Poulet-Globe",
+    "pufferchick-description": "Moitié poulet, moitié poisson-globe",
+
     //dialogue boxes
     "Ice": "Toute cette glace... elle est utilisée pour garder l'aquarium frais avec cette machine.",
     "IceMachine": "Cette machine gârde l'aquarium en dessous de températures très basses.",

@@ -26,6 +26,17 @@
     "WhichFishInfo": "Über welchen Fisch würdest Du gerne mehr wissen?",
     "EmptyTank": "Nur ein leeres Becken...",
 
+    // items.
+    "Decor": "Decor", // used as the override category name for one item.
+    "pufferchick-shirt-name": "Kugelhuhn Shirt",
+    "pufferchick-shirt-description": "War da, hab alles gemacht und das T-Shirt bekommen.",
+
+    "legendary-bait-name": "Legendary Bait", // TODO
+    "legendary-bait-description": "Very rare fish are attracted to this...", // TODO
+
+    "pufferchick-name": "Kugelhuhn",
+    "pufferchick-description": "Halb Huhn, halb Kugelfisch",
+
     //dialogue boxes
     "Ice": "All dieses Eis... es wird dazu benutzt, das Becken mit dieser Maschine zu kühlen.",
     "IceMachine": "Diese Maschine hält das Becken bei sehr niedrigen Temperaturen gekühlt.",

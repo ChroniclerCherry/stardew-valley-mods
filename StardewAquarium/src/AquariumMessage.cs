@@ -1,93 +1,99 @@
+using System;
 using System.Collections.Generic;
-using StardewModdingAPI;
-using StardewModdingAPI.Events;
 using StardewValley;
 
-namespace StardewAquarium
+namespace StardewAquarium;
+
+internal sealed class AquariumMessage
 {
-    class AquariumMessage
+    private List<Response[]>? _responsePages;
+    private int _currentPage;
+
+    public AquariumMessage(Span<string> args)
     {
-        private static ITranslationHelper _translation;
-        private static IModHelper _helper;
-        List<Response[]> _responsePages;
-        private int _currentPage = 0;
 
-        public static void Initialize(IModHelper helper)
+        List<string> fishes = new(args.Length);
+        foreach (string str in args)
         {
-            _helper = helper;
-            _translation = helper.Translation;
+            if (Utils.HasDonatedFishKey(str))
+                fishes.Add(str);
         }
 
-        public AquariumMessage(string[] args)
+        if (fishes.Count == 0)
         {
-            List<string> fishes = new List<string>();
-            foreach (string str in args)
-            {
-                if (!Utils.IsUnDonatedFish(str))
-                    fishes.Add(str);
-            }
-
-            if (fishes.Count == 0)
-            {
-                Game1.drawObjectDialogue(_translation.Get("EmptyTank"));
-                return;
-            }
-
-            if (fishes.Count == 1)
-            {
-                Game1.drawObjectDialogue(_translation.Get($"Tank_{fishes[0]}"));
-                return;
-            }
-
-            this.BuildResponse(fishes);
-            Game1.currentLocation.createQuestionDialogue(_translation.Get("WhichFishInfo"), this._responsePages[this._currentPage], this.displayFishInfo);
+            Game1.drawObjectDialogue(I18n.EmptyTank());
+            return;
         }
 
-        private void BuildResponse(List<string> fishes)
+        if (fishes.Count == 1)
         {
-            this._responsePages = new List<Response[]>();
-            var responsesThisPage = new List<Response>();
+            Game1.drawObjectDialogue(GetDescription(fishes[0]));
+            return;
+        }
 
-            for (int index = 0; index < fishes.Count; index++)
+        this.BuildResponse(fishes);
+        Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages[this._currentPage], this.DisplayFishInfo);
+    }
+
+    private void BuildResponse(List<string> fishes)
+    {
+        this._responsePages = [];
+        this._currentPage = 0;
+        List<Response> responsesThisPage = [];
+
+        for (int index = 0; index < fishes.Count; index++)
+        {
+            if (!Utils.FishDisplayNames.TryGetValue(fishes[index], out string translated))
             {
-                responsesThisPage.Add(new Response(fishes[index], Utils.FishDisplayNames[fishes[index]]));
-
-                //Max of 3 options per page, with more pages added as needed
-                if (responsesThisPage.Count < 4) continue;
-                if (index < fishes.Count - 1)
-                    responsesThisPage.Add(new Response("More", _translation.Get("More")));
-                responsesThisPage.Add(new Response("Exit", _translation.Get("Exit")));
-                this._responsePages.Add(responsesThisPage.ToArray());
-                responsesThisPage = new List<Response>();
+                continue;
             }
+            responsesThisPage.Add(new Response(fishes[index], translated));
 
-            responsesThisPage.Add(new Response("Exit", _translation.Get("Exit")));
+            //Max of 3 options per page, with more pages added as needed
+            if (responsesThisPage.Count < 4)
+                continue;
+            if (index < fishes.Count - 1)
+                responsesThisPage.Add(new Response("More", I18n.More()));
+            responsesThisPage.Add(new Response("Exit", I18n.Exit()));
             this._responsePages.Add(responsesThisPage.ToArray());
-
+            responsesThisPage = [];
         }
 
-        private void displayFishInfo(Farmer who, string whichAnswer)
-        {
-            if (whichAnswer == "Exit")
-            {
-                return;
-            }
+        responsesThisPage.Add(new Response("Exit", I18n.Exit()));
+        this._responsePages.Add(responsesThisPage.ToArray());
+    }
 
-            if (whichAnswer == "More")
-            {
+    private void DisplayFishInfo(Farmer who, string whichAnswer)
+    {
+        switch (whichAnswer)
+        {
+            case "Exit":
+                break;
+
+            case "More":
                 Game1.activeClickableMenu = null;
                 Game1.currentLocation.afterQuestion = null;
                 this._currentPage++;
-                _helper.Events.GameLoop.UpdateTicked += this.OpenNextPage;
-                return;
-            }
-            Game1.drawObjectDialogue(_translation.Get($"Tank_{whichAnswer}"));
-        }
 
-        private void OpenNextPage(object sender, UpdateTickedEventArgs e)
-        {
-            Game1.currentLocation.createQuestionDialogue(_translation.Get("WhichFishInfo"), this._responsePages[this._currentPage], this.displayFishInfo);
-            _helper.Events.GameLoop.UpdateTicked -= this.OpenNextPage;
+                // delays until the next tick.
+                DelayedAction.functionAfterDelay(
+                    () => Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages[this._currentPage], this.DisplayFishInfo),
+                    10
+                );
+                break;
+
+            default:
+                Game1.drawObjectDialogue(GetDescription(whichAnswer));
+                break;
         }
+    }
+
+    private static string GetDescription(string key)
+    {
+        Dictionary<string, string> overrideContent = Game1.content.Load<Dictionary<string, string>>("Mods/StardewAquarium/FishDescriptions");
+        if (overrideContent.TryGetValue(key, out string value))
+            return value;
+
+        return I18n.GetByKey($"Tank_{key}");
     }
 }

@@ -6,19 +6,23 @@ using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
+using StardewValley.Extensions;
 using StardewValley.GameData.Objects;
 using StardewValley.ItemTypeDefinitions;
 using StardewValley.Menus;
-using Object = StardewValley.Object;
+
+using SObject = StardewValley.Object;
 
 namespace StardewAquarium.Menus
 {
     class AquariumCollectionMenu : IClickableMenu
     {
         private string hoverText = "";
+
         public List<List<ClickableTextureComponent>> collections = new List<List<ClickableTextureComponent>>();
         public ClickableTextureComponent backButton;
         public ClickableTextureComponent forwardButton;
+
         private int currentPage;
         private string _title;
         private readonly bool IsAndroid = Constants.TargetPlatform == GamePlatform.Android;
@@ -38,66 +42,60 @@ namespace StardewAquarium.Menus
             this.yPositionOnScreen = Game1.viewport.Height / 2 - (600 + borderWidth * 2) / 2;
 
             CollectionsPage.widthToMoveActiveTab = 8;
-            ClickableTextureComponent textureComponent9 = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + 48, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(352, 495, 12, 11), 4f, false);
-            textureComponent9.myID = 706;
-            textureComponent9.rightNeighborID = -7777;
-            this.backButton = textureComponent9;
-            ClickableTextureComponent textureComponent10 = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 32 - 60, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(365, 495, 12, 11), 4f, false);
-            textureComponent10.myID = 707;
-            textureComponent10.leftNeighborID = -7777;
-            this.forwardButton = textureComponent10;
-            int[] numArray = new int[8];
-            int num2 = this.xPositionOnScreen + borderWidth + spaceToClearSideBorder;
-            int num3 = this.yPositionOnScreen + borderWidth + spaceToClearTopBorder - 16;
-            int num4 = 10;
-
-            int index = 0;
-            foreach ((string itemId, ObjectData objData) in Game1.objectData.OrderBy(p => p.Key))
+            this.backButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + 48, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(352, 495, 12, 11), 4f, false)
             {
-                int category = objData.Category;
-                bool drawColour = false;
-                bool drawColorFaded = false;
+                myID = 706,
+                rightNeighborID = -7777
+            };
 
-                if (category == Object.FishCategory)
+            this.forwardButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 32 - 60, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(365, 495, 12, 11), 4f, false)
+            {
+                myID = 707,
+                leftNeighborID = -7777
+            };
+
+            int topLeftX = this.xPositionOnScreen + borderWidth + spaceToClearSideBorder;
+            int topLeftY = this.yPositionOnScreen + borderWidth + spaceToClearTopBorder - 16;
+            const int squareSize = 10;
+
+            this.collections.Add([]);
+            List<ClickableTextureComponent> textureComponentList = this.collections.Last();
+            int index = 0;
+            foreach (ParsedItemData data in ItemRegistry.GetObjectTypeDefinition().GetAllData().Where(static data => data.Category == SObject.FishCategory).OrderBy(static data => (data.TextureName, data.ItemId)))
+            {
+                bool farmerHas = false;
+                bool farmerHasButNotDonated = false;
+
+                if (!Utils.IsUnDonatedFish(data.InternalName))
                 {
-                    string name = objData.Name;
-                    if (Game1.player.fishCaught.ContainsKey(itemId))
-                    {
-                        drawColorFaded = true;
-                    }
-
-                    if (!Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]))
-                    {
-                        drawColour = true;
-                        drawColorFaded = false;
-                    }
+                    farmerHas = true;
                 }
-                else
-                    continue;
+                else if (Game1.player.fishCaught.ContainsKey(data.QualifiedItemId))
+                {
+                    farmerHasButNotDonated = true;
+                }
 
-                int x1 = num2 + index % num4 * 68;
-                int y1 = num3 + index / num4 * 68;
+                int x1 = topLeftX + index % squareSize * 68;
+                int y1 = topLeftY + index / squareSize * 68;
                 if (y1 > this.yPositionOnScreen + this.height - 128)
                 {
-                    this.collections.Add(new List<ClickableTextureComponent>());
+                    this.collections.Add([]);
                     index = 0;
-                    x1 = num2;
-                    y1 = num3;
+                    x1 = topLeftX;
+                    y1 = topLeftY;
+                    textureComponentList = this.collections.Last();
                 }
-                if (this.collections.Count == 0)
-                    this.collections.Add(new List<ClickableTextureComponent>());
-                List<ClickableTextureComponent> textureComponentList = this.collections.Last();
-                var texture = Game1.content.Load<Texture2D>(objData.Texture ?? Game1.objectSpriteSheetName);
-                ClickableTextureComponent textureComponent8 = new ClickableTextureComponent(itemId + " " + drawColour + " " + drawColorFaded, new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, objData.SpriteIndex, 16, 16), 4f, drawColour)
+                Texture2D texture = data.GetTexture();
+                ClickableTextureComponent itemClickable = new($"{data.ItemId} {farmerHas} {farmerHasButNotDonated}", new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, data.SpriteIndex, 16, 16), 4f, farmerHas)
                 {
-                    myID = this.collections.Last().Count,
-                    rightNeighborID = (this.collections.Last().Count + 1) % num4 == 0 ? -1 : this.collections.Last().Count + 1,
-                    leftNeighborID = this.collections.Last().Count % num4 == 0 ? 7001 : this.collections.Last().Count - 1,
-                    downNeighborID = y1 + 68 > this.yPositionOnScreen + this.height - 128 ? -7777 : this.collections.Last().Count + num4,
-                    upNeighborID = this.collections.Last().Count < num4 ? 12345 : this.collections.Last().Count - num4,
+                    myID = textureComponentList.Count,
+                    rightNeighborID = (textureComponentList.Count + 1) % squareSize == 0 ? -1 : textureComponentList.Count + 1,
+                    leftNeighborID = textureComponentList.Count % squareSize == 0 ? 7001 : textureComponentList.Count - 1,
+                    downNeighborID = y1 + 68 > this.yPositionOnScreen + this.height - 128 ? -7777 : textureComponentList.Count + squareSize,
+                    upNeighborID = textureComponentList.Count < squareSize ? 12345 : textureComponentList.Count - squareSize,
                     fullyImmutable = true
                 };
-                textureComponentList.Add(textureComponent8);
+                textureComponentList.Add(itemClickable);
                 index++;
             }
 
@@ -188,14 +186,7 @@ namespace StardewAquarium.Menus
 
         public string createDescription(string key)
         {
-            ParsedItemData data = ItemRegistry.GetDataOrErrorItem(key);
-
-            string name = data.InternalName;
-            if (Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]) && !Game1.player.fishCaught.ContainsKey(key))
-                return "???";
-
-            string returnStr = data.DisplayName + Environment.NewLine + Environment.NewLine + Game1.parseText(data.Description, Game1.smallFont, 256) + Environment.NewLine;
-            return returnStr;
+            return CreateDescription(ItemRegistry.GetDataOrErrorItem(key));
         }
 
         public override void draw(SpriteBatch b)
@@ -220,23 +211,29 @@ namespace StardewAquarium.Menus
             b.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
             foreach (ClickableTextureComponent textureComponent in this.collections[this.currentPage])
             {
-                /*
-                 *bool drawColor = Convert.ToBoolean(c.name.Split(' ')[1]);
-                bool drawColorFaded = this.currentTab == 4 && Convert.ToBoolean(c.name.Split(' ')[2]);
-                c.draw(b, drawColorFaded ? (Color.DimGray * 0.4f) : (drawColor ? Color.White : (Color.Black * 0.2f)), 0.86f);
-                 */
                 bool drawColor = Convert.ToBoolean(textureComponent.name.Split(' ')[1]);
                 bool drawColorFaded = Convert.ToBoolean(textureComponent.name.Split(' ')[2]);
                 textureComponent.draw(b, drawColorFaded ? Color.DimGray * 0.4f : drawColor ? Color.White : Color.Black * 0.2f, drawColorFaded ? 0 : 0.86f);
             }
             b.End();
             b.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
-            if (!this.hoverText.Equals(""))
+
+            if (!string.IsNullOrEmpty(this.hoverText))
             {
                 drawHoverText(b, this.hoverText, Game1.smallFont, 0, 0);
             }
 
             this.drawMouse(b);
+        }
+
+        internal static string CreateDescription(ParsedItemData data)
+        {
+            string name = data.InternalName;
+            if (Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]) && !Game1.player.fishCaught.ContainsKey(data.QualifiedItemId))
+                return "???";
+
+            string returnStr = data.DisplayName + Environment.NewLine + Environment.NewLine + Game1.parseText(data.Description, Game1.smallFont, 256) + Environment.NewLine;
+            return returnStr;
         }
     }
 }

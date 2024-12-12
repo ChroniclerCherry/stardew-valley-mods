@@ -31,8 +31,8 @@ namespace StardewAquarium.Menus
 
             foreach (string fish in fishes)
             {
-                Object display = new Object(fish, 1);
-                display.displayName = "Donate " + display.DisplayName;
+                Object display = new(fish, 1);
+                display.displayName = I18n.Donate() + display.DisplayName;
                 this.donations.Add(display, new(0, 1, fish, 1));
             }
 

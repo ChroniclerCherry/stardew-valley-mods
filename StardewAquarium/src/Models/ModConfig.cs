@@ -1,10 +1,9 @@
 using StardewModdingAPI;
 
-namespace StardewAquarium.Models
+namespace StardewAquarium.Models;
+
+public sealed class ModConfig
 {
-    public class ModConfig
-    {
-        public bool EnableDebugCommands { get; set; } = false;
-        public SButton? CheckDonationCollection { get; set; } = null;
-    }
+    public bool EnableDebugCommands { get; set; } = false;
+    public SButton? CheckDonationCollection { get; set; } = null;
 }

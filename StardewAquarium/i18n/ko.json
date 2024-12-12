@@ -27,6 +27,17 @@
     "WhichFishInfo": "어떤 물고기의 설명을 볼까요?",
     "EmptyTank": "텅 빈 수조이다...",
 
+    // items.
+    "Decor": "Decor", // used as the override category name for one item.
+    "pufferchick-shirt-name": "복어닭 셔츠",
+    "pufferchick-shirt-description": "아쿠아리움에 갔노라, 물고기를 모았노라, 티셔츠를 얻었노라.",
+
+    "legendary-bait-name": "Legendary Bait", // TODO
+    "legendary-bait-description": "Very rare fish are attracted to this...", // TODO
+
+    "pufferchick-name": "복어닭",
+    "pufferchick-description": "반은 복어고 반은 닭입니다.",
+
     //dialogue boxes
     "Ice": "얼음으로 가득 찼다...수조의 기계를 냉각할 때 쓰는걸거야.",
     "IceMachine": "이 기계는 탱크를 매우 낮은 온도로 냉각시킨다.",

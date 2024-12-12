@@ -27,6 +27,17 @@
     "WhichFishInfo": "О какой рыбе Вы хотели бы узнать больше?",
     "EmptyTank": "Просто пустой резервуар...",
 
+    // items.
+    "Decor": "Decor", // used as the override category name for one item.
+    "pufferchick-shirt-name": "Фугу-цыплячья рубашка",
+    "pufferchick-shirt-description": "Был там, сделал это - получил футболку.",
+
+    "legendary-bait-name": "Legendary Bait", // TODO
+    "legendary-bait-description": "Very rare fish are attracted to this...", // TODO
+
+    "pufferchick-name": "Фугу-цыплёнок",
+    "pufferchick-description": "Наполовину фугу, наполовину цыплёнок.",
+
     //dialogue boxes
     "Ice": "Весь этот лед ... он используется для охлаждения резервуара с помощью рядом стоящей машины.",
     "IceMachine": "Эта машина поддерживает охлаждение резервуара.",

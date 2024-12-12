@@ -20,7 +20,7 @@ namespace StardewAquarium
         private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
             this.TSApi = this._helper.ModRegistry.GetApi<ITrainStationAPI>("Cherry.TrainStation");
-            if (this.TSApi == null)
+            if (this.TSApi is null)
             {
                 this._monitor.Log("The train station API was not found. Warps back to the Railroad will default to a map warp.", LogLevel.Warn);
                 return;
@@ -34,10 +34,10 @@ namespace StardewAquarium
             if (!Context.IsWorldReady)
                 return;
 
-            if (Game1.currentLocation?.Name != ModEntry.Data.ExteriorMapName)
+            if (Game1.player.Position.Y > 32)
                 return;
 
-            if (Game1.player.Position.Y > 32)
+            if (Game1.currentLocation?.Name != ModEntry.Data.ExteriorMapName)
                 return;
 
             Game1.player.position.Y += 32;
