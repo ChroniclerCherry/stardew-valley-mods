@@ -9,10 +9,6 @@
     <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="data\**\*.*" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
   <PropertyGroup>
     <!-- GIMP files -->
     <IgnoreModFilePatterns>\.xcf$</IgnoreModFilePatterns>

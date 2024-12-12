@@ -61,7 +61,7 @@ internal sealed class ModEntry : Mod
 
         try
         {
-            string dataPath = Path.Combine("data", "data.json");
+            string dataPath = Path.Combine("assets", "data.json");
             Data = helper.Data.ReadJsonFile<ModData>(dataPath) ?? throw new FileNotFoundException(dataPath);
         }
         catch (Exception ex)
@@ -186,7 +186,7 @@ internal sealed class ModEntry : Mod
             }
         }
 
-        loc.temporarySprites.Add(new DolphinAnimatedSprite(position, this.Helper.ModContent.Load<Texture2D>("data/dolphin.png")));
+        loc.temporarySprites.Add(new DolphinAnimatedSprite(position, this.Helper.ModContent.Load<Texture2D>("assets/dolphin.png")));
     }
 
     private void AndroidPlsHaveMercyOnMe(object sender, MenuChangedEventArgs e)
@@ -298,7 +298,7 @@ internal sealed class ModEntry : Mod
         JsonAssets = this.Helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
 
         if (JsonAssets is not null)
-            JsonAssets.LoadAssets(Path.Combine(this.Helper.DirectoryPath, "data"));
+            JsonAssets.LoadAssets(Path.Combine(this.Helper.DirectoryPath, "assets", "json-assets"));
 
         Event.RegisterCommand("GiveAquariumTrophy1", GiveAquariumTrophy1);
         Event.RegisterCommand("GiveAquariumTrophy2", GiveAquariumTrophy2);
