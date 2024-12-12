@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 
-namespace MultiYieldCrops.Framework
+namespace MultiYieldCrops.Framework;
+
+class ContentModel
 {
-    class ContentModel
-    {
-        public List<CropHarvestRules> Harvests { get; set; }
-    }
+    public List<CropHarvestRules> Harvests { get; set; }
 }

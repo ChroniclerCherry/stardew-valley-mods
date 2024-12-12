@@ -1,7 +1,6 @@
-namespace ChangeSlimeHutchLimit.Framework
+namespace ChangeSlimeHutchLimit.Framework;
+
+public class Config
 {
-    public class Config
-    {
-        public int MaxSlimesInHutch { get; set; } = 20;
-    }
+    public int MaxSlimesInHutch { get; set; } = 20;
 }

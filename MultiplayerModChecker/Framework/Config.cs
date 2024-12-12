@@ -1,8 +1,7 @@
-namespace MultiplayerModChecker.Framework
+namespace MultiplayerModChecker.Framework;
+
+public class Config
 {
-    public class Config
-    {
-        public string[] IgnoredMods { get; set; } = { "Cherry.MultiplayerModChecker" };
-        public bool HideReportInTrace { get; set; } = false;
-    }
+    public string[] IgnoredMods { get; set; } = { "Cherry.MultiplayerModChecker" };
+    public bool HideReportInTrace { get; set; } = false;
 }

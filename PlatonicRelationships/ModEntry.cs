@@ -1,65 +1,64 @@
-using StardewModdingAPI;
-using StardewValley;
-using StardewValley.Menus;
 using System;
 using HarmonyLib;
 using PlatonicRelationships.Framework;
+using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewValley;
+using StardewValley.Menus;
 
-namespace PlatonicRelationships
+namespace PlatonicRelationships;
+
+public class ModEntry : Mod
 {
-    public class ModEntry : Mod
+    private ModConfig Config;
+    private readonly AddDatingPrereq Editor = new AddDatingPrereq();
+
+    public override void Entry(IModHelper helper)
     {
-        private ModConfig Config;
-        private readonly AddDatingPrereq Editor = new AddDatingPrereq();
+        this.Config = this.Helper.ReadConfig<ModConfig>();
+        if (this.Config.AddDatingRequirementToRomanticEvents)
+            helper.Events.Content.AssetRequested += this.OnAssetRequested;
 
-        public override void Entry(IModHelper helper)
+        //apply harmony patches
+        this.ApplyPatches();
+    }
+
+    private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+    {
+        if (this.Editor.CanEdit(e.NameWithoutLocale))
+            e.Edit(this.Editor.Edit);
+    }
+
+    public void ApplyPatches()
+    {
+        var harmony = new Harmony("cherry.platonicrelationships");
+
+        try
         {
-            this.Config = this.Helper.ReadConfig<ModConfig>();
-            if (this.Config.AddDatingRequirementToRomanticEvents)
-                helper.Events.Content.AssetRequested += this.OnAssetRequested;
-
-            //apply harmony patches
-            this.ApplyPatches();
+            this.Monitor.Log("Transpile patching SocialPage.drawNPCSlotHeart");
+            harmony.Patch(
+                original: AccessTools.Method(typeof(SocialPage), name: "drawNPCSlotHeart"),
+                prefix: new HarmonyMethod(methodType: typeof(PatchDrawNpcSlotHeart), nameof(PatchDrawNpcSlotHeart.Prefix))
+            );
+        }
+        catch (Exception e)
+        {
+            this.Monitor.Log($"Failed in Patching SocialPage.drawNPCSlotHeart: \n{e}", LogLevel.Error);
+            return;
         }
 
-        private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+        try
         {
-            if (this.Editor.CanEdit(e.NameWithoutLocale))
-                e.Edit(this.Editor.Edit);
+            this.Monitor.Log("Postfix patching Utility.GetMaximumHeartsForCharacter");
+            harmony.Patch(
+                original: AccessTools.Method(typeof(Utility), name: "GetMaximumHeartsForCharacter"),
+                postfix: new HarmonyMethod(typeof(patchGetMaximumHeartsForCharacter), nameof(patchGetMaximumHeartsForCharacter.Postfix))
+            );
         }
-
-        public void ApplyPatches()
+        catch (Exception e)
         {
-            var harmony = new Harmony("cherry.platonicrelationships");
-
-            try
-            {
-                this.Monitor.Log("Transpile patching SocialPage.drawNPCSlotHeart");
-                harmony.Patch(
-                    original: AccessTools.Method(typeof(SocialPage), name: "drawNPCSlotHeart"),
-                    prefix: new HarmonyMethod(methodType: typeof(PatchDrawNpcSlotHeart), nameof(PatchDrawNpcSlotHeart.Prefix))
-                );
-            }
-            catch (Exception e)
-            {
-                this.Monitor.Log($"Failed in Patching SocialPage.drawNPCSlotHeart: \n{e}", LogLevel.Error);
-                return;
-            }
-
-            try
-            {
-                this.Monitor.Log("Postfix patching Utility.GetMaximumHeartsForCharacter");
-                harmony.Patch(
-                    original: AccessTools.Method(typeof(Utility), name: "GetMaximumHeartsForCharacter"),
-                    postfix: new HarmonyMethod(typeof(patchGetMaximumHeartsForCharacter), nameof(patchGetMaximumHeartsForCharacter.Postfix))
-                );
-            }
-            catch (Exception e)
-            {
-                this.Monitor.Log($"Failed in Patching Utility.GetMaximumHeartsForCharacter: \n{e}", LogLevel.Error);
-                return;
-            }
+            this.Monitor.Log($"Failed in Patching Utility.GetMaximumHeartsForCharacter: \n{e}", LogLevel.Error);
+            return;
         }
     }
 }

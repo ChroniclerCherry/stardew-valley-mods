@@ -1,8 +1,7 @@
-namespace ProfitMargins.Framework
+namespace ProfitMargins.Framework;
+
+class ModConfig
 {
-    class ModConfig
-    {
-        public bool EnableInMultiplayer { get; set; } = false;
-        public float ProfitMargin { get; set; } = 1f;
-    }
+    public bool EnableInMultiplayer { get; set; } = false;
+    public float ProfitMargin { get; set; } = 1f;
 }

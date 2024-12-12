@@ -1,11 +1,10 @@
-namespace PlatonicRelationships.Framework
+namespace PlatonicRelationships.Framework;
+
+class patchGetMaximumHeartsForCharacter
 {
-    class patchGetMaximumHeartsForCharacter
+    internal static void Postfix(ref int __result)
     {
-        internal static void Postfix(ref int __result)
-        {
-            if (__result == 8)
-                __result = 10;
-        }
+        if (__result == 8)
+            __result = 10;
     }
 }

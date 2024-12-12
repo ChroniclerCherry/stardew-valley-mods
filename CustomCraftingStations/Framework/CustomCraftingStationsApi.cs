@@ -1,10 +1,9 @@
-namespace CustomCraftingStations.Framework
+namespace CustomCraftingStations.Framework;
+
+public class CustomCraftingStationsApi : ICustomCraftingStationsApi
 {
-    public class CustomCraftingStationsApi : ICustomCraftingStationsApi
+    public void SetCCSCraftingMenuOverride(bool menuOverride)
     {
-        public void SetCCSCraftingMenuOverride(bool menuOverride)
-        {
-            ModEntry.MenuOverride = menuOverride;
-        }
+        ModEntry.MenuOverride = menuOverride;
     }
 }

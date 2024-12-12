@@ -1,11 +1,10 @@
 using StardewModdingAPI;
 
-namespace MultiplayerModChecker.Framework
+namespace MultiplayerModChecker.Framework;
+
+public class SmapiGameVersionDifference
 {
-    public class SmapiGameVersionDifference
-    {
-        public bool FarmhandHasSmapi { get; set; }
-        public ISemanticVersion HostSmapiVersion { get; set; }
-        public ISemanticVersion FarmhandSmapiVersion { get; set; }
-    }
+    public bool FarmhandHasSmapi { get; set; }
+    public ISemanticVersion HostSmapiVersion { get; set; }
+    public ISemanticVersion FarmhandSmapiVersion { get; set; }
 }

@@ -1,7 +1,6 @@
-namespace UpgradeEmptyCabins.Framework
+namespace UpgradeEmptyCabins.Framework;
+
+internal class Config
 {
-    internal class Config
-    {
-        public bool InstantBuild { get; set; } = false;
-    }
+    public bool InstantBuild { get; set; } = false;
 }

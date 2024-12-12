@@ -1,7 +1,6 @@
-namespace CustomCraftingStations.Framework
+namespace CustomCraftingStations.Framework;
+
+public interface ICustomCraftingStationsApi
 {
-    public interface ICustomCraftingStationsApi
-    {
-        void SetCCSCraftingMenuOverride(bool menuOverride);
-    }
+    void SetCCSCraftingMenuOverride(bool menuOverride);
 }
