@@ -27,8 +27,6 @@ internal sealed class ModEntry : Mod
     internal static ModConfig Config { get; private set; } = null!;
     internal static ModData Data { get; private set; } = null!;
 
-    internal const string DonationMenu = "Cherry.StardewAquarium.DonationMenu";
-
     public static Harmony Harmony { get; } = new Harmony("Cherry.StardewAquarium");
 
     public static IJsonAssetsApi JsonAssets { get; set; }

@@ -1,18 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-
 using Netcode;
-
 using StardewAquarium.Editors;
-
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
-
 using StardewValley;
 using StardewValley.GameData.Objects;
 using StardewValley.Menus;
 using StardewValley.TokenizableStrings;
-
 using Object = StardewValley.Object;
 
 namespace StardewAquarium
@@ -136,7 +131,6 @@ namespace StardewAquarium
                 }
 
                 ProcessDonationOnHost(i.Name);
-                
             }
 
             return true;
@@ -187,7 +181,7 @@ namespace StardewAquarium
                 mainMessage = donated ? I18n.MenuCloseFishDonated() : I18n.MenuCloseNoFishDonated();
             }
             Game1.drawObjectDialogue(mainMessage);
-            
+
             if (pufferchickDonated)
             {
                 (Game1.activeClickableMenu as DialogueBox)?.dialogues?.Add(I18n.PufferchickDonated());
@@ -226,9 +220,8 @@ namespace StardewAquarium
         private static void Multiplayer_ModMessageReceived(object sender, ModMessageReceivedEventArgs e)
         {
             if (e.FromModID != _manifest.UniqueID)
-            {
                 return;
-            }
+
             switch (e.Type)
             {
                 case AchievementMessageType:

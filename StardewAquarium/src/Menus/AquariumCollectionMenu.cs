@@ -10,7 +10,6 @@ using StardewValley.Extensions;
 using StardewValley.GameData.Objects;
 using StardewValley.ItemTypeDefinitions;
 using StardewValley.Menus;
-using Object = StardewValley.Object;
 
 using SObject = StardewValley.Object;
 
@@ -58,9 +57,6 @@ namespace StardewAquarium.Menus
             int top_left_x = this.xPositionOnScreen + borderWidth + spaceToClearSideBorder;
             int top_left_y = this.yPositionOnScreen + borderWidth + spaceToClearTopBorder - 16;
             const int square_size = 10;
-
-            // apply sort earlier.
-            IOrderedEnumerable<KeyValuePair<string, ObjectData>> fishes = Game1.objectData.Where(kvp => kvp.Value?.Category == SObject.FishCategory).OrderBy(kvp => kvp.Key);
 
             this.collections.Add([]);
             List<ClickableTextureComponent> textureComponentList = this.collections.Last();

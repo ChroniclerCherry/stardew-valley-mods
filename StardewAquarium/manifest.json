@@ -6,21 +6,5 @@
     "UniqueID": "Cherry.StardewAquarium",
     "EntryDll": "StardewAquarium.dll",
     "MinimumApiVersion": "4.0.0",
-    "MinimumGameVersion": "1.6.9",
-    "UpdateKeys": [
-        "Nexus:6372"
-    ],
-    "Dependencies": [
-        //{
-        //    "UniqueID": "Pathoschild.ContentPatcher",
-        //    "MinimumVersion": "1.17"
-        //},
-        //{
-        //    "UniqueID": "spacechase0.JsonAssets"
-        //},
-        //{
-        //    "UniqueID": "Cherry.TrainStation",
-        //    "MinimumVersion": "1.0.3"
-        //}
-    ]
+    "UpdateKeys": [ "Nexus:6372" ]
 }
