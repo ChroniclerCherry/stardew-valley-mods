@@ -27,7 +27,7 @@ internal sealed class ModEntry : Mod
     internal static ModConfig Config { get; private set; } = null!;
     internal static ModData Data { get; private set; } = null!;
 
-    public static Harmony Harmony { get; } = new Harmony("Cherry.StardewAquarium");
+    public static Harmony Harmony { get; } = new("Cherry.StardewAquarium");
 
     public static IJsonAssetsApi JsonAssets { get; set; }
 
@@ -54,7 +54,7 @@ internal sealed class ModEntry : Mod
             this.Helper.Events.Display.MenuChanged += this.AndroidPlsHaveMercyOnMe;
         }
 
-        new ReturnTrain(this.Helper, this.Monitor);
+        _ = new ReturnTrain(this.Helper, this.Monitor);
 
         Config = this.Helper.ReadConfig<ModConfig>();
 
@@ -65,7 +65,7 @@ internal sealed class ModEntry : Mod
         }
         catch (Exception ex)
         {
-            this.Monitor.Log($"Could not read data file. Please reinstall the mod! Things may behave weirdly.", LogLevel.Warn);
+            this.Monitor.Log("Could not read data file. Please reinstall the mod! Things may behave weirdly.", LogLevel.Warn);
             this.Monitor.Log(ex.ToString());
         }
 
@@ -118,9 +118,7 @@ internal sealed class ModEntry : Mod
         includeInteriors: true);
     }
 
-    /// <summary>
-    /// fills the inventory with undonated fish.
-    /// </summary>
+    /// <summary>Fill the inventory with un-donated fish.</summary>
     /// <param name="command"></param>
     /// <param name="args"></param>
     private void SpawnMissingFish(string command, string[] args)
@@ -163,17 +161,22 @@ internal sealed class ModEntry : Mod
             return;
 
         // Randomly find a starting position within the range.
-        Vector2 position = 64f * new Vector2
-        (Game1.random.Next(Data.DolphinRange.Left,
-                Data.DolphinRange.Right + 1),
-            Game1.random.Next(Data.DolphinRange.Top,
-                Data.DolphinRange.Bottom + 1));
+        Vector2 position = 64f * new Vector2(
+            Game1.random.Next(Data.DolphinRange.Left, Data.DolphinRange.Right + 1),
+            Game1.random.Next(Data.DolphinRange.Top, Data.DolphinRange.Bottom + 1)
+        );
 
         GameLocation loc = Game1.currentLocation;
 
         // Confirm there is water tiles in the 3x2 area the dolphin spawns in
-        Vector2[] tiles = [ new Vector2(0, 0), new Vector2(1, 0), new Vector2(2, 0),
-            new Vector2(0, 1), new Vector2(1, 1), new Vector2(2, 1) ];
+        Vector2[] tiles = [
+            new Vector2(0, 0),
+            new Vector2(1, 0),
+            new Vector2(2, 0),
+            new Vector2(0, 1),
+            new Vector2(1, 1),
+            new Vector2(2, 1)
+        ];
         foreach (Vector2 tile in tiles)
         {
             if (loc.doesTileHaveProperty((int)((position.X / 64) + tile.X), (int)((position.Y / 64) + tile.Y), "Water", "Back") == null)
@@ -206,11 +209,11 @@ internal sealed class ModEntry : Mod
     {
         if (!Context.IsMainPlayer)
         {
-            IMultiplayerPeer master = this.Helper.Multiplayer.GetConnectedPlayer(Game1.MasterPlayer.UniqueMultiplayerID);
-            IMultiplayerPeerMod us = master.GetMod(this.ModManifest.UniqueID);
-            if (us is null)
+            IMultiplayerPeer mainPlayer = this.Helper.Multiplayer.GetConnectedPlayer(Game1.MasterPlayer.UniqueMultiplayerID);
+            IMultiplayerPeerMod mainPlayerMod = mainPlayer.GetMod(this.ModManifest.UniqueID);
+            if (mainPlayerMod is null)
             {
-                this.Monitor.Log($"Host seems to be missing Stardew Aquarium. Certain features may not work as advertised.", LogLevel.Error);
+                this.Monitor.Log("Host seems to be missing Stardew Aquarium. Certain features may not work as advertised.", LogLevel.Error);
             }
         }
 
@@ -234,34 +237,32 @@ internal sealed class ModEntry : Mod
             // migrate old item data.
             if (Game1.player.modData.TryAdd(MigrationKey, "migrated"))
             {
-                Utility.ForEachItem((item) =>
+                Utility.ForEachItem(item =>
                 {
                     switch (item.TypeDefinitionId)
                     {
                         case ItemRegistry.type_shirt:
-                        {
                             if (item.Name == "Pufferchick Shirt")
                             {
                                 item.ItemId = "Cherry.StardewAquarium_PufferchickShirt";
                                 (item as Clothing).LoadData(forceReload: true);
                             }
                             break;
-                        }    
+
                         case ItemRegistry.type_object:
-                        {
                             switch (item.Name)
                             {
                                 case "Pufferchick":
-                                    item.ItemId = AssetEditor.PufferchickID;
+                                    item.ItemId = AssetEditor.PufferchickId;
                                     item.ResetParentSheetIndex();
                                     break;
+
                                 case "Legendary Bait":
-                                    item.ItemId = AssetEditor.LegendaryBaitID;
+                                    item.ItemId = AssetEditor.LegendaryBaitId;
                                     item.ResetParentSheetIndex();
                                     break;
                             }
                             break;
-                        }
                     };
 
                     return true;
@@ -309,6 +310,7 @@ internal sealed class ModEntry : Mod
         e.farmer.holdUpItemThenMessage(trophy, true);
         ++e.CurrentCommand;
     }
+
     public static void GiveAquariumTrophy2(Event e, string[] args, EventContext context)
     {
         string id = JsonAssets.GetBigCraftableId("Stardew Aquarium Trophy");

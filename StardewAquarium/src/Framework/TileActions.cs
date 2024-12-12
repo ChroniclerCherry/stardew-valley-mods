@@ -16,6 +16,7 @@ internal static class TileActions
     {
         Helper = helper;
         Monitor = monitor;
+
         GameLocation.RegisterTileAction("AquariumDonationMenu", DonationMenu);
         GameLocation.RegisterTileAction("AquariumSign", AquariumSign);
         GameLocation.RegisterTileAction("AquariumString", AquariumString);
@@ -43,7 +44,7 @@ internal static class TileActions
 
     private static bool AquariumSign(GameLocation location, string[] actions, Farmer farmer, Point point)
     {
-        new AquariumMessage(actions.AsSpan(1));
+        _ = new AquariumMessage(actions.AsSpan(1));
         return true;
     }
 
@@ -78,9 +79,11 @@ internal static class TileActions
             case "OptionNo":
                 Game1.drawObjectDialogue(I18n.DeclineToDonate());
                 return;
+
             case "OptionYes" when Constants.TargetPlatform == GamePlatform.Android:
                 Game1.activeClickableMenu = new DonateFishMenuAndroid(Helper, Monitor);
                 break;
+
             case "OptionYes":
                 Game1.activeClickableMenu = new DonateFishMenu();
                 break;

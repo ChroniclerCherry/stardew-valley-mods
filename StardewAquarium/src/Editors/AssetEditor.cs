@@ -17,14 +17,14 @@ namespace StardewAquarium.Editors;
 
 internal static class AssetEditor
 {
-    internal const string LegendaryBaitID = "Cherry.StardewAquarium_LegendaryBait";
-    internal const string LegendaryBaitQID = $"{ItemRegistry.type_object}{LegendaryBaitID}";
+    internal const string LegendaryBaitId = "Cherry.StardewAquarium_LegendaryBait";
+    internal const string LegendaryBaitQualifiedId = $"{ItemRegistry.type_object}{LegendaryBaitId}";
 
-    internal const string PufferchickID = "Cherry.StardewAquarium_Pufferchick";
-    internal const string PufferchickQID = $"{ItemRegistry.type_object}{PufferchickID}";
+    internal const string PufferchickId = "Cherry.StardewAquarium_Pufferchick";
+    internal const string PufferchickQualifiedId = $"{ItemRegistry.type_object}{PufferchickId}";
 
-    private readonly static Dictionary<IAssetName, Action<IAssetData>> _handlers = [];
-    private readonly static Dictionary<IAssetName, string> _textureLoaders = [];
+    private static readonly Dictionary<IAssetName, Action<IAssetData>> Handlers = [];
+    private static readonly Dictionary<IAssetName, string> TextureLoaders = [];
     private static IMonitor Monitor;
 
     private const string AquariumOpenAfterLandslide = "StardewAquarium.Open";
@@ -36,27 +36,27 @@ internal static class AssetEditor
         Monitor = monitor;
         events.AssetRequested += Handle;
 
-        _handlers[parser.ParseAssetName("Strings/UI")] = EditStringsUi;
+        Handlers[parser.ParseAssetName("Strings/UI")] = EditStringsUi;
 
-        _handlers[parser.ParseAssetName("Data/Locations")] = EditDataLocations;
+        Handlers[parser.ParseAssetName("Data/Locations")] = EditDataLocations;
 
-        _handlers[parser.ParseAssetName("Data/Shirts")] = EditShirtData;
-        _handlers[parser.ParseAssetName("Strings/Shirts")] = EditShirtStrings;
+        Handlers[parser.ParseAssetName("Data/Shirts")] = EditShirtData;
+        Handlers[parser.ParseAssetName("Strings/Shirts")] = EditShirtStrings;
 
-        _handlers[parser.ParseAssetName("Data/Objects")] = EditObjectData;
-        _handlers[parser.ParseAssetName("Strings/Objects")] = EditObjectStrings;
+        Handlers[parser.ParseAssetName("Data/Objects")] = EditObjectData;
+        Handlers[parser.ParseAssetName("Strings/Objects")] = EditObjectStrings;
 
-        _handlers[parser.ParseAssetName("Data/mail")] = EditDataMail;
-        _handlers[parser.ParseAssetName("Data/TriggerActions")] = EditTriggerActions;
+        Handlers[parser.ParseAssetName("Data/mail")] = EditDataMail;
+        Handlers[parser.ParseAssetName("Data/TriggerActions")] = EditTriggerActions;
 
-        _handlers[parser.ParseAssetName("Data/Achievements")] = AchievementEditor.Edit;
+        Handlers[parser.ParseAssetName("Data/Achievements")] = AchievementEditor.Edit;
 
-        _handlers[parser.ParseAssetName("Data/AquariumFish")] = EditAquariumFish;
-        _handlers[parser.ParseAssetName("Data/Fish")] = EditFish;
+        Handlers[parser.ParseAssetName("Data/AquariumFish")] = EditAquariumFish;
+        Handlers[parser.ParseAssetName("Data/Fish")] = EditFish;
 
-        _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Shirts")] = "assets/shirts.png";
-        _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Items")] = "assets/items.png";
-        _textureLoaders[parser.ParseAssetName("Mods/StardewAquarium/AquariumFish")] = "assets/aquarium.png";
+        TextureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Shirts")] = "assets/shirts.png";
+        TextureLoaders[parser.ParseAssetName("Mods/StardewAquarium/Items")] = "assets/items.png";
+        TextureLoaders[parser.ParseAssetName("Mods/StardewAquarium/AquariumFish")] = "assets/aquarium.png";
     }
 
     private static void Handle(object sender, AssetRequestedEventArgs e)
@@ -67,17 +67,15 @@ internal static class AssetEditor
             e.LoadFrom(static () => new Dictionary<string, string>(), AssetLoadPriority.Exclusive);
         }
 
-        if (_handlers.TryGetValue(e.NameWithoutLocale, out Action<IAssetData> action))
+        if (Handlers.TryGetValue(e.NameWithoutLocale, out Action<IAssetData> action))
         {
             e.Edit(action, AssetEditPriority.Late);
         }
-        if (_textureLoaders.TryGetValue(e.NameWithoutLocale, out string path))
+        if (TextureLoaders.TryGetValue(e.NameWithoutLocale, out string path))
         {
             e.LoadFromModFile<Texture2D>(path, AssetLoadPriority.Exclusive);
         }
     }
-
-    #region editors
 
     private static void EditObjectStrings(IAssetData asset)
     {
@@ -93,7 +91,7 @@ internal static class AssetEditor
         IDictionary<string, ObjectData> data = asset.AsDictionary<string, ObjectData>().Data;
         const string texture = "Mods/StardewAquarium/Items";
 
-        data[LegendaryBaitID] = new()
+        data[LegendaryBaitId] = new()
         {
             Name = "Legendary Bait",
             Type = "Basic",
@@ -109,7 +107,7 @@ internal static class AssetEditor
             ExcludeFromShippingCollection = true,
             ExcludeFromRandomSale = true,
         };
-        data[PufferchickID] = new()
+        data[PufferchickId] = new()
         {
             Name = "Pufferchick",
             Type = "Fish",
@@ -127,18 +125,16 @@ internal static class AssetEditor
     private static void EditFish(IAssetData asset)
     {
         IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
-        data.Add(PufferchickID, $"{ItemRegistry.GetDataOrErrorItem(PufferchickQID).InternalName}/95/mixed/28/28/0 2600/spring summer fall winter/both/688 .05/5/0/0/0/false");
+        data.Add(PufferchickId, $"{ItemRegistry.GetDataOrErrorItem(PufferchickQualifiedId).InternalName}/95/mixed/28/28/0 2600/spring summer fall winter/both/688 .05/5/0/0/0/false");
     }
 
     private static void EditAquariumFish(IAssetData asset)
     {
         IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
-        data[PufferchickID] = $"0/float/////Mods\\StardewAquarium\\AquariumFish";
+        data[PufferchickId] = "0/float/////Mods\\StardewAquarium\\AquariumFish";
     }
 
-    /// <summary>
-    /// copies over 1.5 data from beach data, edits fish data for legendaries.
-    /// </summary>
+    /// <summary>Copies over 1.5 data from beach data, edits fish data for legendary fish.</summary>
     /// <param name="asset"></param>
     private static void EditDataLocations(IAssetData asset)
     {
@@ -175,21 +171,21 @@ internal static class AssetEditor
         }
 
         // add pufferchick.
-        string original_condition = $"PLAYER_HAS_CAUGHT_FISH Current (O)128, PLAYER_HAS_MAIL Current {AquariumPlayerHasChicken} Any";
+        string originalCondition = $"PLAYER_HAS_CAUGHT_FISH Current (O)128, PLAYER_HAS_MAIL Current {AquariumPlayerHasChicken} Any";
         SpawnFishData basePuffer = new()
         {
-            ItemId = PufferchickQID,
-            Id = PufferchickQID,
+            ItemId = PufferchickQualifiedId,
+            Id = PufferchickQualifiedId,
             CanUseTrainingRod = false,
             IsBossFish = true,
             CatchLimit = 1,
-            Condition = $"{original_condition}, {AquariumGameStateQuery.RandomChanceForPuffer}"
+            Condition = $"{originalCondition}, {AquariumGameStateQuery.RandomChanceForPuffer}"
         };
         museumData.Fish.Add(basePuffer);
 
-        SpawnFishData puffer_copy = basePuffer.MakeLegendaryBaitEntry();
-        puffer_copy.Condition = $"{original_condition}, {AquariumGameStateQuery.HasBaitQuery} Current {LegendaryBaitQID}";
-        museumData.Fish.Add(puffer_copy);
+        SpawnFishData pufferCopy = basePuffer.MakeLegendaryBaitEntry();
+        pufferCopy.Condition = $"{originalCondition}, {AquariumGameStateQuery.HasBaitQuery} Current {LegendaryBaitQualifiedId}";
+        museumData.Fish.Add(pufferCopy);
 
         if (!data.TryGetValue("Beach", out LocationData beachData))
         {
@@ -203,9 +199,9 @@ internal static class AssetEditor
         if (beachData.FishAreas is not null)
         {
             museumData.FishAreas ??= [];
-            foreach ((string key, FishAreaData fisharea) in beachData.FishAreas)
+            foreach ((string key, FishAreaData fishArea) in beachData.FishAreas)
             {
-                beachData.FishAreas.TryAdd(key, fisharea);
+                beachData.FishAreas.TryAdd(key, fishArea);
             }
         }
 
@@ -263,8 +259,8 @@ internal static class AssetEditor
                 Action = $"AddMail Current {AquariumOpenAfterLandslide} {nameof(MailType.Now)}",
                 Condition = $"DAYS_PLAYED 30 30, !PLAYER_HAS_MAIL Current {AquariumOpenLater} Any",
                 Id = $"{AquariumOpenAfterLandslide}_Trigger"
-            });
-
+            }
+        );
         data.Add(
             new()
             {
@@ -272,15 +268,14 @@ internal static class AssetEditor
                 Action = $"AddMail Current {AquariumOpenLater} {nameof(MailType.Now)}",
                 Condition = $"DAYS_PLAYED 31, !PLAYER_HAS_MAIL Current {AquariumOpenAfterLandslide} Any",
                 Id = $"{AquariumOpenLater}_Trigger"
-            });
+            }
+        );
     }
-
-    #endregion
 }
 
 file static class AssetEditExtensions
 {
-    internal static void AddCondition(this GenericSpawnItemDataWithCondition spawnable, string newCondition)
+    private static void AddCondition(this GenericSpawnItemDataWithCondition spawnable, string newCondition)
     {
         if (string.IsNullOrWhiteSpace(spawnable.Condition))
         {
@@ -296,7 +291,7 @@ file static class AssetEditExtensions
     {
         SpawnFishData copy = spawnable.DeepClone();
         copy.Id += "_LegendaryBait";
-        copy.AddCondition($"{AquariumGameStateQuery.HasBaitQuery} Current {AssetEditor.LegendaryBaitQID}");
+        copy.AddCondition($"{AquariumGameStateQuery.HasBaitQuery} Current {AssetEditor.LegendaryBaitQualifiedId}");
         copy.CatchLimit = -1;
         copy.Chance = 1;
         copy.IgnoreFishDataRequirements = true;

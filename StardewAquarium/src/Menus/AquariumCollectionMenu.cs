@@ -54,9 +54,9 @@ namespace StardewAquarium.Menus
                 leftNeighborID = -7777
             };
 
-            int top_left_x = this.xPositionOnScreen + borderWidth + spaceToClearSideBorder;
-            int top_left_y = this.yPositionOnScreen + borderWidth + spaceToClearTopBorder - 16;
-            const int square_size = 10;
+            int topLeftX = this.xPositionOnScreen + borderWidth + spaceToClearSideBorder;
+            int topLeftY = this.yPositionOnScreen + borderWidth + spaceToClearTopBorder - 16;
+            const int squareSize = 10;
 
             this.collections.Add([]);
             List<ClickableTextureComponent> textureComponentList = this.collections.Last();
@@ -75,24 +75,24 @@ namespace StardewAquarium.Menus
                     farmerHasButNotDonated = true;
                 }
 
-                int x1 = top_left_x + index % square_size * 68;
-                int y1 = top_left_y + index / square_size * 68;
+                int x1 = topLeftX + index % squareSize * 68;
+                int y1 = topLeftY + index / squareSize * 68;
                 if (y1 > this.yPositionOnScreen + this.height - 128)
                 {
                     this.collections.Add([]);
                     index = 0;
-                    x1 = top_left_x;
-                    y1 = top_left_y;
+                    x1 = topLeftX;
+                    y1 = topLeftY;
                     textureComponentList = this.collections.Last();
                 }
                 Texture2D texture = data.GetTexture();
                 ClickableTextureComponent itemClickable = new($"{data.ItemId} {farmerHas} {farmerHasButNotDonated}", new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, data.SpriteIndex, 16, 16), 4f, farmerHas)
                 {
                     myID = textureComponentList.Count,
-                    rightNeighborID = (textureComponentList.Count + 1) % square_size == 0 ? -1 : textureComponentList.Count + 1,
-                    leftNeighborID = textureComponentList.Count % square_size == 0 ? 7001 : textureComponentList.Count - 1,
-                    downNeighborID = y1 + 68 > this.yPositionOnScreen + this.height - 128 ? -7777 : textureComponentList.Count + square_size,
-                    upNeighborID = textureComponentList.Count < square_size ? 12345 : textureComponentList.Count - square_size,
+                    rightNeighborID = (textureComponentList.Count + 1) % squareSize == 0 ? -1 : textureComponentList.Count + 1,
+                    leftNeighborID = textureComponentList.Count % squareSize == 0 ? 7001 : textureComponentList.Count - 1,
+                    downNeighborID = y1 + 68 > this.yPositionOnScreen + this.height - 128 ? -7777 : textureComponentList.Count + squareSize,
+                    upNeighborID = textureComponentList.Count < squareSize ? 12345 : textureComponentList.Count - squareSize,
                     fullyImmutable = true
                 };
                 textureComponentList.Add(itemClickable);

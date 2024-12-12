@@ -89,27 +89,24 @@ namespace StardewAquarium
 
         }
 
-        /// <summary>
-        /// Checks to see if a fish can be donated.
-        /// </summary>
+        /// <summary>Get whether a fish can be donated.</summary>
         /// <param name="name">the internal name of the fish.</param>
-        /// <returns>Whether or not that fish has been donated.</returns>
         public static bool IsUnDonatedFish(string? name)
         {
             if (name is null)
                 return false;
 
-            if (InternalNameToDonationName.TryGetValue(name, out string donation_name))
+            if (InternalNameToDonationName.TryGetValue(name, out string donationName))
             {
-                return !MasterPlayerMail.Contains($"{AquariumPrefix}{donation_name}");
+                return !MasterPlayerMail.Contains($"{AquariumPrefix}{donationName}");
             }
 
             return false;
         }
 
-        internal static bool HasDonatedFishKey(string internal_fish_key)
+        internal static bool HasDonatedFishKey(string internalFishKey)
         {
-            return MasterPlayerMail.Contains($"{AquariumPrefix}{internal_fish_key}");
+            return MasterPlayerMail.Contains($"{AquariumPrefix}{internalFishKey}");
         }
 
         private const string DonateFishMessageType = "DonateFish";
@@ -227,6 +224,7 @@ namespace StardewAquarium
                 case AchievementMessageType:
                     UnlockAchievement();
                     break;
+
                 case DonateFishMessageType:
                     FarmhandDonated(e);
                     break;

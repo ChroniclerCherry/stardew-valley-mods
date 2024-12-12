@@ -52,7 +52,7 @@ namespace StardewAquarium.Patches
                 DonateFishMenuAndroid.Donated = true;
                 Game1.player.removeItemFromInventory(donatedFish);
 
-                if (donatedFish.QualifiedItemId == AssetEditor.PufferchickQID)
+                if (donatedFish.QualifiedItemId == AssetEditor.PufferchickQualifiedId)
                 {
                     Game1.playSound("openChest");
                     DonateFishMenuAndroid.PufferchickDonated = true;

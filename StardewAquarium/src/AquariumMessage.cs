@@ -6,8 +6,8 @@ namespace StardewAquarium;
 
 internal sealed class AquariumMessage
 {
-    private List<Response[]>?_responsePages = null;
-    private int _currentPage = 0;
+    private List<Response[]>? _responsePages;
+    private int _currentPage;
 
     public AquariumMessage(Span<string> args)
     {
@@ -65,25 +65,27 @@ internal sealed class AquariumMessage
 
     private void DisplayFishInfo(Farmer who, string whichAnswer)
     {
-        if (whichAnswer == "Exit")
+        switch (whichAnswer)
         {
-            return;
-        }
+            case "Exit":
+                break;
 
-        if (whichAnswer == "More")
-        {
-            Game1.activeClickableMenu = null;
-            Game1.currentLocation.afterQuestion = null;
-            this._currentPage++;
+            case "More":
+                Game1.activeClickableMenu = null;
+                Game1.currentLocation.afterQuestion = null;
+                this._currentPage++;
 
-            // delays until the next tick.
-            DelayedAction.functionAfterDelay(() =>
-            {
-                Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages[this._currentPage], this.DisplayFishInfo);
-            }, 10);
-            return;
+                // delays until the next tick.
+                DelayedAction.functionAfterDelay(
+                    () => Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages[this._currentPage], this.DisplayFishInfo),
+                    10
+                );
+                break;
+
+            default:
+                Game1.drawObjectDialogue(GetDescription(whichAnswer));
+                break;
         }
-        Game1.drawObjectDialogue(GetDescription(whichAnswer));
     }
 
     private static string GetDescription(string key)

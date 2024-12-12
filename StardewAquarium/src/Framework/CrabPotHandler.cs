@@ -10,17 +10,15 @@ namespace StardewAquarium.Framework;
 internal static class CrabPotHandler
 {
     private static IMonitor Monitor = null!;
+
     internal static void Init(IGameLoopEvents events, IMonitor monitor)
     {
         Monitor = monitor;
         events.DayStarted += OnDayStart;
     }
 
-    /// <summary>
-    /// Updates crab pots
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
+    /// <summary>Updates crab pots</summary>
+    /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
     private static void OnDayStart(object sender, DayStartedEventArgs e)
     {
         GameLocation loc = Game1.getLocationFromName(ModEntry.Data.ExteriorMapName);
@@ -28,10 +26,10 @@ internal static class CrabPotHandler
             return;
 
         // the original method actually flat out re-implemented the code for crab pots. We're...not going to do that anymore.
-        // it was meant to mimic crabpot behavior on the beach, which is now in the data.
+        // it was meant to mimic crab pot behavior on the beach, which is now in the data.
 
         // HOWEVER that wasn't actually what it did. Instead, it just...caught something. Even if not baited.
-        // We will mimic this by baiting the crabpots ourselves.
+        // We will mimic this by baiting the crab pots ourselves.
 
         // This map also apparently will remove trash if that's what's rolled.
 

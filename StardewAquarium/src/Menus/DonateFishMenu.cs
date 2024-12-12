@@ -37,7 +37,7 @@ namespace StardewAquarium.Menus
                 if (item.Stack <= 0)
                     Game1.player.removeItemFromInventory(item);
 
-                if (item.QualifiedItemId == AssetEditor.PufferchickQID)
+                if (item.QualifiedItemId == AssetEditor.PufferchickQualifiedId)
                 {
                     Game1.playSound("openChest");
                     this._pufferchickDonated = true;
