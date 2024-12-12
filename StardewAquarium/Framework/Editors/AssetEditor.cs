@@ -13,7 +13,7 @@ using StardewValley.GameData.Shirts;
 using StardewValley.Network.NetEvents;
 using SObject = StardewValley.Object;
 
-namespace StardewAquarium.Editors;
+namespace StardewAquarium.Framework.Editors;
 
 internal static class AssetEditor
 {

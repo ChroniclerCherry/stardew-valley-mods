@@ -5,7 +5,7 @@ using StardewValley;
 using StardewValley.Objects;
 using SObject = StardewValley.Object;
 
-namespace StardewAquarium.Framework;
+namespace StardewAquarium.Framework.Framework;
 
 internal static class CrabPotHandler
 {

@@ -5,7 +5,7 @@ using StardewValley;
 using StardewValley.Menus;
 using Object = StardewValley.Object;
 
-namespace StardewAquarium.Menus;
+namespace StardewAquarium.Framework.Menus;
 
 class DonateFishMenuAndroid : ShopMenu
 {

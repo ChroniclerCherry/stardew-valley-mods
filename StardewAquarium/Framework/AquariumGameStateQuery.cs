@@ -5,7 +5,7 @@ using StardewValley.Extensions;
 using StardewValley.Tools;
 using SObject = StardewValley.Object;
 
-namespace StardewAquarium;
+namespace StardewAquarium.Framework;
 
 internal static class AquariumGameStateQuery
 {

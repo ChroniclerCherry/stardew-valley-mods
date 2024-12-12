@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Netcode;
-using StardewAquarium.Editors;
+using StardewAquarium.Framework.Editors;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -10,7 +10,7 @@ using StardewValley.Menus;
 using StardewValley.TokenizableStrings;
 using Object = StardewValley.Object;
 
-namespace StardewAquarium;
+namespace StardewAquarium.Framework;
 
 internal static class Utils
 {

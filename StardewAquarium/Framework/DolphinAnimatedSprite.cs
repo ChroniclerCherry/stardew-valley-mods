@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
 
-namespace StardewAquarium;
+namespace StardewAquarium.Framework;
 
 class DolphinAnimatedSprite : TemporaryAnimatedSprite
 {

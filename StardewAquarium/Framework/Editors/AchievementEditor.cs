@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 using StardewModdingAPI;
 
-namespace StardewAquarium.Editors;
+namespace StardewAquarium.Framework.Editors;
 
 internal static class AchievementEditor
 {

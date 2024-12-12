@@ -1,4 +1,4 @@
-namespace StardewAquarium.Models;
+namespace StardewAquarium.Framework.Models;
 
 public interface ITrainStationAPI
 {

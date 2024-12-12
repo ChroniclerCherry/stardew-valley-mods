@@ -1,11 +1,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StardewAquarium.Editors;
+using StardewAquarium.Framework.Editors;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Menus;
 
-namespace StardewAquarium.Menus;
+namespace StardewAquarium.Framework.Menus;
 
 public class DonateFishMenu : InventoryMenu
 {

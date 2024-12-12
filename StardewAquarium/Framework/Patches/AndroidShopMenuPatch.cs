@@ -1,12 +1,12 @@
 using System;
 using HarmonyLib;
-using StardewAquarium.Editors;
-using StardewAquarium.Menus;
+using StardewAquarium.Framework.Editors;
+using StardewAquarium.Framework.Menus;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
 
-namespace StardewAquarium.Patches;
+namespace StardewAquarium.Framework.Patches;
 
 class AndroidShopMenuPatch
 {

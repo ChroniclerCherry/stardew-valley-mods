@@ -1,8 +1,8 @@
-using StardewAquarium.Models;
+using StardewAquarium.Framework.Models;
 using StardewModdingAPI;
 using StardewValley;
 
-namespace StardewAquarium;
+namespace StardewAquarium.Framework;
 
 class ReturnTrain
 {

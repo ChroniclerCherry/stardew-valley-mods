@@ -11,7 +11,7 @@ using StardewValley.ItemTypeDefinitions;
 using StardewValley.Menus;
 using SObject = StardewValley.Object;
 
-namespace StardewAquarium.Menus;
+namespace StardewAquarium.Framework.Menus;
 
 class AquariumCollectionMenu : IClickableMenu
 {

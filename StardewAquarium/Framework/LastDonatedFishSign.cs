@@ -1,13 +1,13 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
-using StardewAquarium.Models;
+using StardewAquarium.Framework.Models;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Extensions;
 using StardewValley.ItemTypeDefinitions;
 
-namespace StardewAquarium;
+namespace StardewAquarium.Framework;
 
 internal sealed class LastDonatedFishSign
 {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using StardewValley;
 
-namespace StardewAquarium;
+namespace StardewAquarium.Framework;
 
 internal sealed class AquariumMessage
 {

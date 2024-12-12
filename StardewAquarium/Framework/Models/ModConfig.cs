@@ -1,6 +1,6 @@
 using StardewModdingAPI;
 
-namespace StardewAquarium.Models;
+namespace StardewAquarium.Framework.Models;
 
 public sealed class ModConfig
 {
