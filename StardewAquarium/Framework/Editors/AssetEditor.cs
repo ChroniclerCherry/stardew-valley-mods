@@ -3,6 +3,7 @@ using System.Linq;
 using Force.DeepCloner;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewValley;
 using StardewValley.GameData.Locations;
 
 namespace StardewAquarium.Framework.Editors;
@@ -20,6 +21,7 @@ internal static class AssetEditor
     }
 
     /// <inheritdoc cref="IContentEvents.AssetRequested" />
+    [EventPriority(EventPriority.Low)] // let mods add their locations first
     private static void OnAssetRequested(object sender, AssetRequestedEventArgs e)
     {
         if (e.NameWithoutLocale.IsEquivalentTo("Data/Locations"))
@@ -54,7 +56,10 @@ internal static class AssetEditor
 
         // copy beach data into aquarium exterior
         if (!data.TryGetValue(ContentPackHelper.ExteriorLocationName, out LocationData museumData))
-            Monitor.Log($"Could not find location data for '{ContentPackHelper.ExteriorLocationName}'. Is Stardew Aquarium correctly installed?", LogLevel.Warn);
+        {
+            if (Game1.gameMode != Game1.titleScreenGameMode)
+                Monitor.Log($"Could not find location data for '{ContentPackHelper.ExteriorLocationName}'. Is Stardew Aquarium installed correctly?", LogLevel.Warn);
+        }
         else if (!data.TryGetValue("Beach", out LocationData beachData))
             Monitor.Log("Beach data seems missing, cannot copy.", LogLevel.Warn);
         else
