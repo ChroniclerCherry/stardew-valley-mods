@@ -5,12 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Pathoschild.Stardew.ModTranslationClassBuilder" />
     <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" />
   </ItemGroup>
-
-  <PropertyGroup>
-    <!-- GIMP files -->
-    <IgnoreModFilePatterns>\.xcf$</IgnoreModFilePatterns>
-  </PropertyGroup>
 </Project>

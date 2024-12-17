@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Netcode;
-using StardewAquarium.Framework.Editors;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -168,20 +167,21 @@ internal static class Utils
 
         if (CheckAchievement())
         {
-            mainMessage = I18n.AchievementCongratulations();
+            mainMessage = ContentPackHelper.LoadString("AchievementCongratulations");
+
             UnlockAchievement();
             _helper.Multiplayer.SendMessage(true, AchievementMessageType, modIDs: [_manifest.UniqueID]);
-            Game1.Multiplayer.globalChatInfoMessage("StardewAquarium.AchievementUnlocked");
+            Game1.Multiplayer.globalChatInfoMessage($"{ContentPackHelper.ContentPackId}_AchievementUnlocked");
         }
         else
         {
-            mainMessage = donated ? I18n.MenuCloseFishDonated() : I18n.MenuCloseNoFishDonated();
+            mainMessage = ContentPackHelper.LoadString(donated ? "MenuCloseFishDonated" : "MenuCloseNoFishDonated");
         }
         Game1.drawObjectDialogue(mainMessage);
 
         if (pufferchickDonated)
         {
-            (Game1.activeClickableMenu as DialogueBox)?.dialogues?.Add(I18n.PufferchickDonated());
+            (Game1.activeClickableMenu as DialogueBox)?.dialogues?.Add(ContentPackHelper.LoadString("PufferchickDonated"));
         }
     }
 
@@ -193,12 +193,14 @@ internal static class Utils
 
     public static void UnlockAchievement()
     {
-        if (Game1.player.achievements.Contains(AchievementEditor.AchievementId))
+        if (Game1.player.achievements.Contains(ContentPackHelper.AchievementId))
             return;
 
-        Game1.addHUDMessage(HUDMessage.ForAchievement(I18n.AchievementName()));
+        string achievementName = Game1.achievements.GetValueOrDefault(ContentPackHelper.AchievementId)?.Split('^')[0];
+
+        Game1.addHUDMessage(HUDMessage.ForAchievement(achievementName));
         Game1.playSound("achievement");
-        Game1.player.achievements.Add(AchievementEditor.AchievementId);
+        Game1.player.achievements.Add(ContentPackHelper.AchievementId);
 
         // defer adding this flag until the night.
         if (Context.IsMainPlayer && !MasterPlayerMail.Contains("AquariumCompleted"))

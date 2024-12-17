@@ -7,8 +7,6 @@ public sealed class ModData
 {
     public int LastDonatedFishCoordinateX { get; set; }
     public int LastDonatedFishCoordinateY { get; set; }
-    public string ExteriorMapName { get; set; }
-    public string MuseumMapName { get; set; }
 
     public HashSet<string> ConversationTopicsOnDonate { get; set; }
 

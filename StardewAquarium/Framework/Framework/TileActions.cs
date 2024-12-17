@@ -1,6 +1,4 @@
-using System;
 using Microsoft.Xna.Framework;
-using StardewAquarium.Framework.Editors;
 using StardewAquarium.Framework.Menus;
 using StardewModdingAPI;
 using StardewValley;
@@ -19,32 +17,18 @@ internal static class TileActions
 
         GameLocation.RegisterTileAction("AquariumDonationMenu", DonationMenu);
         GameLocation.RegisterTileAction("AquariumSign", AquariumSign);
-        GameLocation.RegisterTileAction("AquariumString", AquariumString);
         GameLocation.RegisterTileAction("AquariumCollectionMenu", ShowAquariumCollectionMenu);
     }
 
     private static bool ShowAquariumCollectionMenu(GameLocation location, string[] arg2, Farmer farmer, Point point)
     {
-        Game1.activeClickableMenu = new AquariumCollectionMenu(I18n.CollectionsMenu());
-        return true;
-    }
-
-    private static bool AquariumString(GameLocation location, string[] actions, Farmer farmer, Point point)
-    {
-        if (!ArgUtility.TryGet(actions, 1, out string key, out string error, allowBlank: false))
-        {
-            location.LogTileActionError(actions, point.X, point.Y, error);
-            return false;
-        }
-
-        Game1.drawObjectDialogue(I18n.GetByKey(key));
-
+        Game1.activeClickableMenu = new AquariumCollectionMenu(ContentPackHelper.LoadString("CollectionsMenu"));
         return true;
     }
 
     private static bool AquariumSign(GameLocation location, string[] actions, Farmer farmer, Point point)
     {
-        _ = new AquariumMessage(actions.AsSpan(1));
+        _ = new AquariumMessage(actions);
         return true;
     }
 
@@ -53,22 +37,22 @@ internal static class TileActions
         Monitor.Log("AquariumDonationMenu tile detected, opening donation menu...");
         if (!Utils.DoesPlayerHaveDonatableFish(farmer))
         {
-            if (Game1.MasterPlayer.achievements.Contains(AchievementEditor.AchievementId))
+            if (Game1.MasterPlayer.achievements.Contains(ContentPackHelper.AchievementId))
             {
-                Game1.drawObjectDialogue(I18n.AquariumWelcome());
+                Game1.drawObjectDialogue(ContentPackHelper.LoadString("AquariumWelcome"));
                 return true;
             }
 
-            Game1.drawObjectDialogue(I18n.NothingToDonate());
+            Game1.drawObjectDialogue(ContentPackHelper.LoadString("NothingToDonate"));
             return true;
         }
 
         Response[] options = [
-            new Response("OptionYes", I18n.OptionYes()),
-            new Response("OptionNo", I18n.OptionNo())
+            new Response("OptionYes", ContentPackHelper.LoadString("OptionYes")),
+            new Response("OptionNo", ContentPackHelper.LoadString("OptionNo"))
         ];
 
-        Game1.currentLocation.createQuestionDialogue(I18n.DonationQuestion(), options, HandleResponse);
+        Game1.currentLocation.createQuestionDialogue(ContentPackHelper.LoadString("DonationQuestion"), options, HandleResponse);
         return true;
     }
 
@@ -77,7 +61,7 @@ internal static class TileActions
         switch (whichAnswer)
         {
             case "OptionNo":
-                Game1.drawObjectDialogue(I18n.DeclineToDonate());
+                Game1.drawObjectDialogue(ContentPackHelper.LoadString("DeclineToDonate"));
                 return;
 
             case "OptionYes" when Constants.TargetPlatform == GamePlatform.Android:

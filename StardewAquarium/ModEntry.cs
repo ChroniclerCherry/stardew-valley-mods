@@ -16,30 +16,22 @@ using StardewValley;
 using StardewValley.Constants;
 using StardewValley.GameData.Objects;
 using StardewValley.Menus;
-using StardewValley.Objects;
-using SObject = StardewValley.Object;
 
 namespace StardewAquarium;
 
 internal sealed class ModEntry : Mod
 {
-    private const string MigrationKey = "Cherry.StardewAquarium.16Migration";
-
     internal static ModConfig Config { get; private set; } = null!;
     internal static ModData Data { get; private set; } = null!;
 
     public static Harmony Harmony { get; } = new("Cherry.StardewAquarium");
 
-    public static IJsonAssetsApi JsonAssets { get; set; }
-
     public override void Entry(IModHelper helper)
     {
-        I18n.Init(helper.Translation);
-
         Utils.Initialize(this.Helper, this.Monitor, this.ModManifest);
         TileActions.Init(helper, this.Monitor);
 
-        AssetEditor.Init(this.Helper.GameContent, this.Helper.Events.Content, this.Monitor);
+        AssetEditor.Init(this.Helper.Events.Content, this.Monitor);
 
         this.Helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
         this.Helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
@@ -146,7 +138,7 @@ internal sealed class ModEntry : Mod
     {
         if (Context.CanPlayerMove && Config.CheckDonationCollection == e.Button)
         {
-            Game1.activeClickableMenu = new AquariumCollectionMenu(I18n.CollectionsMenu());
+            Game1.activeClickableMenu = new AquariumCollectionMenu(ContentPackHelper.LoadString("CollectionsMenu"));
         }
     }
 
@@ -158,7 +150,7 @@ internal sealed class ModEntry : Mod
         // Very rarely show the Sea Monster.
         if (Game1.eventUp || !(Game1.random.NextDouble() < Data.DolphinChance))
             return;
-        if (Game1.currentLocation?.Name != Data.ExteriorMapName)
+        if (Game1.currentLocation?.Name != ContentPackHelper.ExteriorLocationName)
             return;
 
         // Randomly find a starting position within the range.
@@ -229,45 +221,10 @@ internal sealed class ModEntry : Mod
                 }
             }
 
-            CheckMap(Data.ExteriorMapName);
+            CheckMap(ContentPackHelper.ExteriorLocationName);
             if (Constants.TargetPlatform == GamePlatform.Android)
             {
-                CheckMap(Data.MuseumMapName);
-            }
-
-            // migrate old item data.
-            if (Game1.player.modData.TryAdd(MigrationKey, "migrated"))
-            {
-                Utility.ForEachItem(item =>
-                {
-                    switch (item.TypeDefinitionId)
-                    {
-                        case ItemRegistry.type_shirt:
-                            if (item.Name == "Pufferchick Shirt")
-                            {
-                                item.ItemId = "Cherry.StardewAquarium_PufferchickShirt";
-                                (item as Clothing).LoadData(forceReload: true);
-                            }
-                            break;
-
-                        case ItemRegistry.type_object:
-                            switch (item.Name)
-                            {
-                                case "Pufferchick":
-                                    item.ItemId = AssetEditor.PufferchickId;
-                                    item.ResetParentSheetIndex();
-                                    break;
-
-                                case "Legendary Bait":
-                                    item.ItemId = AssetEditor.LegendaryBaitId;
-                                    item.ResetParentSheetIndex();
-                                    break;
-                            }
-                            break;
-                    };
-
-                    return true;
-                });
+                CheckMap(ContentPackHelper.InteriorLocationName);
             }
         }
 
@@ -283,7 +240,7 @@ internal sealed class ModEntry : Mod
 
     private void OpenAquariumCollectionMenu(string arg1, string[] arg2)
     {
-        Game1.activeClickableMenu = new AquariumCollectionMenu(I18n.CollectionsMenu());
+        Game1.activeClickableMenu = new AquariumCollectionMenu(ContentPackHelper.LoadString("CollectionsMenu"));
     }
 
     private void OpenDonationMenuCommand(string arg1, string[] arg2)
@@ -294,31 +251,5 @@ internal sealed class ModEntry : Mod
     private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
     {
         AquariumGameStateQuery.Init();
-
-        JsonAssets = this.Helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
-
-        if (JsonAssets is not null)
-            JsonAssets.LoadAssets(Path.Combine(this.Helper.DirectoryPath, "assets", "json-assets"));
-
-        Event.RegisterCommand("GiveAquariumTrophy1", GiveAquariumTrophy1);
-        Event.RegisterCommand("GiveAquariumTrophy2", GiveAquariumTrophy2);
-    }
-
-    public static void GiveAquariumTrophy1(Event e, string[] args, EventContext context)
-    {
-        string id = JsonAssets.GetBigCraftableId("Stardew Aquarium Trophy");
-        SObject trophy = ItemRegistry.Create<SObject>(id);
-        e.farmer.holdUpItemThenMessage(trophy, true);
-        ++e.CurrentCommand;
-    }
-
-    public static void GiveAquariumTrophy2(Event e, string[] args, EventContext context)
-    {
-        string id = JsonAssets.GetBigCraftableId("Stardew Aquarium Trophy");
-        SObject trophy = new(Vector2.Zero, id);
-        e.farmer.addItemByMenuIfNecessary(trophy);
-        if (Game1.activeClickableMenu == null)
-            ++e.CurrentCommand;
-        ++e.CurrentCommand;
     }
 }

@@ -50,7 +50,7 @@ internal sealed class LastDonatedFishSign
     /// <inheritdoc cref="IPlayerEvents.Warped" />
     private void Player_Warped(object sender, WarpedEventArgs e)
     {
-        if (e.NewLocation?.Name == this._data.ExteriorMapName && Game1.getFarm().modData.TryGetValue(LastDonatedFishKey, out string qid))
+        if (e.NewLocation?.Name == ContentPackHelper.ExteriorLocationName && Game1.getFarm().modData.TryGetValue(LastDonatedFishKey, out string qid))
         {
             this.UpdateFishSign(qid, e.NewLocation);
         }

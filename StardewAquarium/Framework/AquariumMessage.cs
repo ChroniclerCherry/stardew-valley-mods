@@ -11,7 +11,6 @@ internal sealed class AquariumMessage
 
     public AquariumMessage(Span<string> args)
     {
-
         List<string> fishes = new(args.Length);
         foreach (string str in args)
         {
@@ -21,7 +20,7 @@ internal sealed class AquariumMessage
 
         if (fishes.Count == 0)
         {
-            Game1.drawObjectDialogue(I18n.EmptyTank());
+            Game1.drawObjectDialogue(ContentPackHelper.LoadString("EmptyTank"));
             return;
         }
 
@@ -32,7 +31,7 @@ internal sealed class AquariumMessage
         }
 
         this.BuildResponse(fishes);
-        Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages[this._currentPage], this.DisplayFishInfo);
+        Game1.currentLocation.createQuestionDialogue(ContentPackHelper.LoadString("WhichFishInfo"), this._responsePages[this._currentPage], this.DisplayFishInfo);
     }
 
     private void BuildResponse(List<string> fishes)
@@ -53,13 +52,13 @@ internal sealed class AquariumMessage
             if (responsesThisPage.Count < 4)
                 continue;
             if (index < fishes.Count - 1)
-                responsesThisPage.Add(new Response("More", I18n.More()));
-            responsesThisPage.Add(new Response("Exit", I18n.Exit()));
+                responsesThisPage.Add(new Response("More", ContentPackHelper.LoadString("More")));
+            responsesThisPage.Add(new Response("Exit", ContentPackHelper.LoadString("Exit")));
             this._responsePages.Add(responsesThisPage.ToArray());
             responsesThisPage = [];
         }
 
-        responsesThisPage.Add(new Response("Exit", I18n.Exit()));
+        responsesThisPage.Add(new Response("Exit", ContentPackHelper.LoadString("Exit")));
         this._responsePages.Add(responsesThisPage.ToArray());
     }
 
@@ -77,7 +76,7 @@ internal sealed class AquariumMessage
 
                 // delays until the next tick.
                 DelayedAction.functionAfterDelay(
-                    () => Game1.currentLocation.createQuestionDialogue(I18n.WhichFishInfo(), this._responsePages[this._currentPage], this.DisplayFishInfo),
+                    () => Game1.currentLocation.createQuestionDialogue(ContentPackHelper.LoadString("WhichFishInfo"), this._responsePages[this._currentPage], this.DisplayFishInfo),
                     10
                 );
                 break;
@@ -90,10 +89,8 @@ internal sealed class AquariumMessage
 
     private static string GetDescription(string key)
     {
-        Dictionary<string, string> overrideContent = Game1.content.Load<Dictionary<string, string>>("Mods/StardewAquarium/FishDescriptions");
-        if (overrideContent.TryGetValue(key, out string value))
-            return value;
-
-        return I18n.GetByKey($"Tank_{key}");
+        return Game1.content
+            .Load<Dictionary<string, string>>($"Mods/{ContentPackHelper.ContentPackId}/FishTankDescriptions")
+            .GetValueOrDefault(key, key);
     }
 }

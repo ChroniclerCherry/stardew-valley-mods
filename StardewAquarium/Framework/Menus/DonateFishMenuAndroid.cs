@@ -32,7 +32,7 @@ class DonateFishMenuAndroid : ShopMenu
         foreach (string fish in fishes)
         {
             Object display = new(fish, 1);
-            display.displayName = I18n.Donate() + display.DisplayName;
+            display.displayName = ContentPackHelper.LoadString("Donate") + display.DisplayName;
             this.donations.Add(display, new(0, 1, fish, 1));
         }
 

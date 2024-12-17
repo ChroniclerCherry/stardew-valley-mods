@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StardewAquarium.Framework.Editors;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
 using StardewValley.Menus;
@@ -20,7 +19,7 @@ public class DonateFishMenu : InventoryMenu
         this.showGrayedOutSlots = true;
         this.exitFunction = () => Utils.DonationMenuExit(this._donated, this._pufferchickDonated);
 
-        this.title = I18n.DonationMenuTitle();
+        this.title = ContentPackHelper.LoadString("DonationMenuTitle");
     }
 
     public override void receiveLeftClick(int x, int y, bool playSound = true)
@@ -37,13 +36,13 @@ public class DonateFishMenu : InventoryMenu
             if (item.Stack <= 0)
                 Game1.player.removeItemFromInventory(item);
 
-            if (item.QualifiedItemId == AssetEditor.PufferchickQualifiedId)
+            if (item.QualifiedItemId == ContentPackHelper.PufferchickQualifiedId)
             {
                 Game1.playSound("openChest");
                 this._pufferchickDonated = true;
             }
 
-            Game1.Multiplayer.globalChatInfoMessage("StardewAquarium.FishDonated", [Game1.player.Name, item.DisplayName]); // TokenStringBuilder.ItemNameFor(item)
+            Game1.Multiplayer.globalChatInfoMessage($"{ContentPackHelper.ContentPackId}_FishDonated", [Game1.player.Name, item.DisplayName]); // TokenStringBuilder.ItemNameFor(item)
         }
     }
 
