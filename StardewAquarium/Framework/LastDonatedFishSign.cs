@@ -1,6 +1,5 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
-using StardewAquarium.Framework.Models;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -11,29 +10,26 @@ namespace StardewAquarium.Framework;
 
 internal sealed class LastDonatedFishSign
 {
-    private readonly IModHelper _helper;
-    private readonly IMonitor _monitor;
-    private ModData _data => ModEntry.Data;
+    private readonly IMonitor Monitor;
 
     // the last donated fish is stored as a member of farm's mod data.
     // this avoids us having to do our own multiplayer handling.
     private const string LastDonatedFishKey = "Cherry.StardewAquarium.LastDonatedFish";
 
-    public LastDonatedFishSign(IModHelper helper, IMonitor monitor)
+    public LastDonatedFishSign(IModEvents events, IMonitor monitor)
     {
-        this._helper = helper;
-        this._monitor = monitor;
+        this.Monitor = monitor;
 
-        this._helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
-        this._helper.Events.Player.Warped += this.Player_Warped;
+        events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
+        events.Player.Warped += this.Player_Warped;
 
-        this._helper.Events.GameLoop.DayStarted += this.GameLoop_DayStarted;
+        events.GameLoop.DayStarted += this.GameLoop_DayStarted;
     }
 
     internal void UpdateLastDonatedFish(Item i)
     {
         Game1.getFarm().modData[LastDonatedFishKey] = i.QualifiedItemId;
-        this._monitor.Log($"The last donated fish is {i.Name}");
+        this.Monitor.Log($"The last donated fish is {i.Name}");
     }
 
     /// <summary>Pick a random fish when the museum is complete.</summary>
@@ -50,20 +46,21 @@ internal sealed class LastDonatedFishSign
     /// <inheritdoc cref="IPlayerEvents.Warped" />
     private void Player_Warped(object sender, WarpedEventArgs e)
     {
-        if (e.NewLocation?.Name == ContentPackHelper.ExteriorLocationName && Game1.getFarm().modData.TryGetValue(LastDonatedFishKey, out string qid))
-        {
+        if (Game1.getFarm().modData.TryGetValue(LastDonatedFishKey, out string qid))
             this.UpdateFishSign(qid, e.NewLocation);
-        }
     }
 
     private void UpdateFishSign(string fishId, GameLocation loc)
     {
+        if (!loc.TryGetMapPropertyAs($"{ContentPackHelper.ContentPackId}_LastDonatedFishSign", out Point signTile))
+            return;
+
         ParsedItemData parsedItem = ItemRegistry.GetData(fishId);
-        this._monitor.Log($"Updating sign with {parsedItem?.QualifiedItemId}");
+        this.Monitor.Log($"Updating sign with {parsedItem?.QualifiedItemId}");
         if (parsedItem is null)
             return;
 
-        Vector2 position = new(this._data.LastDonatedFishCoordinateX * 64f, this._data.LastDonatedFishCoordinateY * 64f);
+        Vector2 position = new(signTile.X * Game1.tileSize, signTile.Y * Game1.tileSize);
         Rectangle rect = parsedItem.GetSourceRect();
 
         TemporaryAnimatedSprite sprite = new(parsedItem.GetTextureName(), rect, position, false, 0, Color.White)
@@ -74,7 +71,7 @@ internal sealed class LastDonatedFishSign
             totalNumberOfLoops = 9999,
             position = position,
             scale = Game1.pixelZoom,
-            layerDepth = (this._data.LastDonatedFishCoordinateY / 10000f) + 0.01f, // a little offset, so it doesn't show up on the floor.
+            layerDepth = (signTile.Y / 10000f) + 0.01f, // a little offset, so it doesn't show up on the floor.
             id = 777
         };
 
@@ -106,7 +103,7 @@ internal sealed class LastDonatedFishSign
         }
 
         string fishId = Game1.objectData.FirstOrDefault(kvp => kvp.Value.Name == fish).Key;
-        this._monitor.Log($"The last donated fish on this file is {fishId}");
+        this.Monitor.Log($"The last donated fish on this file is {fishId}");
         if (fishId is null)
         {
             return;

@@ -47,7 +47,7 @@ internal static class Utils
         _helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
         _helper.Events.Multiplayer.ModMessageReceived += Multiplayer_ModMessageReceived;
 
-        _fishSign = new LastDonatedFishSign(helper, monitor);
+        _fishSign = new LastDonatedFishSign(helper.Events, monitor);
     }
 
     private static void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
