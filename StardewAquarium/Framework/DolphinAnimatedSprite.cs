@@ -6,8 +6,10 @@ namespace StardewAquarium.Framework;
 
 class DolphinAnimatedSprite : TemporaryAnimatedSprite
 {
+    private const int SpriteWidth = 64;
+
     public DolphinAnimatedSprite(Vector2 position, Texture2D tex)
-        : base(-666, 250, ModEntry.Data.DolphinAnimationFrames, 1, position, false, false)
+        : base(-666, 250, tex.Width / SpriteWidth, 1, position, false, false)
     {
         this.texture = tex;
         Game1.playSound("pullItemFromWater");

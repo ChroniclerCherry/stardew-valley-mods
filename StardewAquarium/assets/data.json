@@ -1,13 +1,5 @@
 ﻿{
     "LastDonatedFishCoordinateX": 31,
     "LastDonatedFishCoordinateY": 10,
-    "ConversationTopicsOnDonate": [ "Legend", "Crimsonfish", "Angler", "Mutant Carp", "Glacierfish", "Pufferchick", "Frog", "Pufferfish", "Sandfish", "Super Cucumber", "Octopus", "Lava Eel", "Rainbow Trout", "Scorpion Carp", "Anchovy", "Tuna", "Sardine", "Bream", "Largemouth Bass", "Smallmouth Bass", "Salmon", "Walleye", "Perch", "Carp", "Catfish", "Pike", "Sunfish", "Red Mullet", "Herring", "Red Snapper", "Squid", "Sea Cucumber", "Ghostfish", "Stonefish", "Ice Pip", "Flounder", "Midnight Carp", "Sturgeon", "Tiger Trout", "Bullhead", "Tilapia", "Chub", "Dorado", "Albacore", "Shad", "Lingcod", "Halibut", "Woodskip", "Void Salmon", "Slimejack", "Midnight Squid", "Spook Fish", "Blobfish", "Lobster", "Crayfish", "Crab", "Cockle", "Mussel", "Shrimp", "Snail", "Periwinkle", "Oyster", "Puppyfish", "King Salmon", "Starfish", "Minnow", "Void Eel", "Clownfish", "Butterfish", "Dewdrop Fish", "Purple Spotted Trout", "Relicantlette", "Serafin", "Umuwi Carp", "Dotted Abalone", "Scallop" ],
-    "DolphinChance": 0.00001,
-    "DolphinRange": {
-        "X": 74,
-        "Y": 0,
-        "Width": 10,
-        "Height": 40
-    },
-    "DolphinAnimationFrames": 18
+    "ConversationTopicsOnDonate": [ "Legend", "Crimsonfish", "Angler", "Mutant Carp", "Glacierfish", "Pufferchick", "Frog", "Pufferfish", "Sandfish", "Super Cucumber", "Octopus", "Lava Eel", "Rainbow Trout", "Scorpion Carp", "Anchovy", "Tuna", "Sardine", "Bream", "Largemouth Bass", "Smallmouth Bass", "Salmon", "Walleye", "Perch", "Carp", "Catfish", "Pike", "Sunfish", "Red Mullet", "Herring", "Red Snapper", "Squid", "Sea Cucumber", "Ghostfish", "Stonefish", "Ice Pip", "Flounder", "Midnight Carp", "Sturgeon", "Tiger Trout", "Bullhead", "Tilapia", "Chub", "Dorado", "Albacore", "Shad", "Lingcod", "Halibut", "Woodskip", "Void Salmon", "Slimejack", "Midnight Squid", "Spook Fish", "Blobfish", "Lobster", "Crayfish", "Crab", "Cockle", "Mussel", "Shrimp", "Snail", "Periwinkle", "Oyster", "Puppyfish", "King Salmon", "Starfish", "Minnow", "Void Eel", "Clownfish", "Butterfish", "Dewdrop Fish", "Purple Spotted Trout", "Relicantlette", "Serafin", "Umuwi Carp", "Dotted Abalone", "Scallop" ]
 }
