@@ -248,12 +248,8 @@ internal static class Utils
         MasterPlayerMail.Add(donatedFlag);
         string numDonated = $"AquariumFishDonated:{GetNumDonatedFish()}";
         MasterPlayerMail.Add(numDonated);
-        if (ModEntry.Data.ConversationTopicsOnDonate.Contains(fishName))
-        {
-            foreach (Farmer farmer in Game1.getAllFarmers())
-            {
-                farmer.activeDialogueEvents[donatedFlag] = 3;
-            }
-        }
+
+        foreach (Farmer farmer in Game1.getAllFarmers())
+            farmer.activeDialogueEvents[donatedFlag] = 3;
     }
 }

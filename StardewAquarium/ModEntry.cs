@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
@@ -24,7 +23,6 @@ namespace StardewAquarium;
 internal sealed class ModEntry : Mod
 {
     internal static ModConfig Config { get; private set; } = null!;
-    internal static ModData Data { get; private set; } = null!;
 
     public static Harmony Harmony { get; } = new("Cherry.StardewAquarium");
 
@@ -60,19 +58,6 @@ internal sealed class ModEntry : Mod
         _ = new ReturnTrain(this.Helper, this.Monitor);
 
         Config = this.Helper.ReadConfig<ModConfig>();
-
-        try
-        {
-            string dataPath = Path.Combine("assets", "data.json");
-            Data = helper.Data.ReadJsonFile<ModData>(dataPath) ?? throw new FileNotFoundException(dataPath);
-        }
-        catch (Exception ex)
-        {
-            this.Monitor.Log("Could not read data file. Please reinstall the mod! Things may behave weirdly.", LogLevel.Warn);
-            this.Monitor.Log(ex.ToString());
-        }
-
-
 
 #if !DEBUG
         if (Config.EnableDebugCommands)
