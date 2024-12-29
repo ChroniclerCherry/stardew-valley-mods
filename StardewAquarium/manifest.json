@@ -1,10 +1,10 @@
 ﻿{
     "Name": "Stardew Aquarium Code",
     "Author": "Cherry",
-    "Version": "1.6.3",
+    "Version": "2.0.0",
     "Description": "The coding portion of the Stardew Aquarium mod",
     "UniqueID": "Cherry.StardewAquarium",
     "EntryDll": "StardewAquarium.dll",
-    "MinimumApiVersion": "4.0.0",
+    "MinimumApiVersion": "4.1.0",
     "UpdateKeys": [ "Nexus:6372" ]
 }
