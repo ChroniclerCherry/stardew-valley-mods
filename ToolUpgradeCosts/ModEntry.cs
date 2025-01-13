@@ -10,8 +10,8 @@ using StardewValley.Internal;
 using StardewValley.Tools;
 using ToolUpgradeCosts.Framework;
 
-namespace ToolUpgradeCosts
-{
+namespace ToolUpgradeCosts;
+
     public class ModEntry : Mod
     {
         private static ModEntry _instance;
@@ -56,6 +56,7 @@ namespace ToolUpgradeCosts
             }
         }
 
+
         public static void ShopBuilder_GetShopStock_Postfix(string shopId, ref Dictionary<ISalable, ItemStockInformation> __result)
         {
             if (shopId != Game1.shop_blacksmithUpgrades)
@@ -73,12 +74,17 @@ namespace ToolUpgradeCosts
                         {
                             upgradeLevel++;
                         }
-                        editedStock[tool] = stockInfo with
-                        {
-                            Price = _instance._config.UpgradeCosts[upgradeLevel].Cost,
-                            TradeItem = _instance._config.UpgradeCosts[upgradeLevel].MaterialId,
-                            TradeItemCount = _instance._config.UpgradeCosts[upgradeLevel].MaterialStack
-                        };
+                        editedStock[tool] = new ItemStockInformation(
+                            price: _instance._config.UpgradeCosts[upgradeLevel].Cost,
+                            tradeItemCount: _instance._config.UpgradeCosts[upgradeLevel].MaterialStack,
+                            tradeItem: _instance._config.UpgradeCosts[upgradeLevel].MaterialId,
+                            stock: (int)(stockInfo?.Stock),
+                            stockMode: stockInfo?.LimitedStockMode ?? LimitedStockMode.None,
+                            itemToSyncStack: stockInfo?.ItemToSyncStack ?? tool,
+                            stackDrawType: stockInfo?.StackDrawType,
+                            actionsOnPurchase: stockInfo?.ActionsOnPurchase ?? new List<string>()
+                        );
+
                     }
                     else
                     {
@@ -93,4 +99,3 @@ namespace ToolUpgradeCosts
             }
         }
     }
-}
