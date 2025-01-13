@@ -2,22 +2,23 @@ using ChangeSlimeHutchLimit.Framework;
 using HarmonyLib;
 using StardewModdingAPI;
 using StardewValley;
-using GenericModConfigMenu;
 using System;
 using Microsoft.Xna.Framework;
-using Object = StardewValley.Object;
 using System.Linq;
+using Object = StardewValley.Object;
 
 namespace ChangeSlimeHutchLimit;
 
 public class ModEntry : Mod
 {
-    private static Config _config;
+    internal static Config Config { get; set; }
+    internal static IModHelper ModHelper { get; private set; }
 
     public override void Entry(IModHelper helper)
     {
-        // Load the configuration
-        _config = this.Helper.ReadConfig<Config>();
+        // Store references to Config and ModHelper for use in other classes
+        Config = this.Helper.ReadConfig<Config>();
+        ModHelper = this.Helper;
 
         // Add console commands
         this.Helper.ConsoleCommands.Add("SetSlimeHutchLimit",
@@ -43,80 +44,28 @@ public class ModEntry : Mod
 
     private void OnGameLaunched(object sender, EventArgs e)
     {
-        this.SetupGMCM();
-    }
-
-    private void SetupGMCM()
-    {
-        var api = this.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
-        if (api == null) return;
-
-        // Register the mod for GMCM
-        api.Register(
-            mod: this.ModManifest,
-            reset: () => _config = new Config(), // Reset to default values
-            save: () => this.Helper.WriteConfig(_config) // Save to file
-        );
-
-        // Add sections and options to the GMCM menu
-        api.AddSectionTitle(
-            mod: this.ModManifest,
-            text: () => "Slime Hutch Settings"
-        );
-
-        api.AddNumberOption(
-            mod: this.ModManifest,
-            name: () => "Max # of Slimes in Hutch",
-            tooltip: () => "Set the maximum number of slimes allowed in the slime hutch.",
-            getValue: () => _config.MaxSlimesInHutch,
-            setValue: value => _config.MaxSlimesInHutch = value,
-            min: 20,
-            interval: 5
-        );
-
-        api.AddSectionTitle(
-            mod: this.ModManifest,
-            text: () => "Slime Ball Settings"
-        );
-
-        api.AddBoolOption(
-            mod: this.ModManifest,
-            name: () => "Enable Slime Ball Override",
-            tooltip: () => "Enable or disable the override for slime ball placement.",
-            getValue: () => _config.EnableSlimeBallOverride,
-            setValue: value => _config.EnableSlimeBallOverride = value
-        );
-
-        api.AddNumberOption(
-            mod: this.ModManifest,
-            name: () => "Max Daily Slime Balls",
-            tooltip: () => "Set the maximum number of slime balls that can spawn daily (set to 0 for unlimited).",
-            getValue: () => _config.MaxDailySlimeBalls,
-            setValue: value => _config.MaxDailySlimeBalls = value,
-            min: 0,
-            max: 100,
-            interval: 1
-        );
+        GMCMHandler.Setup(this.ModManifest);
     }
 
     private static void SlimeHutch_isFull_postfix(GameLocation __instance, ref bool __result)
     {
-        __result = __instance.characters.Count >= (_config?.MaxSlimesInHutch ?? 20);
+        __result = __instance.characters.Count >= (Config?.MaxSlimesInHutch ?? 20);
     }
 
     private static bool SlimeHutch_DayUpdate_Prefix(SlimeHutch __instance, int dayOfMonth)
     {
-        if (!_config.EnableSlimeBallOverride) return true; // Skip custom logic if override is disabled
+        if (!Config.EnableSlimeBallOverride) return true; // Skip custom logic if override is disabled
 
         // Count the number of water spots that are watered
+        int total_wateredSpots = __instance.waterSpots.Count();
         int wateredSpots = __instance.waterSpots.Count(watered => watered);
 
         // Calculate slime-based limit, factoring in watered spots
-        int slimeBasedLimit = (((__instance.characters.Count / 4) * wateredSpots) / 5);
+        int slimeBasedLimit = (((__instance.characters.Count / total_wateredSpots) * wateredSpots) / 5);
 
         // Respect the user-defined maximum daily limit, if set
-        int maxBallsToPlace = _config.MaxDailySlimeBalls > 0
-            ? Math.Min(slimeBasedLimit, _config.MaxDailySlimeBalls)
+        int maxBallsToPlace = Config.MaxDailySlimeBalls > 0
+            ? Math.Min(slimeBasedLimit, Config.MaxDailySlimeBalls)
             : slimeBasedLimit;
 
         for (int i = maxBallsToPlace; i > 0; i--)
@@ -134,9 +83,7 @@ public class ModEntry : Mod
             if (attemptsLeft > 0)
             {
                 Object slimeBall = ItemRegistry.Create<Object>("(BC)56"); // Slime Ball ID
-#pragma warning disable AvoidNetField // Avoid Netcode types when possible
-                slimeBall.fragility.Value = 2;
-#pragma warning restore AvoidNetField // Avoid Netcode types when possible
+                slimeBall.Fragility = 2;
                 __instance.objects.Add(randomTile, slimeBall);
             }
         }
@@ -148,9 +95,9 @@ public class ModEntry : Mod
     {
         if (int.TryParse(arg2[0], out int newLimit))
         {
-            _config.MaxSlimesInHutch = newLimit;
-            this.Helper.WriteConfig(_config);
-            this.Monitor.Log($"The new Slime limit is: {_config.MaxSlimesInHutch}");
+            Config.MaxSlimesInHutch = newLimit;
+            this.Helper.WriteConfig(Config);
+            this.Monitor.Log($"The new Slime limit is: {Config.MaxSlimesInHutch}");
         }
         else
         {
