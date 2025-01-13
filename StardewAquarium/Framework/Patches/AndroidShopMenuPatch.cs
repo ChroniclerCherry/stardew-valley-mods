@@ -1,6 +1,5 @@
 using System;
 using HarmonyLib;
-using StardewAquarium.Framework.Editors;
 using StardewAquarium.Framework.Menus;
 using StardewModdingAPI;
 using StardewValley;
@@ -30,18 +29,18 @@ class AndroidShopMenuPatch
 
     private static void setCurrentItem_postfix(ref ShopMenu __instance)
     {
-        if (Game1.currentLocation?.Name != ModEntry.Data.MuseumMapName || __instance is not DonateFishMenuAndroid) return;
+        if (Game1.currentLocation?.Name != ContentPackHelper.InteriorLocationName || __instance is not DonateFishMenuAndroid) return;
 
         IReflectedField<string> nameItem = _helper.Reflection.GetField<string>(__instance, "nameItem");
         string nameItemString = nameItem.GetValue();
         nameItem.SetValue(_helper.Translation.Get("Donate") + nameItemString);
 
-        _helper.Reflection.GetField<string>(__instance, "descItem").SetValue(I18n.DonateDescription());
+        _helper.Reflection.GetField<string>(__instance, "descItem").SetValue(ContentPackHelper.LoadString("DonateDescription"));
     }
 
     private static void tryToPurchaseItem_postfix(ref ShopMenu __instance, ref ISalable item)
     {
-        if (Game1.currentLocation?.Name != ModEntry.Data.MuseumMapName || __instance is not DonateFishMenuAndroid) return;
+        if (Game1.currentLocation?.Name != ContentPackHelper.InteriorLocationName || __instance is not DonateFishMenuAndroid) return;
         try
         {
             if (!(item is Item donatedFish)) return; //this shouldn't happen but /shrug
@@ -51,7 +50,7 @@ class AndroidShopMenuPatch
             DonateFishMenuAndroid.Donated = true;
             Game1.player.removeItemFromInventory(donatedFish);
 
-            if (donatedFish.QualifiedItemId == AssetEditor.PufferchickQualifiedId)
+            if (donatedFish.QualifiedItemId == ContentPackHelper.PufferchickQualifiedId)
             {
                 Game1.playSound("openChest");
                 DonateFishMenuAndroid.PufferchickDonated = true;

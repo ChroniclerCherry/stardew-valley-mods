@@ -40,13 +40,13 @@ class AquariumCollectionMenu : IClickableMenu
         this.yPositionOnScreen = Game1.viewport.Height / 2 - (600 + borderWidth * 2) / 2;
 
         CollectionsPage.widthToMoveActiveTab = 8;
-        this.backButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + 48, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(352, 495, 12, 11), 4f, false)
+        this.backButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + 48, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(352, 495, 12, 11), 4f)
         {
             myID = 706,
             rightNeighborID = -7777
         };
 
-        this.forwardButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 32 - 60, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(365, 495, 12, 11), 4f, false)
+        this.forwardButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 32 - 60, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(365, 495, 12, 11), 4f)
         {
             myID = 707,
             leftNeighborID = -7777
@@ -135,7 +135,7 @@ class AquariumCollectionMenu : IClickableMenu
 
     public override void receiveLeftClick(int x, int y, bool playSound = true)
     {
-        base.receiveLeftClick(x, y, true);
+        base.receiveLeftClick(x, y);
 
         if (this.currentPage > 0 && this.backButton.containsPoint(x, y))
         {
@@ -203,10 +203,10 @@ class AquariumCollectionMenu : IClickableMenu
         if (this.currentPage < this.collections.Count - 1)
             this.forwardButton.draw(b);
 
-        SpriteText.drawStringWithScrollCenteredAt(b, this._title, Game1.viewport.Width / 2 - 50, Game1.viewport.Height / 2 - 310, SpriteText.getWidthOfString(this._title) + 16, 1f, null, 0, 0.88f, false);
+        SpriteText.drawStringWithScrollCenteredAt(b, this._title, Game1.viewport.Width / 2 - 50, Game1.viewport.Height / 2 - 310, SpriteText.getWidthOfString(this._title) + 16);
 
         b.End();
-        b.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
+        b.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp);
         foreach (ClickableTextureComponent textureComponent in this.collections[this.currentPage])
         {
             bool drawColor = Convert.ToBoolean(textureComponent.name.Split(' ')[1]);
@@ -214,11 +214,11 @@ class AquariumCollectionMenu : IClickableMenu
             textureComponent.draw(b, drawColorFaded ? Color.DimGray * 0.4f : drawColor ? Color.White : Color.Black * 0.2f, drawColorFaded ? 0 : 0.86f);
         }
         b.End();
-        b.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
+        b.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
 
         if (!string.IsNullOrEmpty(this.hoverText))
         {
-            drawHoverText(b, this.hoverText, Game1.smallFont, 0, 0);
+            drawHoverText(b, this.hoverText, Game1.smallFont);
         }
 
         this.drawMouse(b);

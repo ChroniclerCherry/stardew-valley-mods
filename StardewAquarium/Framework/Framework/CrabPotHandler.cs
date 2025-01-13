@@ -21,7 +21,7 @@ internal static class CrabPotHandler
     /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
     private static void OnDayStart(object sender, DayStartedEventArgs e)
     {
-        GameLocation loc = Game1.getLocationFromName(ModEntry.Data.ExteriorMapName);
+        GameLocation loc = Game1.getLocationFromName(ContentPackHelper.ExteriorLocationName);
         if (loc is null)
             return;
 

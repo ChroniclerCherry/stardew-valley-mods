@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
@@ -12,40 +11,41 @@ using StardewAquarium.Framework.Models;
 using StardewAquarium.Framework.Patches;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Constants;
+using StardewValley.Extensions;
 using StardewValley.GameData.Objects;
 using StardewValley.Menus;
-using StardewValley.Objects;
-using SObject = StardewValley.Object;
 
 namespace StardewAquarium;
 
 internal sealed class ModEntry : Mod
 {
-    private const string MigrationKey = "Cherry.StardewAquarium.16Migration";
-
     internal static ModConfig Config { get; private set; } = null!;
-    internal static ModData Data { get; private set; } = null!;
 
     public static Harmony Harmony { get; } = new("Cherry.StardewAquarium");
 
-    public static IJsonAssetsApi JsonAssets { get; set; }
+    /// <summary>The chance that a dolphin Easter egg appears in the player's current location.</summary>
+    public readonly PerScreen<float> DolphinChance = new();
 
+    /// <summary>The tile area where the dolphin Easter egg can appear in the player's current location, if applicable.</summary>
+    public readonly PerScreen<Rectangle> DolphinRange = new();
+
+    /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
-        I18n.Init(helper.Translation);
-
         Utils.Initialize(this.Helper, this.Monitor, this.ModManifest);
         TileActions.Init(helper, this.Monitor);
 
-        AssetEditor.Init(this.Helper.GameContent, this.Helper.Events.Content, this.Monitor);
+        AssetEditor.Init(this.Helper.Events.Content, this.Monitor);
 
         this.Helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
         this.Helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
         this.Helper.Events.GameLoop.UpdateTicked += this.GameLoop_UpdateTicked;
         this.Helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
         this.Helper.Events.GameLoop.DayStarted += this.OnDayStart;
+        this.Helper.Events.Player.Warped += this.OnWarped;
 
         CrabPotHandler.Init(this.Helper.Events.GameLoop, this.Monitor);
 
@@ -58,19 +58,6 @@ internal sealed class ModEntry : Mod
         _ = new ReturnTrain(this.Helper, this.Monitor);
 
         Config = this.Helper.ReadConfig<ModConfig>();
-
-        try
-        {
-            string dataPath = Path.Combine("assets", "data.json");
-            Data = helper.Data.ReadJsonFile<ModData>(dataPath) ?? throw new FileNotFoundException(dataPath);
-        }
-        catch (Exception ex)
-        {
-            this.Monitor.Log("Could not read data file. Please reinstall the mod! Things may behave weirdly.", LogLevel.Warn);
-            this.Monitor.Log(ex.ToString());
-        }
-
-
 
 #if !DEBUG
         if (Config.EnableDebugCommands)
@@ -87,7 +74,7 @@ internal sealed class ModEntry : Mod
         }
     }
 
-    /// <inheritdoc cref="IGameLoopEvents.DayStarted"/>
+    /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
     private void OnDayStart(object sender, DayStartedEventArgs e)
     {
         // stats are not reliable in multiplayer
@@ -142,29 +129,49 @@ internal sealed class ModEntry : Mod
         }
     }
 
+    /// <inheritdoc cref="IInputEvents.ButtonPressed" />
     private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         if (Context.CanPlayerMove && Config.CheckDonationCollection == e.Button)
         {
-            Game1.activeClickableMenu = new AquariumCollectionMenu(I18n.CollectionsMenu());
+            Game1.activeClickableMenu = new AquariumCollectionMenu(ContentPackHelper.LoadString("CollectionsMenu"));
         }
     }
 
+    /// <inheritdoc cref="IPlayerEvents.Warped" />
+    private void OnWarped(object sender, WarpedEventArgs e)
+    {
+        if (!e.IsLocalPlayer)
+            return;
+
+        // load dolphin Easter egg info
+        this.DolphinRange.Value = e.NewLocation.TryGetMapPropertyAs($"{ContentPackHelper.ContentPackId}_DolphinRange", out Rectangle rawRange)
+            ? rawRange
+            : Rectangle.Empty;
+        if (this.DolphinRange.Value != Rectangle.Empty)
+        {
+            this.DolphinChance.Value = e.NewLocation.TryGetMapPropertyAs($"{ContentPackHelper.ContentPackId}_DolphinChance", out double rawChance)
+                ? (float)rawChance
+                : 0.00001f;
+        }
+        else
+            this.DolphinChance.Value = 0;
+    }
+
+    /// <inheritdoc cref="IGameLoopEvents.UpdateTicked" />
     private void GameLoop_UpdateTicked(object sender, UpdateTickedEventArgs e)
     {
         if (Game1.isTimePaused) return;
-        //This code was borrowed from East Scarpe
 
-        // Very rarely show the Sea Monster.
-        if (Game1.eventUp || !(Game1.random.NextDouble() < Data.DolphinChance))
-            return;
-        if (Game1.currentLocation?.Name != Data.ExteriorMapName)
+        // very rarely show dolphin
+        //This is derived from East Scarpe's sea monster code.
+        if (Game1.eventUp || !Game1.random.NextBool(this.DolphinChance.Value))
             return;
 
         // Randomly find a starting position within the range.
         Vector2 position = 64f * new Vector2(
-            Game1.random.Next(Data.DolphinRange.Left, Data.DolphinRange.Right + 1),
-            Game1.random.Next(Data.DolphinRange.Top, Data.DolphinRange.Bottom + 1)
+            Game1.random.Next(this.DolphinRange.Value.Left, this.DolphinRange.Value.Right + 1),
+            Game1.random.Next(this.DolphinRange.Value.Top, this.DolphinRange.Value.Bottom + 1)
         );
 
         GameLocation loc = Game1.currentLocation;
@@ -186,7 +193,7 @@ internal sealed class ModEntry : Mod
             }
         }
 
-        loc.temporarySprites.Add(new DolphinAnimatedSprite(position, this.Helper.ModContent.Load<Texture2D>("assets/dolphin.png")));
+        loc.temporarySprites.Add(new DolphinAnimatedSprite(position, this.Helper.GameContent.Load<Texture2D>($"Mods/{ContentPackHelper.ContentPackId}/Dolphin")));
     }
 
     private void AndroidPlsHaveMercyOnMe(object sender, MenuChangedEventArgs e)
@@ -206,12 +213,13 @@ internal sealed class ModEntry : Mod
         Game1.activeClickableMenu = new DonateFishMenuAndroid(this.Helper, this.Monitor);
     }
 
+    /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
     private void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
     {
         if (!Context.IsMainPlayer)
         {
             IMultiplayerPeer mainPlayer = this.Helper.Multiplayer.GetConnectedPlayer(Game1.MasterPlayer.UniqueMultiplayerID);
-            IMultiplayerPeerMod mainPlayerMod = mainPlayer.GetMod(this.ModManifest.UniqueID);
+            IMultiplayerPeerMod mainPlayerMod = mainPlayer?.GetMod(this.ModManifest.UniqueID);
             if (mainPlayerMod is null)
             {
                 this.Monitor.Log("Host seems to be missing Stardew Aquarium. Certain features may not work as advertised.", LogLevel.Error);
@@ -229,45 +237,10 @@ internal sealed class ModEntry : Mod
                 }
             }
 
-            CheckMap(Data.ExteriorMapName);
+            CheckMap(ContentPackHelper.ExteriorLocationName);
             if (Constants.TargetPlatform == GamePlatform.Android)
             {
-                CheckMap(Data.MuseumMapName);
-            }
-
-            // migrate old item data.
-            if (Game1.player.modData.TryAdd(MigrationKey, "migrated"))
-            {
-                Utility.ForEachItem(item =>
-                {
-                    switch (item.TypeDefinitionId)
-                    {
-                        case ItemRegistry.type_shirt:
-                            if (item.Name == "Pufferchick Shirt")
-                            {
-                                item.ItemId = "Cherry.StardewAquarium_PufferchickShirt";
-                                (item as Clothing).LoadData(forceReload: true);
-                            }
-                            break;
-
-                        case ItemRegistry.type_object:
-                            switch (item.Name)
-                            {
-                                case "Pufferchick":
-                                    item.ItemId = AssetEditor.PufferchickId;
-                                    item.ResetParentSheetIndex();
-                                    break;
-
-                                case "Legendary Bait":
-                                    item.ItemId = AssetEditor.LegendaryBaitId;
-                                    item.ResetParentSheetIndex();
-                                    break;
-                            }
-                            break;
-                    };
-
-                    return true;
-                });
+                CheckMap(ContentPackHelper.InteriorLocationName);
             }
         }
 
@@ -283,7 +256,7 @@ internal sealed class ModEntry : Mod
 
     private void OpenAquariumCollectionMenu(string arg1, string[] arg2)
     {
-        Game1.activeClickableMenu = new AquariumCollectionMenu(I18n.CollectionsMenu());
+        Game1.activeClickableMenu = new AquariumCollectionMenu(ContentPackHelper.LoadString("CollectionsMenu"));
     }
 
     private void OpenDonationMenuCommand(string arg1, string[] arg2)
@@ -291,34 +264,9 @@ internal sealed class ModEntry : Mod
         Game1.activeClickableMenu = new DonateFishMenu();
     }
 
+    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
     private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
     {
         AquariumGameStateQuery.Init();
-
-        JsonAssets = this.Helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
-
-        if (JsonAssets is not null)
-            JsonAssets.LoadAssets(Path.Combine(this.Helper.DirectoryPath, "assets", "json-assets"));
-
-        Event.RegisterCommand("GiveAquariumTrophy1", GiveAquariumTrophy1);
-        Event.RegisterCommand("GiveAquariumTrophy2", GiveAquariumTrophy2);
-    }
-
-    public static void GiveAquariumTrophy1(Event e, string[] args, EventContext context)
-    {
-        string id = JsonAssets.GetBigCraftableId("Stardew Aquarium Trophy");
-        SObject trophy = ItemRegistry.Create<SObject>(id);
-        e.farmer.holdUpItemThenMessage(trophy, true);
-        ++e.CurrentCommand;
-    }
-
-    public static void GiveAquariumTrophy2(Event e, string[] args, EventContext context)
-    {
-        string id = JsonAssets.GetBigCraftableId("Stardew Aquarium Trophy");
-        SObject trophy = new(Vector2.Zero, id);
-        e.farmer.addItemByMenuIfNecessary(trophy);
-        if (Game1.activeClickableMenu == null)
-            ++e.CurrentCommand;
-        ++e.CurrentCommand;
     }
 }

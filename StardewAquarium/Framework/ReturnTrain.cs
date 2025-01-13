@@ -38,7 +38,7 @@ class ReturnTrain
         if (Game1.player.Position.Y > 32)
             return;
 
-        if (Game1.currentLocation?.Name != ModEntry.Data.ExteriorMapName)
+        if (Game1.currentLocation?.Name != ContentPackHelper.ExteriorLocationName)
             return;
 
         Game1.player.position.Y += 32;
