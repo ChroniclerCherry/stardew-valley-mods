@@ -73,12 +73,17 @@ public class ModEntry : Mod
                     {
                         upgradeLevel++;
                     }
-                    editedStock[tool] = stockInfo with
-                    {
-                        Price = _instance._config.UpgradeCosts[upgradeLevel].Cost,
-                        TradeItem = _instance._config.UpgradeCosts[upgradeLevel].MaterialId,
-                        TradeItemCount = _instance._config.UpgradeCosts[upgradeLevel].MaterialStack
-                    };
+                    editedStock[tool] = new ItemStockInformation(
+                        price: _instance._config.UpgradeCosts[upgradeLevel].Cost,
+                        tradeItemCount: _instance._config.UpgradeCosts[upgradeLevel].MaterialStack,
+                        tradeItem: _instance._config.UpgradeCosts[upgradeLevel].MaterialId,
+                        stock: (int)(stockInfo?.Stock),
+                        stockMode: stockInfo?.LimitedStockMode ?? LimitedStockMode.None,
+                        itemToSyncStack: stockInfo?.ItemToSyncStack ?? tool,
+                        stackDrawType: stockInfo?.StackDrawType,
+                        actionsOnPurchase: stockInfo?.ActionsOnPurchase ?? new List<string>()
+                    );
+
                 }
                 else
                 {
