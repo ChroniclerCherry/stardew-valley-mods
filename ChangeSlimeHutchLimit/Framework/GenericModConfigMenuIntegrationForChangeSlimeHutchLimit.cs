@@ -3,7 +3,7 @@ using StardewModdingAPI;
 
 namespace ChangeSlimeHutchLimit.Framework;
 
-public static class GMCMHandler
+public static class GenericModConfigMenuIntegrationForChangeSlimeHutchLimit
 {
     public static void Setup(IManifest manifest)
     {

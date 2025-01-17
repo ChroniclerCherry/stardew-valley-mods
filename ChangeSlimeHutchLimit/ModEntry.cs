@@ -30,7 +30,7 @@ public class ModEntry : Mod
 
     private void OnGameLaunched(object sender, EventArgs e)
     {
-        GMCMHandler.Setup(this.ModManifest);
+        GenericModConfigMenuIntegrationForChangeSlimeHutchLimit.Setup(this.ModManifest);
     }
 
     private static void SlimeHutch_isFull_postfix(GameLocation __instance, ref bool __result)
