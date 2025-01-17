@@ -18,7 +18,6 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    private static IMonitor monitor;
     internal static ModConfig Config;
 
     private const string HayBaleId = "45";
@@ -33,7 +32,6 @@ internal class ModEntry : Mod
     {
         // init
         I18n.Init(helper.Translation);
-        monitor = this.Monitor;
         Config = helper.ReadConfig<ModConfig>();
 
         // add patches

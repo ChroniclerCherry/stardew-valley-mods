@@ -23,11 +23,11 @@ internal class ApiManager
     /// </summary>
     public static void RegisterJsonAssets()
     {
-        JsonAssets = ModEntry.helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
+        JsonAssets = ModEntry.StaticHelper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
 
         if (JsonAssets == null)
         {
-            ModEntry.monitor.Log("Json Assets API not detected. This is only an issue if you're using cystom Json Assets items and shops trying to sell them, as custom items will not appear in shops.",
+            ModEntry.StaticMonitor.Log("Json Assets API not detected. This is only an issue if you're using cystom Json Assets items and shops trying to sell them, as custom items will not appear in shops.",
                 LogLevel.Info);
         }
     }
@@ -37,11 +37,11 @@ internal class ApiManager
     /// </summary>
     public static void RegisterExpandedPreconditionsUtility()
     {
-        Conditions = ModEntry.helper.ModRegistry.GetApi<IConditionsApi>("Cherry.ExpandedPreconditionsUtility");
+        Conditions = ModEntry.StaticHelper.ModRegistry.GetApi<IConditionsApi>("Cherry.ExpandedPreconditionsUtility");
 
         if (Conditions == null)
         {
-            ModEntry.monitor.Log("Expanded Preconditions Utility API not detected. Something went wrong, please check that your installation of Expanded Preconditions Utility is valid",
+            ModEntry.StaticMonitor.Log("Expanded Preconditions Utility API not detected. Something went wrong, please check that your installation of Expanded Preconditions Utility is valid",
                 LogLevel.Error);
             return;
         }

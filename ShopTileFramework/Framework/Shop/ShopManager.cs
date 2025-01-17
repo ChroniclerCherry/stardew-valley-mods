@@ -53,12 +53,12 @@ internal class ShopManager
     /// </summary>
     public static void LoadContentPacks()
     {
-        ModEntry.monitor.Log("Adding Content Packs...", LogLevel.Info);
-        foreach (IContentPack contentPack in ModEntry.helper.ContentPacks.GetOwned())
+        ModEntry.StaticMonitor.Log("Adding Content Packs...", LogLevel.Info);
+        foreach (IContentPack contentPack in ModEntry.StaticHelper.ContentPacks.GetOwned())
         {
             if (!contentPack.HasFile("shops.json"))
             {
-                ModEntry.monitor.Log($"No shops.json found from the mod {contentPack.Manifest.UniqueID}. " +
+                ModEntry.StaticMonitor.Log($"No shops.json found from the mod {contentPack.Manifest.UniqueID}. " +
                     $"Skipping pack.", LogLevel.Warn);
                 continue;
             }
@@ -70,12 +70,12 @@ internal class ShopManager
             }
             catch (Exception ex)
             {
-                ModEntry.monitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}.", LogLevel.Error);
-                ModEntry.monitor.Log(ex.Message + ex.StackTrace, LogLevel.Error);
+                ModEntry.StaticMonitor.Log($"Invalid JSON provided by {contentPack.Manifest.UniqueID}.", LogLevel.Error);
+                ModEntry.StaticMonitor.Log(ex.Message + ex.StackTrace, LogLevel.Error);
                 continue;
             }
 
-            ModEntry.monitor.Log($"Loading: {contentPack.Manifest.Name} by {contentPack.Manifest.Author} | " +
+            ModEntry.StaticMonitor.Log($"Loading: {contentPack.Manifest.Name} by {contentPack.Manifest.Author} | " +
                 $"{contentPack.Manifest.Version} | {contentPack.Manifest.Description}", LogLevel.Info);
 
             RegisterShops(data, contentPack);
@@ -97,7 +97,7 @@ internal class ShopManager
             {
                 if (ItemShops.ContainsKey(shopPack.ShopName))
                 {
-                    ModEntry.monitor.Log($"{contentPack.Manifest.Name} is trying to add a Shop \"{shopPack.ShopName}\"," +
+                    ModEntry.StaticMonitor.Log($"{contentPack.Manifest.Name} is trying to add a Shop \"{shopPack.ShopName}\"," +
                         $" but a shop of this name has already been added. " +
                         $"It will not be added.", LogLevel.Warn);
                     continue;
@@ -113,7 +113,7 @@ internal class ShopManager
             {
                 if (AnimalShops.ContainsKey(animalShopPack.ShopName))
                 {
-                    ModEntry.monitor.Log($"{contentPack.Manifest.Name} is trying to add an AnimalShop \"{animalShopPack.ShopName}\"," +
+                    ModEntry.StaticMonitor.Log($"{contentPack.Manifest.Name} is trying to add an AnimalShop \"{animalShopPack.ShopName}\"," +
                         $" but a shop of this name has already been added. " +
                         $"It will not be added.", LogLevel.Warn);
                     continue;
@@ -128,7 +128,7 @@ internal class ShopManager
             {
                 if (!VanillaShopNames.Contains(vanillaShopPack.ShopName))
                 {
-                    ModEntry.monitor.Log($"{contentPack.Manifest.Name}" +
+                    ModEntry.StaticMonitor.Log($"{contentPack.Manifest.Name}" +
                         $" is trying to edit nonexistent vanilla store" +
                         $" \"{vanillaShopPack.ShopName}\"", LogLevel.Warn);
                     continue;
@@ -205,7 +205,7 @@ internal class ShopManager
     internal static void UpdateStock()
     {
         if (ItemShops.Count > 0)
-            ModEntry.monitor.Log($"Refreshing stock for all custom shops...", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log($"Refreshing stock for all custom shops...", LogLevel.Debug);
 
         foreach (ItemShop store in ItemShops.Values)
         {
@@ -214,7 +214,7 @@ internal class ShopManager
         }
 
         if (VanillaShops.Count > 0)
-            ModEntry.monitor.Log($"Refreshing stock for all Vanilla shops...", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log($"Refreshing stock for all Vanilla shops...", LogLevel.Debug);
 
         foreach (VanillaShop shop in VanillaShops.Values)
         {

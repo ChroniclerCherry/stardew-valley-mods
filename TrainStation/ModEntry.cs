@@ -24,10 +24,10 @@ internal class ModEntry : Mod
 
     private readonly int TicketStationTopTile = 1032;
     private readonly int TicketStationBottomTile = 1057;
-    private string destinationMessage;
-    private ICue cue;
-    private bool finishedTrainWarp = false;
-    private static LocalizedContentManager.LanguageCode selectedLanguage;
+    private string DestinationMessage;
+    private ICue Cue;
+    private bool FinishedTrainWarp = false;
+    private static LocalizedContentManager.LanguageCode SelectedLanguage;
 
 
     /*********
@@ -161,7 +161,7 @@ internal class ModEntry : Mod
     private void LoadContentPacks()
     {
         //create the stop at the vanilla Railroad map
-        TrainStop RailRoadStop = new TrainStop
+        TrainStop railRoadStop = new TrainStop
         {
             TargetMapName = "Railroad",
             StopId = "Cherry.TrainStation",
@@ -172,10 +172,10 @@ internal class ModEntry : Mod
         };
 
         //create stop in willy's boat room
-        BoatStop BoatTunnelStop = new BoatStop()
+        BoatStop boatTunnelStop = new BoatStop()
         {
             TargetMapName = "BoatTunnel",
-            StopID = "Cherry.TrainStation",
+            StopId = "Cherry.TrainStation",
             TargetX = 4,
             TargetY = 9,
             Cost = 0,
@@ -186,8 +186,8 @@ internal class ModEntry : Mod
         content.TrainStops = new List<TrainStop>();
         content.BoatStops = new List<BoatStop>();
 
-        this.TrainStops = new List<TrainStop>() { RailRoadStop };
-        this.BoatStops = new List<BoatStop>() { BoatTunnelStop };
+        this.TrainStops = new List<TrainStop>() { railRoadStop };
+        this.BoatStops = new List<BoatStop>() { boatTunnelStop };
 
         foreach (IContentPack pack in this.Helper.ContentPacks.GetOwned())
         {
@@ -215,7 +215,7 @@ internal class ModEntry : Mod
                 for (int i = 0; i < cp.BoatStops.Count; i++)
                 {
                     BoatStop stop = cp.BoatStops.ElementAt(i);
-                    stop.StopID = $"{pack.Manifest.UniqueID}{i}"; //assigns a unique stopID to every stop
+                    stop.StopId = $"{pack.Manifest.UniqueID}{i}"; //assigns a unique stopID to every stop
                     stop.TranslatedName = this.Localize(stop.LocalizedDisplayName);
 
                     this.BoatStops.Add(cp.BoatStops.ElementAt(i));
@@ -301,7 +301,7 @@ internal class ModEntry : Mod
                 displayName += $" - {stop.Cost}g";
             }
 
-            responses.Add(new Response(stop.StopID, displayName));
+            responses.Add(new Response(stop.StopId, displayName));
         }
 
         if (Game1.currentLocation is BoatTunnel tunnel)
@@ -367,7 +367,7 @@ internal class ModEntry : Mod
 
         foreach (BoatStop stop in this.BoatStops)
         {
-            if (stop.StopID == whichAnswer)
+            if (stop.StopId == whichAnswer)
             {
                 this.AttemptToWarpBoat(stop);
             }
@@ -408,27 +408,27 @@ internal class ModEntry : Mod
         }
         LocationRequest request = Game1.getLocationRequest(stop.TargetMapName);
         request.OnWarp += this.Request_OnWarp;
-        this.destinationMessage = this.Helper.Translation.Get("ArrivalMessage", new { DestinationName = stop.TranslatedName });
+        this.DestinationMessage = this.Helper.Translation.Get("ArrivalMessage", new { DestinationName = stop.TranslatedName });
 
         Game1.warpFarmer(request, stop.TargetX, stop.TargetY, stop.FacingDirectionAfterWarp);
 
-        this.cue = Game1.soundBank.GetCue("trainLoop");
-        this.cue.SetVariable("Volume", 100f);
-        this.cue.Play();
+        this.Cue = Game1.soundBank.GetCue("trainLoop");
+        this.Cue.SetVariable("Volume", 100f);
+        this.Cue.Play();
     }
 
     private void Request_OnWarp()
     {
         if (Game1.currentLocation?.currentEvent is null)
-            Game1.pauseThenMessage(3000, this.destinationMessage);
+            Game1.pauseThenMessage(3000, this.DestinationMessage);
 
-        this.finishedTrainWarp = true;
+        this.FinishedTrainWarp = true;
     }
 
     /// <inheritdoc cref="IDisplayEvents.MenuChanged" />
     private void OnMenuChanged(object sender, MenuChangedEventArgs e)
     {
-        if (!this.finishedTrainWarp)
+        if (!this.FinishedTrainWarp)
             return;
 
         if (e.NewMenu is DialogueBox)
@@ -436,14 +436,14 @@ internal class ModEntry : Mod
             this.AfterWarpPause();
         }
 
-        this.finishedTrainWarp = false;
+        this.FinishedTrainWarp = false;
     }
 
     private void AfterWarpPause()
     {
         //Game1.drawObjectDialogue(destinationMessage);
         Game1.playSound("trainWhistle");
-        this.cue.Stop(Microsoft.Xna.Framework.Audio.AudioStopOptions.AsAuthored);
+        this.Cue.Stop(Microsoft.Xna.Framework.Audio.AudioStopOptions.AsAuthored);
     }
 
 
@@ -467,16 +467,16 @@ internal class ModEntry : Mod
     ****/
     private void UpdateSelectedLanguage()
     {
-        selectedLanguage = LocalizedContentManager.CurrentLanguageCode;
+        SelectedLanguage = LocalizedContentManager.CurrentLanguageCode;
     }
 
     private string Localize(Dictionary<string, string> translations)
     {
-        if (!translations.ContainsKey(selectedLanguage.ToString()))
+        if (!translations.ContainsKey(SelectedLanguage.ToString()))
         {
             return translations.ContainsKey("en") ? translations["en"] : "No translation";
         }
 
-        return translations[selectedLanguage.ToString()];
+        return translations[SelectedLanguage.ToString()];
     }
 }

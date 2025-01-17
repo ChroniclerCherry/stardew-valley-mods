@@ -7,10 +7,10 @@ public class ConditionsChecker : IConditionsChecker
     /*********
     ** Fields
     *********/
-    private ConditionChecker _conditionChecker;
+    private ConditionChecker ConditionChecker;
 
-    private readonly IModHelper _helper;
-    private readonly IMonitor _monitor;
+    private readonly IModHelper Helper;
+    private readonly IMonitor Monitor;
 
 
     /*********
@@ -18,22 +18,22 @@ public class ConditionsChecker : IConditionsChecker
     *********/
     internal ConditionsChecker(IMonitor monitor, IModHelper helper)
     {
-        this._helper = helper;
-        this._monitor = monitor;
+        this.Helper = helper;
+        this.Monitor = monitor;
     }
 
     public void Initialize(bool verbose, string uniqueId)
     {
-        this._conditionChecker = new ConditionChecker(this._helper, this._monitor, verbose, uniqueId);
+        this.ConditionChecker = new ConditionChecker(this.Helper, this.Monitor, verbose, uniqueId);
     }
 
     public bool CheckConditions(string[] conditions)
     {
-        return this._conditionChecker.CheckConditions(conditions);
+        return this.ConditionChecker.CheckConditions(conditions);
     }
 
     public bool CheckConditions(string conditions)
     {
-        return this._conditionChecker.CheckConditions(new[] { conditions });
+        return this.ConditionChecker.CheckConditions(new[] { conditions });
     }
 }

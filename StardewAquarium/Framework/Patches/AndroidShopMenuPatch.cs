@@ -12,8 +12,8 @@ internal class AndroidShopMenuPatch
     /*********
     ** Fields
     *********/
-    private static IModHelper _helper;
-    private static IMonitor _monitor;
+    private static IModHelper Helper;
+    private static IMonitor Monitor;
 
 
     /*********
@@ -21,8 +21,8 @@ internal class AndroidShopMenuPatch
     *********/
     public static void Initialize(IModHelper helper, IMonitor monitor)
     {
-        _helper = helper;
-        _monitor = monitor;
+        Helper = helper;
+        Monitor = monitor;
 
         Harmony harmony = ModEntry.Harmony;
         harmony.Patch(original: AccessTools.Method(typeof(ShopMenu), "tryToPurchaseItem"),
@@ -42,11 +42,11 @@ internal class AndroidShopMenuPatch
     {
         if (Game1.currentLocation?.Name != ContentPackHelper.InteriorLocationName || __instance is not DonateFishMenuAndroid) return;
 
-        IReflectedField<string> nameItem = _helper.Reflection.GetField<string>(__instance, "nameItem");
+        IReflectedField<string> nameItem = Helper.Reflection.GetField<string>(__instance, "nameItem");
         string nameItemString = nameItem.GetValue();
-        nameItem.SetValue(_helper.Translation.Get("Donate") + nameItemString);
+        nameItem.SetValue(Helper.Translation.Get("Donate") + nameItemString);
 
-        _helper.Reflection.GetField<string>(__instance, "descItem").SetValue(ContentPackHelper.LoadString("DonateDescription"));
+        Helper.Reflection.GetField<string>(__instance, "descItem").SetValue(ContentPackHelper.LoadString("DonateDescription"));
     }
 
     private static void tryToPurchaseItem_postfix(ref ShopMenu __instance, ref ISalable item)
@@ -69,7 +69,7 @@ internal class AndroidShopMenuPatch
         }
         catch (Exception e)
         {
-            _monitor.Log($"Failed in {nameof(tryToPurchaseItem_postfix)}: {e.Message} {e.StackTrace}", LogLevel.Error);
+            Monitor.Log($"Failed in {nameof(tryToPurchaseItem_postfix)}: {e.Message} {e.StackTrace}", LogLevel.Error);
         }
     }
 }

@@ -10,9 +10,9 @@ internal class ReturnTrain
     /*********
     ** Fields
     *********/
-    private IModHelper _helper;
-    private IMonitor _monitor;
-    private ITrainStationAPI TSApi;
+    private IModHelper Helper;
+    private IMonitor Monitor;
+    private ITrainStationApi TrainStationApi;
 
 
     /*********
@@ -20,10 +20,10 @@ internal class ReturnTrain
     *********/
     public ReturnTrain(IModHelper helper, IMonitor monitor)
     {
-        this._helper = helper;
-        this._monitor = monitor;
+        this.Helper = helper;
+        this.Monitor = monitor;
 
-        this._helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+        this.Helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
     }
 
 
@@ -33,14 +33,14 @@ internal class ReturnTrain
     /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
     private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
     {
-        this.TSApi = this._helper.ModRegistry.GetApi<ITrainStationAPI>("Cherry.TrainStation");
-        if (this.TSApi is null)
+        this.TrainStationApi = this.Helper.ModRegistry.GetApi<ITrainStationApi>("Cherry.TrainStation");
+        if (this.TrainStationApi is null)
         {
-            this._monitor.Log("The train station API was not found. Warps back to the Railroad will default to a map warp.", LogLevel.Warn);
+            this.Monitor.Log("The train station API was not found. Warps back to the Railroad will default to a map warp.", LogLevel.Warn);
             return;
         }
 
-        this._helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
+        this.Helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
     }
 
     /// <inheritdoc cref="IGameLoopEvents.UpdateTicked" />
@@ -56,6 +56,6 @@ internal class ReturnTrain
             return;
 
         Game1.player.position.Y += 32;
-        this.TSApi.OpenTrainMenu();
+        this.TrainStationApi.OpenTrainMenu();
     }
 }

@@ -46,7 +46,7 @@ internal class HarvestPatches
             string cropName = ItemRegistry.GetDataOrErrorItem(cropId).InternalName;
             int fertilizerQualityLevel = soil.GetFertilizerQualityBoostLevel();
 
-            ModEntry.instance.SpawnHarvest(new Vector2(xTile, yTile), cropName, fertilizerQualityLevel, junimoHarvester);
+            ModEntry.Instance.SpawnHarvest(new Vector2(xTile, yTile), cropName, fertilizerQualityLevel, junimoHarvester);
 
         }
         catch (Exception ex)

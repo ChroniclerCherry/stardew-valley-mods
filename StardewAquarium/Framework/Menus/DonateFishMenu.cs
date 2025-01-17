@@ -11,10 +11,10 @@ internal class DonateFishMenu : InventoryMenu
     /*********
     ** Fields
     *********/
-    private bool _donated;
-    private bool _pufferchickDonated;
+    private bool Donated;
+    private bool PufferchickDonated;
 
-    private readonly string title;
+    private readonly string Title;
 
 
     /*********
@@ -24,9 +24,9 @@ internal class DonateFishMenu : InventoryMenu
         : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, false, null, Utils.IsUnDonatedFish, 36, 3)
     {
         this.showGrayedOutSlots = true;
-        this.exitFunction = () => Utils.DonationMenuExit(this._donated, this._pufferchickDonated);
+        this.exitFunction = () => Utils.DonationMenuExit(this.Donated, this.PufferchickDonated);
 
-        this.title = ContentPackHelper.LoadString("DonationMenuTitle");
+        this.Title = ContentPackHelper.LoadString("DonationMenuTitle");
     }
 
     public override void receiveLeftClick(int x, int y, bool playSound = true)
@@ -37,7 +37,7 @@ internal class DonateFishMenu : InventoryMenu
 
         if (Utils.DonateFish(item))
         {
-            this._donated = true;
+            this.Donated = true;
             Game1.playSound("newArtifact");
             item.Stack--;
             if (item.Stack <= 0)
@@ -46,7 +46,7 @@ internal class DonateFishMenu : InventoryMenu
             if (item.QualifiedItemId == ContentPackHelper.PufferchickQualifiedId)
             {
                 Game1.playSound("openChest");
-                this._pufferchickDonated = true;
+                this.PufferchickDonated = true;
             }
 
             Game1.Multiplayer.globalChatInfoMessage($"{ContentPackHelper.ContentPackId}_FishDonated", [Game1.player.Name, item.DisplayName]); // TokenStringBuilder.ItemNameFor(item)
@@ -61,8 +61,8 @@ internal class DonateFishMenu : InventoryMenu
         else
             base.drawBackground(b);
 
-        SpriteText.drawStringWithScrollCenteredAt(b, this.title, Game1.viewport.Width / 2,
-            Game1.viewport.Height / 2 - 128, SpriteText.getWidthOfString(this.title) + 16, 1f, null, 0, 0.88f, false);
+        SpriteText.drawStringWithScrollCenteredAt(b, this.Title, Game1.viewport.Width / 2,
+            Game1.viewport.Height / 2 - 128, SpriteText.getWidthOfString(this.Title) + 16, 1f, null, 0, 0.88f, false);
 
         Game1.drawDialogueBox(this.xPositionOnScreen - 64, this.yPositionOnScreen - 128, this.width + 128, this.height + 176, false, true);
 

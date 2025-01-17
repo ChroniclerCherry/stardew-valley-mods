@@ -22,15 +22,15 @@ internal class ModEntry : Mod
     *********/
     //The following variables are to help revert hardcoded warps done by the carpenter and
     //animal shop menus
-    private bool _changedMarnieStock;
-    private static Vector2 _playerPos = Vector2.Zero;
+    private bool ChangedMarnieStock;
+    private static Vector2 PlayerPos = Vector2.Zero;
 
 
     /*********
     ** Accessors
     *********/
-    public static IModHelper helper;
-    public static IMonitor monitor;
+    public static IModHelper StaticHelper;
+    public static IMonitor StaticMonitor;
     public static GameLocation SourceLocation;
 
     public static bool VerboseLogging;
@@ -45,14 +45,14 @@ internal class ModEntry : Mod
     public override void Entry(IModHelper helper)
     {
         //make helper and monitor static so they can be accessed in other classes
-        ModEntry.helper = helper;
-        monitor = this.Monitor;
+        ModEntry.StaticHelper = helper;
+        ModEntry.StaticMonitor = this.Monitor;
 
         //set verbose logging
         VerboseLogging = helper.ReadConfig<ModConfig>().VerboseLogging;
 
         if (VerboseLogging)
-            monitor.Log("Verbose logging has been turned on. More information will be printed to the console.", LogLevel.Info);
+            this.Monitor.Log("Verbose logging has been turned on. More information will be printed to the console.", LogLevel.Info);
 
         helper.Events.Input.ButtonPressed += this.OnButtonPressed;
         helper.Events.Display.MenuChanged += this.OnMenuChanged;
@@ -117,12 +117,12 @@ internal class ModEntry : Mod
         //TODO: deprecate this once FAVR is out
         //this is the vanilla Marnie menu for us to exclude animals from
         if (e.NewMenu is PurchaseAnimalsMenu && SourceLocation == null &&
-            !this._changedMarnieStock && AnimalShop.ExcludeFromMarnie.Count > 0)
+            !this.ChangedMarnieStock && AnimalShop.ExcludeFromMarnie.Count > 0)
         {
             //close the current menu to open our own	
             Game1.exitActiveMenu();
             var allAnimalsStock = Utility.getPurchaseAnimalStock(Game1.getFarm());
-            this._changedMarnieStock = true;
+            this.ChangedMarnieStock = true;
 
             //removes all animals on the exclusion list
             var newAnimalStock = (from animal in allAnimalsStock
@@ -133,9 +133,9 @@ internal class ModEntry : Mod
 
         //idk why some menus have a habit of warping the player a tile to the left ocassionally
         //so im just gonna warp them back to their original location eh
-        if (e.NewMenu == null && _playerPos != Vector2.Zero)
+        if (e.NewMenu == null && PlayerPos != Vector2.Zero)
         {
-            Game1.player.position.Set(_playerPos);
+            Game1.player.position.Set(PlayerPos);
         }
     }
 
@@ -174,7 +174,7 @@ internal class ModEntry : Mod
 
         if (Game1.activeClickableMenu is ShopMenu shop)
         {
-            shop.setItemPriceAndStock(ItemsUtil.RemoveSpecifiedJAPacks(shop.itemPriceAndStock));
+            shop.setItemPriceAndStock(ItemsUtil.RemoveSpecifiedJsonAssetsPacks(shop.itemPriceAndStock));
         }
 
         JustOpenedVanilla = false;
@@ -198,9 +198,9 @@ internal class ModEntry : Mod
         //Resets the boolean I use to check if a menu used to move the player around came from my mod
         //and lets me return them to their original location
         SourceLocation = null;
-        _playerPos = Vector2.Zero;
+        PlayerPos = Vector2.Zero;
         //checks if i've changed marnie's stock already after opening her menu
-        this._changedMarnieStock = false;
+        this.ChangedMarnieStock = false;
 
         if (Constants.TargetPlatform == GamePlatform.Android)
         {
@@ -210,7 +210,7 @@ internal class ModEntry : Mod
                 return;
 
             if (VerboseLogging)
-                monitor.Log("Input detected!");
+                this.Monitor.Log("Input detected!");
         }
         else if (!e.Button.IsActionButton())
             return;
@@ -237,7 +237,7 @@ internal class ModEntry : Mod
         //check if there is a Shop property on clicked tile
         tileProperty.TryGetValue("Shop", out PropertyValue shopProperty);
         if (VerboseLogging)
-            monitor.Log($"Shop Property value is: {shopProperty}");
+            this.Monitor.Log($"Shop Property value is: {shopProperty}");
         if (shopProperty != null) //There was a `Shop` property so attempt to open shop
         {
             //check if the property is for a vanilla shop, and gets the shopmenu for that shop if it exists
@@ -246,11 +246,11 @@ internal class ModEntry : Mod
                 if (warpingShop)
                 {
                     SourceLocation = Game1.currentLocation;
-                    _playerPos = Game1.player.position.Get();
+                    PlayerPos = Game1.player.position.Get();
                 }
 
                 //stop the click action from going through after the menu has been opened
-                helper.Input.Suppress(e.Button);
+                this.Helper.Input.Suppress(e.Button);
             }
             else //no vanilla shop found
             {
@@ -260,7 +260,7 @@ internal class ModEntry : Mod
                 if (ShopManager.ItemShops.ContainsKey(shopName))
                 {
                     //stop the click action from going through after the menu has been opened
-                    helper.Input.Suppress(e.Button);
+                    this.Helper.Input.Suppress(e.Button);
                     ShopManager.ItemShops[shopName].DisplayShop();
                 }
                 else
@@ -278,7 +278,7 @@ internal class ModEntry : Mod
                 if (ShopManager.AnimalShops.ContainsKey(shopName))
                 {
                     //stop the click action from going through after the menu has been opened
-                    helper.Input.Suppress(e.Button);
+                    this.Helper.Input.Suppress(e.Button);
                     ShopManager.AnimalShops[shopName].DisplayShop();
                 }
                 else

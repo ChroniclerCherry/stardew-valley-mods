@@ -1,6 +1,6 @@
 namespace StardewAquarium.Framework.Models;
 
-public interface ITrainStationAPI
+public interface ITrainStationApi
 {
     void OpenTrainMenu();
 }

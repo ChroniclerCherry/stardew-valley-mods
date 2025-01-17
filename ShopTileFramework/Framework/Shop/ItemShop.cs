@@ -18,13 +18,13 @@ internal class ItemShop : ItemShopModel
     /*********
     ** Fields
     *********/
-    private Texture2D _portrait;
+    private Texture2D Portrait;
 
     /// <summary>
     /// This is used to make sure that JA only adds items to this shop the first time it is opened each day
     /// or else items will be added every time the shop is opened
     /// </summary>
-    private bool _shopOpenedToday;
+    private bool ShopOpenedToday;
 
 
     /*********
@@ -61,17 +61,17 @@ internal class ItemShop : ItemShopModel
             //if the seasonal version exists, load it
             if (this.ContentPack.HasFile(seasonalPath))
             {
-                this._portrait = this.ContentPack.ModContent.Load<Texture2D>(seasonalPath);
+                this.Portrait = this.ContentPack.ModContent.Load<Texture2D>(seasonalPath);
             }
             //if the seasonal version doesn't exist, try to load the default
             else if (this.ContentPack.HasFile(this.PortraitPath))
             {
-                this._portrait = this.ContentPack.ModContent.Load<Texture2D>(this.PortraitPath);
+                this.Portrait = this.ContentPack.ModContent.Load<Texture2D>(this.PortraitPath);
             }
         }
         catch (Exception ex) //couldn't load the image
         {
-            ModEntry.monitor.Log(ex.Message + ex.StackTrace, LogLevel.Error);
+            ModEntry.StaticMonitor.Log(ex.Message + ex.StackTrace, LogLevel.Error);
         }
     }
 
@@ -81,8 +81,8 @@ internal class ItemShop : ItemShopModel
     /// </summary>
     public void UpdateItemPriceAndStock()
     {
-        this._shopOpenedToday = false;
-        ModEntry.monitor.Log($"Generating stock for {this.ShopName}", LogLevel.Debug);
+        this.ShopOpenedToday = false;
+        ModEntry.StaticMonitor.Log($"Generating stock for {this.ShopName}", LogLevel.Debug);
         this.StockManager.Update();
     }
 
@@ -91,7 +91,7 @@ internal class ItemShop : ItemShopModel
     /// </summary>
     public void DisplayShop(bool debug = false)
     {
-        ModEntry.monitor.Log($"Attempting to open the shop \"{this.ShopName}\"", LogLevel.Trace);
+        ModEntry.StaticMonitor.Log($"Attempting to open the shop \"{this.ShopName}\"", LogLevel.Trace);
 
         //if conditions aren't met, display closed message if there is one
         //skips condition checking if debug mode
@@ -119,7 +119,7 @@ internal class ItemShop : ItemShopModel
         string shopId = $"{this.ContentPack.Manifest.UniqueID}_{this.ShopName}";
         var shopMenu = new ShopMenu(shopId, this.StockManager.ItemPriceAndStock, currency: currency)
         {
-            portraitTexture = this._portrait
+            portraitTexture = this.Portrait
         };
 
         if (this.CategoriesToSellHere != null)
@@ -129,7 +129,7 @@ internal class ItemShop : ItemShopModel
             shopMenu.potraitPersonDialogue = Game1.parseText(this.Quote, Game1.dialogueFont, 304);
 
         Game1.activeClickableMenu = shopMenu;
-        this._shopOpenedToday = true;
+        this.ShopOpenedToday = true;
     }
 
     /// <summary>

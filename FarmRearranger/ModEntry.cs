@@ -17,7 +17,7 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    private bool isArranging = false;
+    private bool IsArranging = false;
 
     private ModConfig Config;
 
@@ -88,13 +88,13 @@ internal class ModEntry : Mod
     /// <remarks>When move buildings is exited, by default it returns the player to Robin's house and the menu becomes the menu to choose buildings. This detects when that happens and returns the player to their original location and closes the menu.</remarks>
     private void OnUpdateTicking(object sender, UpdateTickingEventArgs e)
     {
-        if (this.isArranging)
+        if (this.IsArranging)
         {
             if (Game1.activeClickableMenu is not CarpenterMenu menu)
-                this.isArranging = false;
+                this.IsArranging = false;
             else if (!menu.onFarm)
             {
-                this.isArranging = false;
+                this.IsArranging = false;
                 Game1.exitActiveMenu();
             }
         }
@@ -177,7 +177,7 @@ internal class ModEntry : Mod
     {
         //our boolean to keep track that we are currently in a Farm rearranger menu
         //so we don't mess with any other vanilla warps to robin's house
-        this.isArranging = true;
+        this.IsArranging = true;
 
         //open the carpenter menu then do everything that is normally done
         //when the move buildings option is clicked

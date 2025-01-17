@@ -13,10 +13,10 @@ internal class ConditionChecker
     /*********
     ** Fields
     *********/
-    private readonly IModHelper _helper;
-    private readonly IMonitor _monitor;
-    private readonly bool _verboseLogging;
-    private readonly string _uniqueId;
+    private readonly IModHelper Helper;
+    private readonly IMonitor Monitor;
+    private readonly bool VerboseLogging;
+    private readonly string UniqueId;
 
 
     /*********
@@ -34,10 +34,10 @@ internal class ConditionChecker
     *********/
     public ConditionChecker(IModHelper helper, IMonitor monitor, bool verbose = false, string uniqueId = null)
     {
-        this._helper = helper;
-        this._monitor = monitor;
-        this._verboseLogging = verbose;
-        this._uniqueId = uniqueId;
+        this.Helper = helper;
+        this.Monitor = monitor;
+        this.VerboseLogging = verbose;
+        this.UniqueId = uniqueId;
     }
 
 
@@ -62,26 +62,26 @@ internal class ConditionChecker
         //if someone somehow marked this fake ID as seen, unmark it so condition checking will actually work
         if (Game1.player.eventsSeen.Remove("-6529"))
         {
-            this._monitor.Log($"{this._uniqueId} / Expanded Preconditions Utility uses the fake event ID of -6529 in order to use vanilla preconditions." +
+            this.Monitor.Log($"{this.UniqueId} / Expanded Preconditions Utility uses the fake event ID of -6529 in order to use vanilla preconditions." +
                 " Somehow your save has marked this ID as seen. Expanded Preconditions is freeing it back up.", LogLevel.Warn);
         }
 
         //if any of the conditions are met, return true
         foreach (var con in conditions)
         {
-            if (this._verboseLogging)
-                this._monitor.Log($"{this._uniqueId}: Checking condition string: \"{con}\"", LogLevel.Debug);
+            if (this.VerboseLogging)
+                this.Monitor.Log($"{this.UniqueId}: Checking condition string: \"{con}\"", LogLevel.Debug);
 
             if (this.CheckIndividualConditions(con.Split('/')))
             {
-                if (this._verboseLogging)
-                    this._monitor.Log($"-{this._uniqueId}: Player met the conditions: \"{con}\"", LogLevel.Debug);
+                if (this.VerboseLogging)
+                    this.Monitor.Log($"-{this.UniqueId}: Player met the conditions: \"{con}\"", LogLevel.Debug);
                 return true;
             }
         }
 
-        if (this._verboseLogging)
-            this._monitor.Log($"-{this._uniqueId}: No conditions were met", LogLevel.Debug);
+        if (this.VerboseLogging)
+            this.Monitor.Log($"-{this.UniqueId}: No conditions were met", LogLevel.Debug);
 
         //if no conditions are met, return false
         return false;
@@ -97,29 +97,29 @@ internal class ConditionChecker
         //if any of the conditions fail, return false
         foreach (var condition in conditions)
         {
-            if (this._verboseLogging)
-                this._monitor.Log($"--{this._uniqueId} / Checking individual condition: {condition}", LogLevel.Debug);
+            if (this.VerboseLogging)
+                this.Monitor.Log($"--{this.UniqueId} / Checking individual condition: {condition}", LogLevel.Debug);
             //if condition starts with a ! return false if condition checking is true
             if (condition[0] == '!')
             {
                 if (this.CheckCustomConditions(condition.Substring(1)))
                 {
-                    if (this._verboseLogging)
-                        this._monitor.Log($"--{this._uniqueId} / Failed individual condition: {condition}", LogLevel.Debug);
+                    if (this.VerboseLogging)
+                        this.Monitor.Log($"--{this.UniqueId} / Failed individual condition: {condition}", LogLevel.Debug);
                     return false;
                 }
             }
             else if (!this.CheckCustomConditions(condition))
             {
-                if (this._verboseLogging)
-                    this._monitor.Log($"--{this._uniqueId} / Failed individual condition: {condition}", LogLevel.Debug);
+                if (this.VerboseLogging)
+                    this.Monitor.Log($"--{this.UniqueId} / Failed individual condition: {condition}", LogLevel.Debug);
 
                 return false;
             }
         }
 
-        if (this._verboseLogging)
-            this._monitor.Log($"--{this._uniqueId} / Passed all conditions: {conditions}", LogLevel.Debug);
+        if (this.VerboseLogging)
+            this.Monitor.Log($"--{this.UniqueId} / Passed all conditions: {conditions}", LogLevel.Debug);
         //passed all conditions
         return true;
 
@@ -290,7 +290,7 @@ internal class ConditionChecker
             return false;
 
         GameLocation town = Game1.getLocationFromName("Town");
-        return this._helper.Reflection.GetMethod(town, "checkJojaCompletePrerequisite").Invoke<bool>();
+        return this.Helper.Reflection.GetMethod(town, "checkJojaCompletePrerequisite").Invoke<bool>();
     }
 
     /// <summary>
@@ -304,7 +304,7 @@ internal class ConditionChecker
         //if any isn't loaded, returns false
         for (int i = 1; i < conditionParams.Length; i++)
         {
-            if (!this._helper.ModRegistry.IsLoaded(conditionParams[i]))
+            if (!this.Helper.ModRegistry.IsLoaded(conditionParams[i]))
                 return false;
         }
 
@@ -349,7 +349,7 @@ internal class ConditionChecker
                         return false;
                     break;
                 default:
-                    this._monitor.Log($"{this._uniqueId} / \"{conditionParams[i]}\" is not a valid parameter for SkillLevel. Skipping check.", LogLevel.Warn);
+                    this.Monitor.Log($"{this.UniqueId} / \"{conditionParams[i]}\" is not a valid parameter for SkillLevel. Skipping check.", LogLevel.Warn);
                     break;
             }
         }

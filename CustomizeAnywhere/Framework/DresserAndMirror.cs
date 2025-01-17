@@ -191,7 +191,7 @@ internal class DresserAndMirror
         {
             GameLocation loc = Game1.currentLocation;
 
-            Vector2 tile = ModEntry.helper.Input.GetCursorPosition().GrabTile;
+            Vector2 tile = ModEntry.StaticHelper.Input.GetCursorPosition().GrabTile;
             if (loc.Objects.TryGetValue(tile, out Object obj))
             {
                 if (obj.QualifiedItemId == this.CatalogueQualifiedId)

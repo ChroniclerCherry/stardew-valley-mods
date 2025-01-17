@@ -13,8 +13,7 @@ internal class ModEntry : Mod
     ** Fields
     *********/
     private ModConfig Config;
-    private static IMonitor monitor;
-    internal static IModHelper helper;
+    internal static IModHelper StaticHelper;
 
     private DresserAndMirror DresserAndMirror;
 
@@ -25,8 +24,7 @@ internal class ModEntry : Mod
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
-        ModEntry.helper = helper;
-        monitor = this.Monitor;
+        ModEntry.StaticHelper = helper;
 
         this.DresserAndMirror = new DresserAndMirror(helper, this.ModManifest.UniqueID);
 

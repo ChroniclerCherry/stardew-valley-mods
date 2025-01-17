@@ -40,14 +40,14 @@ public class Api : IApi
 
     public void RegisterBoatStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName)
     {
-        var stop = ModEntry.Instance.BoatStops.SingleOrDefault(s => s.StopID.Equals(stopId));
+        var stop = ModEntry.Instance.BoatStops.SingleOrDefault(s => s.StopId.Equals(stopId));
         if (stop == null)
         {
             stop = new BoatStop();
             ModEntry.Instance.BoatStops.Add(stop);
         }
 
-        stop.StopID = stopId;
+        stop.StopId = stopId;
         stop.TargetMapName = targetMapName;
         stop.LocalizedDisplayName = localizedDisplayName;
         stop.TargetX = targetX;

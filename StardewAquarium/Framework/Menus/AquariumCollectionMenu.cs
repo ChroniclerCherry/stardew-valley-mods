@@ -18,14 +18,14 @@ internal class AquariumCollectionMenu : IClickableMenu
     /*********
     ** Fields
     *********/
-    private string hoverText = "";
+    private string HoverText = "";
 
-    private List<List<ClickableTextureComponent>> collections = new List<List<ClickableTextureComponent>>();
-    private ClickableTextureComponent backButton;
-    private ClickableTextureComponent forwardButton;
+    private List<List<ClickableTextureComponent>> Collections = new List<List<ClickableTextureComponent>>();
+    private ClickableTextureComponent BackButton;
+    private ClickableTextureComponent ForwardButton;
 
-    private int currentPage;
-    private string _title;
+    private int CurrentPage;
+    private string Title;
     private readonly bool IsAndroid = Constants.TargetPlatform == GamePlatform.Android;
 
 
@@ -34,7 +34,7 @@ internal class AquariumCollectionMenu : IClickableMenu
     *********/
     public AquariumCollectionMenu(string title)
     {
-        this._title = title;
+        this.Title = title;
         this.width = 700 + borderWidth * 2;
         this.height = (this.IsAndroid ? 550 : 600) + borderWidth * 2;
 
@@ -47,13 +47,13 @@ internal class AquariumCollectionMenu : IClickableMenu
         this.yPositionOnScreen = Game1.viewport.Height / 2 - (600 + borderWidth * 2) / 2;
 
         CollectionsPage.widthToMoveActiveTab = 8;
-        this.backButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + 48, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(352, 495, 12, 11), 4f)
+        this.BackButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + 48, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(352, 495, 12, 11), 4f)
         {
             myID = 706,
             rightNeighborID = -7777
         };
 
-        this.forwardButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 32 - 60, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(365, 495, 12, 11), 4f)
+        this.ForwardButton = new ClickableTextureComponent(new Rectangle(this.xPositionOnScreen + this.width - 32 - 60, this.yPositionOnScreen + this.height - 80, 48, 44), Game1.mouseCursors, new Rectangle(365, 495, 12, 11), 4f)
         {
             myID = 707,
             leftNeighborID = -7777
@@ -63,8 +63,8 @@ internal class AquariumCollectionMenu : IClickableMenu
         int topLeftY = this.yPositionOnScreen + borderWidth + spaceToClearTopBorder - 16;
         const int squareSize = 10;
 
-        this.collections.Add([]);
-        List<ClickableTextureComponent> textureComponentList = this.collections.Last();
+        this.Collections.Add([]);
+        List<ClickableTextureComponent> textureComponentList = this.Collections.Last();
         int index = 0;
         foreach (ParsedItemData data in ItemRegistry.GetObjectTypeDefinition().GetAllData().Where(static data => data.Category == SObject.FishCategory).OrderBy(static data => (data.TextureName, data.ItemId)))
         {
@@ -84,11 +84,11 @@ internal class AquariumCollectionMenu : IClickableMenu
             int y1 = topLeftY + index / squareSize * 68;
             if (y1 > this.yPositionOnScreen + this.height - 128)
             {
-                this.collections.Add([]);
+                this.Collections.Add([]);
                 index = 0;
                 x1 = topLeftX;
                 y1 = topLeftY;
-                textureComponentList = this.collections.Last();
+                textureComponentList = this.Collections.Last();
             }
             Texture2D texture = data.GetTexture();
             ClickableTextureComponent itemClickable = new($"{data.ItemId} {farmerHas} {farmerHasButNotDonated}", new Rectangle(x1, y1, 64, 64), null, "", texture, Game1.getSourceRectForStandardTileSheet(texture, data.SpriteIndex, 16, 16), 4f, farmerHas)
@@ -107,26 +107,26 @@ internal class AquariumCollectionMenu : IClickableMenu
         this.initializeUpperRightCloseButton();
     }
 
-    protected override void customSnapBehavior(int direction, int oldRegion, int oldID)
+    protected override void customSnapBehavior(int direction, int oldRegion, int oldId)
     {
-        base.customSnapBehavior(direction, oldRegion, oldID);
+        base.customSnapBehavior(direction, oldRegion, oldId);
         switch (direction)
         {
             case 1:
-                if (oldID != 706 || this.collections.Count <= this.currentPage + 1)
+                if (oldId != 706 || this.Collections.Count <= this.CurrentPage + 1)
                     break;
                 this.currentlySnappedComponent = this.getComponentWithID(707);
                 break;
             case 2:
-                if (this.currentPage > 0)
+                if (this.CurrentPage > 0)
                     this.currentlySnappedComponent = this.getComponentWithID(706);
-                else if (this.currentPage == 0 && this.collections.Count > 1)
+                else if (this.CurrentPage == 0 && this.Collections.Count > 1)
                     this.currentlySnappedComponent = this.getComponentWithID(707);
-                this.backButton.upNeighborID = oldID;
-                this.forwardButton.upNeighborID = oldID;
+                this.BackButton.upNeighborID = oldId;
+                this.ForwardButton.upNeighborID = oldId;
                 break;
             case 3:
-                if (oldID != 707 || this.currentPage <= 0)
+                if (oldId != 707 || this.CurrentPage <= 0)
                     break;
                 this.currentlySnappedComponent = this.getComponentWithID(706);
                 break;
@@ -144,26 +144,26 @@ internal class AquariumCollectionMenu : IClickableMenu
     {
         base.receiveLeftClick(x, y);
 
-        if (this.currentPage > 0 && this.backButton.containsPoint(x, y))
+        if (this.CurrentPage > 0 && this.BackButton.containsPoint(x, y))
         {
-            --this.currentPage;
+            --this.CurrentPage;
             Game1.playSound("shwip");
-            this.backButton.scale = this.backButton.baseScale;
-            if (Game1.options.snappyMenus && Game1.options.gamepadControls && this.currentPage == 0)
+            this.BackButton.scale = this.BackButton.baseScale;
+            if (Game1.options.snappyMenus && Game1.options.gamepadControls && this.CurrentPage == 0)
             {
-                this.currentlySnappedComponent = this.forwardButton;
+                this.currentlySnappedComponent = this.ForwardButton;
                 Game1.setMousePosition(this.currentlySnappedComponent.bounds.Center);
             }
         }
 
-        if (this.currentPage < this.collections.Count - 1 && this.forwardButton.containsPoint(x, y))
+        if (this.CurrentPage < this.Collections.Count - 1 && this.ForwardButton.containsPoint(x, y))
         {
-            ++this.currentPage;
+            ++this.CurrentPage;
             Game1.playSound("shwip");
-            this.forwardButton.scale = this.forwardButton.baseScale;
-            if (Game1.options.snappyMenus && Game1.options.gamepadControls && this.currentPage == this.collections.Count - 1)
+            this.ForwardButton.scale = this.ForwardButton.baseScale;
+            if (Game1.options.snappyMenus && Game1.options.gamepadControls && this.CurrentPage == this.Collections.Count - 1)
             {
-                this.currentlySnappedComponent = this.backButton;
+                this.currentlySnappedComponent = this.BackButton;
                 Game1.setMousePosition(this.currentlySnappedComponent.bounds.Center);
             }
         }
@@ -171,22 +171,22 @@ internal class AquariumCollectionMenu : IClickableMenu
 
     public override void performHoverAction(int x, int y)
     {
-        this.hoverText = "";
+        this.HoverText = "";
 
-        foreach (ClickableTextureComponent textureComponent in this.collections[this.currentPage])
+        foreach (ClickableTextureComponent textureComponent in this.Collections[this.CurrentPage])
         {
             if (textureComponent.containsPoint(x, y))
             {
                 textureComponent.scale =
                     Math.Min(textureComponent.scale + 0.02f, textureComponent.baseScale + 0.1f);
-                this.hoverText = this.createDescription(textureComponent.name.Split(' ')[0]);
+                this.HoverText = this.CreateDescription(textureComponent.name.Split(' ')[0]);
             }
             else
                 textureComponent.scale = Math.Max(textureComponent.scale - 0.02f, textureComponent.baseScale);
         }
 
-        this.forwardButton.tryHover(x, y, 0.5f);
-        this.backButton.tryHover(x, y, 0.5f);
+        this.ForwardButton.tryHover(x, y, 0.5f);
+        this.BackButton.tryHover(x, y, 0.5f);
     }
 
     public override void draw(SpriteBatch b)
@@ -200,16 +200,16 @@ internal class AquariumCollectionMenu : IClickableMenu
 
         Game1.drawDialogueBox(this.xPositionOnScreen, this.yPositionOnScreen, this.width, this.height, false, true);
 
-        if (this.currentPage > 0)
-            this.backButton.draw(b);
-        if (this.currentPage < this.collections.Count - 1)
-            this.forwardButton.draw(b);
+        if (this.CurrentPage > 0)
+            this.BackButton.draw(b);
+        if (this.CurrentPage < this.Collections.Count - 1)
+            this.ForwardButton.draw(b);
 
-        SpriteText.drawStringWithScrollCenteredAt(b, this._title, Game1.viewport.Width / 2 - 50, Game1.viewport.Height / 2 - 310, SpriteText.getWidthOfString(this._title) + 16);
+        SpriteText.drawStringWithScrollCenteredAt(b, this.Title, Game1.viewport.Width / 2 - 50, Game1.viewport.Height / 2 - 310, SpriteText.getWidthOfString(this.Title) + 16);
 
         b.End();
         b.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp);
-        foreach (ClickableTextureComponent textureComponent in this.collections[this.currentPage])
+        foreach (ClickableTextureComponent textureComponent in this.Collections[this.CurrentPage])
         {
             bool drawColor = Convert.ToBoolean(textureComponent.name.Split(' ')[1]);
             bool drawColorFaded = Convert.ToBoolean(textureComponent.name.Split(' ')[2]);
@@ -218,9 +218,9 @@ internal class AquariumCollectionMenu : IClickableMenu
         b.End();
         b.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
 
-        if (!string.IsNullOrEmpty(this.hoverText))
+        if (!string.IsNullOrEmpty(this.HoverText))
         {
-            drawHoverText(b, this.hoverText, Game1.smallFont);
+            drawHoverText(b, this.HoverText, Game1.smallFont);
         }
 
         this.drawMouse(b);
@@ -230,7 +230,7 @@ internal class AquariumCollectionMenu : IClickableMenu
     /*********
     ** Private methods
     *********/
-    private string createDescription(string key)
+    private string CreateDescription(string key)
     {
         return CreateDescription(ItemRegistry.GetDataOrErrorItem(key));
     }

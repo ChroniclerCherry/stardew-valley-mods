@@ -17,9 +17,9 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    public static ModEntry instance;
+    public static ModEntry Instance;
 
-    private Dictionary<string, List<Rule>> allHarvestRules;
+    private Dictionary<string, List<Rule>> AllHarvestRules;
 
 
     /*********
@@ -28,7 +28,7 @@ internal class ModEntry : Mod
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
-        instance = this;
+        Instance = this;
 
         //harmony stuff
         HarvestPatches.Initialize(this.Monitor);
@@ -50,12 +50,12 @@ internal class ModEntry : Mod
 
     public void SpawnHarvest(Vector2 tileLocation, string cropName, int fertilizer, JunimoHarvester junimo = null)
     {
-        if (!this.allHarvestRules.ContainsKey(cropName))
+        if (!this.AllHarvestRules.ContainsKey(cropName))
             return;
 
         Vector2 location = new Vector2((tileLocation.X * 64 + 32), (tileLocation.Y * 64 + 32));
 
-        foreach (Rule data in this.allHarvestRules[cropName])
+        foreach (Rule data in this.AllHarvestRules[cropName])
         {
             foreach (Item item in this.SpawnItems(data, fertilizer))
             {
@@ -90,9 +90,9 @@ internal class ModEntry : Mod
 
         //stole this code from the game to calculate # of crops
         int increaseMaxHarvest = 0;
-        if (data.maxHarvestIncreasePerFarmingLevel > 0)
-            increaseMaxHarvest = (int)(Game1.player.FarmingLevel * data.maxHarvestIncreasePerFarmingLevel);
-        int quantity = random.Next(data.minHarvest, Math.Max(data.minHarvest, data.maxHarvest + increaseMaxHarvest + 1));
+        if (data.MaxHarvestIncreasePerFarmingLevel > 0)
+            increaseMaxHarvest = (int)(Game1.player.FarmingLevel * data.MaxHarvestIncreasePerFarmingLevel);
+        int quantity = random.Next(data.MinHarvest, Math.Max(data.MinHarvest, data.MaxHarvest + increaseMaxHarvest + 1));
 
         if (quantity < 0)
             quantity = 0;
@@ -175,7 +175,7 @@ internal class ModEntry : Mod
 
     private void InitializeHarvestRules()
     {
-        this.allHarvestRules = new Dictionary<string, List<Rule>>();
+        this.AllHarvestRules = new Dictionary<string, List<Rule>>();
         try
         {
             ContentModel data = this.Helper.ReadConfig<ContentModel>();
@@ -217,10 +217,10 @@ internal class ModEntry : Mod
     {
         foreach (Rule rule in harvestRules)
         {
-            if (rule.disableWithMods != null)
+            if (rule.DisableWithMods != null)
             {
                 bool skipRule = false;
-                foreach (string mod in rule.disableWithMods)
+                foreach (string mod in rule.DisableWithMods)
                 {
                     if (this.Helper.ModRegistry.IsLoaded(mod))
                     {
@@ -235,14 +235,14 @@ internal class ModEntry : Mod
             }
 
 
-            if (this.allHarvestRules.ContainsKey(cropName))
+            if (this.AllHarvestRules.ContainsKey(cropName))
             {
-                this.allHarvestRules[cropName].Add(rule);
+                this.AllHarvestRules[cropName].Add(rule);
             }
             else
             {
-                this.allHarvestRules[cropName] = new List<Rule>();
-                this.allHarvestRules[cropName].Add(rule);
+                this.AllHarvestRules[cropName] = new List<Rule>();
+                this.AllHarvestRules[cropName].Add(rule);
             }
         }
     }

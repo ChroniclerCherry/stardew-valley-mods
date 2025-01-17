@@ -4,8 +4,8 @@ internal class Rule
 {
     public string ExtraYieldItemType = "Object";
     public string ItemName;
-    public int minHarvest = 1;
-    public int maxHarvest = 1;
-    public float maxHarvestIncreasePerFarmingLevel = 0;
-    public string[] disableWithMods = null;
+    public int MinHarvest = 1;
+    public int MaxHarvest = 1;
+    public float MaxHarvestIncreasePerFarmingLevel = 0;
+    public string[] DisableWithMods = null;
 }

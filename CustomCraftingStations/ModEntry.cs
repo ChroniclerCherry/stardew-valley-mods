@@ -19,13 +19,13 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    private bool _openedNonCustomMenu;
+    private bool OpenedNonCustomMenu;
 
-    private Dictionary<string, CraftingStationConfig> _tileCraftingStations;
-    private Dictionary<string, CraftingStationConfig> _craftableCraftingStations;
+    private Dictionary<string, CraftingStationConfig> TileCraftingStations;
+    private Dictionary<string, CraftingStationConfig> CraftableCraftingStations;
 
-    private List<string> _cookingRecipesToRemove;
-    private List<string> _craftingRecipesToRemove;
+    private List<string> CookingRecipesToRemove;
+    private List<string> CraftingRecipesToRemove;
 
     private ModConfig Config;
     private Type CookingSkillMenu;
@@ -79,12 +79,12 @@ internal class ModEntry : Mod
         this.ReducedCookingRecipes = new List<string>();
         this.ReducedCraftingRecipes = new List<string>();
 
-        foreach (var recipe in CraftingRecipe.craftingRecipes.Where(recipe => !this._craftingRecipesToRemove.Contains(recipe.Key)))
+        foreach (var recipe in CraftingRecipe.craftingRecipes.Where(recipe => !this.CraftingRecipesToRemove.Contains(recipe.Key)))
         {
             this.ReducedCraftingRecipes.Add(recipe.Key);
         }
 
-        foreach (var recipe in CraftingRecipe.cookingRecipes.Where(recipe => !this._cookingRecipesToRemove.Contains(recipe.Key)))
+        foreach (var recipe in CraftingRecipe.cookingRecipes.Where(recipe => !this.CookingRecipesToRemove.Contains(recipe.Key)))
         {
             this.ReducedCookingRecipes.Add(recipe.Key);
         }
@@ -96,13 +96,13 @@ internal class ModEntry : Mod
         if (!Context.IsWorldReady)
             return;
 
-        if (this._openedNonCustomMenu)
+        if (this.OpenedNonCustomMenu)
         {
             return;
         }
 
         if (!MenuOverride) return;
-        this._openedNonCustomMenu = true;
+        this.OpenedNonCustomMenu = true;
 
         var activeMenu = Game1.activeClickableMenu;
 
@@ -127,7 +127,7 @@ internal class ModEntry : Mod
             || e.OldMenu is GameMenu
             || e.OldMenu.GetType() == this.CookingSkillMenu)
         {
-            this._openedNonCustomMenu = false;
+            this.OpenedNonCustomMenu = false;
             if (e.NewMenu == null)
                 MenuOverride = true;
         }
@@ -153,9 +153,9 @@ internal class ModEntry : Mod
         Game1.currentLocation.Objects.TryGetValue(grabTile, out var obj);
         if (obj != null && obj.bigCraftable.Value)
         {
-            if (this._craftableCraftingStations.ContainsKey(obj.Name))
+            if (this.CraftableCraftingStations.ContainsKey(obj.Name))
             {
-                this.OpenCraftingMenu(this._craftableCraftingStations[obj.Name], e.Cursor.GrabTile);
+                this.OpenCraftingMenu(this.CraftableCraftingStations[obj.Name], e.Cursor.GrabTile);
                 this.Helper.Input.Suppress(e.Button);
                 return;
             }
@@ -171,9 +171,9 @@ internal class ModEntry : Mod
         if (properties[0] != "CraftingStation")
             return;
 
-        if (this._tileCraftingStations.ContainsKey(properties[1]))
+        if (this.TileCraftingStations.ContainsKey(properties[1]))
         {
-            this.OpenCraftingMenu(this._tileCraftingStations[properties[1]], e.Cursor.GrabTile);
+            this.OpenCraftingMenu(this.TileCraftingStations[properties[1]], e.Cursor.GrabTile);
             this.Helper.Input.Suppress(e.Button);
         }
     }
@@ -182,10 +182,10 @@ internal class ModEntry : Mod
     {
         var packs = this.Helper.ContentPacks.GetOwned();
 
-        this._tileCraftingStations = new Dictionary<string, CraftingStationConfig>();
-        this._craftableCraftingStations = new Dictionary<string, CraftingStationConfig>();
-        this._cookingRecipesToRemove = new List<string>();
-        this._craftingRecipesToRemove = new List<string>();
+        this.TileCraftingStations = new Dictionary<string, CraftingStationConfig>();
+        this.CraftableCraftingStations = new Dictionary<string, CraftingStationConfig>();
+        this.CookingRecipesToRemove = new List<string>();
+        this.CraftingRecipesToRemove = new List<string>();
 
         foreach (var pack in packs)
         {
@@ -229,13 +229,13 @@ internal class ModEntry : Mod
 
             if (station.ExclusiveRecipes)
             {
-                this._craftingRecipesToRemove.AddRange(station.CraftingRecipes);
-                this._cookingRecipesToRemove.AddRange(station.CookingRecipes);
+                this.CraftingRecipesToRemove.AddRange(station.CraftingRecipes);
+                this.CookingRecipesToRemove.AddRange(station.CookingRecipes);
             }
 
             if (station.TileData != null)
             {
-                if (this._tileCraftingStations.Keys.Contains(station.TileData))
+                if (this.TileCraftingStations.Keys.Contains(station.TileData))
                 {
                     this.Monitor.Log(
                         $"Multiple mods are trying to use the Tiledata {station.TileData}; Only one will be applied.",
@@ -243,12 +243,12 @@ internal class ModEntry : Mod
                 }
                 else
                 {
-                    if (station.TileData != null) this._tileCraftingStations.Add(station.TileData, station);
+                    if (station.TileData != null) this.TileCraftingStations.Add(station.TileData, station);
                 }
             }
 
             if (station.BigCraftable == null) continue;
-            if (this._craftableCraftingStations.Keys.Contains(station.BigCraftable))
+            if (this.CraftableCraftingStations.Keys.Contains(station.BigCraftable))
             {
                 this.Monitor.Log(
                     $"Multiple mods are trying to use the BigCraftable {station.BigCraftable}; Only one will be applied.",
@@ -256,7 +256,7 @@ internal class ModEntry : Mod
             }
             else
             {
-                if (station.BigCraftable != null) this._craftableCraftingStations.Add(station.BigCraftable, station);
+                if (station.BigCraftable != null) this.CraftableCraftingStations.Add(station.BigCraftable, station);
             }
         }
     }

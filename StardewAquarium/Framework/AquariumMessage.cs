@@ -9,8 +9,8 @@ internal sealed class AquariumMessage
     /*********
     ** Fields
     *********/
-    private List<Response[]>? _responsePages;
-    private int _currentPage;
+    private List<Response[]>? ResponsePages;
+    private int CurrentPage;
 
 
     /*********
@@ -38,7 +38,7 @@ internal sealed class AquariumMessage
         }
 
         this.BuildResponse(fishes);
-        Game1.currentLocation.createQuestionDialogue(ContentPackHelper.LoadString("WhichFishInfo"), this._responsePages[this._currentPage], this.DisplayFishInfo);
+        Game1.currentLocation.createQuestionDialogue(ContentPackHelper.LoadString("WhichFishInfo"), this.ResponsePages[this.CurrentPage], this.DisplayFishInfo);
     }
 
 
@@ -47,8 +47,8 @@ internal sealed class AquariumMessage
     *********/
     private void BuildResponse(List<string> fishes)
     {
-        this._responsePages = [];
-        this._currentPage = 0;
+        this.ResponsePages = [];
+        this.CurrentPage = 0;
         List<Response> responsesThisPage = [];
 
         for (int index = 0; index < fishes.Count; index++)
@@ -65,12 +65,12 @@ internal sealed class AquariumMessage
             if (index < fishes.Count - 1)
                 responsesThisPage.Add(new Response("More", ContentPackHelper.LoadString("More")));
             responsesThisPage.Add(new Response("Exit", ContentPackHelper.LoadString("Exit")));
-            this._responsePages.Add(responsesThisPage.ToArray());
+            this.ResponsePages.Add(responsesThisPage.ToArray());
             responsesThisPage = [];
         }
 
         responsesThisPage.Add(new Response("Exit", ContentPackHelper.LoadString("Exit")));
-        this._responsePages.Add(responsesThisPage.ToArray());
+        this.ResponsePages.Add(responsesThisPage.ToArray());
     }
 
     private void DisplayFishInfo(Farmer who, string whichAnswer)
@@ -83,11 +83,11 @@ internal sealed class AquariumMessage
             case "More":
                 Game1.activeClickableMenu = null;
                 Game1.currentLocation.afterQuestion = null;
-                this._currentPage++;
+                this.CurrentPage++;
 
                 // delays until the next tick.
                 DelayedAction.functionAfterDelay(
-                    () => Game1.currentLocation.createQuestionDialogue(ContentPackHelper.LoadString("WhichFishInfo"), this._responsePages[this._currentPage], this.DisplayFishInfo),
+                    () => Game1.currentLocation.createQuestionDialogue(ContentPackHelper.LoadString("WhichFishInfo"), this.ResponsePages[this.CurrentPage], this.DisplayFishInfo),
                     10
                 );
                 break;

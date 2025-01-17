@@ -12,7 +12,7 @@ internal class DonateFishMenuAndroid : ShopMenu
     /*********
     ** Fields
     *********/
-    private Dictionary<ISalable, ItemStockInformation> donations = new Dictionary<ISalable, ItemStockInformation>();
+    private Dictionary<ISalable, ItemStockInformation> Donations = new Dictionary<ISalable, ItemStockInformation>();
 
 
     /*********
@@ -45,10 +45,10 @@ internal class DonateFishMenuAndroid : ShopMenu
         {
             Object display = new(fish, 1);
             display.displayName = ContentPackHelper.LoadString("Donate") + display.DisplayName;
-            this.donations.Add(display, new(0, 1, fish, 1));
+            this.Donations.Add(display, new(0, 1, fish, 1));
         }
 
-        this.setItemPriceAndStock(this.donations);
+        this.setItemPriceAndStock(this.Donations);
     }
 
     public void OnExit()

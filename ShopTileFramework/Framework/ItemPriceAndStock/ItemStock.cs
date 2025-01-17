@@ -19,8 +19,8 @@ internal class ItemStock : ItemStockModel
     *********/
     private Dictionary<double, string[]> PriceMultiplierWhen;
     private Dictionary<double, string[]> _priceMultiplierWhen;
-    private ItemBuilder _builder;
-    private Dictionary<ISalable, ItemStockInformation> _itemPriceAndStock;
+    private ItemBuilder Builder;
+    private Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock;
 
 
     /*********
@@ -52,7 +52,7 @@ internal class ItemStock : ItemStockModel
         if (this.Quality < 0 || this.Quality == 3 || this.Quality > 4)
         {
             this.Quality = 0;
-            ModEntry.monitor.Log("Item quality can only be 0,1,2, or 4. Defaulting to 0", LogLevel.Warn);
+            ModEntry.StaticMonitor.Log("Item quality can only be 0,1,2, or 4. Defaulting to 0", LogLevel.Warn);
         }
 
         this.CurrencyObjectId = ItemsUtil.GetItemIdByName(this.StockItemCurrency);
@@ -67,7 +67,7 @@ internal class ItemStock : ItemStockModel
         if (this.IsRecipe)
             this.Stock = 1;
 
-        this._builder = new ItemBuilder(this);
+        this.Builder = new ItemBuilder(this);
     }
 
     /// <summary>
@@ -81,13 +81,13 @@ internal class ItemStock : ItemStockModel
 
         if (!ItemsUtil.CheckItemType(this.ItemType)) //check that itemtype is valid
         {
-            ModEntry.monitor.Log($"\t\"{this.ItemType}\" is not a valid ItemType. No items from this stock will be added."
+            ModEntry.StaticMonitor.Log($"\t\"{this.ItemType}\" is not a valid ItemType. No items from this stock will be added."
                 , LogLevel.Warn);
             return null;
         }
 
-        this._itemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
-        this._builder.SetItemPriceAndStock(this._itemPriceAndStock);
+        this.ItemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
+        this.Builder.SetItemPriceAndStock(this.ItemPriceAndStock);
 
         double pricemultiplier = 1;
         if (this._priceMultiplierWhen != null)
@@ -110,17 +110,17 @@ internal class ItemStock : ItemStockModel
         else
         {
             if (this.ItemIds != null)
-                ModEntry.monitor.Log(
+                ModEntry.StaticMonitor.Log(
                     "ItemType of \"Seed\" is a special itemtype used for parsing Seeds from JA Pack crops and trees and does not support input via ID. If adding seeds via ID, please use the ItemType \"Object\" instead to directly sell the seeds/saplings");
             if (this.ItemNames != null)
-                ModEntry.monitor.Log(
+                ModEntry.StaticMonitor.Log(
                     "ItemType of \"Seed\" is a special itemtype used for parsing Seeds from JA Pack crops and trees and does not support input via Name. If adding seeds via Name, please use the ItemType \"Object\" instead to directly sell the seeds/saplings");
         }
 
-        this.AddByJAPack(pricemultiplier);
+        this.AddByJaPack(pricemultiplier);
 
-        ItemsUtil.RandomizeStock(this._itemPriceAndStock, this.MaxNumItemsSoldInItemStock);
-        return this._itemPriceAndStock;
+        ItemsUtil.RandomizeStock(this.ItemPriceAndStock, this.MaxNumItemsSoldInItemStock);
+        return this.ItemPriceAndStock;
     }
 
 
@@ -137,7 +137,7 @@ internal class ItemStock : ItemStockModel
 
         foreach (string itemId in this.ItemIds)
         {
-            this._builder.AddItemToStock(itemId, pricemultiplier);
+            this.Builder.AddItemToStock(itemId, pricemultiplier);
         }
     }
 
@@ -151,14 +151,14 @@ internal class ItemStock : ItemStockModel
 
         foreach (var itemName in this.ItemNames)
         {
-            this._builder.AddItemToStock(itemName, pricemultiplier);
+            this.Builder.AddItemToStock(itemName, pricemultiplier);
         }
     }
 
     /// <summary>
     /// Add all items from the JA Packs listed in the JAPacks section
     /// </summary>
-    private void AddByJAPack(double pricemultiplier)
+    private void AddByJaPack(double pricemultiplier)
     {
         if (this.JaPacks == null)
             return;
@@ -166,14 +166,14 @@ internal class ItemStock : ItemStockModel
         if (ApiManager.JsonAssets == null)
             return;
 
-        foreach (var JAPack in this.JaPacks)
+        foreach (var jaPack in this.JaPacks)
         {
-            ModEntry.monitor.Log($"Adding all {this.ItemType}s from {JAPack}", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log($"Adding all {this.ItemType}s from {jaPack}", LogLevel.Debug);
 
             if (this.ItemType == "Seed")
             {
-                var crops = ApiManager.JsonAssets.GetAllCropsFromContentPack(JAPack);
-                var trees = ApiManager.JsonAssets.GetAllFruitTreesFromContentPack(JAPack);
+                var crops = ApiManager.JsonAssets.GetAllCropsFromContentPack(jaPack);
+                var trees = ApiManager.JsonAssets.GetAllFruitTreesFromContentPack(jaPack);
 
 
                 if (crops != null)
@@ -183,7 +183,7 @@ internal class ItemStock : ItemStockModel
                         if (this.ExcludeFromJaPacks != null && this.ExcludeFromJaPacks.Contains(crop)) continue;
                         string id = ItemsUtil.GetSeedId(crop);
                         if (id is not null)
-                            this._builder.AddItemToStock(id, pricemultiplier);
+                            this.Builder.AddItemToStock(id, pricemultiplier);
                     }
                 }
 
@@ -194,24 +194,24 @@ internal class ItemStock : ItemStockModel
                         if (this.ExcludeFromJaPacks != null && this.ExcludeFromJaPacks.Contains(tree)) continue;
                         string id = ItemsUtil.GetSaplingId(tree);
                         if (id is not null)
-                            this._builder.AddItemToStock(id, pricemultiplier);
+                            this.Builder.AddItemToStock(id, pricemultiplier);
                     }
                 }
 
                 continue; //skip the rest of the loop so we don't also add the none-seed version
             }
 
-            var packs = this.GetJaItems(JAPack);
+            var packs = this.GetJaItems(jaPack);
             if (packs == null)
             {
-                ModEntry.monitor.Log($"No {this.ItemType} from {JAPack} could be found", LogLevel.Trace);
+                ModEntry.StaticMonitor.Log($"No {this.ItemType} from {jaPack} could be found", LogLevel.Trace);
                 continue;
             }
 
             foreach (string itemName in packs)
             {
                 if (this.ExcludeFromJaPacks != null && this.ExcludeFromJaPacks.Contains(itemName)) continue;
-                this._builder.AddItemToStock(itemName, pricemultiplier);
+                this.Builder.AddItemToStock(itemName, pricemultiplier);
             }
         }
     }
@@ -219,24 +219,24 @@ internal class ItemStock : ItemStockModel
     /// <summary>
     /// Depending on the itemtype, returns a list of the names of all items of that type in a JA pack
     /// </summary>
-    /// <param name="JAPack">Unique ID of the pack</param>
+    /// <param name="jaPack">Unique ID of the pack</param>
     /// <returns>A list of all the names of the items of the right item type in that pack</returns>
-    private List<string> GetJaItems(string JAPack)
+    private List<string> GetJaItems(string jaPack)
     {
         switch (this.ItemType)
         {
             case "Object":
-                return ApiManager.JsonAssets.GetAllObjectsFromContentPack(JAPack);
+                return ApiManager.JsonAssets.GetAllObjectsFromContentPack(jaPack);
             case "BigCraftable":
-                return ApiManager.JsonAssets.GetAllBigCraftablesFromContentPack(JAPack);
+                return ApiManager.JsonAssets.GetAllBigCraftablesFromContentPack(jaPack);
             case "Clothing":
-                return ApiManager.JsonAssets.GetAllClothingFromContentPack(JAPack);
+                return ApiManager.JsonAssets.GetAllClothingFromContentPack(jaPack);
             case "Ring":
-                return ApiManager.JsonAssets.GetAllObjectsFromContentPack(JAPack);
+                return ApiManager.JsonAssets.GetAllObjectsFromContentPack(jaPack);
             case "Hat":
-                return ApiManager.JsonAssets.GetAllHatsFromContentPack(JAPack);
+                return ApiManager.JsonAssets.GetAllHatsFromContentPack(jaPack);
             case "Weapon":
-                return ApiManager.JsonAssets.GetAllWeaponsFromContentPack(JAPack);
+                return ApiManager.JsonAssets.GetAllWeaponsFromContentPack(jaPack);
             default:
                 return null;
         }

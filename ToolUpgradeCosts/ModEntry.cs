@@ -18,9 +18,9 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    private static ModEntry _instance;
+    private static ModEntry Instance;
 
-    private readonly Dictionary<UpgradeMaterials, string> _defaultMaterials = new()
+    private readonly Dictionary<UpgradeMaterials, string> DefaultMaterials = new()
     {
         {UpgradeMaterials.Copper, "334"},
         {UpgradeMaterials.Steel, "335"},
@@ -37,7 +37,7 @@ internal class ModEntry : Mod
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
-        _instance = this;
+        Instance = this;
         this.Config = helper.ReadConfig<ModConfig>();
         helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
 
@@ -64,7 +64,7 @@ internal class ModEntry : Mod
             if (id is null)
             {
                 this.Monitor.Log($"Object named \"{name}\" not found for the tool upgrade level of {upgrade.Key}. Vanilla upgrade item will be used", LogLevel.Error);
-                id = this._defaultMaterials[upgrade.Key];
+                id = this.DefaultMaterials[upgrade.Key];
             }
             upgrade.Value.MaterialId = id;
         }
@@ -88,9 +88,9 @@ internal class ModEntry : Mod
                         upgradeLevel++;
                     }
                     editedStock[tool] = new ItemStockInformation(
-                        price: _instance.Config.UpgradeCosts[upgradeLevel].Cost,
-                        tradeItemCount: _instance.Config.UpgradeCosts[upgradeLevel].MaterialStack,
-                        tradeItem: _instance.Config.UpgradeCosts[upgradeLevel].MaterialId,
+                        price: Instance.Config.UpgradeCosts[upgradeLevel].Cost,
+                        tradeItemCount: Instance.Config.UpgradeCosts[upgradeLevel].MaterialStack,
+                        tradeItem: Instance.Config.UpgradeCosts[upgradeLevel].MaterialId,
                         stock: stockInfo.Stock,
                         stockMode: stockInfo.LimitedStockMode,
                         itemToSyncStack: stockInfo.ItemToSyncStack,
@@ -107,7 +107,7 @@ internal class ModEntry : Mod
         }
         catch (Exception ex)
         {
-            _instance.Monitor.Log($"Failed in {nameof(ShopBuilder_GetShopStock_Postfix)}:\n{ex}", LogLevel.Error);
+            Instance.Monitor.Log($"Failed in {nameof(ShopBuilder_GetShopStock_Postfix)}:\n{ex}", LogLevel.Error);
         }
     }
 }

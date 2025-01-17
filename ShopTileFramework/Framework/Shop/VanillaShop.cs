@@ -27,7 +27,7 @@ internal class VanillaShop : VanillaShopModel
     public void UpdateItemPriceAndStock()
     {
         this.ItemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
-        ModEntry.monitor.Log($"Generating stock for {this.ShopName}", LogLevel.Debug);
+        ModEntry.StaticMonitor.Log($"Generating stock for {this.ShopName}", LogLevel.Debug);
         foreach (ItemPriceAndStockManager manager in this.StockManagers)
         {
             manager.Update();

@@ -16,8 +16,8 @@ internal class ItemBuilder
     /*********
     ** Fields
     *********/
-    private Dictionary<ISalable, ItemStockInformation> _itemPriceAndStock;
-    private readonly ItemStock _itemStock;
+    private Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock;
+    private readonly ItemStock ItemStock;
 
 
     /*********
@@ -25,13 +25,13 @@ internal class ItemBuilder
     *********/
     public ItemBuilder(ItemStock itemStock)
     {
-        this._itemStock = itemStock;
+        this.ItemStock = itemStock;
     }
 
     /// <param name="itemPriceAndStock">the ItemPriceAndStock this builder will add items to</param>
     public void SetItemPriceAndStock(Dictionary<ISalable, ItemStockInformation> itemPriceAndStock)
     {
-        this._itemPriceAndStock = itemPriceAndStock;
+        this.ItemPriceAndStock = itemPriceAndStock;
     }
 
     /// <summary>Add an item to the stock.</summary>
@@ -41,18 +41,18 @@ internal class ItemBuilder
     {
         string itemId =
             ItemRegistry.GetData(itemIdOrName)?.ItemId
-            ?? ItemsUtil.GetItemIdByName(itemIdOrName, this._itemStock.ItemType);
+            ?? ItemsUtil.GetItemIdByName(itemIdOrName, this.ItemStock.ItemType);
 
         if (itemId is null)
         {
-            ModEntry.monitor.Log($"{this._itemStock.ItemType} with the name or ID \"{itemIdOrName}\" could not be added to the shop {this._itemStock.ShopName}", LogLevel.Trace);
+            ModEntry.StaticMonitor.Log($"{this.ItemStock.ItemType} with the name or ID \"{itemIdOrName}\" could not be added to the shop {this.ItemStock.ShopName}", LogLevel.Trace);
             return false;
         }
 
         if (ModEntry.VerboseLogging)
-            ModEntry.monitor.Log($"Adding item ID {itemId} to {this._itemStock.ShopName}", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log($"Adding item ID {itemId} to {this.ItemStock.ShopName}", LogLevel.Debug);
 
-        if (this._itemStock.ItemType == "Seed" && this._itemStock.FilterSeedsBySeason)
+        if (this.ItemStock.ItemType == "Seed" && this.ItemStock.FilterSeedsBySeason)
         {
             if (!ItemsUtil.IsInSeasonCrop(itemId)) return false;
         }
@@ -63,17 +63,17 @@ internal class ItemBuilder
             return false;
         }
 
-        if (this._itemStock.IsRecipe)
+        if (this.ItemStock.IsRecipe)
         {
             if (!ItemsUtil.RecipesList.Contains(item.Name))
             {
-                ModEntry.monitor.Log($"{item.Name} is not a valid recipe and won't be added.", LogLevel.Trace);
+                ModEntry.StaticMonitor.Log($"{item.Name} is not a valid recipe and won't be added.", LogLevel.Trace);
                 return false;
             }
         }
 
         var priceStockCurrency = this.GetPriceStockAndCurrency(item, priceMultiplier);
-        this._itemPriceAndStock.Add(item, priceStockCurrency);
+        this.ItemPriceAndStock.Add(item, priceStockCurrency);
 
         return true;
     }
@@ -89,10 +89,10 @@ internal class ItemBuilder
     /// <returns></returns>
     private Item CreateItem(string itemId)
     {
-        Item item = ItemRegistry.Create(itemId, 1, this._itemStock.Quality);
+        Item item = ItemRegistry.Create(itemId, 1, this.ItemStock.Quality);
 
         if (item is Object obj)
-            obj.IsRecipe = this._itemStock.IsRecipe;
+            obj.IsRecipe = this.ItemStock.IsRecipe;
 
         return item;
     }
@@ -107,15 +107,15 @@ internal class ItemBuilder
     private ItemStockInformation GetPriceStockAndCurrency(ISalable item, double priceMultiplier)
     {
         //if no price is provided, use the item's sale price multiplied by defaultSellPriceMultiplier
-        int price = this._itemStock.StockPrice == -1
-            ? (int)(item.salePrice() * this._itemStock.DefaultSellPriceMultiplier)
-            : this._itemStock.StockPrice;
+        int price = this.ItemStock.StockPrice == -1
+            ? (int)(item.salePrice() * this.ItemStock.DefaultSellPriceMultiplier)
+            : this.ItemStock.StockPrice;
         price = (int)(price * priceMultiplier);
 
-        int? currencyObjectStack = this._itemStock.CurrencyObjectId != null
-            ? Math.Max(this._itemStock.StockCurrencyStack, 1)
+        int? currencyObjectStack = this.ItemStock.CurrencyObjectId != null
+            ? Math.Max(this.ItemStock.StockCurrencyStack, 1)
             : null;
 
-        return new ItemStockInformation(price, this._itemStock.Stock, this._itemStock.CurrencyObjectId, currencyObjectStack);
+        return new ItemStockInformation(price, this.ItemStock.Stock, this.ItemStock.CurrencyObjectId, currencyObjectStack);
     }
 }

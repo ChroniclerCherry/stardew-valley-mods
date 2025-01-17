@@ -160,10 +160,10 @@ internal static class ItemsUtil
         return null;
     }
 
-    public static void RegisterPacksToRemove(string[] JApacks, string[] recipePacks, string[] itemNames)
+    public static void RegisterPacksToRemove(string[] jsonAssetsPacks, string[] recipePacks, string[] itemNames)
     {
-        if (JApacks != null)
-            PacksToRemove = PacksToRemove.Union(JApacks).ToList();
+        if (jsonAssetsPacks != null)
+            PacksToRemove = PacksToRemove.Union(jsonAssetsPacks).ToList();
 
         if (recipePacks != null)
             RecipePacksToRemove = RecipePacksToRemove.Union(recipePacks).ToList();
@@ -234,7 +234,7 @@ internal static class ItemsUtil
         }
     }
 
-    public static Dictionary<ISalable, ItemStockInformation> RemoveSpecifiedJAPacks(Dictionary<ISalable, ItemStockInformation> stock)
+    public static Dictionary<ISalable, ItemStockInformation> RemoveSpecifiedJsonAssetsPacks(Dictionary<ISalable, ItemStockInformation> stock)
     {
         List<ISalable> removeItems = (stock.Keys.Where(item => ItemsToRemove.Contains(item.Name))).ToList();
 

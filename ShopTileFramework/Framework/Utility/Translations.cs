@@ -12,7 +12,7 @@ internal class Translations
     /*********
     ** Fields
     *********/
-    private static LocalizedContentManager.LanguageCode _selectedLanguage;
+    private static LocalizedContentManager.LanguageCode SelectedLanguage;
 
 
     /*********
@@ -28,11 +28,11 @@ internal class Translations
     /// <returns>The string of the current language if available, english as a default</returns>
     public static string Localize(string english, Dictionary<string, string> translations)
     {
-        if (_selectedLanguage == LocalizedContentManager.LanguageCode.en)
+        if (SelectedLanguage == LocalizedContentManager.LanguageCode.en)
             return english;
-        if (translations == null || !translations.ContainsKey(_selectedLanguage.ToString()))
+        if (translations == null || !translations.ContainsKey(SelectedLanguage.ToString()))
             return english;
-        return translations[_selectedLanguage.ToString()];
+        return translations[SelectedLanguage.ToString()];
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ internal class Translations
     /// </summary>
     public static void UpdateSelectedLanguage()
     {
-        _selectedLanguage = LocalizedContentManager.CurrentLanguageCode;
-        ModEntry.monitor.Log($"Updating current language settings: {_selectedLanguage}", LogLevel.Trace);
+        SelectedLanguage = LocalizedContentManager.CurrentLanguageCode;
+        ModEntry.StaticMonitor.Log($"Updating current language settings: {SelectedLanguage}", LogLevel.Trace);
     }
 }

@@ -7,25 +7,14 @@ namespace ExpandedPreconditionsUtility;
 internal class ModEntry : Mod
 {
     /*********
-    ** Fields
-    *********/
-    private IModHelper _helper;
-    private IMonitor _monitor;
-
-
-    /*********
     ** Public methods
     *********/
     /// <inheritdoc />
-    public override void Entry(IModHelper helper)
-    {
-        this._helper = helper;
-        this._monitor = this.Monitor;
-    }
+    public override void Entry(IModHelper helper) { }
 
     /// <inheritdoc />
     public override object GetApi()
     {
-        return new ConditionsChecker(this._monitor, this._helper);
+        return new ConditionsChecker(this.Monitor, this.Helper);
     }
 }

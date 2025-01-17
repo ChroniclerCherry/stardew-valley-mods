@@ -15,8 +15,8 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    private List<MultiplayerReportData> _rawReports = new List<MultiplayerReportData>();
-    private readonly List<string> _reports = new List<string>();
+    private List<MultiplayerReportData> RawReports = new List<MultiplayerReportData>();
+    private readonly List<string> Reports = new List<string>();
     private ModConfig Config;
 
 
@@ -60,9 +60,9 @@ internal class ModEntry : Mod
             report.SmapiGameGameVersions.HostSmapiVersion = Constants.ApiVersion;
             report.SmapiGameGameVersions.FarmhandSmapiVersion = e.Peer.ApiVersion;
 
-            var HostMods = this.Helper.ModRegistry.GetAll().Select(m => m.Manifest.UniqueID);
+            var hostMods = this.Helper.ModRegistry.GetAll().Select(m => m.Manifest.UniqueID);
             var farmHandMods = e.Peer.Mods.Select(m => m.ID);
-            var allMods = HostMods.Union(farmHandMods).Distinct();
+            var allMods = hostMods.Union(farmHandMods).Distinct();
 
             foreach (string mod in allMods)
             {
@@ -93,7 +93,7 @@ internal class ModEntry : Mod
             }
         }
 
-        this._rawReports.Add(report);
+        this.RawReports.Add(report);
         this.GenerateReport(report);
     }
 
@@ -148,7 +148,7 @@ internal class ModEntry : Mod
             report.Add(this.Helper.Translation.Get("ModMismatch.Version", new { ModList = string.Join(",", reportData.VersionMismatch) }), LogLevel.Warn);
 
         this.Helper.Multiplayer.SendMessage(report, "MultiplayerReport", new[] { this.ModManifest.UniqueID }, new[] { reportData.FarmhandId });
-        this.Helper.Data.WriteJsonFile("LatestMultiplayerModReport-Host.json", this._rawReports);
+        this.Helper.Data.WriteJsonFile("LatestMultiplayerModReport-Host.json", this.RawReports);
         this.PublishReport(reportData, report);
     }
 
@@ -173,8 +173,8 @@ internal class ModEntry : Mod
                 this.Monitor.Log(log.Key, this.Config.HideReportInTrace ? LogLevel.Trace : log.Value);
             }
 
-            this._reports.Add($"{preface}\n--------------------------------\n{string.Join("\n", report.Keys)}");
-            File.WriteAllText(Path.Combine(this.Helper.DirectoryPath, reportData == null ? "LatestMultiplayerModReports-Farmhand.txt" : "LatestMultiplayerModReports-Host.txt"), string.Join("\n\n", this._reports));
+            this.Reports.Add($"{preface}\n--------------------------------\n{string.Join("\n", report.Keys)}");
+            File.WriteAllText(Path.Combine(this.Helper.DirectoryPath, reportData == null ? "LatestMultiplayerModReports-Farmhand.txt" : "LatestMultiplayerModReports-Host.txt"), string.Join("\n\n", this.Reports));
         }
         else
         {

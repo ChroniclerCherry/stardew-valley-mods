@@ -5,7 +5,7 @@ namespace CustomCraftingStations.Framework;
 
 internal class CraftingStationConfig
 {
-    internal readonly NetMutex mutex = new NetMutex();
+    internal readonly NetMutex Mutex = new NetMutex();
     public string BigCraftable { get; set; } //A big craftable to interact with to open the menu
     public string TileData { get; set; } //Name of the tiledata used to interact with to open the menu
     public bool ExclusiveRecipes { get; set; } = true; //Removes the listed recipes from the vanilla crafting menus

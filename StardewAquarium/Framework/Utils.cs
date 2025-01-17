@@ -21,12 +21,12 @@ internal static class Utils
     private const string DonateFishMessageType = "DonateFish";
     private const string AquariumPrefix = "AquariumDonated:";
 
-    private static IModHelper _helper;
-    private static IMonitor _monitor;
-    private static IManifest _manifest;
+    private static IModHelper Helper;
+    private static IMonitor Monitor;
+    private static IManifest Manifest;
 
     private static NetStringHashSet MasterPlayerMail => Game1.MasterPlayer.mailReceived;
-    private static LastDonatedFishSign _fishSign;
+    private static LastDonatedFishSign FishSign;
 
 
     /*********
@@ -50,14 +50,14 @@ internal static class Utils
     *********/
     public static void Initialize(IModHelper helper, IMonitor monitor, IManifest modManifest)
     {
-        _helper = helper;
-        _monitor = monitor;
-        _manifest = modManifest;
+        Helper = helper;
+        Monitor = monitor;
+        Manifest = modManifest;
 
-        _helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
-        _helper.Events.Multiplayer.ModMessageReceived += Multiplayer_ModMessageReceived;
+        Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
+        Helper.Events.Multiplayer.ModMessageReceived += Multiplayer_ModMessageReceived;
 
-        _fishSign = new LastDonatedFishSign(helper.Events, monitor);
+        FishSign = new LastDonatedFishSign(helper.Events, monitor);
     }
 
     public static bool IsUnDonatedFish(Item i)
@@ -71,7 +71,7 @@ internal static class Utils
         }
         catch
         {
-            _monitor.Log($"An item in the inventory \"{i.Name}\" has a category of Fish but is not a valid fish object.", LogLevel.Error);
+            Monitor.Log($"An item in the inventory \"{i.Name}\" has a category of Fish but is not a valid fish object.", LogLevel.Error);
             return false;
         }
     }
@@ -104,11 +104,11 @@ internal static class Utils
         string donatedFlag = GetDonatedMailFlag(i);
         if (!MasterPlayerMail.Contains(donatedFlag))
         {
-            _fishSign.UpdateLastDonatedFish(i);
+            FishSign.UpdateLastDonatedFish(i);
             if (!Context.IsMainPlayer)
             {
-                _helper.Multiplayer.SendMessage(i.Name, DonateFishMessageType,
-                    modIDs: [_manifest.UniqueID]);
+                Helper.Multiplayer.SendMessage(i.Name, DonateFishMessageType,
+                    modIDs: [Manifest.UniqueID]);
                 return true;
             }
 
@@ -156,7 +156,7 @@ internal static class Utils
             mainMessage = ContentPackHelper.LoadString("AchievementCongratulations");
 
             UnlockAchievement();
-            _helper.Multiplayer.SendMessage(true, AchievementMessageType, modIDs: [_manifest.UniqueID]);
+            Helper.Multiplayer.SendMessage(true, AchievementMessageType, modIDs: [Manifest.UniqueID]);
             Game1.Multiplayer.globalChatInfoMessage($"{ContentPackHelper.ContentPackId}_AchievementUnlocked");
         }
         else
@@ -190,7 +190,7 @@ internal static class Utils
         // defer adding this flag until the night.
         if (Context.IsMainPlayer && !MasterPlayerMail.Contains("AquariumCompleted"))
         {
-            _helper.Events.GameLoop.Saving += AddCompletionFlag;
+            Helper.Events.GameLoop.Saving += AddCompletionFlag;
         }
     }
 
@@ -223,12 +223,12 @@ internal static class Utils
     {
         //adding this at the end of the day so that the event won't trigger until the next day
         MasterPlayerMail.Add("AquariumCompleted");
-        _helper.Events.GameLoop.Saving -= AddCompletionFlag;
+        Helper.Events.GameLoop.Saving -= AddCompletionFlag;
     }
 
     private static void Multiplayer_ModMessageReceived(object sender, ModMessageReceivedEventArgs e)
     {
-        if (e.FromModID != _manifest.UniqueID)
+        if (e.FromModID != Manifest.UniqueID)
             return;
 
         switch (e.Type)

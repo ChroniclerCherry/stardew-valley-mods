@@ -23,7 +23,7 @@ public class ShopTileFrameworkApi : IShopTileFrameworkApi
     public bool RegisterShops(string dir)
     {
         //registers a shops.json inside the given dir
-        var temp = ModEntry.helper.ContentPacks.CreateFake(dir);
+        var temp = ModEntry.StaticHelper.ContentPacks.CreateFake(dir);
         ContentPack newShopModel = temp.ReadJsonFile<ContentPack>("shops.json");
 
         if (newShopModel == null)

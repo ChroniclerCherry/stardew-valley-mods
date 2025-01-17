@@ -15,8 +15,8 @@ internal class AnimalShop : AnimalShopModel
     /*********
     ** Fields
     *********/
-    private List<Object> _shopAnimalStock;
-    private List<Object> _allAnimalsStock;
+    private List<Object> ShopAnimalStock;
+    private List<Object> AllAnimalsStock;
 
 
     /*********
@@ -46,7 +46,7 @@ internal class AnimalShop : AnimalShopModel
 
             //sets variables I use to control hardcoded warps
             ModEntry.SourceLocation = Game1.currentLocation;
-            Game1.activeClickableMenu = new PurchaseAnimalsMenu(this._shopAnimalStock);
+            Game1.activeClickableMenu = new PurchaseAnimalsMenu(this.ShopAnimalStock);
         }
         else if (this.ClosedMessage != null)
         {
@@ -65,14 +65,14 @@ internal class AnimalShop : AnimalShopModel
     private void UpdateShopAnimalStock()
     {
         //BFAV patches this anyways so it'll automatically work if installed
-        this._allAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock(Game1.getFarm());
+        this.AllAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock(Game1.getFarm());
 
-        this._shopAnimalStock = new List<Object>();
-        foreach (var animal in this._allAnimalsStock)
+        this.ShopAnimalStock = new List<Object>();
+        foreach (var animal in this.AllAnimalsStock)
         {
             if (this.AnimalStock.Contains(animal.Name))
             {
-                this._shopAnimalStock.Add(animal);
+                this.ShopAnimalStock.Add(animal);
             }
         }
     }

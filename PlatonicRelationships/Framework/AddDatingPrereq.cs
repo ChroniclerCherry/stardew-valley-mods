@@ -31,7 +31,7 @@ internal class AddDatingPrereq
         IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
         if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/Farm"))
         {
-            this.changeMails(data);
+            this.ChangeMails(data);
         }
         else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/Beach"))
         {
@@ -83,7 +83,7 @@ internal class AddDatingPrereq
         }
     }
 
-    public void changeMails(IDictionary<string, string> data)
+    public void ChangeMails(IDictionary<string, string> data)
     {
         if (data.Remove("2346094/f Elliott 2502/x elliottBoat"))
             data.Add("2346094/f Elliott 2502/D Elliott/x elliottBoat", "null");

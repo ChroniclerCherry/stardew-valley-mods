@@ -59,7 +59,7 @@ internal class ConsoleCommands
     private void ConditionCheck(string arg1, string[] arg2)
     {
         string[] condition = { string.Join(" ", arg2) };
-        ModEntry.monitor.Log($"Expression resolved as: {ApiManager.Conditions.CheckConditions(condition)}", LogLevel.Info);
+        ModEntry.StaticMonitor.Log($"Expression resolved as: {ApiManager.Conditions.CheckConditions(condition)}", LogLevel.Info);
     }
 
     /// <summary>
@@ -71,20 +71,20 @@ internal class ConsoleCommands
     {
         if (args.Length == 0)
         {
-            ModEntry.monitor.Log($"A shop name is required", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log($"A shop name is required", LogLevel.Debug);
             return;
         }
 
         ShopManager.ItemShops.TryGetValue(args[0], out ItemShop value);
         if (value == null)
         {
-            ModEntry.monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
         }
         else
         {
             if (!Context.IsPlayerFree)
             {
-                ModEntry.monitor.Log($"The player isn't free to act; can't display a menu right now", LogLevel.Debug);
+                ModEntry.StaticMonitor.Log($"The player isn't free to act; can't display a menu right now", LogLevel.Debug);
                 return;
             }
 
@@ -101,20 +101,20 @@ internal class ConsoleCommands
     {
         if (args.Length == 0)
         {
-            ModEntry.monitor.Log($"A shop name is required", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log($"A shop name is required", LogLevel.Debug);
             return;
         }
 
         ShopManager.AnimalShops.TryGetValue(args[0], out AnimalShop value);
         if (value == null)
         {
-            ModEntry.monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
         }
         else
         {
             if (!Context.IsPlayerFree)
             {
-                ModEntry.monitor.Log($"The player isn't free to act; can't display a menu right now", LogLevel.Debug);
+                ModEntry.StaticMonitor.Log($"The player isn't free to act; can't display a menu right now", LogLevel.Debug);
                 return;
             }
 
@@ -131,20 +131,20 @@ internal class ConsoleCommands
     {
         if (args.Length == 0)
         {
-            ModEntry.monitor.Log($"A shop name is required", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log($"A shop name is required", LogLevel.Debug);
             return;
         }
 
         ShopManager.ItemShops.TryGetValue(args[0], out ItemShop shop);
         if (shop == null)
         {
-            ModEntry.monitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log($"No shop with a name of {args[0]} was found.", LogLevel.Debug);
         }
         else
         {
             if (!Context.IsWorldReady)
             {
-                ModEntry.monitor.Log($"The world hasn't loaded; shop stock can't be updated at this time", LogLevel.Debug);
+                ModEntry.StaticMonitor.Log($"The world hasn't loaded; shop stock can't be updated at this time", LogLevel.Debug);
                 return;
             }
             shop.UpdateItemPriceAndStock();
@@ -158,7 +158,7 @@ internal class ConsoleCommands
     {
         if (ShopManager.ItemShops.Count == 0)
         {
-            ModEntry.monitor.Log($"No shops were found", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log($"No shops were found", LogLevel.Debug);
         }
         else
         {
@@ -173,7 +173,7 @@ internal class ConsoleCommands
                 temp += "\nAnimalShop: " + k;
             }
 
-            ModEntry.monitor.Log(temp, LogLevel.Debug);
+            ModEntry.StaticMonitor.Log(temp, LogLevel.Debug);
         }
     }
 }
