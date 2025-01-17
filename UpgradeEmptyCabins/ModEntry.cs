@@ -12,15 +12,15 @@ using UpgradeEmptyCabins.Framework;
 
 namespace UpgradeEmptyCabins;
 
-public class UpgradeCabins : Mod
+public class ModEntry : Mod
 {
-    private Config _config;
+    private ModConfig _config;
 
     public override void Entry(IModHelper h)
     {
         // init
         I18n.Init(h.Translation);
-        this._config = this.Helper.ReadConfig<Config>();
+        this._config = this.Helper.ReadConfig<ModConfig>();
 
         this.Helper.ConsoleCommands.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", this.UpgradeCabinsCommand);
         this.Helper.ConsoleCommands.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", this.RemoveSeedBoxesCommand);

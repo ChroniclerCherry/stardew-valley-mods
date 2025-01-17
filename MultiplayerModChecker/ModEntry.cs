@@ -13,12 +13,12 @@ public class ModEntry : Mod
 {
     private List<MultiplayerReportData> _rawReports = new List<MultiplayerReportData>();
     private readonly List<string> _reports = new List<string>();
-    private Config _config;
+    private ModConfig _config;
     public override void Entry(IModHelper helper)
     {
         this.Helper.Events.Multiplayer.PeerContextReceived += this.PeerConnected;
         this.Helper.Events.Multiplayer.ModMessageReceived += this.Multiplayer_ModMessageReceived;
-        this._config = this.Helper.ReadConfig<Config>();
+        this._config = this.Helper.ReadConfig<ModConfig>();
     }
 
     private void PeerConnected(object sender, PeerContextReceivedEventArgs e)

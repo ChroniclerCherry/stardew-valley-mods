@@ -4,13 +4,13 @@ using StardewModdingAPI;
 namespace UpgradeEmptyCabins.Framework;
 
 /// <summary>Registers the mod configuration with Generic Mod Config Menu.</summary>
-internal class GenericModConfigMenuIntegrationForUpgradeEmptyCabins : IGenericModConfigMenuIntegrationFor<Config>
+internal class GenericModConfigMenuIntegrationForUpgradeEmptyCabins : IGenericModConfigMenuIntegrationFor<ModConfig>
 {
     /*********
     ** Public methods
     *********/
     /// <inheritdoc />
-    public void Register(GenericModConfigMenuIntegration<Config> menu, IMonitor monitor)
+    public void Register(GenericModConfigMenuIntegration<ModConfig> menu, IMonitor monitor)
     {
         menu
             .Register()

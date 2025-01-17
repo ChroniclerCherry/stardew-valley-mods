@@ -24,12 +24,12 @@ public class ModEntry : Mod
         {UpgradeMaterials.Iridium, "337"}
     };
 
-    private Config _config;
+    private ModConfig _config;
 
     public override void Entry(IModHelper helper)
     {
         _instance = this;
-        this._config = helper.ReadConfig<Config>();
+        this._config = helper.ReadConfig<ModConfig>();
         this.Helper.Events.GameLoop.SaveLoaded += this.GetIndexes;
 
         Harmony harmony = new Harmony(this.ModManifest.UniqueID);

@@ -1,6 +1,6 @@
 namespace PlatonicRelationships.Framework;
 
-class patchGetMaximumHeartsForCharacter
+class PatchGetMaximumHeartsForCharacter
 {
     internal static void Postfix(ref int __result)
     {

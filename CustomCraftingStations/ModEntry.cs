@@ -22,7 +22,7 @@ public class ModEntry : Mod
     private List<string> _cookingRecipesToRemove;
     private List<string> _craftingRecipesToRemove;
 
-    private Config _config;
+    private ModConfig _config;
     public Type CookingSkillMenu;
 
     public List<string> ReducedCookingRecipes { get; set; }
@@ -38,7 +38,7 @@ public class ModEntry : Mod
             return;
         }
 
-        this._config = this.Helper.ReadConfig<Config>();
+        this._config = this.Helper.ReadConfig<ModConfig>();
 
         this.Helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
 

@@ -52,7 +52,7 @@ public class ModEntry : Mod
             this.Monitor.Log("Postfix patching Utility.GetMaximumHeartsForCharacter");
             harmony.Patch(
                 original: AccessTools.Method(typeof(Utility), name: "GetMaximumHeartsForCharacter"),
-                postfix: new HarmonyMethod(typeof(patchGetMaximumHeartsForCharacter), nameof(patchGetMaximumHeartsForCharacter.Postfix))
+                postfix: new HarmonyMethod(typeof(PatchGetMaximumHeartsForCharacter), nameof(PatchGetMaximumHeartsForCharacter.Postfix))
             );
         }
         catch (Exception e)

@@ -10,12 +10,12 @@ namespace ChangeSlimeHutchLimit;
 
 public class ModEntry : Mod
 {
-    internal static Config Config { get; set; }
+    internal static ModConfig Config { get; set; }
 
     public override void Entry(IModHelper helper)
     {
         // init
-        Config = this.Helper.ReadConfig<Config>();
+        Config = this.Helper.ReadConfig<ModConfig>();
         I18n.Init(helper.Translation);
 
         // add console commands

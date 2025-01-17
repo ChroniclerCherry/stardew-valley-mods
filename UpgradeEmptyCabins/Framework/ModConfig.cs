@@ -1,6 +1,6 @@
 namespace UpgradeEmptyCabins.Framework;
 
-internal class Config
+internal class ModConfig
 {
     public bool InstantBuild { get; set; } = false;
 }
