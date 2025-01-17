@@ -66,19 +66,23 @@ public class ModEntry : Mod
             Dictionary<ISalable, ItemStockInformation> editedStock = new Dictionary<ISalable, ItemStockInformation>();
             foreach ((ISalable item, ItemStockInformation stockInfo) in __result)
             {
-                if (item is Tool tool && Enum.IsDefined(typeof(UpgradeMaterials), tool.UpgradeLevel))
+                if (item is Tool tool && Enum.IsDefined(typeof(UpgradeMaterials), tool.UpgradeLevel) && stockInfo is not null)
                 {
                     UpgradeMaterials upgradeLevel = (UpgradeMaterials)tool.UpgradeLevel;
                     if (tool is GenericTool)
                     {
                         upgradeLevel++;
                     }
-                    editedStock[tool] = stockInfo with
-                    {
-                        Price = _instance._config.UpgradeCosts[upgradeLevel].Cost,
-                        TradeItem = _instance._config.UpgradeCosts[upgradeLevel].MaterialId,
-                        TradeItemCount = _instance._config.UpgradeCosts[upgradeLevel].MaterialStack
-                    };
+                    editedStock[tool] = new ItemStockInformation(
+                        price: _instance._config.UpgradeCosts[upgradeLevel].Cost,
+                        tradeItemCount: _instance._config.UpgradeCosts[upgradeLevel].MaterialStack,
+                        tradeItem: _instance._config.UpgradeCosts[upgradeLevel].MaterialId,
+                        stock: stockInfo.Stock,
+                        stockMode: stockInfo.LimitedStockMode,
+                        itemToSyncStack: stockInfo.ItemToSyncStack,
+                        stackDrawType: stockInfo.StackDrawType,
+                        actionsOnPurchase: stockInfo.ActionsOnPurchase
+                    );
                 }
                 else
                 {
