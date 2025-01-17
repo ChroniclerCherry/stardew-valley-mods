@@ -6,11 +6,5 @@
     "UniqueID": "Cherry.SlimeHutchLimit",
     "EntryDll": "ChangeSlimeHutchLimit.dll",
     "MinimumApiVersion": "4.0.0",
-    "UpdateKeys": [ "Nexus:6455" ],
-    "Dependencies": [
-        {
-            "UniqueID": "spacechase0.GenericModConfigMenu",
-            "IsRequired": false
-        }
-    ]
+    "UpdateKeys": [ "Nexus:6455" ]
 }

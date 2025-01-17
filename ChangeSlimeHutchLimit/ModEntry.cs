@@ -1,7 +1,9 @@
 using System;
 using ChangeSlimeHutchLimit.Framework;
+using ChroniclerCherry.Common.Integrations.GenericModConfigMenu;
 using HarmonyLib;
 using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewValley;
 
 namespace ChangeSlimeHutchLimit;
@@ -9,28 +11,31 @@ namespace ChangeSlimeHutchLimit;
 public class ModEntry : Mod
 {
     internal static Config Config { get; set; }
-    internal static IModHelper ModHelper { get; private set; }
 
     public override void Entry(IModHelper helper)
     {
-        // store references for use in other classes
+        // load config
         Config = this.Helper.ReadConfig<Config>();
-        ModHelper = this.Helper;
 
         // add console commands
         this.Helper.ConsoleCommands.Add("SetSlimeHutchLimit", "Changes the max number of slimes that can inhabit a slime hutch.\n\nUsage: SetSlimeHutchLimit <value>\n- value: the number of slimes", this.ChangeMaxSlimes);
 
-        // set up patches
+        // add patches
         Harmony harmony = new Harmony(this.ModManifest.UniqueID);
         harmony.Patch(AccessTools.Method(typeof(SlimeHutch), nameof(SlimeHutch.isFull)), postfix: new HarmonyMethod(typeof(ModEntry), nameof(ModEntry.SlimeHutch_isFull_postfix)));
 
-        // Delay GMCM setup until all mods are initialized
+        // hook events
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
     }
 
+    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
     private void OnGameLaunched(object sender, EventArgs e)
     {
-        GenericModConfigMenuIntegrationForChangeSlimeHutchLimit.Setup(this.ModManifest);
+        this.AddGenericModConfigMenu(
+            new GenericModConfigMenuIntegrationForChangeSlimeHutchLimit(),
+            get: () => ModEntry.Config,
+            set: config => ModEntry.Config = config
+        );
     }
 
     private static void SlimeHutch_isFull_postfix(GameLocation __instance, ref bool __result)

@@ -1,36 +1,30 @@
-using GenericModConfigMenu;
+using ChroniclerCherry.Common.Integrations.GenericModConfigMenu;
 using StardewModdingAPI;
 
 namespace ChangeSlimeHutchLimit.Framework;
 
-public static class GenericModConfigMenuIntegrationForChangeSlimeHutchLimit
+/// <summary>Registers the mod configuration with Generic Mod Config Menu.</summary>
+internal class GenericModConfigMenuIntegrationForChangeSlimeHutchLimit : IGenericModConfigMenuIntegrationFor<Config>
 {
-    public static void Setup(IManifest manifest)
+    /*********
+    ** Public methods
+    *********/
+    /// <inheritdoc />
+    public void Register(GenericModConfigMenuIntegration<Config> menu, IMonitor monitor)
     {
-        var api = ModEntry.ModHelper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
-        if (api == null) return;
-
-        // Register the mod for GMCM
-        api.Register(
-            mod: manifest,
-            reset: () => ModEntry.Config = new Config(), // Reset to default values
-            save: () => ModEntry.ModHelper.WriteConfig(ModEntry.Config) // Save to file
-        );
-
-        // Add sections and options to the GMCM menu
-        api.AddSectionTitle(
-            mod: manifest,
-            text: () => "Slime Hutch Settings"
-        );
-
-        api.AddNumberOption(
-            mod: manifest,
-            name: () => "Max # of Slimes in Hutch",
-            tooltip: () => "Set the maximum number of slimes allowed in the slime hutch.",
-            getValue: () => ModEntry.Config.MaxSlimesInHutch,
-            setValue: value => ModEntry.Config.MaxSlimesInHutch = value,
-            min: 20,
-            interval: 5
-        );
+        menu
+            .Register()
+            .AddSectionTitle(
+                text: () => "Slime Hutch Settings"
+            )
+            .AddNumberField(
+                name: () => "Max # of Slimes in Hutch",
+                tooltip: () => "Set the maximum number of slimes allowed in the slime hutch.",
+                get: config => config.MaxSlimesInHutch,
+                set: (config, value) => config.MaxSlimesInHutch = (int)value,
+                min: 20,
+                max: null,
+                interval: 5
+            );
     }
 }

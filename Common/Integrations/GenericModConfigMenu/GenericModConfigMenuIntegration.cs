@@ -195,7 +195,7 @@ internal class GenericModConfigMenuIntegration<TConfig> : BaseIntegration<IGener
     /// <param name="max">The maximum allowed value.</param>
     /// <param name="enable">Whether the field is enabled.</param>
     /// <param name="interval">The interval of values that can be selected.</param>
-    public GenericModConfigMenuIntegration<TConfig> AddNumberField(Func<string> name, Func<string> tooltip, Func<TConfig, float> get, Action<TConfig, float> set, float min, float max, bool enable = true, float interval = 0.1f)
+    public GenericModConfigMenuIntegration<TConfig> AddNumberField(Func<string> name, Func<string> tooltip, Func<TConfig, float> get, Action<TConfig, float> set, float min, float? max, bool enable = true, float interval = 0.1f)
     {
         this.AssertLoaded();
 
