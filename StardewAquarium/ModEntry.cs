@@ -20,6 +20,7 @@ using StardewValley.Menus;
 
 namespace StardewAquarium;
 
+/// <summary>The mod entry point.</summary>
 internal sealed class ModEntry : Mod
 {
     /*********
@@ -46,42 +47,42 @@ internal sealed class ModEntry : Mod
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
-        Utils.Initialize(this.Helper, this.Monitor, this.ModManifest);
+        Utils.Initialize(helper, this.Monitor, this.ModManifest);
         TileActions.Init(helper, this.Monitor);
 
-        AssetEditor.Init(this.Helper.Events.Content, this.Monitor);
+        AssetEditor.Init(helper.Events.Content, this.Monitor);
 
-        this.Helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
-        this.Helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
-        this.Helper.Events.GameLoop.UpdateTicked += this.GameLoop_UpdateTicked;
-        this.Helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
-        this.Helper.Events.GameLoop.DayStarted += this.OnDayStart;
-        this.Helper.Events.Player.Warped += this.OnWarped;
+        helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+        helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
+        helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
+        helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+        helper.Events.GameLoop.DayStarted += this.OnDayStarted;
+        helper.Events.Player.Warped += this.OnWarped;
 
-        CrabPotHandler.Init(this.Helper.Events.GameLoop, this.Monitor);
+        CrabPotHandler.Init(helper.Events.GameLoop, this.Monitor);
 
         if (Constants.TargetPlatform == GamePlatform.Android)
         {
-            AndroidShopMenuPatch.Initialize(this.Helper, this.Monitor);
-            this.Helper.Events.Display.MenuChanged += this.AndroidPlsHaveMercyOnMe;
+            AndroidShopMenuPatch.Initialize(helper, this.Monitor);
+            helper.Events.Display.MenuChanged += this.AndroidPlsHaveMercyOnMe;
         }
 
-        _ = new ReturnTrain(this.Helper, this.Monitor);
+        _ = new ReturnTrain(helper, this.Monitor);
 
-        Config = this.Helper.ReadConfig<ModConfig>();
+        Config = helper.ReadConfig<ModConfig>();
 
 #if !DEBUG
         if (Config.EnableDebugCommands)
 #endif
         {
             if (Constants.TargetPlatform == GamePlatform.Android)
-                this.Helper.ConsoleCommands.Add("donatefish", "", this.AndroidDonateFish);
+                helper.ConsoleCommands.Add("donatefish", "", this.AndroidDonateFish);
             else
-                this.Helper.ConsoleCommands.Add("donatefish", "", this.OpenDonationMenuCommand);
+                helper.ConsoleCommands.Add("donatefish", "", this.OpenDonationMenuCommand);
 
-            this.Helper.ConsoleCommands.Add("aquariumprogress", "", this.OpenAquariumCollectionMenu);
-            this.Helper.ConsoleCommands.Add("removedonatedfish", "", this.RemoveDonatedFish);
-            this.Helper.ConsoleCommands.Add("spawn_missing_fishes", "Fills the player's inventory with fishes they have not donated yet.", this.SpawnMissingFish);
+            helper.ConsoleCommands.Add("aquariumprogress", "", this.OpenAquariumCollectionMenu);
+            helper.ConsoleCommands.Add("removedonatedfish", "", this.RemoveDonatedFish);
+            helper.ConsoleCommands.Add("spawn_missing_fishes", "Fills the player's inventory with fishes they have not donated yet.", this.SpawnMissingFish);
         }
     }
 
@@ -90,7 +91,7 @@ internal sealed class ModEntry : Mod
     ** Private methods
     *********/
     /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
-    private void OnDayStart(object sender, DayStartedEventArgs e)
+    private void OnDayStarted(object sender, DayStartedEventArgs e)
     {
         // stats are not reliable in multiplayer
         // thus, we set a flag when the stat WOULD be set instead.
@@ -145,7 +146,7 @@ internal sealed class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IInputEvents.ButtonPressed" />
-    private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
+    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         if (Context.CanPlayerMove && Config.CheckDonationCollection == e.Button)
         {
@@ -174,7 +175,7 @@ internal sealed class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IGameLoopEvents.UpdateTicked" />
-    private void GameLoop_UpdateTicked(object sender, UpdateTickedEventArgs e)
+    private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
     {
         if (Game1.isTimePaused) return;
 
@@ -229,7 +230,7 @@ internal sealed class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
-    private void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
+    private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
     {
         if (!Context.IsMainPlayer)
         {
@@ -280,7 +281,7 @@ internal sealed class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
-    private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
+    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
     {
         AquariumGameStateQuery.Init();
     }

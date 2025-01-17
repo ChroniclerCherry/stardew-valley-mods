@@ -7,6 +7,7 @@ using Object = StardewValley.Object;
 
 namespace SnackAnything;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********

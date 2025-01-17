@@ -1,5 +1,6 @@
 using StardewAquarium.Framework.Models;
 using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewValley;
 
 namespace StardewAquarium.Framework;
@@ -22,14 +23,15 @@ internal class ReturnTrain
         this._helper = helper;
         this._monitor = monitor;
 
-        this._helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
+        this._helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
     }
 
 
     /*********
     ** Private methods
     *********/
-    private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
+    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
     {
         this.TSApi = this._helper.ModRegistry.GetApi<ITrainStationAPI>("Cherry.TrainStation");
         if (this.TSApi is null)
@@ -38,10 +40,11 @@ internal class ReturnTrain
             return;
         }
 
-        this._helper.Events.GameLoop.UpdateTicked += this.GameLoop_UpdateTicked;
+        this._helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
     }
 
-    private void GameLoop_UpdateTicked(object sender, StardewModdingAPI.Events.UpdateTickedEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.UpdateTicked" />
+    private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
     {
         if (!Context.IsWorldReady)
             return;

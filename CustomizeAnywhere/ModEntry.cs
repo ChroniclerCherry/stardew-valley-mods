@@ -6,6 +6,7 @@ using StardewValley.Menus;
 
 namespace CustomizeAnywhere;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -21,14 +22,15 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
-    public override void Entry(IModHelper h)
+    /// <inheritdoc />
+    public override void Entry(IModHelper helper)
     {
-        helper = h;
+        ModEntry.helper = helper;
         monitor = this.Monitor;
 
         this.DresserAndMirror = new DresserAndMirror(helper, this.ModManifest.UniqueID);
 
-        this.Config = this.Helper.ReadConfig<ModConfig>();
+        this.Config = helper.ReadConfig<ModConfig>();
         helper.Events.Input.ButtonPressed += this.OnButtonPressed;
     }
 
@@ -36,6 +38,7 @@ internal class ModEntry : Mod
     /*********
     ** Private methods
     *********/
+    /// <inheritdoc cref="IInputEvents.ButtonPressed" />
     private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         // ignore if player isn't free to move or direct access is turned off in the config

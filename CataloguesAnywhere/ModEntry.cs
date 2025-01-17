@@ -5,6 +5,7 @@ using StardewValley;
 
 namespace CataloguesAnywhere;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -16,9 +17,11 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
+    /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
-        this.Config = this.Helper.ReadConfig<ModConfig>();
+        this.Config = helper.ReadConfig<ModConfig>();
+
         helper.Events.Input.ButtonPressed += this.OnButtonPressed;
     }
 
@@ -26,6 +29,7 @@ internal class ModEntry : Mod
     /*********
     ** Private methods
     *********/
+    /// <inheritdoc cref="IInputEvents.ButtonPressed" />
     private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         if (!Context.CanPlayerMove || !this.Config.Enabled)

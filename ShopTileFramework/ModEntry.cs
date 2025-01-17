@@ -7,16 +7,14 @@ using ShopTileFramework.Framework.Patches;
 using ShopTileFramework.Framework.Shop;
 using ShopTileFramework.Framework.Utility;
 using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
 using xTile.ObjectModel;
 
 namespace ShopTileFramework;
 
-/// <summary>
-/// Entry point of the Shop Tile Framework mod. This mod allows custom shops to be added to the game via data in
-/// json format, loaded via the Stardew Valley Modding API (SMAPI) as content packs
-/// </summary>
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -43,14 +41,11 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
-    /// <summary>
-    /// the Mod entry point called by SMAPI
-    /// </summary>
-    /// <param name="h">the helper provided by SMAPI</param>
-    public override void Entry(IModHelper h)
+    /// <inheritdoc />
+    public override void Entry(IModHelper helper)
     {
         //make helper and monitor static so they can be accessed in other classes
-        helper = h;
+        ModEntry.helper = helper;
         monitor = this.Monitor;
 
         //set verbose logging
@@ -59,12 +54,12 @@ internal class ModEntry : Mod
         if (VerboseLogging)
             monitor.Log("Verbose logging has been turned on. More information will be printed to the console.", LogLevel.Info);
 
-        helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
-        helper.Events.Display.MenuChanged += this.Display_MenuChanged;
-        helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
-        helper.Events.GameLoop.DayStarted += this.GameLoop_DayStarted;
-        helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
-        helper.Events.GameLoop.UpdateTicking += this.GameLoop_UpdateTicking;
+        helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+        helper.Events.Display.MenuChanged += this.OnMenuChanged;
+        helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
+        helper.Events.GameLoop.DayStarted += this.OnDayStarted;
+        helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+        helper.Events.GameLoop.UpdateTicking += this.OnUpdateTicking;
 
         //add console commands
         new ConsoleCommands().Register(helper);
@@ -76,10 +71,7 @@ internal class ModEntry : Mod
         VanillaShopStockPatches.Apply(harmony);
     }
 
-    /// <summary>
-    /// Returns an instance of this mod's api
-    /// </summary>
-    /// <returns></returns>
+    /// <inheritdoc />
     public override object GetApi()
     {
         //TODO: Test this
@@ -90,13 +82,9 @@ internal class ModEntry : Mod
     /*********
     ** Private methods
     *********/
-    /// <summary>
-    /// Checks for warps from the buildings/animals menu 
-    /// and ensures the player is returned to their original location
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void GameLoop_UpdateTicking(object sender, StardewModdingAPI.Events.UpdateTickingEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.UpdateTicking" />
+    /// <remarks>This checks for warps from the buildings/animals menu, and ensures the player is returned to their original location.</remarks>
+    private void OnUpdateTicking(object sender, UpdateTickingEventArgs e)
     {
         //Fixes the game warping the player to places we don't want them to warp
         //if buildings/animal purchase menus are brought up from a custom tile
@@ -110,13 +98,9 @@ internal class ModEntry : Mod
         }
     }
 
-    /// <summary>
-    /// Stops Marnie's portrait from appearing in non-Marnie animal shops after animal purchasing
-    /// And removes specified animals from Marnie's store
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
+    /// <inheritdoc cref="IDisplayEvents.MenuChanged" />
+    /// <remarks>This stops Marnie's portrait from appearing in non-Marnie animal shops after animal purchasing, and removes specified animals from Marnie's store.</remarks>
+    private void OnMenuChanged(object sender, MenuChangedEventArgs e)
     {
         //this block fixes marnie's portrait popping up after purchasing an animal
         if (e.OldMenu is PurchaseAnimalsMenu && e.NewMenu is DialogueBox && SourceLocation != null)
@@ -155,16 +139,9 @@ internal class ModEntry : Mod
         }
     }
 
-    /// <summary>
-    /// On a save loaded, store the language for translation purposes. Done on save loaded in
-    /// case it's changed between saves
-    /// 
-    /// Also retrieve all object informations. This is done on save loaded because that's
-    /// when JA adds custom items
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
+    /// <remarks>On save loaded, store the language for translation purposes. Done on save loaded in case it's changed between saves. This also retrieve all object information, done on save loaded because that's when JA adds custom items.</remarks>
+    private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
     {
         Translations.UpdateSelectedLanguage();
         ShopManager.UpdateTranslations();
@@ -175,23 +152,20 @@ internal class ModEntry : Mod
         ItemsUtil.RegisterItemsToRemove();
     }
 
-    /// <summary>
-    /// On game launched initialize all the shops and register all external APIs
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
+    /// <remarks>This initializes all the shops and registers all external APIs.</remarks>
+    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
     {
         ShopManager.InitializeShops();
 
         ApiManager.RegisterJsonAssets();
         if (ApiManager.JsonAssets != null)
-            ApiManager.JsonAssets.AddedItemsToShop += this.JsonAssets_AddedItemsToShop;
+            ApiManager.JsonAssets.AddedItemsToShop += this.OnJsonAssetsAddedItemsToShop;
 
         ApiManager.RegisterExpandedPreconditionsUtility();
     }
 
-    private void JsonAssets_AddedItemsToShop(object sender, System.EventArgs e)
+    private void OnJsonAssetsAddedItemsToShop(object sender, System.EventArgs e)
     {
         //make sure we only remove all objects if we camew from a vanilla store
         //this stops us from removing all packs from custom TMXL or STF stores
@@ -206,23 +180,16 @@ internal class ModEntry : Mod
         JustOpenedVanilla = false;
     }
 
-    /// <summary>
-    /// Refresh the stock of every store at the start of each day
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void GameLoop_DayStarted(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
+    /// <remarks>This refreshes the stock of every store at the start of each day.</remarks>
+    private void OnDayStarted(object sender, DayStartedEventArgs e)
     {
         ShopManager.UpdateStock();
     }
 
-    /// <summary>
-    /// When input is received, check that the player is free and used an action button
-    /// If so, attempt open the shop if it exists
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
+    /// <inheritdoc cref="IInputEvents.ButtonPressed" />
+    /// <remarks>When input is received, check that the player is free and used an action button. If so, attempt open the shop if it exists.</remarks>
+    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         //context and button check
         if (!Context.CanPlayerMove)
@@ -265,7 +232,7 @@ internal class ModEntry : Mod
     /// </summary>
     /// <param name="tileProperty"></param>
     /// <param name="e"></param>
-    private void CheckForShopToOpen(IPropertyCollection tileProperty, StardewModdingAPI.Events.ButtonPressedEventArgs e)
+    private void CheckForShopToOpen(IPropertyCollection tileProperty, ButtonPressedEventArgs e)
     {
         //check if there is a Shop property on clicked tile
         tileProperty.TryGetValue("Shop", out PropertyValue shopProperty);

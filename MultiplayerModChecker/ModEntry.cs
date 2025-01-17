@@ -9,6 +9,7 @@ using StardewValley;
 
 namespace MultiplayerModChecker;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -22,18 +23,20 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
+    /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
-        this.Helper.Events.Multiplayer.PeerContextReceived += this.PeerConnected;
-        this.Helper.Events.Multiplayer.ModMessageReceived += this.Multiplayer_ModMessageReceived;
-        this.Config = this.Helper.ReadConfig<ModConfig>();
+        helper.Events.Multiplayer.PeerContextReceived += this.OnPeerContextReceived;
+        helper.Events.Multiplayer.ModMessageReceived += this.OnModMessageReceived;
+        this.Config = helper.ReadConfig<ModConfig>();
     }
 
 
     /*********
     ** Private methods
     *********/
-    private void PeerConnected(object sender, PeerContextReceivedEventArgs e)
+    /// <inheritdoc cref="IMultiplayerEvents.PeerContextReceived" />
+    private void OnPeerContextReceived(object sender, PeerContextReceivedEventArgs e)
     {
         if (!Context.IsMainPlayer) return;
 
@@ -94,7 +97,8 @@ internal class ModEntry : Mod
         this.GenerateReport(report);
     }
 
-    private void Multiplayer_ModMessageReceived(object sender, ModMessageReceivedEventArgs e)
+    /// <inheritdoc cref="IMultiplayerEvents.ModMessageReceived" />
+    private void OnModMessageReceived(object sender, ModMessageReceivedEventArgs e)
     {
         if (e.FromModID != this.ModManifest.UniqueID && e.Type != "MultiplayerReport") return;
         var reportData = e.ReadAs<Dictionary<string, LogLevel>>();

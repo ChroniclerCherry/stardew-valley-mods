@@ -3,6 +3,7 @@ using StardewModdingAPI;
 
 namespace ExpandedPreconditionsUtility;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -15,12 +16,14 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
+    /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
-        this._helper = this.Helper;
+        this._helper = helper;
         this._monitor = this.Monitor;
     }
 
+    /// <inheritdoc />
     public override object GetApi()
     {
         return new ConditionsChecker(this._monitor, this._helper);

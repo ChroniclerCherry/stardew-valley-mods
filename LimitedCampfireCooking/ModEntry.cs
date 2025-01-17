@@ -9,6 +9,7 @@ using StardewValley.Menus;
 
 namespace LimitedCampfireCooking;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -24,26 +25,29 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
+    /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
-        Config = this.Helper.ReadConfig<ModConfig>();
-        helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
-        helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
-        helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
+        Config = helper.ReadConfig<ModConfig>();
+        helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+        helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
+        helper.Events.Input.ButtonPressed += this.OnButtonPressed;
     }
 
 
     /*********
     ** Private methods
     *********/
-    private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
+    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
     {
         this.CustomCraftingStations = this.Helper.ModRegistry.GetApi<ICustomCraftingStationsApi>("Cherry.CustomCraftingStations");
         if (this.CustomCraftingStations != null)
             this.Monitor.Log("Custom Crafting Station detected. Compatibility patch added.", LogLevel.Info);
     }
 
-    private void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
+    private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
     {
         this.AllCookingRecipes = CraftingRecipe.cookingRecipes;
         this.LimitedCookingRecipes = this.AllCookingRecipes;
@@ -60,7 +64,8 @@ internal class ModEntry : Mod
         }
     }
 
-    private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
+    /// <inheritdoc cref="IInputEvents.ButtonPressed" />
+    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         if (Context.IsWorldReady &&
             Game1.currentLocation != null &&

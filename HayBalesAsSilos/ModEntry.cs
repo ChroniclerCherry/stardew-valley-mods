@@ -12,6 +12,7 @@ using StardewValley.GameData.Shops;
 
 namespace HayBalesAsSilos;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -27,12 +28,13 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
+    /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
         // init
         I18n.Init(helper.Translation);
         monitor = this.Monitor;
-        Config = this.Helper.ReadConfig<ModConfig>();
+        Config = helper.ReadConfig<ModConfig>();
 
         // add patches
         var harmony = new Harmony(this.ModManifest.UniqueID);
@@ -44,7 +46,7 @@ internal class ModEntry : Mod
         // hook events
         helper.Events.Content.AssetRequested += this.OnAssetRequested;
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
-        helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
+        helper.Events.Input.ButtonPressed += this.OnButtonPressed;
     }
 
     public static IEnumerable<GameLocation> GetAllAffectedMaps()
@@ -60,6 +62,7 @@ internal class ModEntry : Mod
     /*********
     ** Private methods
     *********/
+    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
     private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
     {
         this.AddGenericModConfigMenu(
@@ -69,7 +72,8 @@ internal class ModEntry : Mod
         );
     }
 
-    private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
+    /// <inheritdoc cref="IInputEvents.ButtonPressed" />
+    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         //ignore input if the player isnt free to move aka world not loaded,
         //they're in an event, a menu is up, etc
@@ -118,6 +122,7 @@ internal class ModEntry : Mod
         }
     }
 
+    /// <inheritdoc cref="IContentEvents.AssetRequested" />
     private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
     {
         // edit hay bale text

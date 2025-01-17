@@ -4,6 +4,7 @@ using System.Linq;
 using CustomCraftingStations.Framework;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Inventories;
 using StardewValley.Locations;
@@ -12,6 +13,7 @@ using StardewValley.Objects;
 
 namespace CustomCraftingStations;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -37,6 +39,7 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
+    /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
         if (Constants.TargetPlatform == GamePlatform.Android)
@@ -45,17 +48,18 @@ internal class ModEntry : Mod
             return;
         }
 
-        this.Config = this.Helper.ReadConfig<ModConfig>();
+        this.Config = helper.ReadConfig<ModConfig>();
 
-        this.Helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
+        helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
 
-        this.Helper.Events.Display.RenderingActiveMenu += this.Display_RenderingActiveMenu;
-        this.Helper.Events.Display.MenuChanged += this.Display_MenuChanged;
+        helper.Events.Display.RenderingActiveMenu += this.OnRenderingActiveMenu;
+        helper.Events.Display.MenuChanged += this.OnMenuChanged;
 
-        this.Helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
-        this.Helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
+        helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
+        helper.Events.Input.ButtonPressed += this.OnButtonPressed;
     }
 
+    /// <inheritdoc />
     public override object GetApi()
     {
         return new CustomCraftingStationsApi();
@@ -65,7 +69,8 @@ internal class ModEntry : Mod
     /*********
     ** Private methods
     *********/
-    private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
+    private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
     {
         //register content packs
         this.RegisterContentPacks();
@@ -85,7 +90,8 @@ internal class ModEntry : Mod
         }
     }
 
-    private void Display_RenderingActiveMenu(object sender, StardewModdingAPI.Events.RenderingActiveMenuEventArgs e)
+    /// <inheritdoc cref="IDisplayEvents.RenderingActiveMenu" />
+    private void OnRenderingActiveMenu(object sender, RenderingActiveMenuEventArgs e)
     {
         if (!Context.IsWorldReady)
             return;
@@ -112,7 +118,8 @@ internal class ModEntry : Mod
         if (instance is not (null or CustomCraftingMenu)) this.OpenAndFixMenu(instance);
     }
 
-    private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
+    /// <inheritdoc cref="IDisplayEvents.MenuChanged" />
+    private void OnMenuChanged(object sender, MenuChangedEventArgs e)
     {
         if (e.OldMenu == null ||
             e.OldMenu is CustomCraftingMenu
@@ -126,12 +133,14 @@ internal class ModEntry : Mod
         }
     }
 
-    private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
+    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
     {
         this.CookingSkillMenu = Type.GetType("CookingSkill.NewCraftingPage, CookingSkill");
     }
 
-    private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
+    /// <inheritdoc cref="IInputEvents.ButtonPressed" />
+    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         if (!Context.CanPlayerMove)
             return;

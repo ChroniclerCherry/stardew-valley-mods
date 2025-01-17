@@ -11,6 +11,7 @@ using StardewValley.ItemTypeDefinitions;
 
 namespace MultiYieldCrops;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -24,6 +25,7 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
+    /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
         instance = this;

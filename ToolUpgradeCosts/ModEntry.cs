@@ -12,6 +12,7 @@ using ToolUpgradeCosts.Framework;
 
 namespace ToolUpgradeCosts;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -33,11 +34,12 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
+    /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
         _instance = this;
         this.Config = helper.ReadConfig<ModConfig>();
-        this.Helper.Events.GameLoop.SaveLoaded += this.GetIndexes;
+        helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
 
         Harmony harmony = new Harmony(this.ModManifest.UniqueID);
 
@@ -51,7 +53,8 @@ internal class ModEntry : Mod
     /*********
     ** Private methods
     *********/
-    private void GetIndexes(object sender, SaveLoadedEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
+    private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
     {
         foreach (KeyValuePair<UpgradeMaterials, Upgrade> upgrade in this.Config.UpgradeCosts)
         {

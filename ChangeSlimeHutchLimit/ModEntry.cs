@@ -8,6 +8,7 @@ using StardewValley;
 
 namespace ChangeSlimeHutchLimit;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -19,14 +20,15 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
+    /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
         // init
-        Config = this.Helper.ReadConfig<ModConfig>();
+        Config = helper.ReadConfig<ModConfig>();
         I18n.Init(helper.Translation);
 
         // add console commands
-        this.Helper.ConsoleCommands.Add("SetSlimeHutchLimit", "Changes the max number of slimes that can inhabit a slime hutch.\n\nUsage: SetSlimeHutchLimit <value>\n- value: the number of slimes", this.ChangeMaxSlimes);
+        helper.ConsoleCommands.Add("SetSlimeHutchLimit", "Changes the max number of slimes that can inhabit a slime hutch.\n\nUsage: SetSlimeHutchLimit <value>\n- value: the number of slimes", this.ChangeMaxSlimes);
 
         // add patches
         Harmony harmony = new Harmony(this.ModManifest.UniqueID);

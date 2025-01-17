@@ -11,6 +11,7 @@ using StardewValley.TokenizableStrings;
 
 namespace FarmRearranger;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -27,14 +28,11 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
-    /// <summary>
-    /// Entry function, the starting point of the mod called by SMAPI
-    /// </summary>
-    /// <param name="helper">provides useful apis for modding</param>
+    /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
         // read config
-        this.Config = this.Helper.ReadConfig<ModConfig>();
+        this.Config = helper.ReadConfig<ModConfig>();
 
         // init fields
         this.FarmRearrangeId = this.ModManifest.UniqueID + "_FarmRearranger";
@@ -42,21 +40,18 @@ internal class ModEntry : Mod
 
         // hook events
         helper.Events.Content.AssetRequested += this.OnAssetRequested;
-        helper.Events.GameLoop.UpdateTicking += this.GameLoop_UpdateTicking;
-        helper.Events.GameLoop.DayEnding += this.GameLoop_DayEnding;
-        helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
+        helper.Events.GameLoop.UpdateTicking += this.OnUpdateTicking;
+        helper.Events.GameLoop.DayEnding += this.OnDayEnding;
+        helper.Events.Input.ButtonPressed += this.OnButtonPressed;
     }
 
 
     /*********
     ** Private methods
     *********/
-    /// <summary>
-    /// Check for friendship with robin at the end of the day
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void GameLoop_DayEnding(object sender, DayEndingEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.DayEnding" />
+    /// <remarks>This checks for friendship with robin at the end of the day.</remarks>
+    private void OnDayEnding(object sender, DayEndingEventArgs e)
     {
         //if friendship is higher enough, send the mail tomorrow
         if (Game1.player.getFriendshipLevelForNPC("Robin") >= this.Config.FriendshipPointsRequired)
@@ -65,12 +60,9 @@ internal class ModEntry : Mod
         }
     }
 
-    /// <summary>
-    /// This checks if the farm rearranger was clicked then open the menu if applicable
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
+    /// <inheritdoc cref="IInputEvents.ButtonPressed" />
+    /// <remarks>This checks if the farm rearranger was clicked, then opens the menu if applicable.</remarks>
+    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         //ignore input if the player isnt free to move aka world not loaded,
         //they're in an event, a menu is up, etc
@@ -92,14 +84,9 @@ internal class ModEntry : Mod
         }
     }
 
-    /// <summary>
-    /// When move buildings is exited, on default it returns the player to Robin's house
-    /// and the menu becomes the menu to choose buildings
-    /// This detects when that happens and returns the player to their original location and closs the menu
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void GameLoop_UpdateTicking(object sender, UpdateTickingEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.UpdateTicking" />
+    /// <remarks>When move buildings is exited, by default it returns the player to Robin's house and the menu becomes the menu to choose buildings. This detects when that happens and returns the player to their original location and closes the menu.</remarks>
+    private void OnUpdateTicking(object sender, UpdateTickingEventArgs e)
     {
         if (this.isArranging)
         {
@@ -113,6 +100,7 @@ internal class ModEntry : Mod
         }
     }
 
+    /// <inheritdoc cref="IContentEvents.AssetRequested" />
     private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
     {
         string modId = this.ModManifest.UniqueID;

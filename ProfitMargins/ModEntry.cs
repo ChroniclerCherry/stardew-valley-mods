@@ -19,10 +19,11 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
+    /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
         this.config = helper.ReadConfig<ModConfig>();
-        helper.Events.GameLoop.DayStarted += this.DayStarted;
+        helper.Events.GameLoop.DayStarted += this.OnDayStarted;
         helper.Events.GameLoop.Saving += this.OnSaving;
     }
 
@@ -30,7 +31,8 @@ internal class ModEntry : Mod
     /*********
     ** Private methods
     *********/
-    private void DayStarted(object sender, DayStartedEventArgs args)
+    /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
+    private void OnDayStarted(object sender, DayStartedEventArgs e)
     {
         if (this.checkContext())
         {
@@ -39,7 +41,8 @@ internal class ModEntry : Mod
         }
     }
 
-    private void OnSaving(object sender, SavingEventArgs args)
+    /// <inheritdoc cref="IGameLoopEvents.Saving" />
+    private void OnSaving(object sender, SavingEventArgs e)
     {
         if (this.checkContext())
         {

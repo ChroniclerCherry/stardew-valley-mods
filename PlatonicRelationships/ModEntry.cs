@@ -8,6 +8,7 @@ using StardewValley.Menus;
 
 namespace PlatonicRelationships;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -20,9 +21,10 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
+    /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
-        this.Config = this.Helper.ReadConfig<ModConfig>();
+        this.Config = helper.ReadConfig<ModConfig>();
         if (this.Config.AddDatingRequirementToRomanticEvents)
             helper.Events.Content.AssetRequested += this.OnAssetRequested;
 
@@ -34,6 +36,7 @@ internal class ModEntry : Mod
     /*********
     ** Private methods
     *********/
+    /// <inheritdoc cref="IContentEvents.AssetRequested" />
     private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
     {
         if (this.Editor.CanEdit(e.NameWithoutLocale))

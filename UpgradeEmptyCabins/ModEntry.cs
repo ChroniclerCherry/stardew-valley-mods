@@ -12,6 +12,7 @@ using UpgradeEmptyCabins.Framework;
 
 namespace UpgradeEmptyCabins;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -23,31 +24,33 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
-    public override void Entry(IModHelper h)
+    /// <inheritdoc />
+    public override void Entry(IModHelper helper)
     {
         // init
-        I18n.Init(h.Translation);
-        this.Config = this.Helper.ReadConfig<ModConfig>();
+        I18n.Init(helper.Translation);
+        this.Config = helper.ReadConfig<ModConfig>();
 
-        this.Helper.ConsoleCommands.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", this.UpgradeCabinsCommand);
-        this.Helper.ConsoleCommands.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", this.RemoveSeedBoxesCommand);
-        this.Helper.ConsoleCommands.Add("remove_cabin_beds", "Removes beds from all unclaimed cabins.", this.RemoveCabinBedsCommand);
-        this.Helper.ConsoleCommands.Add("renovate_cabins", "Removes cribs and adds all the extra rooms to all unclaimed cabins.", this.RenovateCabinsCommand);
-        this.Helper.ConsoleCommands.Add("list_cabins", "Lists cabin names for toggle_renovate.", this.ListCabins);
-        this.Helper.ConsoleCommands.Add("list_renovations", "Lists renovation names for toggle_renovate.", this.ListRenovations);
-        this.Helper.ConsoleCommands.Add("toggle_renovate", "Toggles a renovation for an unclaimed cabin.", this.ToggleRenovateCommand);
-        this.Helper.ConsoleCommands.Add("set_crib_style", "Sets the crib style for an unclaimed cabin.", this.SetCribStyleCommand);
+        helper.ConsoleCommands.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", this.UpgradeCabinsCommand);
+        helper.ConsoleCommands.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", this.RemoveSeedBoxesCommand);
+        helper.ConsoleCommands.Add("remove_cabin_beds", "Removes beds from all unclaimed cabins.", this.RemoveCabinBedsCommand);
+        helper.ConsoleCommands.Add("renovate_cabins", "Removes cribs and adds all the extra rooms to all unclaimed cabins.", this.RenovateCabinsCommand);
+        helper.ConsoleCommands.Add("list_cabins", "Lists cabin names for toggle_renovate.", this.ListCabins);
+        helper.ConsoleCommands.Add("list_renovations", "Lists renovation names for toggle_renovate.", this.ListRenovations);
+        helper.ConsoleCommands.Add("toggle_renovate", "Toggles a renovation for an unclaimed cabin.", this.ToggleRenovateCommand);
+        helper.ConsoleCommands.Add("set_crib_style", "Sets the crib style for an unclaimed cabin.", this.SetCribStyleCommand);
 
-        this.Helper.Events.GameLoop.DayEnding += this.GameLoop_DayEnding;
-        this.Helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
-        this.Helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
+        helper.Events.GameLoop.DayEnding += this.OnDayEnding;
+        helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+        helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
     }
 
 
     /*********
     ** Private methods
     *********/
-    private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
+    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
     {
         this.AddGenericModConfigMenu(
             new GenericModConfigMenuIntegrationForUpgradeEmptyCabins(),
@@ -241,7 +244,8 @@ internal class ModEntry : Mod
         this.AskForUpgrade();
     }
 
-    private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
+    /// <inheritdoc cref="IInputEvents.ButtonPressed" />
+    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         if (!Context.CanPlayerMove)
             return;
@@ -266,7 +270,8 @@ internal class ModEntry : Mod
 
     }
 
-    private void GameLoop_DayEnding(object sender, DayEndingEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.DayEnding" />
+    private void OnDayEnding(object sender, DayEndingEventArgs e)
     {
         //so this doesn't end up happening for every single player online....
         if (!Context.IsMainPlayer)

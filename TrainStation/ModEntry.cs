@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Menus;
@@ -12,6 +13,7 @@ using xTile.Tiles;
 
 namespace TrainStation;
 
+/// <summary>The mod entry point.</summary>
 internal class ModEntry : Mod
 {
     /*********
@@ -40,18 +42,20 @@ internal class ModEntry : Mod
     /*********
     ** Public methods
     *********/
+    /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
         this.Config = helper.ReadConfig<ModConfig>();
         Instance = this;
 
-        helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
-        helper.Events.GameLoop.SaveLoaded += this.GameLoop_SaveLoaded;
-        helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
-        helper.Events.Display.MenuChanged += this.Display_MenuChanged;
-        helper.Events.Player.Warped += this.Player_Warped;
+        helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+        helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
+        helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+        helper.Events.Display.MenuChanged += this.OnMenuChanged;
+        helper.Events.Player.Warped += this.OnWarped;
     }
 
+    /// <inheritdoc />
     public override object GetApi()
     {
         return new Api();
@@ -80,7 +84,8 @@ internal class ModEntry : Mod
     /*********
     ** Private methods
     *********/
-    private void Player_Warped(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
+    /// <inheritdoc cref="IPlayerEvents.Warped" />
+    private void OnWarped(object sender, WarpedEventArgs e)
     {
         if (e.NewLocation.Name != "Railroad") return;
 
@@ -90,7 +95,8 @@ internal class ModEntry : Mod
             this.DrawInTicketStation();
     }
 
-    private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
+    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
     {
         this.ConditionsApi = this.Helper.ModRegistry.GetApi<IConditionsChecker>("Cherry.ExpandedPreconditionsUtility");
         if (this.ConditionsApi == null)
@@ -106,7 +112,8 @@ internal class ModEntry : Mod
     /****
     ** Save loaded
     ****/
-    private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
+    private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
     {
         this.UpdateSelectedLanguage(); //get language code
         this.LoadContentPacks();
@@ -244,7 +251,8 @@ internal class ModEntry : Mod
     /****
     ** Input detection
     ****/
-    private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
+    /// <inheritdoc cref="IInputEvents.ButtonPressed" />
+    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         if (!Context.CanPlayerMove)
             return;
@@ -417,7 +425,8 @@ internal class ModEntry : Mod
         this.finishedTrainWarp = true;
     }
 
-    private void Display_MenuChanged(object sender, StardewModdingAPI.Events.MenuChangedEventArgs e)
+    /// <inheritdoc cref="IDisplayEvents.MenuChanged" />
+    private void OnMenuChanged(object sender, MenuChangedEventArgs e)
     {
         if (!this.finishedTrainWarp)
             return;
