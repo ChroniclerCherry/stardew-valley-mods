@@ -189,6 +189,6 @@ class ModEntry : Mod
         Game1.playSound("smallSelect");
 
         menu.onFarm = true;
-        menu.moving = true;
+        menu.Action = CarpenterMenu.CarpentryAction.Move;
     }
 }
