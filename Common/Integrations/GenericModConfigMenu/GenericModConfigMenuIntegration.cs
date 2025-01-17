@@ -166,7 +166,7 @@ internal class GenericModConfigMenuIntegration<TConfig> : BaseIntegration<IGener
     /// <param name="min">The minimum allowed value.</param>
     /// <param name="max">The maximum allowed value.</param>
     /// <param name="enable">Whether the field is enabled.</param>
-    public GenericModConfigMenuIntegration<TConfig> AddNumberField(Func<string> name, Func<string> tooltip, Func<TConfig, int> get, Action<TConfig, int> set, int min, int max, bool enable = true)
+    public GenericModConfigMenuIntegration<TConfig> AddNumberField(Func<string> name, Func<string> tooltip, Func<TConfig, int> get, Action<TConfig, int> set, int min, int? max, bool enable = true)
     {
         this.AssertLoaded();
 

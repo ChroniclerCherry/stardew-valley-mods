@@ -1,8 +1,19 @@
 ﻿{
+    /*********
+    ** In-game text
+    *********/
     "robin.whichcabin_question": "Qual Cabana você gostaria de atualizar?",
     "robin.hu1_materials": "Atualização da Cozinha: 10.000 g e 450 pedaços de madeira",
     "robin.hu2_materials": "Atualização do Berçário: 65.000 ge 100 peças de madeira",
     "robin.hu3_materials": "Atualização da Adega: 100.000g",
     "robin.busy": "Robin está atualmente trabalhando em outro prédio. Volte mais tarde.",
-    "menu.cancel_option": "Deixa pra lá."
+    "menu.cancel_option": "Deixa pra lá.",
+
+
+    /*********
+    ** Generic Mod Config Menu UI
+    *********/
+    // TODO
+    "config.instant-build.name": "Build instantly",
+    "config.instant-build.desc": "Whether cabin upgrades are applied instantly."
 }

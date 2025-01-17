@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using ChroniclerCherry.Common.Integrations.GenericModConfigMenu;
 using HarmonyLib;
 using HayBalesAsSilos.Framework;
 using Microsoft.Xna.Framework;
@@ -21,55 +22,30 @@ public class ModEntry : Mod
 
     public override void Entry(IModHelper helper)
     {
+        // init
+        I18n.Init(helper.Translation);
         monitor = this.Monitor;
         Config = this.Helper.ReadConfig<ModConfig>();
 
+        // add patches
         var harmony = new Harmony(this.ModManifest.UniqueID);
         harmony.Patch(
             original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.GetHayCapacity)),
             postfix: new HarmonyMethod(typeof(PatchGameLocation), nameof(PatchGameLocation.After_GetHayCapacity))
         );
 
+        // hook events
         helper.Events.Content.AssetRequested += this.OnAssetRequested;
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
         helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
     }
 
-    // Add GMCM compatibility
     private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
     {
-        var configMenu = this.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
-        if (configMenu is null)
-            return;
-
-        configMenu.Register(
-            mod: this.ModManifest,
-            reset: () => Config = new ModConfig(),
-            save: () => this.Helper.WriteConfig(Config)
-        );
-
-        configMenu.AddBoolOption(
-            mod: this.ModManifest,
-            name: () => this.Helper.Translation.Get("config.require-constructed-silo.name"),
-            tooltip: () => this.Helper.Translation.Get("config.require-constructed-silo.desc"),
-            getValue: () => Config.RequiresConstructedSilo,
-            setValue: value => Config.RequiresConstructedSilo = value
-        );
-
-        configMenu.AddNumberOption(
-            mod: this.ModManifest,
-            name: () => this.Helper.Translation.Get("config.hay-per-bale.name"),
-            tooltip: () => this.Helper.Translation.Get("config.hay-per-bale.desc"),
-            getValue: () => Config.HayPerBale,
-            setValue: value => Config.HayPerBale = value
-        );
-
-        configMenu.AddNumberOption(
-            mod: this.ModManifest,
-            name: () => this.Helper.Translation.Get("config.purchase-price.name"),
-            tooltip: () => this.Helper.Translation.Get("config.purchase-price.desc"),
-            getValue: () => Config.HaybalePrice,
-            setValue: value => Config.HaybalePrice = value
+        this.AddGenericModConfigMenu(
+            new GenericModConfigMenuIntegrationForHayBaysAsSilos(),
+            get: () => ModEntry.Config,
+            set: config => ModEntry.Config = config
         );
     }
 

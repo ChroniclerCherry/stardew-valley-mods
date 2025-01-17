@@ -1,4 +1,7 @@
 ﻿# Release notes
+## Upcoming release
+- Refactored integration with Generic Mod Config Menu.
+
 ## 1.1.0
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
 

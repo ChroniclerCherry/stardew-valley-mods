@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using ChroniclerCherry.Common.Integrations.GenericModConfigMenu;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -14,8 +15,11 @@ namespace UpgradeEmptyCabins;
 public class UpgradeCabins : Mod
 {
     private Config _config;
+
     public override void Entry(IModHelper h)
     {
+        // init
+        I18n.Init(h.Translation);
         this._config = this.Helper.ReadConfig<Config>();
 
         this.Helper.ConsoleCommands.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", this.UpgradeCabinsCommand);
@@ -34,13 +38,11 @@ public class UpgradeCabins : Mod
 
     private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
     {
-        var api = this.Helper.ModRegistry.GetApi<GenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
-
-        if (api == null)
-            return;
-
-        api.RegisterModConfig(this.ModManifest, () => this._config = new Config(), () => this.Helper.WriteConfig(this._config));
-        api.RegisterSimpleOption(this.ModManifest, "Instance Build", "Whether cabins are instantly upgraded", () => this._config.InstantBuild, val => this._config.InstantBuild = val);
+        this.AddGenericModConfigMenu(
+            new GenericModConfigMenuIntegrationForUpgradeEmptyCabins(),
+            get: () => this._config,
+            set: config => this._config = config
+        );
     }
 
     private void SetCribStyleCommand(string arg1, string[] arg2)
