@@ -1,8 +1,8 @@
 using GenericModConfigMenu;
 using StardewModdingAPI;
 
-
 namespace ChangeSlimeHutchLimit.Framework;
+
 public static class GMCMHandler
 {
     public static void Setup(IManifest manifest)
@@ -31,30 +31,6 @@ public static class GMCMHandler
             setValue: value => ModEntry.Config.MaxSlimesInHutch = value,
             min: 20,
             interval: 5
-        );
-
-        api.AddSectionTitle(
-            mod: manifest,
-            text: () => "Slime Ball Settings"
-        );
-
-        api.AddBoolOption(
-            mod: manifest,
-            name: () => "Enable Slime Ball Override",
-            tooltip: () => "Enable or disable the override for slime ball placement.",
-            getValue: () => ModEntry.Config.EnableSlimeBallOverride,
-            setValue: value => ModEntry.Config.EnableSlimeBallOverride = value
-        );
-
-        api.AddNumberOption(
-            mod: manifest,
-            name: () => "Max Daily Slime Balls",
-            tooltip: () => "Set the maximum number of slime balls that can spawn daily (set to 0 for unlimited).",
-            getValue: () => ModEntry.Config.MaxDailySlimeBalls,
-            setValue: value => ModEntry.Config.MaxDailySlimeBalls = value,
-            min: 0,
-            max: 100,
-            interval: 1
         );
     }
 }
