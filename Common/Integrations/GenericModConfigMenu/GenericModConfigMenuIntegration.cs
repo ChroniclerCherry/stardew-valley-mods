@@ -1,5 +1,4 @@
 using System;
-using ChroniclerCherry.Common.Integrations;
 using StardewModdingAPI;
 using StardewModdingAPI.Utilities;
 
@@ -36,14 +35,14 @@ internal class GenericModConfigMenuIntegration<TConfig> : BaseIntegration<IGener
     /// <summary>Construct an instance.</summary>
     /// <param name="modRegistry">An API for fetching metadata about loaded mods.</param>
     /// <param name="monitor">Encapsulates monitoring and logging.</param>
-    /// <param name="consumerManifest">The manifest for the mod consuming the API.</param>
+    /// <param name="manifest">The manifest for the mod consuming the API.</param>
     /// <param name="getConfig">Get the current config model.</param>
     /// <param name="reset">Reset the mod's config to its default values.</param>
     /// <param name="saveAndApply">Save the mod's current config to the <c>config.json</c> file.</param>
-    public GenericModConfigMenuIntegration(IModRegistry modRegistry, IMonitor monitor, IManifest consumerManifest, Func<TConfig> getConfig, Action reset, Action saveAndApply)
+    public GenericModConfigMenuIntegration(IModRegistry modRegistry, IMonitor monitor, IManifest manifest, Func<TConfig> getConfig, Action reset, Action saveAndApply)
         : base("Generic Mod Config Menu", "spacechase0.GenericModConfigMenu", "1.9.6", modRegistry, monitor)
     {
-        this.ConsumerManifest = consumerManifest;
+        this.ConsumerManifest = manifest;
         this.GetConfig = getConfig;
         this.Reset = reset;
         this.SaveAndApply = saveAndApply;
@@ -239,5 +238,36 @@ internal class GenericModConfigMenuIntegration<TConfig> : BaseIntegration<IGener
         }
 
         return this;
+    }
+}
+
+/// <summary>Provides utility methods for registering a config menu.</summary>
+internal static class GenericModConfigMenuIntegration
+{
+    /// <summary>Register the config UI for this mod.</summary>
+    /// <typeparam name="TConfig">The config model type.</typeparam>
+    /// <param name="mod">The mod for which to register a config UI.</param>
+    /// <param name="configMenu">The config UI to register.</param>
+    /// <param name="get">Get the current config model.</param>
+    /// <param name="set">Overwrite the current config model.</param>
+    /// <param name="onSaved">Apply the config changes after they've been saved.</param>
+    public static void AddGenericModConfigMenu<TConfig>(this IMod mod, IGenericModConfigMenuIntegrationFor<TConfig> configMenu, Func<TConfig> get, Action<TConfig> set, Action? onSaved = null)
+        where TConfig : class, new()
+    {
+        void Reset()
+        {
+            set(new TConfig());
+            mod.Helper.WriteConfig(get());
+        }
+
+        void SaveAndApply()
+        {
+            mod.Helper.WriteConfig(get());
+            onSaved?.Invoke();
+        }
+
+        GenericModConfigMenuIntegration<TConfig> api = new(mod.Helper.ModRegistry, mod.Monitor, mod.ModManifest, get, Reset, SaveAndApply);
+        if (api.IsLoaded)
+            configMenu.Register(api, mod.Monitor);
     }
 }
