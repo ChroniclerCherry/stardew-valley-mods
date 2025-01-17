@@ -1,5 +1,8 @@
 ﻿# Release notes
-## Upcoming release
+## 2.0.0
+Released 29 December 2024 for SMAPI 4.1.0 or later. Updated by Pathoschild.
+
+- Rewrote mod so the Content Patcher pack manages nearly all the content.
 - Updated for Stardew Valley 1.6 (thanks to MindMeltMax!) and 1.6.14 (thanks to Atravita!).
 - Fixed menu scrolls cutting off text (thanks to MindMeltMax!).
 - Internal refactoring to improve performance and stability (thanks to Atravita!).
