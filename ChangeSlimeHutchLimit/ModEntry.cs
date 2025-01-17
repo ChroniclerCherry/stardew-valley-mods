@@ -1,40 +1,60 @@
+using System;
 using ChangeSlimeHutchLimit.Framework;
+using ChroniclerCherry.Common.Integrations.GenericModConfigMenu;
 using HarmonyLib;
 using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewValley;
 
 namespace ChangeSlimeHutchLimit;
 
 public class ModEntry : Mod
 {
-    private static Config _config;
+    internal static Config Config { get; set; }
 
     public override void Entry(IModHelper helper)
     {
-        _config = this.Helper.ReadConfig<Config>();
+        // init
+        Config = this.Helper.ReadConfig<Config>();
+        I18n.Init(helper.Translation);
 
+        // add console commands
         this.Helper.ConsoleCommands.Add("SetSlimeHutchLimit", "Changes the max number of slimes that can inhabit a slime hutch.\n\nUsage: SetSlimeHutchLimit <value>\n- value: the number of slimes", this.ChangeMaxSlimes);
 
+        // add patches
         Harmony harmony = new Harmony(this.ModManifest.UniqueID);
         harmony.Patch(AccessTools.Method(typeof(SlimeHutch), nameof(SlimeHutch.isFull)), postfix: new HarmonyMethod(typeof(ModEntry), nameof(ModEntry.SlimeHutch_isFull_postfix)));
+
+        // hook events
+        helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+    }
+
+    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
+    private void OnGameLaunched(object sender, EventArgs e)
+    {
+        this.AddGenericModConfigMenu(
+            new GenericModConfigMenuIntegrationForChangeSlimeHutchLimit(),
+            get: () => ModEntry.Config,
+            set: config => ModEntry.Config = config
+        );
     }
 
     private static void SlimeHutch_isFull_postfix(GameLocation __instance, ref bool __result)
     {
-        __result = __instance.characters.Count >= (_config?.MaxSlimesInHutch ?? 20);
+        __result = __instance.characters.Count >= (Config?.MaxSlimesInHutch ?? 20);
     }
 
     private void ChangeMaxSlimes(string arg1, string[] arg2)
     {
         if (int.TryParse(arg2[0], out int newLimit))
         {
-            _config.MaxSlimesInHutch = newLimit;
-            this.Helper.WriteConfig(_config);
-            this.Monitor.Log($"The new Slime limit is: {_config.MaxSlimesInHutch}");
+            Config.MaxSlimesInHutch = newLimit;
+            this.Helper.WriteConfig(Config);
+            this.Monitor.Log($"The new Slime limit is: {Config.MaxSlimesInHutch}");
         }
         else
         {
-            this.Monitor.Log($"Invalid input.");
+            this.Monitor.Log("Invalid input.", LogLevel.Error);
         }
     }
 }

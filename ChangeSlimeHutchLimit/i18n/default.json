@@ -1,0 +1,7 @@
+﻿{
+    /*********
+    ** Generic Mod Config Menu UI
+    *********/
+    "config.max-slimes.name": "Max Slimes in Hutch",
+    "config.max-slimes.desc": "The maximum number of slimes allowed in each slime hutch."
+}
