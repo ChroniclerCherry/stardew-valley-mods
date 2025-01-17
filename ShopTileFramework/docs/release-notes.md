@@ -1,6 +1,9 @@
 ﻿[← back to readme](README.md)
 
 # Release notes
+## Upcoming release
+- Removed integration with Better Farm Animal Variety.
+
 ## 1.0.10
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
 

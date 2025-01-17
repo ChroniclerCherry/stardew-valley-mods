@@ -9,7 +9,6 @@ namespace ShopTileFramework.Framework.Apis;
 class ApiManager
 {
     internal static IJsonAssetsApi JsonAssets;
-    internal static IBetterFarmAnimalVarietyApi BetterFarmAnimalVariety;
     internal static IConditionsApi Conditions;
 
     /// <summary>
@@ -22,27 +21,6 @@ class ApiManager
         if (JsonAssets == null)
         {
             ModEntry.monitor.Log("Json Assets API not detected. This is only an issue if you're using cystom Json Assets items and shops trying to sell them, as custom items will not appear in shops.",
-                LogLevel.Info);
-        }
-    }
-
-    /// <summary>
-    /// Registers the API for Better Farm Animal Variety, and check if it has been disabled in the user's options.
-    /// If so, set it to null
-    /// </summary>
-    public static void RegisterBetterFarmAnimalVariety()
-    {
-        BetterFarmAnimalVariety = ModEntry.helper.ModRegistry.GetApi<IBetterFarmAnimalVarietyApi>("Paritee.BetterFarmAnimalVariety");
-
-        if (BetterFarmAnimalVariety == null)
-        {
-            ModEntry.monitor.Log("BFAV API not detected. This is only an issue if you're using custom BFAV animals and a custom shop that's supposed to sell them, as custom animals will not appear in those shops.",
-                LogLevel.Info);
-        }
-        else if (!BetterFarmAnimalVariety.IsEnabled())
-        {
-            BetterFarmAnimalVariety = null;
-            ModEntry.monitor.Log("BFAV is installed but not enabled. This is only an issue if you're using custom BFAV animals and a custom shop that's supposed to sell them, as custom animals will not appear in those shops",
                 LogLevel.Info);
         }
     }
@@ -62,11 +40,5 @@ class ApiManager
         }
 
         Conditions.Initialize(ModEntry.VerboseLogging, "Cherry.ShopTileFramework");
-
-    }
-
-    public static void RegisterFarmAnimalVarietyRedux()
-    {
-        //TODO: when FAVR is released, start deprecating support for BFAV
     }
 }

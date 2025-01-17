@@ -95,7 +95,7 @@ public class ModEntry : Mod
         //this block fixes marnie's portrait popping up after purchasing an animal
         if (e.OldMenu is PurchaseAnimalsMenu && e.NewMenu is DialogueBox && SourceLocation != null)
         {
-            var animalPurchaseMessage = ((DialogueBox)e.NewMenu).getCurrentString();
+            string animalPurchaseMessage = ((DialogueBox)e.NewMenu).getCurrentString();
 
             //go away marnie we don't want you
             Game1.exitActiveMenu();
@@ -171,8 +171,6 @@ public class ModEntry : Mod
             ApiManager.JsonAssets.AddedItemsToShop += this.JsonAssets_AddedItemsToShop;
 
         ApiManager.RegisterExpandedPreconditionsUtility();
-        ApiManager.RegisterBetterFarmAnimalVariety();
-        ApiManager.RegisterFarmAnimalVarietyRedux();
     }
 
     private void JsonAssets_AddedItemsToShop(object sender, System.EventArgs e)
