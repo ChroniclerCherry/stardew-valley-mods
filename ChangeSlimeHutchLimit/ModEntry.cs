@@ -14,8 +14,9 @@ public class ModEntry : Mod
 
     public override void Entry(IModHelper helper)
     {
-        // load config
+        // init
         Config = this.Helper.ReadConfig<Config>();
+        I18n.Init(helper.Translation);
 
         // add console commands
         this.Helper.ConsoleCommands.Add("SetSlimeHutchLimit", "Changes the max number of slimes that can inhabit a slime hutch.\n\nUsage: SetSlimeHutchLimit <value>\n- value: the number of slimes", this.ChangeMaxSlimes);

@@ -14,12 +14,9 @@ internal class GenericModConfigMenuIntegrationForChangeSlimeHutchLimit : IGeneri
     {
         menu
             .Register()
-            .AddSectionTitle(
-                text: () => "Slime Hutch Settings"
-            )
             .AddNumberField(
-                name: () => "Max # of Slimes in Hutch",
-                tooltip: () => "Set the maximum number of slimes allowed in the slime hutch.",
+                name: I18n.Config_MaxSlimes_Name,
+                tooltip: I18n.Config_MaxSlimes_Desc,
                 get: config => config.MaxSlimesInHutch,
                 set: (config, value) => config.MaxSlimesInHutch = (int)value,
                 min: 20,
