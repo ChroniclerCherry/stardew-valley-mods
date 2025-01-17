@@ -2,6 +2,8 @@
 
 # Release notes
 ## Upcoming release
+- Added support for controller and [multi-key bindings](https://stardewvalleywiki.com/Modding:Player_Guide/Key_Bindings#Multi-key_bindings).  
+  _This merges the former `ActivateButton` option into the specific key binds. If you customized the key binds, you'll need to do it again for the new format._
 - Internal refactoring.
 
 ## 1.2.0

@@ -22,26 +22,22 @@ internal class ModEntry : Mod
     {
         this.Config = helper.ReadConfig<ModConfig>();
 
-        helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+        helper.Events.Input.ButtonsChanged += this.OnButtonsChanged;
     }
 
 
     /*********
     ** Private methods
     *********/
-    /// <inheritdoc cref="IInputEvents.ButtonPressed" />
-    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
+    /// <inheritdoc cref="IInputEvents.ButtonsChanged" />
+    private void OnButtonsChanged(object sender, ButtonsChangedEventArgs e)
     {
         if (!Context.CanPlayerMove || !this.Config.Enabled)
             return;
 
-        var input = this.Helper.Input;
-        if (input.IsDown(this.Config.ActivateButton))
-        {
-            if (input.IsDown(this.Config.FurnitureButton))
-                Utility.TryOpenShopMenu("Furniture Catalogue", null as string);
-            else if (input.IsDown(this.Config.WallpaperButton))
-                Utility.TryOpenShopMenu("Catalogue", null as string);
-        }
+        if (this.Config.FurnitureKey.JustPressed())
+            Utility.TryOpenShopMenu("Furniture Catalogue", null as string);
+        else if (this.Config.WallpaperKey.JustPressed())
+            Utility.TryOpenShopMenu("Catalogue", null as string);
     }
 }

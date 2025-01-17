@@ -1,5 +1,6 @@
 ﻿# Release notes
 ## Upcoming release
+- Added support for controller and [multi-key bindings](https://stardewvalleywiki.com/Modding:Player_Guide/Key_Bindings#Multi-key_bindings) for the 'check collection' key bind.
 - Internal refactoring.
 
 ## 2.0.0

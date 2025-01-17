@@ -55,7 +55,7 @@ internal sealed class ModEntry : Mod
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
         helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
         helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
-        helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+        helper.Events.Input.ButtonsChanged += this.OnButtonsChanged;
         helper.Events.GameLoop.DayStarted += this.OnDayStarted;
         helper.Events.Player.Warped += this.OnWarped;
 
@@ -145,13 +145,14 @@ internal sealed class ModEntry : Mod
         }
     }
 
-    /// <inheritdoc cref="IInputEvents.ButtonPressed" />
-    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
+    /// <inheritdoc cref="IInputEvents.ButtonsChanged" />
+    private void OnButtonsChanged(object sender, ButtonsChangedEventArgs e)
     {
-        if (Context.CanPlayerMove && Config.CheckDonationCollection == e.Button)
-        {
+        if (!Context.CanPlayerMove)
+            return;
+
+        if (Config.CheckDonationCollection.JustPressed())
             Game1.activeClickableMenu = new AquariumCollectionMenu(ContentPackHelper.LoadString("CollectionsMenu"));
-        }
     }
 
     /// <inheritdoc cref="IPlayerEvents.Warped" />
