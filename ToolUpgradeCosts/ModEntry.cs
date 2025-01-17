@@ -56,7 +56,6 @@ namespace ToolUpgradeCosts;
             }
         }
 
-
         public static void ShopBuilder_GetShopStock_Postfix(string shopId, ref Dictionary<ISalable, ItemStockInformation> __result)
         {
             if (shopId != Game1.shop_blacksmithUpgrades)
@@ -67,7 +66,7 @@ namespace ToolUpgradeCosts;
                 Dictionary<ISalable, ItemStockInformation> editedStock = new Dictionary<ISalable, ItemStockInformation>();
                 foreach ((ISalable item, ItemStockInformation stockInfo) in __result)
                 {
-                    if (item is Tool tool && Enum.IsDefined(typeof(UpgradeMaterials), tool.UpgradeLevel))
+                    if (item is Tool tool && Enum.IsDefined(typeof(UpgradeMaterials), tool.UpgradeLevel) && stockInfo is not null)
                     {
                         UpgradeMaterials upgradeLevel = (UpgradeMaterials)tool.UpgradeLevel;
                         if (tool is GenericTool)
@@ -78,13 +77,12 @@ namespace ToolUpgradeCosts;
                             price: _instance._config.UpgradeCosts[upgradeLevel].Cost,
                             tradeItemCount: _instance._config.UpgradeCosts[upgradeLevel].MaterialStack,
                             tradeItem: _instance._config.UpgradeCosts[upgradeLevel].MaterialId,
-                            stock: (int)(stockInfo?.Stock),
-                            stockMode: stockInfo?.LimitedStockMode ?? LimitedStockMode.None,
-                            itemToSyncStack: stockInfo?.ItemToSyncStack ?? tool,
-                            stackDrawType: stockInfo?.StackDrawType,
-                            actionsOnPurchase: stockInfo?.ActionsOnPurchase ?? new List<string>()
+                            stock: stockInfo.Stock,
+                            stockMode: stockInfo.LimitedStockMode,
+                            itemToSyncStack: stockInfo.ItemToSyncStack,
+                            stackDrawType: stockInfo.StackDrawType,
+                            actionsOnPurchase: stockInfo.ActionsOnPurchase
                         );
-
                     }
                     else
                     {
