@@ -9,11 +9,12 @@ using StardewValley;
 
 namespace MultiplayerModChecker;
 
-public class ModEntry : Mod
+internal class ModEntry : Mod
 {
     private List<MultiplayerReportData> _rawReports = new List<MultiplayerReportData>();
     private readonly List<string> _reports = new List<string>();
     private ModConfig _config;
+
     public override void Entry(IModHelper helper)
     {
         this.Helper.Events.Multiplayer.PeerContextReceived += this.PeerConnected;

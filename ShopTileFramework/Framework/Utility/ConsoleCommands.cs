@@ -7,13 +7,13 @@ namespace ShopTileFramework.Framework.Utility;
 /// <summary>
 /// This class registers and handles console commands to SMAPI
 /// </summary>
-class ConsoleCommands
+internal class ConsoleCommands
 {
     /// <summary>
     /// Registers all commands
     /// </summary>
     /// <param name="helper">the SMAPI helper</param>
-    internal void Register(IModHelper helper)
+    public void Register(IModHelper helper)
     {
         helper.ConsoleCommands.Add("open_shop",
             "Opens up a custom shop's menu. \n\n" +

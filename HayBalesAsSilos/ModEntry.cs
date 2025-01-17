@@ -12,13 +12,13 @@ using StardewValley.GameData.Shops;
 
 namespace HayBalesAsSilos;
 
-public class ModEntry : Mod
+internal class ModEntry : Mod
 {
-    internal static IMonitor monitor;
+    private static IMonitor monitor;
     internal static ModConfig Config;
 
-    internal static readonly string HayBaleId = "45";
-    internal static readonly string HayBaleQualifiedId = ItemRegistry.type_bigCraftable + "45";
+    private const string HayBaleId = "45";
+    internal const string HayBaleQualifiedId = ItemRegistry.type_bigCraftable + "45";
 
     public override void Entry(IModHelper helper)
     {
@@ -133,7 +133,7 @@ public class ModEntry : Mod
         }
     }
 
-    internal static IEnumerable<GameLocation> GetAllAffectedMaps()
+    public static IEnumerable<GameLocation> GetAllAffectedMaps()
     {
         yield return Game1.getFarm();
         foreach (Building building in Game1.getFarm().buildings.Where(building => building.indoors.Value != null))

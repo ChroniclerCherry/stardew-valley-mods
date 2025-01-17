@@ -11,7 +11,7 @@ internal static class CrabPotHandler
 {
     private static IMonitor Monitor = null!;
 
-    internal static void Init(IGameLoopEvents events, IMonitor monitor)
+    public static void Init(IGameLoopEvents events, IMonitor monitor)
     {
         Monitor = monitor;
         events.DayStarted += OnDayStart;

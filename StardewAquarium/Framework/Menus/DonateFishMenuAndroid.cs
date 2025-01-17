@@ -7,7 +7,7 @@ using Object = StardewValley.Object;
 
 namespace StardewAquarium.Framework.Menus;
 
-class DonateFishMenuAndroid : ShopMenu
+internal class DonateFishMenuAndroid : ShopMenu
 {
     public static bool Donated;
     public static bool PufferchickDonated;

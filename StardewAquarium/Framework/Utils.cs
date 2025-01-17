@@ -13,9 +13,9 @@ namespace StardewAquarium.Framework;
 
 internal static class Utils
 {
-    internal const string StatsKey = "Cherry.StardewAquarium.FishDonated";
+    private const string StatsKey = "Cherry.StardewAquarium.FishDonated";
 
-    internal const string AquariumPrefix = "AquariumDonated:";
+    private const string AquariumPrefix = "AquariumDonated:";
 
     private static IModHelper _helper;
     private static IMonitor _monitor;
@@ -34,7 +34,7 @@ internal static class Utils
     /// <summary>
     /// Maps the internal name without spaces to its localized display name
     /// </summary>
-    internal static Dictionary<string, string> FishDisplayNames { get; private set; } = [];
+    public static Dictionary<string, string> FishDisplayNames { get; private set; } = [];
 
     private static LastDonatedFishSign _fishSign;
 
@@ -103,7 +103,7 @@ internal static class Utils
         return false;
     }
 
-    internal static bool HasDonatedFishKey(string internalFishKey)
+    public static bool HasDonatedFishKey(string internalFishKey)
     {
         return MasterPlayerMail.Contains($"{AquariumPrefix}{internalFishKey}");
     }

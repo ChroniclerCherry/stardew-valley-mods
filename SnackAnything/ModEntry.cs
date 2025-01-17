@@ -7,7 +7,7 @@ using Object = StardewValley.Object;
 
 namespace SnackAnything;
 
-class ModEntry : Mod
+internal class ModEntry : Mod
 {
     /*********
     ** Fields

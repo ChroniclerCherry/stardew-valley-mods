@@ -3,9 +3,9 @@ using StardewValley;
 
 namespace HayBalesAsSilos.Framework;
 
-public class PatchGameLocation
+internal class PatchGameLocation
 {
-    internal static void After_GetHayCapacity(ref GameLocation __instance, ref int __result)
+    public static void After_GetHayCapacity(ref GameLocation __instance, ref int __result)
     {
         if (!ModEntry.GetAllAffectedMaps().Contains(Game1.currentLocation))
             return;

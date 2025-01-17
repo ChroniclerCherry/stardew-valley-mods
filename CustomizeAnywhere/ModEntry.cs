@@ -6,10 +6,10 @@ using StardewValley.Menus;
 
 namespace CustomizeAnywhere;
 
-public class ModEntry : Mod
+internal class ModEntry : Mod
 {
     private ModConfig Config;
-    internal static IMonitor monitor;
+    private static IMonitor monitor;
     internal static IModHelper helper;
 
     private DresserAndMirror DresserAndMirror;
@@ -24,7 +24,6 @@ public class ModEntry : Mod
         this.Config = this.Helper.ReadConfig<ModConfig>();
         helper.Events.Input.ButtonPressed += this.OnButtonPressed;
     }
-
 
     private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {

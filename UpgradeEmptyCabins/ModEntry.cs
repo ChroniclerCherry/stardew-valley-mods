@@ -12,7 +12,7 @@ using UpgradeEmptyCabins.Framework;
 
 namespace UpgradeEmptyCabins;
 
-public class ModEntry : Mod
+internal class ModEntry : Mod
 {
     private ModConfig _config;
 
@@ -279,7 +279,7 @@ public class ModEntry : Mod
         cabinIndoors.upgradeLevel++;
     }
 
-    internal void AskForUpgrade()
+    private void AskForUpgrade()
     {
         if (Game1.getFarm().isThereABuildingUnderConstruction())
         {
@@ -328,7 +328,7 @@ public class ModEntry : Mod
         }
     }
 
-    internal void HouseUpgradeAccept(Building cab)
+    private void HouseUpgradeAccept(Building cab)
     {
         Game1.activeClickableMenu = null;
         Game1.player.canMove = true;

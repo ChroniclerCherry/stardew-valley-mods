@@ -11,7 +11,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock;
 /// This class stores the global data for each itemstock, in order to generate and add items by ID or name
 /// to the stock
 /// </summary>
-class ItemBuilder
+internal class ItemBuilder
 {
     private Dictionary<ISalable, ItemStockInformation> _itemPriceAndStock;
     private readonly ItemStock _itemStock;

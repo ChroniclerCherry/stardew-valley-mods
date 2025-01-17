@@ -6,10 +6,10 @@ namespace ShopTileFramework.Framework.Apis;
 /// This class is used to register external APIs and hold the instances of those APIs to be accessed
 /// by the rest of the mod
 /// </summary>
-class ApiManager
+internal class ApiManager
 {
-    internal static IJsonAssetsApi JsonAssets;
-    internal static IConditionsApi Conditions;
+    public static IJsonAssetsApi JsonAssets { get; private set; }
+    public static IConditionsApi Conditions { get; private set; }
 
     /// <summary>
     /// Register the API for Json Assets

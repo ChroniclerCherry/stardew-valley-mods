@@ -1,6 +1,6 @@
 namespace HayBalesAsSilos.Framework;
 
-class ModConfig
+internal class ModConfig
 {
     public bool RequiresConstructedSilo { get; set; } = true;
     public int HayPerBale { get; set; } = 240;

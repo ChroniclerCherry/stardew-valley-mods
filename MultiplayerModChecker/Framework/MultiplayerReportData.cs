@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MultiplayerModChecker.Framework;
 
-public class MultiplayerReportData
+internal class MultiplayerReportData
 {
     public string FarmhandName { get; set; }
     public DateTime TimeConnected { get; set; }

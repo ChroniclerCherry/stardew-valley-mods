@@ -3,7 +3,7 @@ using StardewModdingAPI;
 
 namespace ExpandedPreconditionsUtility;
 
-public class ModEntry : Mod
+internal class ModEntry : Mod
 {
     private IModHelper _helper;
     private IMonitor _monitor;

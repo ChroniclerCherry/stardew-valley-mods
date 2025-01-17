@@ -10,7 +10,7 @@ using StardewValley.TokenizableStrings;
 
 namespace CustomizeAnywhere.Framework;
 
-class DresserAndMirror
+internal class DresserAndMirror
 {
     private IModHelper Helper;
 

@@ -2,7 +2,7 @@ using StardewModdingAPI;
 
 namespace MultiplayerModChecker.Framework;
 
-public class ModVersions
+internal class ModVersions
 {
     public string ModName { get; set; }
 

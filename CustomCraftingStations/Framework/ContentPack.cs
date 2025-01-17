@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace CustomCraftingStations.Framework;
 
-public class ContentPack
+internal class ContentPack
 {
     public List<CraftingStationConfig> CraftingStations;
 }

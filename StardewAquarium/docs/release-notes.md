@@ -1,4 +1,7 @@
 ﻿# Release notes
+## Upcoming release
+- Internal refactoring.
+
 ## 2.0.0
 Released 29 December 2024 for SMAPI 4.1.0 or later. Updated by Pathoschild.
 

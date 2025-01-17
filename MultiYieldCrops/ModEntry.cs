@@ -11,7 +11,7 @@ using StardewValley.ItemTypeDefinitions;
 
 namespace MultiYieldCrops;
 
-class ModEntry : Mod
+internal class ModEntry : Mod
 {
     public static ModEntry instance;
 
@@ -104,7 +104,7 @@ class ModEntry : Mod
     /// <param name="name">The item name.</param>
     /// <param name="itemType">The item type, matching a key recognized by <see cref="GetItemDataDefinitionFromType"/>.</param>
     /// <returns>Returns the item's qualified item ID, or <c>null</c> if not found.</returns>
-    public string GetIdByName(string name, string itemType)
+    private string GetIdByName(string name, string itemType)
     {
         // there's multiple stone items and 390 is the one that works
         if (itemType == "Object" && name == "Stone")

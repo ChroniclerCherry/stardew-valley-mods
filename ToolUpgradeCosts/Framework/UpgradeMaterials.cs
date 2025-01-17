@@ -1,6 +1,6 @@
 namespace ToolUpgradeCosts.Framework;
 
-public enum UpgradeMaterials
+internal enum UpgradeMaterials
 {
     Copper = 1,
     Steel,

@@ -9,10 +9,10 @@ using StardewValley.Menus;
 
 namespace LimitedCampfireCooking;
 
-class ModEntry : Mod
+internal class ModEntry : Mod
 {
-    internal static ModConfig Config;
-    internal ICustomCraftingStationsApi CustomCraftingStations;
+    private static ModConfig Config;
+    private ICustomCraftingStationsApi CustomCraftingStations;
 
     public override void Entry(IModHelper helper)
     {

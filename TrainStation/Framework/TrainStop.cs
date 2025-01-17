@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace TrainStation.Framework;
 
-public class TrainStop
+internal class TrainStop
 {
     public string TargetMapName { get; set; }
     public Dictionary<string, string> LocalizedDisplayName { get; set; }

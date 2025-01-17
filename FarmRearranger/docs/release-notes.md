@@ -1,6 +1,7 @@
 ﻿# Release notes
 ## Upcoming release
 - Updated for Stardew Valley 1.6.9–15.
+- Internal refactoring.
 - Improved translations. Thanks to CaranudLapin (updated French)!
 
 ## 1.0.4

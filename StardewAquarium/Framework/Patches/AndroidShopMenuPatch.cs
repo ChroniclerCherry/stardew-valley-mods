@@ -7,7 +7,7 @@ using StardewValley.Menus;
 
 namespace StardewAquarium.Framework.Patches;
 
-class AndroidShopMenuPatch
+internal class AndroidShopMenuPatch
 {
     private static IModHelper _helper;
     private static IMonitor _monitor;

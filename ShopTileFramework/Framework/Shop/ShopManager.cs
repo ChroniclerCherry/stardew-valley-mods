@@ -12,12 +12,12 @@ namespace ShopTileFramework.Framework.Shop;
 /// This class holds and manages all the shops, loading content packs to create shops
 /// And containing methods to update everything that needs to
 /// </summary>
-class ShopManager
+internal class ShopManager
 {
     public static Dictionary<string, ItemShop> ItemShops = new Dictionary<string, ItemShop>();
     public static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
     public static Dictionary<string, VanillaShop> VanillaShops = new Dictionary<string, VanillaShop>();
-    public static readonly string[] VanillaShopNames = {
+    private static readonly string[] VanillaShopNames = {
         "PierreShop",
         "JojaShop",
         "RobinShop",

@@ -8,7 +8,7 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock;
 /// <summary>
 /// This class manages the total inventory for each shop
 /// </summary>
-class ItemPriceAndStockManager
+internal class ItemPriceAndStockManager
 {
     public Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock { get; set; }
     private readonly ItemStock[] _itemStocks;

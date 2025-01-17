@@ -13,13 +13,13 @@ using SObject = StardewValley.Object;
 
 namespace StardewAquarium.Framework.Menus;
 
-class AquariumCollectionMenu : IClickableMenu
+internal class AquariumCollectionMenu : IClickableMenu
 {
     private string hoverText = "";
 
-    public List<List<ClickableTextureComponent>> collections = new List<List<ClickableTextureComponent>>();
-    public ClickableTextureComponent backButton;
-    public ClickableTextureComponent forwardButton;
+    private List<List<ClickableTextureComponent>> collections = new List<List<ClickableTextureComponent>>();
+    private ClickableTextureComponent backButton;
+    private ClickableTextureComponent forwardButton;
 
     private int currentPage;
     private string _title;
@@ -182,7 +182,7 @@ class AquariumCollectionMenu : IClickableMenu
         this.backButton.tryHover(x, y, 0.5f);
     }
 
-    public string createDescription(string key)
+    private string createDescription(string key)
     {
         return CreateDescription(ItemRegistry.GetDataOrErrorItem(key));
     }
@@ -224,7 +224,7 @@ class AquariumCollectionMenu : IClickableMenu
         this.drawMouse(b);
     }
 
-    internal static string CreateDescription(ParsedItemData data)
+    private static string CreateDescription(ParsedItemData data)
     {
         string name = data.InternalName;
         if (Utils.IsUnDonatedFish(Utils.InternalNameToDonationName[name]) && !Game1.player.fishCaught.ContainsKey(data.QualifiedItemId))

@@ -12,9 +12,9 @@ internal static class AssetEditor
 {
     private static IMonitor Monitor;
 
-    internal const string AquariumPlayerHasChicken = "StardewAquarium.PlayerHasChicken";
+    public const string AquariumPlayerHasChicken = "StardewAquarium.PlayerHasChicken";
 
-    internal static void Init(IContentEvents events, IMonitor monitor)
+    public static void Init(IContentEvents events, IMonitor monitor)
     {
         Monitor = monitor;
         events.AssetRequested += OnAssetRequested;

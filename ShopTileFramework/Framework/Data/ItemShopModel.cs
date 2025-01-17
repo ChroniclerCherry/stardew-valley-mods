@@ -3,7 +3,7 @@ using ShopTileFramework.Framework.ItemPriceAndStock;
 
 namespace ShopTileFramework.Framework.Data;
 
-abstract class ItemShopModel
+internal abstract class ItemShopModel
 {
     public string ShopName { get; set; }
     public string StoreCurrency { get; set; } = "Money";

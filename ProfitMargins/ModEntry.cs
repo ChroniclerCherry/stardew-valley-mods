@@ -6,10 +6,10 @@ using StardewValley;
 namespace ProfitMargins;
 
 /// <summary>The mod entry point.</summary>
-public class ModEntry : Mod
+internal class ModEntry : Mod
 {
     /*********
-    ** Properties
+    ** Fields
     *********/
     /// <summary>The mod configuration from the player.</summary>
     private ModConfig config;
@@ -24,8 +24,8 @@ public class ModEntry : Mod
         this.config = helper.ReadConfig<ModConfig>();
         helper.Events.GameLoop.DayStarted += this.DayStarted;
         helper.Events.GameLoop.Saving += this.OnSaving;
-        return;
     }
+
 
     /*********
     ** Private methods

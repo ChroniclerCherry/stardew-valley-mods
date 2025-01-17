@@ -10,7 +10,7 @@ internal static class TileActions
     private static IMonitor Monitor;
     private static IModHelper Helper;
 
-    internal static void Init(IModHelper helper, IMonitor monitor)
+    public static void Init(IModHelper helper, IMonitor monitor)
     {
         Helper = helper;
         Monitor = monitor;

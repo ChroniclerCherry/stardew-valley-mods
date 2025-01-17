@@ -1,6 +1,6 @@
 namespace CustomCraftingStations.Framework;
 
-public class ModConfig
+internal class ModConfig
 {
     public bool GlobalCraftFromChest { get; set; } = false;
     public bool CraftFromFridgeWhenInHouse { get; set; } = true;

@@ -1,6 +1,6 @@
 namespace PlatonicRelationships.Framework;
 
-class ModConfig
+internal class ModConfig
 {
     public bool AddDatingRequirementToRomanticEvents { get; set; } = true;
 }

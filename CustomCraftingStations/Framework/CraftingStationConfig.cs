@@ -3,7 +3,7 @@ using StardewValley.Network;
 
 namespace CustomCraftingStations.Framework;
 
-public class CraftingStationConfig
+internal class CraftingStationConfig
 {
     internal readonly NetMutex mutex = new NetMutex();
     public string BigCraftable { get; set; } //A big craftable to interact with to open the menu

@@ -2,7 +2,7 @@ using ShopTileFramework.Framework.Shop;
 
 namespace ShopTileFramework.Framework.Data;
 
-class ContentPack
+internal class ContentPack
 {
     public string[] RemovePacksFromVanilla { get; set; }
     public string[] RemovePackRecipesFromVanilla { get; set; }

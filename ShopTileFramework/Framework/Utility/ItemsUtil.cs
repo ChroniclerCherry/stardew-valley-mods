@@ -12,13 +12,13 @@ namespace ShopTileFramework.Framework.Utility;
 /// <summary>
 /// This class contains static utility methods used to handle items
 /// </summary>
-public static class ItemsUtil
+internal static class ItemsUtil
 {
     public static List<string> RecipesList;
 
-    public static List<string> PacksToRemove = new List<string>();
-    public static List<string> RecipePacksToRemove = new List<string>();
-    public static List<string> ItemsToRemove = new List<string>();
+    private static List<string> PacksToRemove = new List<string>();
+    private static List<string> RecipePacksToRemove = new List<string>();
+    private static List<string> ItemsToRemove = new List<string>();
 
     /// <summary>
     /// Loads up the onject information for all types, 

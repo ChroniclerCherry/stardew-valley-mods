@@ -26,7 +26,7 @@ internal sealed class LastDonatedFishSign
         events.GameLoop.DayStarted += this.GameLoop_DayStarted;
     }
 
-    internal void UpdateLastDonatedFish(Item i)
+    public void UpdateLastDonatedFish(Item i)
     {
         Game1.getFarm().modData[LastDonatedFishKey] = i.QualifiedItemId;
         this.Monitor.Log($"The last donated fish is {i.Name}");

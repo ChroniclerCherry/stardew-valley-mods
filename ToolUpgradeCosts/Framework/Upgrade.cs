@@ -1,6 +1,6 @@
 namespace ToolUpgradeCosts.Framework;
 
-public class Upgrade
+internal class Upgrade
 {
     public int Cost { get; set; }
 

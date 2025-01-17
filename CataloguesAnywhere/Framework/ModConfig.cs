@@ -2,7 +2,7 @@ using StardewModdingAPI;
 
 namespace CataloguesAnywhere.Framework;
 
-class ModConfig
+internal class ModConfig
 {
     public bool Enabled { get; set; } = true;
     public SButton ActivateButton { get; set; } = SButton.LeftControl;

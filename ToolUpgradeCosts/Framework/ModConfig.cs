@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace ToolUpgradeCosts.Framework;
 
-public class ModConfig
+internal class ModConfig
 {
     public Dictionary<UpgradeMaterials, Upgrade> UpgradeCosts = new Dictionary<UpgradeMaterials, Upgrade>
     {

@@ -8,7 +8,7 @@ using StardewValley.Menus;
 
 namespace PlatonicRelationships;
 
-public class ModEntry : Mod
+internal class ModEntry : Mod
 {
     private ModConfig Config;
     private readonly AddDatingPrereq Editor = new AddDatingPrereq();
@@ -29,7 +29,7 @@ public class ModEntry : Mod
             e.Edit(this.Editor.Edit);
     }
 
-    public void ApplyPatches()
+    private void ApplyPatches()
     {
         var harmony = new Harmony("cherry.platonicrelationships");
 

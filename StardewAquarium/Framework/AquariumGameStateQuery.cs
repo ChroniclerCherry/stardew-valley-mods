@@ -9,10 +9,10 @@ namespace StardewAquarium.Framework;
 
 internal static class AquariumGameStateQuery
 {
-    internal const string HasBaitQuery = "StardewValleyAquarium_PLAYER_HAS_BAIT";
-    internal const string RandomChanceForPuffer = "StardewValleyAquarium_RANDOM_CHANCE_FOR_PUFFER";
+    public const string HasBaitQuery = "StardewValleyAquarium_PLAYER_HAS_BAIT";
+    private const string RandomChanceForPuffer = "StardewValleyAquarium_RANDOM_CHANCE_FOR_PUFFER";
 
-    internal static void Init()
+    public static void Init()
     {
         GameStateQuery.Register(HasBaitQuery, HasBait);
         GameStateQuery.Register(RandomChanceForPuffer, PufferChance);

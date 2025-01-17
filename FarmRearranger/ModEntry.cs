@@ -11,7 +11,7 @@ using StardewValley.TokenizableStrings;
 
 namespace FarmRearranger;
 
-class ModEntry : Mod
+internal class ModEntry : Mod
 {
     private bool isArranging = false;
 

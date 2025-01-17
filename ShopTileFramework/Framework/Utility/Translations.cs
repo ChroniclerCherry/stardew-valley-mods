@@ -7,7 +7,7 @@ namespace ShopTileFramework.Framework.Utility;
 /// <summary>
 /// This class stores the current language and handles translation work
 /// </summary>
-class Translations
+internal class Translations
 {
     private static LocalizedContentManager.LanguageCode _selectedLanguage;
 
@@ -31,7 +31,7 @@ class Translations
     /// <summary>
     /// Update the selectedLanguage to the current language on save loaded, in case it has been changed
     /// </summary>
-    internal static void UpdateSelectedLanguage()
+    public static void UpdateSelectedLanguage()
     {
         _selectedLanguage = LocalizedContentManager.CurrentLanguageCode;
         ModEntry.monitor.Log($"Updating current language settings: {_selectedLanguage}", LogLevel.Trace);

@@ -9,7 +9,7 @@ using StardewValley.Internal;
 
 namespace ShopTileFramework.Framework.Patches;
 
-public class VanillaShopStockPatches
+internal class VanillaShopStockPatches
 {
     public static void Apply(Harmony harmony)
     {

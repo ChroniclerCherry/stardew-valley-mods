@@ -1,6 +1,6 @@
 namespace ShopTileFramework.Framework;
 
-class ModConfig
+internal class ModConfig
 {
     public bool VerboseLogging { get; set; } = false;
 }

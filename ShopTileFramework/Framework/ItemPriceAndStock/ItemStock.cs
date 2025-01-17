@@ -12,12 +12,12 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock;
 /// This class stores the data for each stock, with a stock being a list of items of the same itemtype
 /// and sharing the same store parameters such as price
 /// </summary>
-class ItemStock : ItemStockModel
+internal class ItemStock : ItemStockModel
 {
-    internal string CurrencyObjectId;
-    internal double DefaultSellPriceMultiplier;
-    internal Dictionary<double, string[]> PriceMultiplierWhen;
-    internal string ShopName;
+    public string CurrencyObjectId;
+    public double DefaultSellPriceMultiplier;
+    private Dictionary<double, string[]> PriceMultiplierWhen;
+    public string ShopName;
 
     private Dictionary<double, string[]> _priceMultiplierWhen;
 
@@ -33,7 +33,7 @@ class ItemStock : ItemStockModel
     /// <param name="price"></param>
     /// <param name="defaultSellPriceMultiplier"></param>
     /// <param name="priceMultiplierWhen"></param>
-    internal void Initialize(string shopName, int price, double defaultSellPriceMultiplier, Dictionary<double, string[]> priceMultiplierWhen)
+    public void Initialize(string shopName, int price, double defaultSellPriceMultiplier, Dictionary<double, string[]> priceMultiplierWhen)
     {
         this.ShopName = shopName;
         this.DefaultSellPriceMultiplier = defaultSellPriceMultiplier;

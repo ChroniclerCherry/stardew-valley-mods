@@ -12,7 +12,7 @@ using xTile.Tiles;
 
 namespace TrainStation;
 
-public class ModEntry : Mod
+internal class ModEntry : Mod
 {
     private ModConfig Config;
     internal static ModEntry Instance;

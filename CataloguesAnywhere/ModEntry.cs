@@ -5,7 +5,7 @@ using StardewValley;
 
 namespace CataloguesAnywhere;
 
-public class ModEntry : Mod
+internal class ModEntry : Mod
 {
     private ModConfig Config;
 

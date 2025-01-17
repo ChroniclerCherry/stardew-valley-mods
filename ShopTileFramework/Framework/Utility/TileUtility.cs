@@ -9,7 +9,7 @@ namespace ShopTileFramework.Framework.Utility;
 /// <summary>
 /// This class contains static utility methods for dealing with tile properties
 /// </summary>
-class TileUtility
+internal class TileUtility
 {
     /// <summary>
     /// Returns the tile property found at the given parameters

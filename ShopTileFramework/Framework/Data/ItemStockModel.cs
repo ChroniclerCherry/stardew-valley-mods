@@ -1,6 +1,6 @@
 namespace ShopTileFramework.Framework.Data;
 
-abstract class ItemStockModel
+internal abstract class ItemStockModel
 {
     public string ItemType { get; set; }
     public bool IsRecipe { get; set; } = false;

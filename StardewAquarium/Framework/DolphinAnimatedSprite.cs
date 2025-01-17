@@ -4,7 +4,7 @@ using StardewValley;
 
 namespace StardewAquarium.Framework;
 
-class DolphinAnimatedSprite : TemporaryAnimatedSprite
+internal class DolphinAnimatedSprite : TemporaryAnimatedSprite
 {
     private const int SpriteWidth = 64;
 

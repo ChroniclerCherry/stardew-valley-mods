@@ -7,7 +7,7 @@ using StardewValley.TerrainFeatures;
 
 namespace MultiYieldCrops.Framework;
 
-class HarvestPatches
+internal class HarvestPatches
 {
     private static IMonitor Monitor;
 

@@ -12,7 +12,7 @@ using ToolUpgradeCosts.Framework;
 
 namespace ToolUpgradeCosts;
 
-public class ModEntry : Mod
+internal class ModEntry : Mod
 {
     private static ModEntry _instance;
 
@@ -56,7 +56,7 @@ public class ModEntry : Mod
         }
     }
 
-    public static void ShopBuilder_GetShopStock_Postfix(string shopId, ref Dictionary<ISalable, ItemStockInformation> __result)
+    private static void ShopBuilder_GetShopStock_Postfix(string shopId, ref Dictionary<ISalable, ItemStockInformation> __result)
     {
         if (shopId != Game1.shop_blacksmithUpgrades)
             return;

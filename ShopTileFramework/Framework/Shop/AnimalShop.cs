@@ -10,7 +10,7 @@ namespace ShopTileFramework.Framework.Shop;
 /// <summary>
 /// This class represents each animal store
 /// </summary>
-class AnimalShop : AnimalShopModel
+internal class AnimalShop : AnimalShopModel
 {
     private List<Object> _shopAnimalStock;
     private List<Object> _allAnimalsStock;

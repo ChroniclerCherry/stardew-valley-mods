@@ -8,9 +8,9 @@ using StardewValley;
 
 namespace ChangeSlimeHutchLimit;
 
-public class ModEntry : Mod
+internal class ModEntry : Mod
 {
-    internal static ModConfig Config { get; set; }
+    private static ModConfig Config;
 
     public override void Entry(IModHelper helper)
     {

@@ -6,7 +6,7 @@ using StardewValley.Menus;
 
 namespace StardewAquarium.Framework.Menus;
 
-public class DonateFishMenu : InventoryMenu
+internal class DonateFishMenu : InventoryMenu
 {
     private bool _donated;
     private bool _pufferchickDonated;

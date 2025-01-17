@@ -6,7 +6,7 @@ using StardewValley;
 
 namespace ShopTileFramework.Framework.Shop;
 
-class VanillaShop : VanillaShopModel
+internal class VanillaShop : VanillaShopModel
 {
     public List<ItemPriceAndStockManager> StockManagers { get; set; }
     public Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock { get; set; }

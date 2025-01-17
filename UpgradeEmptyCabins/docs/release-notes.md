@@ -6,6 +6,7 @@
 - Updated for the new 1.6 renovations and renovation costs (thanks to XTFOX!).
 - Fixed furniture not moved correctly when upgrading a cabin (thanks to XTFOX!).
 - Fixed dialogue issues (thanks to XTFOX!).
+- Internal refactoring.
 
 ## 1.1.0
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.

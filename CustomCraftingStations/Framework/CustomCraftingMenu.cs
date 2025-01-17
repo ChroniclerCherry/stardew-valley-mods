@@ -5,7 +5,7 @@ using StardewValley.Menus;
 
 namespace CustomCraftingStations.Framework;
 
-public class CustomCraftingMenu : CraftingPage
+internal class CustomCraftingMenu : CraftingPage
 {
     private readonly List<string> CraftingRecipes;
     private readonly List<string> CookingRecipes;

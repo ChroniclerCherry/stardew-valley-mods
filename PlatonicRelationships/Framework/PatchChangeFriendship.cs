@@ -6,9 +6,9 @@ using HarmonyLib;
 namespace PlatonicRelationships.Framework;
 
 //Patching the method Farmer.changeFriendship()
-public class PatchChangeFriendship
+internal class PatchChangeFriendship
 {
-    internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         List<CodeInstruction> instructionList = instructions.ToList();
         for (int i = 0; i < instructionList.Count; i++)

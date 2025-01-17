@@ -1,6 +1,6 @@
 namespace MultiYieldCrops.Framework;
 
-class Rule
+internal class Rule
 {
     public string ExtraYieldItemType = "Object";
     public string ItemName;

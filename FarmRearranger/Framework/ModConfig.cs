@@ -1,6 +1,6 @@
 namespace FarmRearranger.Framework;
 
-class ModConfig
+internal class ModConfig
 {
     //players can set the farm rearranger to work anywhere, just with a warning that it could behave oddly
     public bool CanArrangeOutsideFarm { get; set; } = false;

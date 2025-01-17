@@ -22,15 +22,15 @@ namespace StardewAquarium;
 
 internal sealed class ModEntry : Mod
 {
-    internal static ModConfig Config { get; private set; } = null!;
+    private static ModConfig Config = null!;
 
     public static Harmony Harmony { get; } = new("Cherry.StardewAquarium");
 
     /// <summary>The chance that a dolphin Easter egg appears in the player's current location.</summary>
-    public readonly PerScreen<float> DolphinChance = new();
+    private readonly PerScreen<float> DolphinChance = new();
 
     /// <summary>The tile area where the dolphin Easter egg can appear in the player's current location, if applicable.</summary>
-    public readonly PerScreen<Rectangle> DolphinRange = new();
+    private readonly PerScreen<Rectangle> DolphinRange = new();
 
     /// <inheritdoc />
     public override void Entry(IModHelper helper)

@@ -13,7 +13,7 @@ namespace ShopTileFramework.Framework.Shop;
 /// <summary>
 /// This class holds all the information for each custom item shop
 /// </summary>
-class ItemShop : ItemShopModel
+internal class ItemShop : ItemShopModel
 {
     private Texture2D _portrait;
     public ItemPriceAndStockManager StockManager { get; set; }

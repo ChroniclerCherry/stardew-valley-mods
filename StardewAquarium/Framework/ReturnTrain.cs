@@ -4,7 +4,7 @@ using StardewValley;
 
 namespace StardewAquarium.Framework;
 
-class ReturnTrain
+internal class ReturnTrain
 {
     private IModHelper _helper;
     private IMonitor _monitor;

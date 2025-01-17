@@ -17,16 +17,16 @@ namespace ShopTileFramework;
 /// Entry point of the Shop Tile Framework mod. This mod allows custom shops to be added to the game via data in
 /// json format, loaded via the Stardew Valley Modding API (SMAPI) as content packs
 /// </summary>
-public class ModEntry : Mod
+internal class ModEntry : Mod
 {
     //static copies of helper and monitor
-    internal static IModHelper helper;
-    internal static IMonitor monitor;
+    public static IModHelper helper;
+    public static IMonitor monitor;
 
     //The following variables are to help revert hardcoded warps done by the carpenter and
     //animal shop menus
     private bool _changedMarnieStock;
-    internal static GameLocation SourceLocation;
+    public static GameLocation SourceLocation;
     private static Vector2 _playerPos = Vector2.Zero;
 
     public static bool VerboseLogging;

@@ -3,7 +3,7 @@ using ShopTileFramework.Framework.ItemPriceAndStock;
 
 namespace ShopTileFramework.Framework.Data;
 
-abstract class VanillaShopModel
+internal abstract class VanillaShopModel
 {
     public string ShopName { get; set; }
     public bool ReplaceInsteadOfAdd { get; set; } = false;

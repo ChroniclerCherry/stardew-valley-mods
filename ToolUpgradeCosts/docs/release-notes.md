@@ -1,6 +1,7 @@
 ﻿# Release notes
 ## Upcoming release
 - Updated for Stardew Valley 1.6.9–15 (thanks to zBoggler!).
+- Internal refactoring.
 
 ## 1.0.1
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.

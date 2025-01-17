@@ -3,7 +3,7 @@ using StardewModdingAPI.Utilities;
 
 namespace SnackAnything.Framework;
 
-class ModConfig
+internal class ModConfig
 {
     public bool YummyArtefacts { get; set; } = false;
 

@@ -12,7 +12,7 @@ using StardewValley.Objects;
 
 namespace CustomCraftingStations;
 
-public class ModEntry : Mod
+internal class ModEntry : Mod
 {
     private bool _openedNonCustomMenu;
 
@@ -23,10 +23,10 @@ public class ModEntry : Mod
     private List<string> _craftingRecipesToRemove;
 
     private ModConfig _config;
-    public Type CookingSkillMenu;
+    private Type CookingSkillMenu;
 
-    public List<string> ReducedCookingRecipes { get; set; }
-    public List<string> ReducedCraftingRecipes { get; set; }
+    private List<string> ReducedCookingRecipes { get; set; }
+    private List<string> ReducedCraftingRecipes { get; set; }
 
     public static bool MenuOverride = true;
 
@@ -241,7 +241,7 @@ public class ModEntry : Mod
         }
     }
 
-    public void OpenCraftingMenu(CraftingStationConfig station, Vector2 grabTile)
+    private void OpenCraftingMenu(CraftingStationConfig station, Vector2 grabTile)
     {
         List<IInventory> chests = this.GetChests(grabTile);
 
@@ -266,7 +266,7 @@ public class ModEntry : Mod
         layoutRecipes.Invoke(isCooking ? this.ReducedCookingRecipes : knownCraftingRecipes);
     }
 
-    public List<IInventory> GetChests(Vector2 grabTile)
+    private List<IInventory> GetChests(Vector2 grabTile)
     {
         List<IInventory> chests = new List<IInventory>();
 
