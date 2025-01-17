@@ -2,8 +2,8 @@ namespace LimitedCampfireCooking.Framework;
 
 internal class ModConfig
 {
-    public bool EnableAllCookingRecipies { get; set; } = false;
-    public string[] Recipes { get; set; } = {
+    public bool EnableAllCookingRecipes { get; set; } = false;
+    public string[] Recipes { get; set; } = [
         "Fried Egg",
         "Baked Fish",
         "Parsnip Soup",
@@ -21,5 +21,5 @@ internal class ModConfig
         "Chowder",
         "Lobster Bisque",
         "Fish Stew"
-    };
+    ];
 }

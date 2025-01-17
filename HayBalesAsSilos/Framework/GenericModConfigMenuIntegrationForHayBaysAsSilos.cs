@@ -31,8 +31,8 @@ internal class GenericModConfigMenuIntegrationForHayBaysAsSilos : IGenericModCon
             .AddNumberField(
                 name: I18n.Config_PurchasePrice_Name,
                 tooltip: I18n.Config_PurchasePrice_Desc,
-                get: config => config.HaybalePrice,
-                set: (config, value) => config.HaybalePrice = value,
+                get: config => config.HayBalePrice,
+                set: (config, value) => config.HayBalePrice = value,
                 min: 0,
                 max: null
             );

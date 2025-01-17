@@ -125,7 +125,7 @@ internal class ModEntry : Mod
                     {
                         Id = HayBaleId,
                         ItemId = HayBaleId,
-                        Price = Config.HaybalePrice,
+                        Price = Config.HayBalePrice,
                         Condition = "PLAYER_HAS_MAIL Current FarmRearrangerMail Received"
                     });
                 }

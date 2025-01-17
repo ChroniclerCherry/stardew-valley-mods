@@ -22,7 +22,7 @@ internal class ModEntry : Mod
     private List<string> _cookingRecipesToRemove;
     private List<string> _craftingRecipesToRemove;
 
-    private ModConfig _config;
+    private ModConfig Config;
     private Type CookingSkillMenu;
 
     private List<string> ReducedCookingRecipes { get; set; }
@@ -38,7 +38,7 @@ internal class ModEntry : Mod
             return;
         }
 
-        this._config = this.Helper.ReadConfig<ModConfig>();
+        this.Config = this.Helper.ReadConfig<ModConfig>();
 
         this.Helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
 
@@ -273,17 +273,17 @@ internal class ModEntry : Mod
         IEnumerable<GameLocation> locs;
         locs = Context.IsMainPlayer ? Game1.locations : this.Helper.Multiplayer.GetActiveLocations();
 
-        if (this._config.CraftFromFridgeWhenInHouse)
+        if (this.Config.CraftFromFridgeWhenInHouse)
             if (Game1.currentLocation is FarmHouse house)
                 chests.Add(house.fridge.Value.Items);
 
-        int radius = this._config.CraftingFromChestsRadius;
-        if (radius == 0 && !this._config.GlobalCraftFromChest)
+        int radius = this.Config.CraftingFromChestsRadius;
+        if (radius == 0 && !this.Config.GlobalCraftFromChest)
             return chests;
 
-        if (this._config.GlobalCraftFromChest)
+        if (this.Config.GlobalCraftFromChest)
         {
-            if (!this._config.CraftFromFridgeWhenInHouse) //so we dont add this twice
+            if (!this.Config.CraftFromFridgeWhenInHouse) //so we dont add this twice
                 chests.Add((Game1.getLocationFromName("FarmHouse") as FarmHouse)?.fridge.Value.Items);
 
             foreach (var location in locs)

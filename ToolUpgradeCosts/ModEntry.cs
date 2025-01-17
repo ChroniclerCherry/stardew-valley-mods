@@ -24,12 +24,12 @@ internal class ModEntry : Mod
         {UpgradeMaterials.Iridium, "337"}
     };
 
-    private ModConfig _config;
+    private ModConfig Config;
 
     public override void Entry(IModHelper helper)
     {
         _instance = this;
-        this._config = helper.ReadConfig<ModConfig>();
+        this.Config = helper.ReadConfig<ModConfig>();
         this.Helper.Events.GameLoop.SaveLoaded += this.GetIndexes;
 
         Harmony harmony = new Harmony(this.ModManifest.UniqueID);
@@ -42,7 +42,7 @@ internal class ModEntry : Mod
 
     private void GetIndexes(object sender, SaveLoadedEventArgs e)
     {
-        foreach (KeyValuePair<UpgradeMaterials, Upgrade> upgrade in this._config.UpgradeCosts)
+        foreach (KeyValuePair<UpgradeMaterials, Upgrade> upgrade in this.Config.UpgradeCosts)
         {
             string name = upgrade.Value.MaterialName;
 
@@ -74,9 +74,9 @@ internal class ModEntry : Mod
                         upgradeLevel++;
                     }
                     editedStock[tool] = new ItemStockInformation(
-                        price: _instance._config.UpgradeCosts[upgradeLevel].Cost,
-                        tradeItemCount: _instance._config.UpgradeCosts[upgradeLevel].MaterialStack,
-                        tradeItem: _instance._config.UpgradeCosts[upgradeLevel].MaterialId,
+                        price: _instance.Config.UpgradeCosts[upgradeLevel].Cost,
+                        tradeItemCount: _instance.Config.UpgradeCosts[upgradeLevel].MaterialStack,
+                        tradeItem: _instance.Config.UpgradeCosts[upgradeLevel].MaterialId,
                         stock: stockInfo.Stock,
                         stockMode: stockInfo.LimitedStockMode,
                         itemToSyncStack: stockInfo.ItemToSyncStack,

@@ -14,13 +14,13 @@ namespace UpgradeEmptyCabins;
 
 internal class ModEntry : Mod
 {
-    private ModConfig _config;
+    private ModConfig Config;
 
     public override void Entry(IModHelper h)
     {
         // init
         I18n.Init(h.Translation);
-        this._config = this.Helper.ReadConfig<ModConfig>();
+        this.Config = this.Helper.ReadConfig<ModConfig>();
 
         this.Helper.ConsoleCommands.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", this.UpgradeCabinsCommand);
         this.Helper.ConsoleCommands.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", this.RemoveSeedBoxesCommand);
@@ -40,8 +40,8 @@ internal class ModEntry : Mod
     {
         this.AddGenericModConfigMenu(
             new GenericModConfigMenuIntegrationForUpgradeEmptyCabins(),
-            get: () => this._config,
-            set: config => this._config = config
+            get: () => this.Config,
+            set: config => this.Config = config
         );
     }
 
@@ -338,7 +338,7 @@ internal class ModEntry : Mod
             return;
         }
 
-        if (this._config.InstantBuild)
+        if (this.Config.InstantBuild)
         {
             FinalUpgrade(cab);
             Game1.getCharacterFromName("Robin").setNewDialogue("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted");

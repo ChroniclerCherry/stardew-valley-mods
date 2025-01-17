@@ -28,24 +28,24 @@ internal class ModEntry : Mod
     private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         // ignore if player isn't free to move or direct access is turned off in the config
-        if (!Context.CanPlayerMove || !this.Config.canAccessMenusAnywhere)
+        if (!Context.CanPlayerMove || !this.Config.CanAccessMenusAnywhere)
             return;
 
         var input = this.Helper.Input;
         if (input.IsDown(this.Config.ActivateButton))
         {
-            if (input.IsDown(this.Config.customizeButton))
+            if (input.IsDown(this.Config.CustomizeButton))
                 Game1.activeClickableMenu = new CharacterCustomization(CharacterCustomization.Source.Wizard);
-            else if (input.IsDown(this.Config.dresserButton))
+            else if (input.IsDown(this.Config.DresserButton))
                 this.DresserAndMirror.OpenDresser();
 
-            if (this.Config.canTailorWithoutEvent || Game1.player.eventsSeen.Contains("992559"))
+            if (this.Config.CanTailorWithoutEvent || Game1.player.eventsSeen.Contains("992559"))
             {
-                if (input.IsDown(this.Config.dyeButton))
+                if (input.IsDown(this.Config.DyeButton))
                 {
                     Game1.activeClickableMenu = new DyeMenu();
                 }
-                else if (input.IsDown(this.Config.tailoringButton))
+                else if (input.IsDown(this.Config.TailoringButton))
                 {
                     Game1.activeClickableMenu = new TailoringMenu();
                 }

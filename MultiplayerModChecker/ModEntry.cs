@@ -13,13 +13,13 @@ internal class ModEntry : Mod
 {
     private List<MultiplayerReportData> _rawReports = new List<MultiplayerReportData>();
     private readonly List<string> _reports = new List<string>();
-    private ModConfig _config;
+    private ModConfig Config;
 
     public override void Entry(IModHelper helper)
     {
         this.Helper.Events.Multiplayer.PeerContextReceived += this.PeerConnected;
         this.Helper.Events.Multiplayer.ModMessageReceived += this.Multiplayer_ModMessageReceived;
-        this._config = this.Helper.ReadConfig<ModConfig>();
+        this.Config = this.Helper.ReadConfig<ModConfig>();
     }
 
     private void PeerConnected(object sender, PeerContextReceivedEventArgs e)
@@ -52,7 +52,7 @@ internal class ModEntry : Mod
 
             foreach (string mod in allMods)
             {
-                if (this._config.IgnoredMods.Contains(mod)) continue;
+                if (this.Config.IgnoredMods.Contains(mod)) continue;
 
                 var modVersionData = new ModVersions();
 
@@ -145,17 +145,17 @@ internal class ModEntry : Mod
             if (reportData == null)
             {
                 preface = this.Helper.Translation.Get("FarmhandReport");
-                this.Monitor.Log(preface, this._config.HideReportInTrace ? LogLevel.Trace : LogLevel.Warn);
+                this.Monitor.Log(preface, this.Config.HideReportInTrace ? LogLevel.Trace : LogLevel.Warn);
             }
             else
             {
                 preface = this.Helper.Translation.Get("HostReport", new { FarmhandID = reportData.FarmhandId, FarmhandName = reportData.FarmhandName, ConnectionTime = reportData.TimeConnected });
-                this.Monitor.Log(preface, this._config.HideReportInTrace ? LogLevel.Trace : LogLevel.Warn);
+                this.Monitor.Log(preface, this.Config.HideReportInTrace ? LogLevel.Trace : LogLevel.Warn);
             }
 
             foreach (var log in report)
             {
-                this.Monitor.Log(log.Key, this._config.HideReportInTrace ? LogLevel.Trace : log.Value);
+                this.Monitor.Log(log.Key, this.Config.HideReportInTrace ? LogLevel.Trace : log.Value);
             }
 
             this._reports.Add($"{preface}\n--------------------------------\n{string.Join("\n", report.Keys)}");

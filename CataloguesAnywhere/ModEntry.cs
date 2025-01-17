@@ -23,7 +23,7 @@ internal class ModEntry : Mod
         var input = this.Helper.Input;
         if (input.IsDown(this.Config.ActivateButton))
         {
-            if (input.IsDown(this.Config.furnitureButton))
+            if (input.IsDown(this.Config.FurnitureButton))
                 Utility.TryOpenShopMenu("Furniture Catalogue", null as string);
             else if (input.IsDown(this.Config.WallpaperButton))
                 Utility.TryOpenShopMenu("Catalogue", null as string);

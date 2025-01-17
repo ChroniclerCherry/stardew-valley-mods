@@ -1,5 +1,6 @@
 ﻿# Release notes
 ## Upcoming release
+- Fixed misnamed config option (`EnableAllCookingRecipies` → `EnableAllCookingRecipes`).
 - Internal refactoring.
 
 ## 1.0.3

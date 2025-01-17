@@ -34,7 +34,7 @@ internal class ModEntry : Mod
         this.AllCookingRecipes = CraftingRecipe.cookingRecipes;
         this.LimitedCookingRecipes = this.AllCookingRecipes;
 
-        if (!Config.EnableAllCookingRecipies)
+        if (!Config.EnableAllCookingRecipes)
         {
             this.LimitedCookingRecipes = new Dictionary<string, string>();
             foreach (var kvp in from KeyValuePair<string, string> kvp in this.AllCookingRecipes
