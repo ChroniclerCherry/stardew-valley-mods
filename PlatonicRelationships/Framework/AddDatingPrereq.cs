@@ -9,6 +9,9 @@ namespace PlatonicRelationships.Framework;
 /// </summary>
 internal class AddDatingPrereq
 {
+    /*********
+    ** Public methods
+    *********/
     public bool CanEdit(IAssetName asset)
     {
         return (

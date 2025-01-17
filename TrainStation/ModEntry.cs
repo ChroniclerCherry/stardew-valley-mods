@@ -14,13 +14,32 @@ namespace TrainStation;
 
 internal class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     private ModConfig Config;
+    private IConditionsChecker ConditionsApi;
+
+    private readonly int TicketStationTopTile = 1032;
+    private readonly int TicketStationBottomTile = 1057;
+    private string destinationMessage;
+    private ICue cue;
+    private bool finishedTrainWarp = false;
+    private static LocalizedContentManager.LanguageCode selectedLanguage;
+
+
+    /*********
+    ** Accessors
+    *********/
     internal static ModEntry Instance;
 
     internal List<TrainStop> TrainStops;
     internal List<BoatStop> BoatStops;
-    private IConditionsChecker ConditionsApi;
 
+
+    /*********
+    ** Public methods
+    *********/
     public override void Entry(IModHelper helper)
     {
         this.Config = helper.ReadConfig<ModConfig>();
@@ -33,6 +52,34 @@ internal class ModEntry : Mod
         helper.Events.Player.Warped += this.Player_Warped;
     }
 
+    public override object GetApi()
+    {
+        return new Api();
+    }
+
+    public void OpenBoatMenu()
+    {
+        Response[] responses = this.GetBoatReponses().ToArray();
+
+        Game1.currentLocation.createQuestionDialogue(this.Helper.Translation.Get("ChooseDestination"), responses, this.BoatDestinationPicked);
+    }
+
+    public void OpenTrainMenu()
+    {
+        Response[] responses = this.GetReponses().ToArray();
+        if (responses.Length <= 1) //only 1 response means there's only the cancel option
+        {
+            Game1.drawObjectDialogue(this.Helper.Translation.Get("NoDestinations"));
+            return;
+        }
+
+        Game1.currentLocation.createQuestionDialogue(this.Helper.Translation.Get("ChooseDestination"), responses, this.DestinationPicked);
+    }
+
+
+    /*********
+    ** Private methods
+    *********/
     private void Player_Warped(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
     {
         if (e.NewLocation.Name != "Railroad") return;
@@ -52,20 +99,13 @@ internal class ModEntry : Mod
             return;
         }
 
-
         this.ConditionsApi.Initialize(false, this.ModManifest.UniqueID);
-
-    }
-
-    public override object GetApi()
-    {
-        return new Api();
     }
 
 
-    /*****************
-    ** Save Loaded **
-    ******************/
+    /****
+    ** Save loaded
+    ****/
     private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
     {
         this.UpdateSelectedLanguage(); //get language code
@@ -75,9 +115,6 @@ internal class ModEntry : Mod
 
         this.RemoveInvalidLocations();
     }
-
-    private readonly int TicketStationTopTile = 1032;
-    private readonly int TicketStationBottomTile = 1057;
 
     private void DrawInTicketStation()
     {
@@ -108,13 +145,11 @@ internal class ModEntry : Mod
                 new StaticTile(frontLayer, outdoorsTilesheet, BlendMode.Alpha, 1);
         }
 
-
         //set the TrainStation property
         railway.setTileProperty(this.Config.TicketStationX, this.Config.TicketStationY, "Buildings", "Action", "TrainStation");
 
         railway.map.LoadTileSheets(Game1.mapDisplayDevice);
     }
-
 
     private void LoadContentPacks()
     {
@@ -205,10 +240,10 @@ internal class ModEntry : Mod
         }
     }
 
-    /********************
-    ** Input detection **
-    *********************/
 
+    /****
+    ** Input detection
+    ****/
     private void Input_ButtonPressed(object sender, StardewModdingAPI.Events.ButtonPressedEventArgs e)
     {
         if (!Context.CanPlayerMove)
@@ -237,13 +272,6 @@ internal class ModEntry : Mod
             this.OpenBoatMenu();
             this.Helper.Input.Suppress(e.Button);
         }
-    }
-
-    public void OpenBoatMenu()
-    {
-        Response[] responses = this.GetBoatReponses().ToArray();
-
-        Game1.currentLocation.createQuestionDialogue(this.Helper.Translation.Get("ChooseDestination"), responses, this.BoatDestinationPicked);
     }
 
     private List<Response> GetBoatReponses()
@@ -277,18 +305,6 @@ internal class ModEntry : Mod
         return responses;
     }
 
-    public void OpenTrainMenu()
-    {
-        Response[] responses = this.GetReponses().ToArray();
-        if (responses.Length <= 1) //only 1 response means there's only the cancel option
-        {
-            Game1.drawObjectDialogue(this.Helper.Translation.Get("NoDestinations"));
-            return;
-        }
-
-        Game1.currentLocation.createQuestionDialogue(this.Helper.Translation.Get("ChooseDestination"), responses, this.DestinationPicked);
-    }
-
     private List<Response> GetReponses()
     {
         List<Response> responses = new List<Response>();
@@ -316,10 +332,10 @@ internal class ModEntry : Mod
         return responses;
     }
 
-    /************************************
-    ** Warp after choosing destination **
-    *************************************/
 
+    /****
+    ** Warp after choosing destination
+    ****/
     private void BoatDestinationPicked(Farmer who, string whichAnswer)
     {
         if (whichAnswer == "Cancel")
@@ -350,7 +366,6 @@ internal class ModEntry : Mod
         }
     }
 
-
     private void DestinationPicked(Farmer who, string whichAnswer)
     {
         if (whichAnswer == "Cancel")
@@ -364,8 +379,6 @@ internal class ModEntry : Mod
             }
         }
     }
-    string destinationMessage;
-    ICue cue;
 
     private void AttemptToWarpBoat(BoatStop stop)
     {
@@ -377,6 +390,7 @@ internal class ModEntry : Mod
         LocationRequest request = Game1.getLocationRequest(stop.TargetMapName);
         Game1.warpFarmer(request, stop.TargetX, stop.TargetY, stop.FacingDirectionAfterWarp);
     }
+
     private void AttemptToWarp(TrainStop stop)
     {
         if (!this.TryToChargeMoney(stop.Cost))
@@ -394,8 +408,6 @@ internal class ModEntry : Mod
         this.cue.SetVariable("Volume", 100f);
         this.cue.Play();
     }
-
-    private bool finishedTrainWarp = false;
 
     private void Request_OnWarp()
     {
@@ -425,10 +437,10 @@ internal class ModEntry : Mod
         this.cue.Stop(Microsoft.Xna.Framework.Audio.AudioStopOptions.AsAuthored);
     }
 
-    /******************
-    **    Utility    **
-    *******************/
 
+    /****
+    ** Utility
+    ****/
     private bool TryToChargeMoney(int cost)
     {
         if (Game1.player.Money < cost)
@@ -438,14 +450,12 @@ internal class ModEntry : Mod
 
         Game1.player.Money -= cost;
         return true;
-
     }
 
-    /***********************
-    ** Localization stuff **
-    ************************/
 
-    private static LocalizedContentManager.LanguageCode selectedLanguage;
+    /****
+    ** Localization stuff
+    ****/
     private void UpdateSelectedLanguage()
     {
         selectedLanguage = LocalizedContentManager.CurrentLanguageCode;

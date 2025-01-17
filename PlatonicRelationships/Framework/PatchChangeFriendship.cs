@@ -8,6 +8,9 @@ namespace PlatonicRelationships.Framework;
 //Patching the method Farmer.changeFriendship()
 internal class PatchChangeFriendship
 {
+    /*********
+    ** Public methods
+    *********/
     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         List<CodeInstruction> instructionList = instructions.ToList();

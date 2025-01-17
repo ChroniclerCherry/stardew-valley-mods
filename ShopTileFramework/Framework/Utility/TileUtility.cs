@@ -11,6 +11,9 @@ namespace ShopTileFramework.Framework.Utility;
 /// </summary>
 internal class TileUtility
 {
+    /*********
+    ** Public methods
+    *********/
     /// <summary>
     /// Returns the tile property found at the given parameters
     /// </summary>

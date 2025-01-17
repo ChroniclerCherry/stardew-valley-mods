@@ -12,6 +12,9 @@ namespace CustomizeAnywhere.Framework;
 
 internal class DresserAndMirror
 {
+    /*********
+    ** Fields
+    *********/
     private IModHelper Helper;
 
     private readonly string ModId;
@@ -23,6 +26,10 @@ internal class DresserAndMirror
     private readonly string CatalogueQualifiedId;
     private readonly string MirrorQualifiedId;
 
+
+    /*********
+    ** Public methods
+    *********/
     public DresserAndMirror(IModHelper helper, string modId)
     {
         this.ModId = modId;
@@ -49,6 +56,10 @@ internal class DresserAndMirror
         }
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
     {
         // add objects

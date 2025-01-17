@@ -10,7 +10,9 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock;
 /// </summary>
 internal class ItemPriceAndStockManager
 {
-    public Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock { get; set; }
+    /*********
+    ** Fields
+    *********/
     private readonly ItemStock[] _itemStocks;
     private readonly double _defaultSellPriceMultipler;
     private readonly Dictionary<double, string[]> _priceMultiplierWhen;
@@ -18,6 +20,16 @@ internal class ItemPriceAndStockManager
     private readonly string _shopName;
     private readonly int _shopPrice;
 
+
+    /*********
+    ** Accessors
+    *********/
+    public Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock { get; set; }
+
+
+    /*********
+    ** Public methods
+    *********/
     /// <summary>
     /// Initializes the manager with the itemstocks, and how many items max this shop will contain
     /// </summary>
@@ -71,9 +83,12 @@ internal class ItemPriceAndStockManager
 
         //randomly reduces the stock of the whole store down to maxNumItemsSoldInStore
         ItemsUtil.RandomizeStock(this.ItemPriceAndStock, this._maxNumItemsSoldInStore);
-
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     /// <summary>
     /// Adds the stock from each ItemStock to the overall inventory
     /// </summary>

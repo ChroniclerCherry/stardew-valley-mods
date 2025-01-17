@@ -14,6 +14,9 @@ namespace ToolUpgradeCosts;
 
 internal class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     private static ModEntry _instance;
 
     private readonly Dictionary<UpgradeMaterials, string> _defaultMaterials = new()
@@ -26,6 +29,10 @@ internal class ModEntry : Mod
 
     private ModConfig Config;
 
+
+    /*********
+    ** Public methods
+    *********/
     public override void Entry(IModHelper helper)
     {
         _instance = this;
@@ -40,6 +47,10 @@ internal class ModEntry : Mod
         );
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private void GetIndexes(object sender, SaveLoadedEventArgs e)
     {
         foreach (KeyValuePair<UpgradeMaterials, Upgrade> upgrade in this.Config.UpgradeCosts)

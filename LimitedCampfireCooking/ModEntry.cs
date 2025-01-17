@@ -11,9 +11,19 @@ namespace LimitedCampfireCooking;
 
 internal class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     private static ModConfig Config;
     private ICustomCraftingStationsApi CustomCraftingStations;
 
+    private Dictionary<string, string> AllCookingRecipes;
+    private Dictionary<string, string> LimitedCookingRecipes;
+
+
+    /*********
+    ** Public methods
+    *********/
     public override void Entry(IModHelper helper)
     {
         Config = this.Helper.ReadConfig<ModConfig>();
@@ -22,6 +32,10 @@ internal class ModEntry : Mod
         helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
     {
         this.CustomCraftingStations = this.Helper.ModRegistry.GetApi<ICustomCraftingStationsApi>("Cherry.CustomCraftingStations");
@@ -45,9 +59,6 @@ internal class ModEntry : Mod
             }
         }
     }
-
-    private Dictionary<string, string> AllCookingRecipes;
-    private Dictionary<string, string> LimitedCookingRecipes;
 
     private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
     {

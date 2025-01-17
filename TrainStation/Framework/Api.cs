@@ -5,6 +5,9 @@ namespace TrainStation.Framework;
 
 public class Api : IApi
 {
+    /*********
+    ** Public methods
+    *********/
     public void OpenTrainMenu()
     {
         ModEntry.Instance.OpenTrainMenu();

@@ -9,8 +9,15 @@ namespace ShopTileFramework.Framework.Utility;
 /// </summary>
 internal class Translations
 {
+    /*********
+    ** Fields
+    *********/
     private static LocalizedContentManager.LanguageCode _selectedLanguage;
 
+
+    /*********
+    ** Public methods
+    *********/
     /// <summary>
     /// Given the english string, and then a dictionary of localized versions of the string,
     /// return the string of the current selected language

@@ -7,9 +7,16 @@ namespace CustomCraftingStations.Framework;
 
 internal class CustomCraftingMenu : CraftingPage
 {
+    /*********
+    ** Fields
+    *********/
     private readonly List<string> CraftingRecipes;
     private readonly List<string> CookingRecipes;
 
+
+    /*********
+    ** Public methods
+    *********/
     public CustomCraftingMenu(int x, int y, int width, int height, List<IInventory> materialContainers, List<string> craftingRecipes, List<string> cookingRecipes)
         : base(x, y, width, height, standaloneMenu: true, materialContainers: materialContainers)
     {

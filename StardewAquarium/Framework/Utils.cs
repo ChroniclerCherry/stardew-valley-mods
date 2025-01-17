@@ -13,8 +13,12 @@ namespace StardewAquarium.Framework;
 
 internal static class Utils
 {
+    /*********
+    ** Fields
+    *********/
     private const string StatsKey = "Cherry.StardewAquarium.FishDonated";
-
+    private const string AchievementMessageType = "Achievement";
+    private const string DonateFishMessageType = "DonateFish";
     private const string AquariumPrefix = "AquariumDonated:";
 
     private static IModHelper _helper;
@@ -22,11 +26,15 @@ internal static class Utils
     private static IManifest _manifest;
 
     private static NetStringHashSet MasterPlayerMail => Game1.MasterPlayer.mailReceived;
+    private static LastDonatedFishSign _fishSign;
 
+
+    /*********
+    ** Accessors
+    *********/
     /// <summary>
     /// Maps the InternalName of the fish to its internalname without spaces, eg. Rainbow Trout to RainbowTrout
     /// </summary>
-    /// 
     public static Dictionary<string, string> InternalNameToDonationName { get; private set; } = [];
 
     public static List<string> FishIDs { get; set; } = [];
@@ -36,8 +44,10 @@ internal static class Utils
     /// </summary>
     public static Dictionary<string, string> FishDisplayNames { get; private set; } = [];
 
-    private static LastDonatedFishSign _fishSign;
 
+    /*********
+    ** Public fields
+    *********/
     public static void Initialize(IModHelper helper, IMonitor monitor, IManifest modManifest)
     {
         _helper = helper;
@@ -48,27 +58,6 @@ internal static class Utils
         _helper.Events.Multiplayer.ModMessageReceived += Multiplayer_ModMessageReceived;
 
         _fishSign = new LastDonatedFishSign(helper.Events, monitor);
-    }
-
-    private static void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
-    {
-        //clear these dictionaries
-        InternalNameToDonationName.Clear();
-        FishDisplayNames.Clear();
-
-        foreach ((string key, ObjectData info) in Game1.objectData)
-        {
-            string fishName = info.Name;
-            if (info.Category == Object.FishCategory)
-            {
-                FishIDs.Add(key);
-                InternalNameToDonationName.Add(fishName, fishName.Replace(" ", string.Empty));
-                FishDisplayNames.Add(fishName.Replace(" ", string.Empty), TokenParser.ParseText(info.DisplayName));
-            }
-        }
-
-        // update stats
-        Game1.player.stats.Set(StatsKey, GetNumDonatedFish());
     }
 
     public static bool IsUnDonatedFish(Item i)
@@ -85,7 +74,6 @@ internal static class Utils
             _monitor.Log($"An item in the inventory \"{i.Name}\" has a category of Fish but is not a valid fish object.", LogLevel.Error);
             return false;
         }
-
     }
 
     /// <summary>Get whether a fish can be donated.</summary>
@@ -107,8 +95,6 @@ internal static class Utils
     {
         return MasterPlayerMail.Contains($"{AquariumPrefix}{internalFishKey}");
     }
-
-    private const string DonateFishMessageType = "DonateFish";
 
     public static bool DonateFish(Item i)
     {
@@ -185,7 +171,6 @@ internal static class Utils
         }
     }
 
-    private const string AchievementMessageType = "Achievement";
     public static bool CheckAchievement()
     {
         return GetNumDonatedFish() >= InternalNameToDonationName.Count;
@@ -207,6 +192,31 @@ internal static class Utils
         {
             _helper.Events.GameLoop.Saving += AddCompletionFlag;
         }
+    }
+
+
+    /*********
+    ** Private fields
+    *********/
+    private static void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
+    {
+        //clear these dictionaries
+        InternalNameToDonationName.Clear();
+        FishDisplayNames.Clear();
+
+        foreach ((string key, ObjectData info) in Game1.objectData)
+        {
+            string fishName = info.Name;
+            if (info.Category == Object.FishCategory)
+            {
+                FishIDs.Add(key);
+                InternalNameToDonationName.Add(fishName, fishName.Replace(" ", string.Empty));
+                FishDisplayNames.Add(fishName.Replace(" ", string.Empty), TokenParser.ParseText(info.DisplayName));
+            }
+        }
+
+        // update stats
+        Game1.player.stats.Set(StatsKey, GetNumDonatedFish());
     }
 
     private static void AddCompletionFlag(object sender, SavingEventArgs e)

@@ -9,12 +9,24 @@ namespace StardewAquarium.Framework.Menus;
 
 internal class DonateFishMenuAndroid : ShopMenu
 {
+    /*********
+    ** Fields
+    *********/
+    private Dictionary<ISalable, ItemStockInformation> donations = new Dictionary<ISalable, ItemStockInformation>();
+
+
+    /*********
+    ** Accessors
+    *********/
     public static bool Donated;
     public static bool PufferchickDonated;
 
-    private Dictionary<ISalable, ItemStockInformation> donations = new Dictionary<ISalable, ItemStockInformation>();
 
-    public DonateFishMenuAndroid(IModHelper helper, IMonitor monitor) : base("-1", new Dictionary<ISalable, ItemStockInformation>())
+    /*********
+    ** Public methods
+    *********/
+    public DonateFishMenuAndroid(IModHelper helper, IMonitor monitor)
+        : base("-1", new Dictionary<ISalable, ItemStockInformation>())
     {
         //look android forced me to do this terrible thing don't judge me just pretend they're not static
         Donated = PufferchickDonated = false;

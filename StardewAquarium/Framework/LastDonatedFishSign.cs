@@ -10,12 +10,19 @@ namespace StardewAquarium.Framework;
 
 internal sealed class LastDonatedFishSign
 {
+    /*********
+    ** Fields
+    *********/
     private readonly IMonitor Monitor;
 
     // the last donated fish is stored as a member of farm's mod data.
     // this avoids us having to do our own multiplayer handling.
     private const string LastDonatedFishKey = "Cherry.StardewAquarium.LastDonatedFish";
 
+
+    /*********
+    ** Public methods
+    *********/
     public LastDonatedFishSign(IModEvents events, IMonitor monitor)
     {
         this.Monitor = monitor;
@@ -32,6 +39,10 @@ internal sealed class LastDonatedFishSign
         this.Monitor.Log($"The last donated fish is {i.Name}");
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     /// <summary>Pick a random fish when the museum is complete.</summary>
     /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
     private void GameLoop_DayStarted(object sender, DayStartedEventArgs e)
@@ -86,7 +97,6 @@ internal sealed class LastDonatedFishSign
 
     private void MigrateLastDonatedFish()
     {
-
         if (Game1.getFarm().modData.ContainsKey(LastDonatedFishKey))
         {
             return;

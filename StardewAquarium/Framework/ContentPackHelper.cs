@@ -28,7 +28,7 @@ internal static class ContentPackHelper
 
 
     /*********
-    ** Methods
+    ** Public methods
     *********/
     /// <summary>Load a translation string from <c>Strings\\UI</c> provided by the content pack.</summary>
     /// <param name="key">The translation key to load.</param>

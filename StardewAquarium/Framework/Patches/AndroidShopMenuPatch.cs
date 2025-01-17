@@ -9,9 +9,16 @@ namespace StardewAquarium.Framework.Patches;
 
 internal class AndroidShopMenuPatch
 {
+    /*********
+    ** Fields
+    *********/
     private static IModHelper _helper;
     private static IMonitor _monitor;
 
+
+    /*********
+    ** Public methods
+    *********/
     public static void Initialize(IModHelper helper, IMonitor monitor)
     {
         _helper = helper;
@@ -27,6 +34,10 @@ internal class AndroidShopMenuPatch
         );
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private static void setCurrentItem_postfix(ref ShopMenu __instance)
     {
         if (Game1.currentLocation?.Name != ContentPackHelper.InteriorLocationName || __instance is not DonateFishMenuAndroid) return;

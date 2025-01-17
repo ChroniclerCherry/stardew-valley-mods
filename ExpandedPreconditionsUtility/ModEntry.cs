@@ -5,9 +5,16 @@ namespace ExpandedPreconditionsUtility;
 
 internal class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     private IModHelper _helper;
     private IMonitor _monitor;
 
+
+    /*********
+    ** Public methods
+    *********/
     public override void Entry(IModHelper helper)
     {
         this._helper = this.Helper;

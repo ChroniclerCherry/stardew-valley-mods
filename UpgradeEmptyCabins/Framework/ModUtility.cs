@@ -6,6 +6,9 @@ namespace UpgradeEmptyCabins.Framework;
 
 internal static class ModUtility
 {
+    /*********
+    ** Public methods
+    *********/
     public static Building GetCabin(string name)
     {
         foreach (var cabin in GetCabins())

@@ -12,6 +12,9 @@ namespace ShopTileFramework.Framework.Apis;
 [Obsolete("This class is WIP and not tested yet.")]
 public class ShopTileFrameworkApi : IShopTileFrameworkApi
 {
+    /*********
+    ** Public methods
+    *********/
     /// <summary>
     /// Registers a mod directory as a content pack
     /// </summary>

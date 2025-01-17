@@ -14,12 +14,23 @@ namespace ShopTileFramework.Framework.Utility;
 /// </summary>
 internal static class ItemsUtil
 {
-    public static List<string> RecipesList;
-
+    /*********
+    ** Fields
+    *********/
     private static List<string> PacksToRemove = new List<string>();
     private static List<string> RecipePacksToRemove = new List<string>();
     private static List<string> ItemsToRemove = new List<string>();
 
+
+    /*********
+    ** Accessors
+    *********/
+    public static List<string> RecipesList;
+
+
+    /*********
+    ** Public methods
+    *********/
     /// <summary>
     /// Loads up the onject information for all types, 
     /// done at the start of each save loaded so that JA info is up to date

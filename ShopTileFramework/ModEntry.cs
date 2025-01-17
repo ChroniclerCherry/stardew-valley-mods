@@ -19,20 +19,30 @@ namespace ShopTileFramework;
 /// </summary>
 internal class ModEntry : Mod
 {
-    //static copies of helper and monitor
-    public static IModHelper helper;
-    public static IMonitor monitor;
-
+    /*********
+    ** Fields
+    *********/
     //The following variables are to help revert hardcoded warps done by the carpenter and
     //animal shop menus
     private bool _changedMarnieStock;
-    public static GameLocation SourceLocation;
     private static Vector2 _playerPos = Vector2.Zero;
+
+
+    /*********
+    ** Accessors
+    *********/
+    public static IModHelper helper;
+    public static IMonitor monitor;
+    public static GameLocation SourceLocation;
 
     public static bool VerboseLogging;
 
     public static bool JustOpenedVanilla = false;
 
+
+    /*********
+    ** Public methods
+    *********/
     /// <summary>
     /// the Mod entry point called by SMAPI
     /// </summary>
@@ -65,6 +75,21 @@ internal class ModEntry : Mod
         Harmony harmony = new Harmony(this.ModManifest.UniqueID);
         VanillaShopStockPatches.Apply(harmony);
     }
+
+    /// <summary>
+    /// Returns an instance of this mod's api
+    /// </summary>
+    /// <returns></returns>
+    public override object GetApi()
+    {
+        //TODO: Test this
+        return new ShopTileFrameworkApi();
+    }
+
+
+    /*********
+    ** Private methods
+    *********/
     /// <summary>
     /// Checks for warps from the buildings/animals menu 
     /// and ensures the player is returned to their original location
@@ -84,6 +109,7 @@ internal class ModEntry : Mod
             Game1.locationRequest.IsStructure = SourceLocation.isStructure.Value;
         }
     }
+
     /// <summary>
     /// Stops Marnie's portrait from appearing in non-Marnie animal shops after animal purchasing
     /// And removes specified animals from Marnie's store
@@ -128,15 +154,7 @@ internal class ModEntry : Mod
             Game1.player.position.Set(_playerPos);
         }
     }
-    /// <summary>
-    /// Returns an instance of this mod's api
-    /// </summary>
-    /// <returns></returns>
-    public override object GetApi()
-    {
-        //TODO: Test this
-        return new ShopTileFrameworkApi();
-    }
+
     /// <summary>
     /// On a save loaded, store the language for translation purposes. Done on save loaded in
     /// case it's changed between saves

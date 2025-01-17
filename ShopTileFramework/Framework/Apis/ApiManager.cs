@@ -8,9 +8,16 @@ namespace ShopTileFramework.Framework.Apis;
 /// </summary>
 internal class ApiManager
 {
+    /*********
+    ** Accessors
+    *********/
     public static IJsonAssetsApi JsonAssets { get; private set; }
     public static IConditionsApi Conditions { get; private set; }
 
+
+    /*********
+    ** Public methods
+    *********/
     /// <summary>
     /// Register the API for Json Assets
     /// </summary>

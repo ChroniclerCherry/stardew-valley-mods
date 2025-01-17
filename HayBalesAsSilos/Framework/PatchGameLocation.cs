@@ -5,6 +5,9 @@ namespace HayBalesAsSilos.Framework;
 
 internal class PatchGameLocation
 {
+    /*********
+    ** Public methods
+    *********/
     public static void After_GetHayCapacity(ref GameLocation __instance, ref int __result)
     {
         if (!ModEntry.GetAllAffectedMaps().Contains(Game1.currentLocation))

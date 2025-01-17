@@ -11,10 +11,17 @@ namespace MultiplayerModChecker;
 
 internal class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     private List<MultiplayerReportData> _rawReports = new List<MultiplayerReportData>();
     private readonly List<string> _reports = new List<string>();
     private ModConfig Config;
 
+
+    /*********
+    ** Public methods
+    *********/
     public override void Entry(IModHelper helper)
     {
         this.Helper.Events.Multiplayer.PeerContextReceived += this.PeerConnected;
@@ -22,6 +29,10 @@ internal class ModEntry : Mod
         this.Config = this.Helper.ReadConfig<ModConfig>();
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private void PeerConnected(object sender, PeerContextReceivedEventArgs e)
     {
         if (!Context.IsMainPlayer) return;

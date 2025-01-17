@@ -10,8 +10,15 @@ namespace ChangeSlimeHutchLimit;
 
 internal class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     private static ModConfig Config;
 
+
+    /*********
+    ** Public methods
+    *********/
     public override void Entry(IModHelper helper)
     {
         // init
@@ -29,6 +36,10 @@ internal class ModEntry : Mod
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
     private void OnGameLaunched(object sender, EventArgs e)
     {

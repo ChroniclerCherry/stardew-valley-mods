@@ -14,9 +14,9 @@ namespace ShopTileFramework.Framework.Shop;
 /// </summary>
 internal class ShopManager
 {
-    public static Dictionary<string, ItemShop> ItemShops = new Dictionary<string, ItemShop>();
-    public static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
-    public static Dictionary<string, VanillaShop> VanillaShops = new Dictionary<string, VanillaShop>();
+    /*********
+    ** Fields
+    *********/
     private static readonly string[] VanillaShopNames = {
         "PierreShop",
         "JojaShop",
@@ -37,6 +37,17 @@ internal class ShopManager
     };
 
 
+    /*********
+    ** Accessors
+    *********/
+    public static Dictionary<string, ItemShop> ItemShops = new Dictionary<string, ItemShop>();
+    public static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
+    public static Dictionary<string, VanillaShop> VanillaShops = new Dictionary<string, VanillaShop>();
+
+
+    /*********
+    ** Public methods
+    *********/
     /// <summary>
     /// Takes content packs and loads them as ItemShop and AnimalShop objects
     /// </summary>

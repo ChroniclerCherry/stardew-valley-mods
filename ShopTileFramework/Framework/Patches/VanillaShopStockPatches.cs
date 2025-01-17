@@ -11,43 +11,15 @@ namespace ShopTileFramework.Framework.Patches;
 
 internal class VanillaShopStockPatches
 {
+    /*********
+    ** Public methods
+    *********/
     public static void Apply(Harmony harmony)
     {
         harmony.Patch(
            original: AccessTools.Method(typeof(ShopBuilder), nameof(ShopBuilder.GetShopStock), new[] { typeof(string), typeof(ShopData) }),
            postfix: new HarmonyMethod(typeof(VanillaShopStockPatches), nameof(VanillaShopStockPatches.ShopBuilder_GetShopStock))
         );
-    }
-
-    private static void EditShopStock(string shopName, ref Dictionary<ISalable, ItemStockInformation> __result)
-    {
-        ModEntry.JustOpenedVanilla = true;
-
-        if (!ShopManager.VanillaShops.ContainsKey(shopName)) return;
-
-        var customStock = ShopManager.VanillaShops[shopName].ItemPriceAndStock;
-        ItemsUtil.RemoveSoldOutItems(customStock);
-        if (ShopManager.VanillaShops[shopName].ReplaceInsteadOfAdd)
-        {
-            __result = customStock;
-        }
-        else
-        {
-            foreach (var key in customStock.Keys)
-            {
-                if (__result.ContainsKey(key))
-                    return;
-            }
-
-            if (ShopManager.VanillaShops[shopName].AddStockAboveVanilla)
-            {
-                __result = customStock.Concat(__result).ToDictionary(x => x.Key, x => x.Value);
-            }
-            else
-            {
-                __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-            }
-        }
     }
 
     public static void ShopBuilder_GetShopStock(string shopId, ShopData shop, ref Dictionary<ISalable, ItemStockInformation> __result)
@@ -77,5 +49,40 @@ internal class VanillaShopStockPatches
 
         if (internalShopId != null)
             EditShopStock(internalShopId, ref __result);
+    }
+
+
+    /*********
+    ** Private methods
+    *********/
+    private static void EditShopStock(string shopName, ref Dictionary<ISalable, ItemStockInformation> __result)
+    {
+        ModEntry.JustOpenedVanilla = true;
+
+        if (!ShopManager.VanillaShops.ContainsKey(shopName)) return;
+
+        var customStock = ShopManager.VanillaShops[shopName].ItemPriceAndStock;
+        ItemsUtil.RemoveSoldOutItems(customStock);
+        if (ShopManager.VanillaShops[shopName].ReplaceInsteadOfAdd)
+        {
+            __result = customStock;
+        }
+        else
+        {
+            foreach (var key in customStock.Keys)
+            {
+                if (__result.ContainsKey(key))
+                    return;
+            }
+
+            if (ShopManager.VanillaShops[shopName].AddStockAboveVanilla)
+            {
+                __result = customStock.Concat(__result).ToDictionary(x => x.Key, x => x.Value);
+            }
+            else
+            {
+                __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
+            }
+        }
     }
 }

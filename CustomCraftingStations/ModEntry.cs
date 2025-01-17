@@ -14,6 +14,9 @@ namespace CustomCraftingStations;
 
 internal class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     private bool _openedNonCustomMenu;
 
     private Dictionary<string, CraftingStationConfig> _tileCraftingStations;
@@ -30,6 +33,10 @@ internal class ModEntry : Mod
 
     public static bool MenuOverride = true;
 
+
+    /*********
+    ** Public methods
+    *********/
     public override void Entry(IModHelper helper)
     {
         if (Constants.TargetPlatform == GamePlatform.Android)
@@ -54,6 +61,10 @@ internal class ModEntry : Mod
         return new CustomCraftingStationsApi();
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private void GameLoop_SaveLoaded(object sender, StardewModdingAPI.Events.SaveLoadedEventArgs e)
     {
         //register content packs

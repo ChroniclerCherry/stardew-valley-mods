@@ -10,9 +10,16 @@ namespace PlatonicRelationships;
 
 internal class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     private ModConfig Config;
     private readonly AddDatingPrereq Editor = new AddDatingPrereq();
 
+
+    /*********
+    ** Public methods
+    *********/
     public override void Entry(IModHelper helper)
     {
         this.Config = this.Helper.ReadConfig<ModConfig>();
@@ -23,6 +30,10 @@ internal class ModEntry : Mod
         this.ApplyPatches();
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
     {
         if (this.Editor.CanEdit(e.NameWithoutLocale))

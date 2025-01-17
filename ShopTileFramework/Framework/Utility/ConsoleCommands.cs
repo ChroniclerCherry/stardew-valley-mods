@@ -9,6 +9,9 @@ namespace ShopTileFramework.Framework.Utility;
 /// </summary>
 internal class ConsoleCommands
 {
+    /*********
+    ** Public methods
+    *********/
     /// <summary>
     /// Registers all commands
     /// </summary>
@@ -49,6 +52,10 @@ internal class ConsoleCommands
         );
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private void ConditionCheck(string arg1, string[] arg2)
     {
         string[] condition = { string.Join(" ", arg2) };

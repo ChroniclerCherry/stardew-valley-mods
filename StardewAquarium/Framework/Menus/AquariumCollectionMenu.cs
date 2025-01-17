@@ -15,6 +15,9 @@ namespace StardewAquarium.Framework.Menus;
 
 internal class AquariumCollectionMenu : IClickableMenu
 {
+    /*********
+    ** Fields
+    *********/
     private string hoverText = "";
 
     private List<List<ClickableTextureComponent>> collections = new List<List<ClickableTextureComponent>>();
@@ -25,6 +28,10 @@ internal class AquariumCollectionMenu : IClickableMenu
     private string _title;
     private readonly bool IsAndroid = Constants.TargetPlatform == GamePlatform.Android;
 
+
+    /*********
+    ** Public methods
+    *********/
     public AquariumCollectionMenu(string title)
     {
         this._title = title;
@@ -182,11 +189,6 @@ internal class AquariumCollectionMenu : IClickableMenu
         this.backButton.tryHover(x, y, 0.5f);
     }
 
-    private string createDescription(string key)
-    {
-        return CreateDescription(ItemRegistry.GetDataOrErrorItem(key));
-    }
-
     public override void draw(SpriteBatch b)
     {
         if (!Game1.options.showMenuBackground)
@@ -222,6 +224,15 @@ internal class AquariumCollectionMenu : IClickableMenu
         }
 
         this.drawMouse(b);
+    }
+
+
+    /*********
+    ** Private methods
+    *********/
+    private string createDescription(string key)
+    {
+        return CreateDescription(ItemRegistry.GetDataOrErrorItem(key));
     }
 
     private static string CreateDescription(ParsedItemData data)

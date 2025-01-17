@@ -13,9 +13,16 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock;
 /// </summary>
 internal class ItemBuilder
 {
+    /*********
+    ** Fields
+    *********/
     private Dictionary<ISalable, ItemStockInformation> _itemPriceAndStock;
     private readonly ItemStock _itemStock;
 
+
+    /*********
+    ** Public methods
+    *********/
     public ItemBuilder(ItemStock itemStock)
     {
         this._itemStock = itemStock;
@@ -71,6 +78,10 @@ internal class ItemBuilder
         return true;
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     /// <summary>
     /// Given an itemID, return an instance of that item with the parameters saved in this builder
     /// </summary>

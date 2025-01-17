@@ -14,12 +14,19 @@ namespace HayBalesAsSilos;
 
 internal class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     private static IMonitor monitor;
     internal static ModConfig Config;
 
     private const string HayBaleId = "45";
     internal const string HayBaleQualifiedId = ItemRegistry.type_bigCraftable + "45";
 
+
+    /*********
+    ** Public methods
+    *********/
     public override void Entry(IModHelper helper)
     {
         // init
@@ -40,6 +47,19 @@ internal class ModEntry : Mod
         helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
     }
 
+    public static IEnumerable<GameLocation> GetAllAffectedMaps()
+    {
+        yield return Game1.getFarm();
+        foreach (Building building in Game1.getFarm().buildings.Where(building => building.indoors.Value != null))
+        {
+            yield return building.indoors.Value;
+        }
+    }
+
+
+    /*********
+    ** Private methods
+    *********/
     private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
     {
         this.AddGenericModConfigMenu(
@@ -130,15 +150,6 @@ internal class ModEntry : Mod
                     });
                 }
             });
-        }
-    }
-
-    public static IEnumerable<GameLocation> GetAllAffectedMaps()
-    {
-        yield return Game1.getFarm();
-        foreach (Building building in Game1.getFarm().buildings.Where(building => building.indoors.Value != null))
-        {
-            yield return building.indoors.Value;
         }
     }
 }

@@ -9,15 +9,31 @@ namespace StardewAquarium.Framework;
 
 internal static class AquariumGameStateQuery
 {
-    public const string HasBaitQuery = "StardewValleyAquarium_PLAYER_HAS_BAIT";
+    /*********
+    ** Fields
+    *********/
     private const string RandomChanceForPuffer = "StardewValleyAquarium_RANDOM_CHANCE_FOR_PUFFER";
 
+
+    /*********
+    ** Accessors
+    *********/
+    public const string HasBaitQuery = "StardewValleyAquarium_PLAYER_HAS_BAIT";
+
+
+    /*********
+    ** Public methods
+    *********/
     public static void Init()
     {
         GameStateQuery.Register(HasBaitQuery, HasBait);
         GameStateQuery.Register(RandomChanceForPuffer, PufferChance);
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private static bool PufferChance(string[] query, GameStateQueryContext context)
     {
         double pufferChance = 0.01 + 0.005 * Utils.GetNumDonatedFish();

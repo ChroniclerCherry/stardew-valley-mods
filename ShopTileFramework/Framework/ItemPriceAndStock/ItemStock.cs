@@ -14,16 +14,26 @@ namespace ShopTileFramework.Framework.ItemPriceAndStock;
 /// </summary>
 internal class ItemStock : ItemStockModel
 {
-    public string CurrencyObjectId;
-    public double DefaultSellPriceMultiplier;
+    /*********
+    ** Fields
+    *********/
     private Dictionary<double, string[]> PriceMultiplierWhen;
-    public string ShopName;
-
     private Dictionary<double, string[]> _priceMultiplierWhen;
-
     private ItemBuilder _builder;
     private Dictionary<ISalable, ItemStockInformation> _itemPriceAndStock;
 
+
+    /*********
+    ** Accessors
+    *********/
+    public string CurrencyObjectId;
+    public double DefaultSellPriceMultiplier;
+    public string ShopName;
+
+
+    /*********
+    ** Public methods
+    *********/
     /// <summary>
     /// Initialize the ItemStock, doing error checking on the quality, and setting the price to the store price
     /// if none is given specifically for this stock.
@@ -113,6 +123,10 @@ internal class ItemStock : ItemStockModel
         return this._itemPriceAndStock;
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     /// <summary>
     /// Add all items listed in the ItemIDs section
     /// </summary>

@@ -15,10 +15,10 @@ namespace ShopTileFramework.Framework.Shop;
 /// </summary>
 internal class ItemShop : ItemShopModel
 {
+    /*********
+    ** Fields
+    *********/
     private Texture2D _portrait;
-    public ItemPriceAndStockManager StockManager { get; set; }
-
-    public IContentPack ContentPack { set; get; }
 
     /// <summary>
     /// This is used to make sure that JA only adds items to this shop the first time it is opened each day
@@ -26,6 +26,18 @@ internal class ItemShop : ItemShopModel
     /// </summary>
     private bool _shopOpenedToday;
 
+
+    /*********
+    ** Accessors
+    *********/
+    public ItemPriceAndStockManager StockManager { get; set; }
+
+    public IContentPack ContentPack { set; get; }
+
+
+    /*********
+    ** Public methods
+    *********/
     /// <summary>
     /// Initializes the stock manager, done at game loaded so that content packs have finished loading in
     /// </summary>
@@ -62,6 +74,7 @@ internal class ItemShop : ItemShopModel
             ModEntry.monitor.Log(ex.Message + ex.StackTrace, LogLevel.Error);
         }
     }
+
     /// <summary>
     /// Refreshes the contents of all stores
     /// and sets the flag for if the store has been opened yet today to false

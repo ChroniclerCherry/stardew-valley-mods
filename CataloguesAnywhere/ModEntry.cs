@@ -7,14 +7,25 @@ namespace CataloguesAnywhere;
 
 internal class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     private ModConfig Config;
 
+
+    /*********
+    ** Public methods
+    *********/
     public override void Entry(IModHelper helper)
     {
         this.Config = this.Helper.ReadConfig<ModConfig>();
         helper.Events.Input.ButtonPressed += this.OnButtonPressed;
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         if (!Context.CanPlayerMove || !this.Config.Enabled)

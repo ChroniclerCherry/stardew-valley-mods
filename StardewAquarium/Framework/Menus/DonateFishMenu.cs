@@ -8,11 +8,18 @@ namespace StardewAquarium.Framework.Menus;
 
 internal class DonateFishMenu : InventoryMenu
 {
+    /*********
+    ** Fields
+    *********/
     private bool _donated;
     private bool _pufferchickDonated;
 
     private readonly string title;
 
+
+    /*********
+    ** Public methods
+    *********/
     public DonateFishMenu()
         : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, false, null, Utils.IsUnDonatedFish, 36, 3)
     {

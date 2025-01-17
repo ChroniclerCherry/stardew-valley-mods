@@ -4,11 +4,18 @@ namespace ExpandedPreconditionsUtility.Framework;
 
 public class ConditionsChecker : IConditionsChecker
 {
+    /*********
+    ** Fields
+    *********/
     private ConditionChecker _conditionChecker;
 
     private readonly IModHelper _helper;
     private readonly IMonitor _monitor;
 
+
+    /*********
+    ** Public methods
+    *********/
     internal ConditionsChecker(IMonitor monitor, IModHelper helper)
     {
         this._helper = helper;

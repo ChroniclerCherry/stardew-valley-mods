@@ -9,9 +9,15 @@ namespace MultiYieldCrops.Framework;
 
 internal class HarvestPatches
 {
+    /*********
+    ** Fields
+    *********/
     private static IMonitor Monitor;
 
-    // call this method from your Entry class
+
+    /*********
+    ** Public methods
+    *********/
     public static void Initialize(IMonitor monitor)
     {
         Monitor = monitor;
@@ -49,6 +55,10 @@ internal class HarvestPatches
         }
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     /// <summary>Get whether a crop can be harvested now.</summary>
     /// <param name="crop">The crop to check.</param>
     private static bool CanHarvest(Crop crop)

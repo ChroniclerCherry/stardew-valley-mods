@@ -6,9 +6,16 @@ namespace StardewAquarium.Framework;
 
 internal sealed class AquariumMessage
 {
+    /*********
+    ** Fields
+    *********/
     private List<Response[]>? _responsePages;
     private int _currentPage;
 
+
+    /*********
+    ** Public methods
+    *********/
     public AquariumMessage(Span<string> args)
     {
         List<string> fishes = new(args.Length);
@@ -34,6 +41,10 @@ internal sealed class AquariumMessage
         Game1.currentLocation.createQuestionDialogue(ContentPackHelper.LoadString("WhichFishInfo"), this._responsePages[this._currentPage], this.DisplayFishInfo);
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private void BuildResponse(List<string> fishes)
     {
         this._responsePages = [];

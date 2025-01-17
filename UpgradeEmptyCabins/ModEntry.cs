@@ -14,8 +14,15 @@ namespace UpgradeEmptyCabins;
 
 internal class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     private ModConfig Config;
 
+
+    /*********
+    ** Public methods
+    *********/
     public override void Entry(IModHelper h)
     {
         // init
@@ -36,6 +43,10 @@ internal class ModEntry : Mod
         this.Helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private void GameLoop_GameLaunched(object sender, GameLaunchedEventArgs e)
     {
         this.AddGenericModConfigMenu(

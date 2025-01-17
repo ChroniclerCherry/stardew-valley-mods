@@ -22,9 +22,10 @@ namespace StardewAquarium;
 
 internal sealed class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     private static ModConfig Config = null!;
-
-    public static Harmony Harmony { get; } = new("Cherry.StardewAquarium");
 
     /// <summary>The chance that a dolphin Easter egg appears in the player's current location.</summary>
     private readonly PerScreen<float> DolphinChance = new();
@@ -32,6 +33,16 @@ internal sealed class ModEntry : Mod
     /// <summary>The tile area where the dolphin Easter egg can appear in the player's current location, if applicable.</summary>
     private readonly PerScreen<Rectangle> DolphinRange = new();
 
+
+    /*********
+    ** Accessors
+    *********/
+    public static Harmony Harmony { get; } = new("Cherry.StardewAquarium");
+
+
+    /*********
+    ** Public methods
+    *********/
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
@@ -74,6 +85,10 @@ internal sealed class ModEntry : Mod
         }
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
     private void OnDayStart(object sender, DayStartedEventArgs e)
     {

@@ -7,9 +7,16 @@ namespace StardewAquarium.Framework.Framework;
 
 internal static class TileActions
 {
+    /*********
+    ** Fields
+    *********/
     private static IMonitor Monitor;
     private static IModHelper Helper;
 
+
+    /*********
+    ** Public methods
+    *********/
     public static void Init(IModHelper helper, IMonitor monitor)
     {
         Helper = helper;
@@ -20,6 +27,10 @@ internal static class TileActions
         GameLocation.RegisterTileAction("AquariumCollectionMenu", ShowAquariumCollectionMenu);
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private static bool ShowAquariumCollectionMenu(GameLocation location, string[] arg2, Farmer farmer, Point point)
     {
         Game1.activeClickableMenu = new AquariumCollectionMenu(ContentPackHelper.LoadString("CollectionsMenu"));

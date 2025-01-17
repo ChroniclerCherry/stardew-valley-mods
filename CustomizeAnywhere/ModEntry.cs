@@ -8,12 +8,19 @@ namespace CustomizeAnywhere;
 
 internal class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     private ModConfig Config;
     private static IMonitor monitor;
     internal static IModHelper helper;
 
     private DresserAndMirror DresserAndMirror;
 
+
+    /*********
+    ** Public methods
+    *********/
     public override void Entry(IModHelper h)
     {
         helper = h;
@@ -25,6 +32,10 @@ internal class ModEntry : Mod
         helper.Events.Input.ButtonPressed += this.OnButtonPressed;
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
         // ignore if player isn't free to move or direct access is turned off in the config

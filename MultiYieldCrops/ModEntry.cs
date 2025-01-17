@@ -13,10 +13,17 @@ namespace MultiYieldCrops;
 
 internal class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     public static ModEntry instance;
 
     private Dictionary<string, List<Rule>> allHarvestRules;
 
+
+    /*********
+    ** Public methods
+    *********/
     public override void Entry(IModHelper helper)
     {
         instance = this;
@@ -64,6 +71,10 @@ internal class ModEntry : Mod
         }
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private IEnumerable<Item> SpawnItems(Rule data, int fertilizerQualityLevel)
     {
         int quality = fertilizerQualityLevel;
@@ -188,6 +199,7 @@ internal class ModEntry : Mod
 
         }
     }
+
     private void LoadContentPack(ContentModel data)
     {
         if (data == null)

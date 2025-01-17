@@ -10,16 +10,31 @@ namespace StardewAquarium.Framework.Editors;
 
 internal static class AssetEditor
 {
+    /*********
+    ** Fields
+    *********/
     private static IMonitor Monitor;
 
+
+    /*********
+    ** Accessors
+    *********/
     public const string AquariumPlayerHasChicken = "StardewAquarium.PlayerHasChicken";
 
+
+    /*********
+    ** Public methods
+    *********/
     public static void Init(IContentEvents events, IMonitor monitor)
     {
         Monitor = monitor;
         events.AssetRequested += OnAssetRequested;
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     /// <inheritdoc cref="IContentEvents.AssetRequested" />
     [EventPriority(EventPriority.Low)] // let mods add their locations first
     private static void OnAssetRequested(object sender, AssetRequestedEventArgs e)

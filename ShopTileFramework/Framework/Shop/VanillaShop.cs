@@ -8,9 +8,17 @@ namespace ShopTileFramework.Framework.Shop;
 
 internal class VanillaShop : VanillaShopModel
 {
+    /*********
+    ** Accessors
+    *********/
     public List<ItemPriceAndStockManager> StockManagers { get; set; }
     public Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock { get; set; }
     public IContentPack ContentPack { set; get; }
+
+
+    /*********
+    ** Public methods
+    *********/
     public void Initialize()
     {
         this.StockManagers = new List<ItemPriceAndStockManager>();

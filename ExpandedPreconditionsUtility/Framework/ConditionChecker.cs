@@ -10,17 +10,28 @@ namespace ExpandedPreconditionsUtility.Framework;
 
 internal class ConditionChecker
 {
+    /*********
+    ** Fields
+    *********/
+    private readonly IModHelper _helper;
+    private readonly IMonitor _monitor;
+    private readonly bool _verboseLogging;
+    private readonly string _uniqueId;
+
+
+    /*********
+    ** Accessors
+    *********/
     /// <summary>
     /// This is the vanilla method used to check preconditions
     /// Borrowing it to gain quick access to all vanilla preconditions
     /// </summary>
     public Func<string, bool> VanillaPreconditionsMethod { get; private set; }
 
-    private readonly IModHelper _helper;
-    private readonly IMonitor _monitor;
-    private readonly bool _verboseLogging;
-    private readonly string _uniqueId;
 
+    /*********
+    ** Public methods
+    *********/
     public ConditionChecker(IModHelper helper, IMonitor monitor, bool verbose = false, string uniqueId = null)
     {
         this._helper = helper;
@@ -29,6 +40,10 @@ internal class ConditionChecker
         this._uniqueId = uniqueId;
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     /// <summary>
     /// Each string in the array can have multiple conditions separated by the character '/'
     /// and each string is evaluated as true if all of the conditions are met

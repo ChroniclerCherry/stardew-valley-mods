@@ -13,6 +13,9 @@ namespace FarmRearranger;
 
 internal class ModEntry : Mod
 {
+    /*********
+    ** Fields
+    *********/
     private bool isArranging = false;
 
     private ModConfig Config;
@@ -21,6 +24,9 @@ internal class ModEntry : Mod
     private string FarmRearrangeQualifiedId;
 
 
+    /*********
+    ** Public methods
+    *********/
     /// <summary>
     /// Entry function, the starting point of the mod called by SMAPI
     /// </summary>
@@ -41,6 +47,10 @@ internal class ModEntry : Mod
         helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     /// <summary>
     /// Check for friendship with robin at the end of the day
     /// </summary>

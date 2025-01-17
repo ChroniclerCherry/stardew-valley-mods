@@ -6,10 +6,17 @@ namespace StardewAquarium.Framework;
 
 internal class ReturnTrain
 {
+    /*********
+    ** Fields
+    *********/
     private IModHelper _helper;
     private IMonitor _monitor;
     private ITrainStationAPI TSApi;
 
+
+    /*********
+    ** Public methods
+    *********/
     public ReturnTrain(IModHelper helper, IMonitor monitor)
     {
         this._helper = helper;
@@ -18,6 +25,10 @@ internal class ReturnTrain
         this._helper.Events.GameLoop.GameLaunched += this.GameLoop_GameLaunched;
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     private void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
     {
         this.TSApi = this._helper.ModRegistry.GetApi<ITrainStationAPI>("Cherry.TrainStation");

@@ -9,14 +9,25 @@ namespace StardewAquarium.Framework.Framework;
 
 internal static class CrabPotHandler
 {
+    /*********
+    ** Fields
+    *********/
     private static IMonitor Monitor = null!;
 
+
+    /*********
+    ** Public methods
+    *********/
     public static void Init(IGameLoopEvents events, IMonitor monitor)
     {
         Monitor = monitor;
         events.DayStarted += OnDayStart;
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     /// <summary>Updates crab pots</summary>
     /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
     private static void OnDayStart(object sender, DayStartedEventArgs e)
