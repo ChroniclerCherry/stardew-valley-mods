@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,25 +7,49 @@ namespace TrainStation.Framework;
 public class Api : IApi
 {
     /*********
+    ** Fields
+    *********/
+    /// <summary>Manages the Train Station content provided by content packs.</summary>
+    private readonly ContentManager ContentManager;
+
+    /// <summary>Open the UI to choose a boat destination.</summary>
+    private readonly Action OpenBoatMenuImpl;
+
+    /// <summary>Open the UI to choose a train destination.</summary>
+    private readonly Action OpenTrainMenuImpl;
+
+
+    /*********
     ** Public methods
     *********/
+    /// <summary>Construct an instance.</summary>
+    /// <param name="contentManager">Manages the Train Station content provided by content packs.</param>
+    /// <param name="openBoatMenu">Open the UI to choose a boat destination.</param>
+    /// <param name="openTrainMenu">Open the UI to choose a train destination.</param>
+    internal Api(ContentManager contentManager, Action openBoatMenu, Action openTrainMenu)
+    {
+        this.ContentManager = contentManager;
+        this.OpenBoatMenuImpl = openBoatMenu;
+        this.OpenTrainMenuImpl = openTrainMenu;
+    }
+
     public void OpenTrainMenu()
     {
-        ModEntry.Instance.OpenTrainMenu();
+        this.OpenTrainMenuImpl();
     }
 
     public void OpenBoatMenu()
     {
-        ModEntry.Instance.OpenBoatMenu();
+        this.OpenBoatMenuImpl();
     }
 
     public void RegisterTrainStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName)
     {
-        var stop = ModEntry.Instance.TrainStops.SingleOrDefault(s => s.StopId.Equals(stopId));
+        var stop = this.ContentManager.TrainStops.SingleOrDefault(s => s.StopId.Equals(stopId));
         if (stop == null)
         {
             stop = new TrainStop();
-            ModEntry.Instance.TrainStops.Add(stop);
+            this.ContentManager.TrainStops.Add(stop);
         }
 
         stop.StopId = stopId;
@@ -40,11 +65,11 @@ public class Api : IApi
 
     public void RegisterBoatStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName)
     {
-        var stop = ModEntry.Instance.BoatStops.SingleOrDefault(s => s.StopId.Equals(stopId));
+        var stop = this.ContentManager.BoatStops.SingleOrDefault(s => s.StopId.Equals(stopId));
         if (stop == null)
         {
             stop = new BoatStop();
-            ModEntry.Instance.BoatStops.Add(stop);
+            this.ContentManager.BoatStops.Add(stop);
         }
 
         stop.StopId = stopId;

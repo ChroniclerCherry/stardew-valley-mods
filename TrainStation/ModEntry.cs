@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -22,21 +21,14 @@ internal class ModEntry : Mod
     private ModConfig Config;
     private IConditionsChecker ConditionsApi;
 
+    /// <summary>Manages the Train Station content provided by content packs.</summary>
+    private ContentManager ContentManager;
+
     private readonly int TicketStationTopTile = 1032;
     private readonly int TicketStationBottomTile = 1057;
     private string DestinationMessage;
     private ICue Cue;
-    private bool FinishedTrainWarp = false;
-    private static LocalizedContentManager.LanguageCode SelectedLanguage;
-
-
-    /*********
-    ** Accessors
-    *********/
-    internal static ModEntry Instance;
-
-    internal List<TrainStop> TrainStops;
-    internal List<BoatStop> BoatStops;
+    private bool FinishedTrainWarp;
 
 
     /*********
@@ -47,7 +39,7 @@ internal class ModEntry : Mod
     {
         I18n.Init(helper.Translation);
         this.Config = helper.ReadConfig<ModConfig>();
-        Instance = this;
+        this.ContentManager = new(() => this.Config, this.Monitor);
 
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
         helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
@@ -59,7 +51,7 @@ internal class ModEntry : Mod
     /// <inheritdoc />
     public override object GetApi()
     {
-        return new Api();
+        return new Api(this.ContentManager, this.OpenBoatMenu, this.OpenTrainMenu);
     }
 
     public void OpenBoatMenu()
@@ -116,12 +108,12 @@ internal class ModEntry : Mod
     /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
     private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
     {
-        this.UpdateSelectedLanguage(); //get language code
-        this.LoadContentPacks();
+        this.ContentManager.UpdateSelectedLanguage();
+        this.ContentManager.LoadContentPacks(this.Helper.ContentPacks.GetOwned());
 
         this.DrawInTicketStation();
 
-        this.RemoveInvalidLocations();
+        this.ContentManager.RemoveInvalidLocations();
     }
 
     private void DrawInTicketStation()
@@ -159,95 +151,6 @@ internal class ModEntry : Mod
         railway.map.LoadTileSheets(Game1.mapDisplayDevice);
     }
 
-    private void LoadContentPacks()
-    {
-        //create the stop at the vanilla Railroad map
-        TrainStop railRoadStop = new TrainStop
-        {
-            TargetMapName = "Railroad",
-            StopId = "Cherry.TrainStation",
-            TargetX = this.Config.RailroadWarpX,
-            TargetY = this.Config.RailroadWarpY,
-            Cost = 0,
-            TranslatedName = I18n.TrainStationDisplayName()
-        };
-
-        //create stop in willy's boat room
-        BoatStop boatTunnelStop = new BoatStop()
-        {
-            TargetMapName = "BoatTunnel",
-            StopId = "Cherry.TrainStation",
-            TargetX = 4,
-            TargetY = 9,
-            Cost = 0,
-            TranslatedName = I18n.BoatStationDisplayName()
-        };
-
-        ContentPack content = new ContentPack();
-        content.TrainStops = new List<TrainStop>();
-        content.BoatStops = new List<BoatStop>();
-
-        this.TrainStops = new List<TrainStop>() { railRoadStop };
-        this.BoatStops = new List<BoatStop>() { boatTunnelStop };
-
-        foreach (IContentPack pack in this.Helper.ContentPacks.GetOwned())
-        {
-            if (!pack.HasFile("TrainStops.json"))
-            {
-                this.Monitor.Log($"{pack.Manifest.UniqueID} is missing a \"TrainStops.json\"", LogLevel.Error);
-                continue;
-            }
-
-            ContentPack cp = pack.ModContent.Load<ContentPack>("TrainStops.json");
-            if (cp.TrainStops != null)
-            {
-                for (int i = 0; i < cp.TrainStops.Count; i++)
-                {
-                    TrainStop stop = cp.TrainStops.ElementAt(i);
-                    stop.StopId = $"{pack.Manifest.UniqueID}{i}"; //assigns a unique stopID to every stop
-                    stop.TranslatedName = this.Localize(stop.LocalizedDisplayName);
-
-                    this.TrainStops.Add(cp.TrainStops.ElementAt(i));
-                }
-            }
-
-            if (cp.BoatStops != null)
-            {
-                for (int i = 0; i < cp.BoatStops.Count; i++)
-                {
-                    BoatStop stop = cp.BoatStops.ElementAt(i);
-                    stop.StopId = $"{pack.Manifest.UniqueID}{i}"; //assigns a unique stopID to every stop
-                    stop.TranslatedName = this.Localize(stop.LocalizedDisplayName);
-
-                    this.BoatStops.Add(cp.BoatStops.ElementAt(i));
-                }
-            }
-        }
-    }
-
-    private void RemoveInvalidLocations()
-    {
-        for (int i = this.TrainStops.Count - 1; i >= 0; i--)
-        {
-            TrainStop stop = this.TrainStops[i];
-            if (Game1.getLocationFromName(stop.TargetMapName) == null)
-            {
-                this.Monitor.Log($"Could not find location {stop.TargetMapName}", LogLevel.Warn);
-                this.TrainStops.RemoveAt(i);
-            }
-        }
-
-        for (int i = this.BoatStops.Count - 1; i >= 0; i--)
-        {
-            BoatStop stop = this.BoatStops[i];
-            if (Game1.getLocationFromName(stop.TargetMapName) == null)
-            {
-                this.Monitor.Log($"Could not find location {stop.TargetMapName}", LogLevel.Warn);
-                this.BoatStops.RemoveAt(i);
-            }
-        }
-    }
-
 
     /****
     ** Input detection
@@ -276,7 +179,7 @@ internal class ModEntry : Mod
         {
             this.OpenTrainMenu();
         }
-        else if (this.BoatStops.Count > 0 && tileProperty == "BoatTicket" && Game1.MasterPlayer.hasOrWillReceiveMail("willyBoatFixed"))
+        else if (this.ContentManager.BoatStops.Count > 0 && tileProperty == "BoatTicket" && Game1.MasterPlayer.hasOrWillReceiveMail("willyBoatFixed"))
         {
             this.OpenBoatMenu();
             this.Helper.Input.Suppress(e.Button);
@@ -287,7 +190,7 @@ internal class ModEntry : Mod
     {
         List<Response> responses = new List<Response>();
 
-        foreach (BoatStop stop in this.BoatStops)
+        foreach (BoatStop stop in this.ContentManager.BoatStops)
         {
             if (stop.TargetMapName == Game1.currentLocation.Name) //remove stops to the current map
                 continue;
@@ -318,7 +221,7 @@ internal class ModEntry : Mod
     {
         List<Response> responses = new List<Response>();
 
-        foreach (TrainStop stop in this.TrainStops)
+        foreach (TrainStop stop in this.ContentManager.TrainStops)
         {
             if (stop.TargetMapName == Game1.currentLocation.Name) //remove stops to the current map
                 continue;
@@ -366,7 +269,7 @@ internal class ModEntry : Mod
             }
         }
 
-        foreach (BoatStop stop in this.BoatStops)
+        foreach (BoatStop stop in this.ContentManager.BoatStops)
         {
             if (stop.StopId == whichAnswer)
             {
@@ -380,7 +283,7 @@ internal class ModEntry : Mod
         if (whichAnswer == "Cancel")
             return;
 
-        foreach (TrainStop stop in this.TrainStops)
+        foreach (TrainStop stop in this.ContentManager.TrainStops)
         {
             if (stop.StopId == whichAnswer)
             {
@@ -460,24 +363,5 @@ internal class ModEntry : Mod
 
         Game1.player.Money -= cost;
         return true;
-    }
-
-
-    /****
-    ** Localization stuff
-    ****/
-    private void UpdateSelectedLanguage()
-    {
-        SelectedLanguage = LocalizedContentManager.CurrentLanguageCode;
-    }
-
-    private string Localize(Dictionary<string, string> translations)
-    {
-        if (!translations.ContainsKey(SelectedLanguage.ToString()))
-        {
-            return translations.ContainsKey("en") ? translations["en"] : "No translation";
-        }
-
-        return translations[SelectedLanguage.ToString()];
     }
 }
