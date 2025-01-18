@@ -165,7 +165,7 @@ internal class ModEntry : Mod
         {
             this.OpenTrainMenu();
         }
-        else if (this.ContentManager.BoatStops.Count > 0 && tileProperty == "BoatTicket" && Game1.MasterPlayer.hasOrWillReceiveMail("willyBoatFixed"))
+        else if (tileProperty == "BoatTicket" && Game1.MasterPlayer.hasOrWillReceiveMail("willyBoatFixed") && this.ContentManager.GetAvailableBoatStops().Any())
         {
             this.OpenBoatMenu();
             this.Helper.Input.Suppress(e.Button);

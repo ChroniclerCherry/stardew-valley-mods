@@ -7,10 +7,10 @@ namespace TrainStation.Framework.ContentModels;
 internal class StopModel
 {
     /// <summary>A unique identifier for this stop.</summary>
-    public string Id;
+    public string Id { get; set; }
 
     /// <summary>The translated name for the stop, shown in the bus or train menu.</summary>
-    public string DisplayName { get; set; }
+    public virtual string DisplayName { get; set; }
 
     /// <summary>The internal name of the location to which the player should warp when they select this stop.</summary>
     public string ToLocation { get; set; }

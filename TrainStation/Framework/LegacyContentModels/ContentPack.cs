@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace TrainStation.Framework.ContentPackModels;
+namespace TrainStation.Framework.LegacyContentModels;
 
 /// <summary>The data loaded from a Train Station content pack.</summary>
 internal class ContentPack

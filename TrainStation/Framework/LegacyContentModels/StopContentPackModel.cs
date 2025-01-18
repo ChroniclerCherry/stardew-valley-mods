@@ -1,17 +1,11 @@
 using System.Collections.Generic;
 using StardewValley;
 
-namespace TrainStation.Framework.ContentPackModels;
+namespace TrainStation.Framework.LegacyContentModels;
 
 /// <summary>A boat or train stop that can be visited by the player, as provided by a Train Station content pack or through the API.</summary>
 internal class StopContentPackModel
 {
-    /// <summary>A unique identifier for this stop.</summary>
-    public string Id;
-
-    /// <summary>The translated name for the stop, shown in the bus or train menu.</summary>
-    public string DisplayName;
-
     /// <summary>The display name translations for each language.</summary>
     public Dictionary<string, string> LocalizedDisplayName { get; set; }
 

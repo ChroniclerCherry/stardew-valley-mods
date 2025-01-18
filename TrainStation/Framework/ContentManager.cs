@@ -6,7 +6,7 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Locations;
 using TrainStation.Framework.ContentModels;
-using TrainStation.Framework.ContentPackModels;
+using TrainStation.Framework.LegacyContentModels;
 
 namespace TrainStation.Framework;
 
@@ -36,10 +36,10 @@ internal class ContentManager
     ** Accessors
     *********/
     /// <summary>The boat stops registered by Train Station packs or through the API.</summary>
-    public List<StopContentPackModel> BoatStops { get; } = new();
+    public List<StopModel> LegacyBoatStops { get; } = new();
 
     /// <summary>The train stops registered by Train Station packs or through the API.</summary>
-    public List<StopContentPackModel> TrainStops { get; } = new();
+    public List<StopModel> LegacyTrainStops { get; } = new();
 
 
     /*********
@@ -88,9 +88,6 @@ internal class ContentManager
     /// <param name="contentPacks">The loaded content packs to read.</param>
     public void LoadContentPacks(IEnumerable<IContentPack> contentPacks)
     {
-        this.TrainStops.Clear();
-        this.BoatStops.Clear();
-
         foreach (IContentPack pack in contentPacks)
         {
             if (!pack.HasFile("TrainStops.json"))
@@ -104,11 +101,9 @@ internal class ContentManager
             {
                 for (int i = 0; i < cp.TrainStops.Count; i++)
                 {
-                    StopContentPackModel stop = cp.TrainStops[i];
-                    stop.Id = $"{pack.Manifest.UniqueID}_{i}";
-                    stop.DisplayName = this.Localize(stop.LocalizedDisplayName);
-
-                    this.TrainStops.Add(stop);
+                    this.LegacyTrainStops.Add(
+                        LegacyStopModel.FromContentPack($"{pack.Manifest.UniqueID}_{i}", cp.TrainStops[i])
+                    );
                 }
             }
 
@@ -116,50 +111,11 @@ internal class ContentManager
             {
                 for (int i = 0; i < cp.BoatStops.Count; i++)
                 {
-                    StopContentPackModel stop = cp.BoatStops[i];
-                    stop.Id = $"{pack.Manifest.UniqueID}_{i}";
-                    stop.DisplayName = this.Localize(stop.LocalizedDisplayName);
-
-                    this.BoatStops.Add(stop);
+                    this.LegacyBoatStops.Add(
+                        LegacyStopModel.FromContentPack($"{pack.Manifest.UniqueID}_{i}", cp.BoatStops[i])
+                    );
                 }
             }
-        }
-    }
-
-    /// <summary>Get the localized text for a content pack dictionary.</summary>
-    /// <param name="translations">The translation dictionary to read.</param>
-    /// <param name="defaultName">The default text to return if no translation is found, or <c>null</c> for a generic 'no translation' message.</param>
-    /// <returns>Returns the matching translation, else the English text, else the <paramref name="defaultName"/>, else the text 'No translation'.</returns>
-    public string Localize(Dictionary<string, string> translations, string defaultName = null)
-    {
-        return
-            translations?.GetValueOrDefault(LocalizedContentManager.CurrentLanguageCode.ToString())
-            ?? translations?.GetValueOrDefault("en")
-            ?? defaultName
-            ?? "No translation";
-    }
-
-    /// <summary>Build a game state query equivalent to the provided Expanded Preconditions Utility conditions.</summary>
-    /// <param name="conditions">The Expanded Preconditions Utility conditions.</param>
-    public string BuildGameQueryForExpandedPreconditions(string[] conditions)
-    {
-        switch (conditions?.Length)
-        {
-            case null:
-            case < 1:
-                return null;
-
-            case 1:
-                return $"{this.ModId} {conditions[0]}";
-
-            default:
-                {
-                    string[] queries = new string[conditions.Length];
-                    for (int i = 0; i < conditions.Length; i++)
-                        queries[i] = $"{this.ModId} {conditions[i]}";
-
-                    return "ANY \"" + string.Join("\" \"", queries) + "\"";
-                }
         }
     }
 
@@ -201,32 +157,32 @@ internal class ContentManager
             ToTile = new Point(config.RailroadWarpX, config.RailroadWarpY)
         });
 
-        // stops from content packs & API
-        foreach (StopContentPackModel stop in this.BoatStops)
+        // stops from legacy content packs & API
+        foreach (StopModel stop in this.LegacyBoatStops)
         {
             model.BoatStops.Add(new StopModel
             {
                 Id = stop.Id,
-                DisplayName = this.Localize(stop.LocalizedDisplayName, stop.DisplayName),
-                ToLocation = stop.TargetMapName,
-                ToTile = new Point(stop.TargetX, stop.TargetY),
-                ToFacingDirection = stop.FacingDirectionAfterWarp.ToString(),
+                DisplayName = stop.DisplayName,
+                ToLocation = stop.ToLocation,
+                ToTile = stop.ToTile,
+                ToFacingDirection = stop.ToFacingDirection,
                 Cost = stop.Cost,
-                Conditions = this.BuildGameQueryForExpandedPreconditions(stop.Conditions)
+                Conditions = stop.Conditions
             });
         }
 
-        foreach (StopContentPackModel stop in this.TrainStops)
+        foreach (StopModel stop in this.LegacyTrainStops)
         {
             model.TrainStops.Add(new StopModel
             {
                 Id = stop.Id,
-                DisplayName = this.Localize(stop.LocalizedDisplayName, stop.DisplayName),
-                ToLocation = stop.TargetMapName,
-                ToTile = new Point(stop.TargetX, stop.TargetY),
-                ToFacingDirection = stop.FacingDirectionAfterWarp.ToString(),
+                DisplayName = stop.DisplayName,
+                ToLocation = stop.ToLocation,
+                ToTile = stop.ToTile,
+                ToFacingDirection = stop.ToFacingDirection,
                 Cost = stop.Cost,
-                Conditions = this.BuildGameQueryForExpandedPreconditions(stop.Conditions)
+                Conditions = stop.Conditions
             });
         }
 
