@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using StardewValley;
 
-namespace TrainStation.Framework;
+namespace TrainStation.Framework.ContentPackModels;
 
 /// <summary>A boat or train stop that can be visited by the player, as provided by a Train Station content pack or through the API.</summary>
 internal class StopContentPackModel

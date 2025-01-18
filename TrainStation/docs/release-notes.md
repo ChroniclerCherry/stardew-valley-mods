@@ -2,6 +2,8 @@
 
 # Release notes
 ## Upcoming release
+- Mod authors can now [add boat & train destinations through Content Patcher](README.md#add-a-destination).
+- The Ginger Island destination is now available from any boat stop once it's unlocked, not only Willy's boat house.
 - Internal refactoring.
 
 ## 1.2.0

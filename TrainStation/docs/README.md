@@ -38,45 +38,45 @@ If so, you can adjust those coordinates in the `config.json` file:
 
 ## For mod authors
 ### Add a destination
-To add a destination to the train stops menu:
+To add a destination to the boat or train menu:
 
-1. [Create a content pack](https://stardewvalleywiki.com/Modding:Content_packs#Create_a_content_pack). For the
-   `ContentPackFor` field, use `Cherry.TrainStation`.
-2. Create a `TrainStops.json` file in your content pack folder with this content:
-
+1. Create a [Content Patcher content pack](https://stardewvalleywiki.com/Modding:Content_Patcher) if you don't already
+   have one.
+2. In your `content.json`, add entries to the `Mods/Cherry.TrainStation/Destinations` asset:
    ```js
    {
-       "TrainStops": [
-           {
-               "TargetMapName": "Town",
-               "LocalizedDisplayName": {
-                   "en": "Town",
-                   "zh":"镇"
-               },
-               "TargetX": 10,
-               "TargetY": 10,
-               "Cost": 500,
-               "FacingDirectionAfterWarp": 2,
-               "Conditions": [ "z winter/e 100", "HasMod ACoolMod.UniqueID" ]
+       "Action": "EditData",
+       "Target": "Mods/Cherry.TrainStation/Destinations",
+       "TargetField": [ "TrainStops" ], // or BoatStops
+       "Entries": {
+           "{{ModId}}_ClintShop": { // should match your Id field below
+               "Id": "{{ModId}}_ClintShop",
+               "DisplayName": "Clint's Shop",
+               "ToLocation": "Town",
+               "ToTile": { "X": 105, "Y": 80 },
+               "ToFacingDirection": 2
            }
-       ],
-       "BoatStops": [
-           // exact same fields as a train stop
-       ]
+       }
    }
    ```
-3. Edit the data accordingly. You can list any number of boat or train stops in the same file.
+3. Edit the data accordingly. You can list any number of boat or train stops in the same `EditData` patch.
 
 The available fields for a boat or train stop are:
 
-field name             | usage
----------------------- | -----
-`TargetMapName`        | The internal name of the location to which the player should be warped to. You can see internal location names in-game using [Debug Mode](https://www.nexusmods.com/stardewvalley/mods/679).
-`TargetX`<br />`TargetY` | The tile position to which the player should be warped to. You can see tile coordinates in-game using [Debug Mode](https://www.nexusmods.com/stardewvalley/mods/679).
-`LocalizedDisplayName` | The translated display name of the destination for each [language code](https://stardewvalleywiki.com/Modding:Modder_Guide/APIs/Translation#i18n_folder). If there's no translation for the player's current language, it'll use the `en` entry.
-`FacingDirectionAfterWarp` | _(Optional)_ The direction the player should face after warping. The possible values are `0` (up), `1` (right), `2` (down), or `3` (left). Default down.
-`Cost`                 | _(Optional)_ The gold price to purchase a ticket. Default free.
-`Conditions`           | _(Optional)_ If set, the conditions which must be met for the destination to appear in the menu. You can use the [Expanded Preconditions Utility format](https://github.com/ChroniclerCherry/stardew-valley-mods/blob/Develop/ExpandedPreconditionsUtility/README.md).
+field name          | usage
+------------------- | -----
+`Id`                | A [unique string ID](https://stardewvalleywiki.com/Modding:Common_data_field_types#Unique_string_ID) for your destination. This should be prefixed with `{{ModId}}_`.
+`DisplayName`       | The display name to show in the menu. This should usually be translated into the player's current language using Content Patcher's `i18n` token.
+`ToLocation`        | The internal name of the location to which the player should be warped to. You can see internal location names in-game using [Debug Mode](https://www.nexusmods.com/stardewvalley/mods/679).
+`ToTile`            | The tile position to which the player should be warped to. You can see tile coordinates in-game using [Debug Mode](https://www.nexusmods.com/stardewvalley/mods/679).
+`ToFacingDirection` | _(Optional)_ The direction the player should face after warping. The possible values are `0` (up), `1` (right), `2` (down), or `3` (left). Default down.
+`Cost`              | _(Optional)_ The gold price to purchase a ticket. Default free.
+`Conditions`        | _(Optional)_ If set, the [game state query](https://stardewvalleywiki.com/Modding:Game_state_queries) which must be met for the destination to appear in the menu.
+
+> [!TIP]
+> In older versions of Train Station, you needed a separate content pack for Train Station instead of using Content
+> Patcher per the above. That's no longer needed, but those legacy content packs will continue working as-is if you
+> already have one.
 
 ### Add a ticket machine
 To add a train ticket machine to a custom map:

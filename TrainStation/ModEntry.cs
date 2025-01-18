@@ -8,6 +8,7 @@ using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Menus;
 using TrainStation.Framework;
+using TrainStation.Framework.ContentModels;
 using xTile.Layers;
 using xTile.Tiles;
 
@@ -40,8 +41,9 @@ internal class ModEntry : Mod
     {
         I18n.Init(helper.Translation);
         this.Config = helper.ReadConfig<ModConfig>();
-        this.ContentManager = new(() => this.Config, this.Monitor);
+        this.ContentManager = new(this.ModManifest.UniqueID, () => this.Config, helper.GameContent, this.Monitor);
 
+        helper.Events.Content.AssetRequested += this.ContentManager.OnAssetRequested;
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
         helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
         helper.Events.Input.ButtonPressed += this.OnButtonPressed;
@@ -58,13 +60,13 @@ internal class ModEntry : Mod
     /// <summary>Open the menu to choose a boat destination.</summary>
     public void OpenBoatMenu()
     {
-        this.OpenMenu(this.ContentManager.BoatStops, isBoat: true);
+        this.OpenMenu(this.ContentManager.GetAvailableBoatStops().ToArray(), isBoat: true);
     }
 
     /// <summary>Open the menu to choose a train destination.</summary>
     public void OpenTrainMenu()
     {
-        this.OpenMenu(this.ContentManager.TrainStops, isBoat: false);
+        this.OpenMenu(this.ContentManager.GetAvailableTrainStops().ToArray(), isBoat: false);
     }
 
 
@@ -74,9 +76,9 @@ internal class ModEntry : Mod
     /// <summary>Open the menu to choose a boat or train destination.</summary>
     /// <param name="stops">The boat or train stops to choose from.</param>
     /// <param name="isBoat">Whether we're traveling by boat; else by train.</param>
-    private void OpenMenu(List<StopContentPackModel> stops, bool isBoat)
+    private void OpenMenu(StopModel[] stops, bool isBoat)
     {
-        Response[] responses = this.GetResponses(stops, isBoat).ToArray();
+        Response[] responses = this.GetResponses(stops).ToArray();
         if (responses.Length <= 1)
         {
             Game1.drawObjectDialogue(I18n.NoDestinations());
@@ -100,14 +102,14 @@ internal class ModEntry : Mod
     /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
     private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
     {
+        // load Expanded Preconditions Utility
         this.ConditionsApi = this.Helper.ModRegistry.GetApi<IConditionsChecker>("Cherry.ExpandedPreconditionsUtility");
+        this.ConditionsApi?.Initialize(false, this.ModManifest.UniqueID);
         if (this.ConditionsApi == null)
-        {
             this.Monitor.Log("Expanded Preconditions Utility API not detected. Something went wrong, please check that your installation of Expanded Preconditions Utility is valid", LogLevel.Error);
-            return;
-        }
 
-        this.ConditionsApi.Initialize(false, this.ModManifest.UniqueID);
+        // load content packs
+        this.ContentManager.LoadContentPacks(this.Helper.ContentPacks.GetOwned());
     }
 
 
@@ -117,12 +119,8 @@ internal class ModEntry : Mod
     /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
     private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
     {
-        this.ContentManager.UpdateSelectedLanguage();
-        this.ContentManager.LoadContentPacks(this.Helper.ContentPacks.GetOwned());
-
+        this.ContentManager.ResetAsset();
         this.DrawInTicketStation();
-
-        this.ContentManager.RemoveInvalidLocations();
     }
 
     private void DrawInTicketStation()
@@ -195,27 +193,18 @@ internal class ModEntry : Mod
         }
     }
 
-    private List<Response> GetResponses(List<StopContentPackModel> stops, bool isBoat)
+    private List<Response> GetResponses(StopModel[] stops)
     {
         List<Response> responses = new List<Response>();
 
-        foreach (StopContentPackModel stop in stops)
+        foreach (StopModel stop in stops)
         {
-            if (stop.TargetMapName == Game1.currentLocation.Name) //remove stops to the current map
-                continue;
-
-            if (!this.ConditionsApi.CheckConditions(stop.Conditions)) //remove stops that don't meet conditions
-                continue;
-
             string displayName = stop.DisplayName;
             if (stop.Cost > 0)
                 displayName += $" - {stop.Cost}g";
 
             responses.Add(new Response(stop.Id, displayName));
         }
-
-        if (isBoat && Game1.currentLocation is BoatTunnel tunnel)
-            responses.Add(new Response("GingerIsland", I18n.GingerIsland() + $" - {tunnel.TicketPrice}g"));
 
         responses.Add(new Response("Cancel", I18n.MenuCancelOption()));
 
@@ -226,7 +215,7 @@ internal class ModEntry : Mod
     /****
     ** Warp after choosing destination
     ****/
-    private void DestinationPicked(string selectedId, List<StopContentPackModel> stops, bool isBoat)
+    private void DestinationPicked(string selectedId, StopModel[] stops, bool isBoat)
     {
         // special cases
         switch (selectedId)
@@ -234,7 +223,7 @@ internal class ModEntry : Mod
             case "Cancel":
                 return;
 
-            case "GingerIsland" when isBoat && Game1.currentLocation is BoatTunnel tunnel:
+            case "Cherry.TrainStation_GingerIsland" when Game1.currentLocation is BoatTunnel tunnel:
                 if (this.TryToChargeMoney(tunnel.TicketPrice))
                     tunnel.StartDeparture();
                 else
@@ -243,7 +232,7 @@ internal class ModEntry : Mod
         }
 
         // get stop
-        StopContentPackModel stop = stops.FirstOrDefault(s => s.Id == selectedId);
+        StopModel stop = stops.FirstOrDefault(s => s.Id == selectedId);
         if (stop is null)
             return;
 
@@ -255,7 +244,7 @@ internal class ModEntry : Mod
         }
 
         // warp
-        LocationRequest request = Game1.getLocationRequest(stop.TargetMapName);
+        LocationRequest request = Game1.getLocationRequest(stop.ToLocation);
         if (!isBoat)
         {
             request.OnWarp += this.OnTrainWarped;
@@ -265,7 +254,7 @@ internal class ModEntry : Mod
             this.Cue.SetVariable("Volume", 100f);
             this.Cue.Play();
         }
-        Game1.warpFarmer(request, stop.TargetX, stop.TargetY, stop.FacingDirectionAfterWarp);
+        Game1.warpFarmer(request, stop.ToTile.X, stop.ToTile.Y, stop.ToFacingDirection);
     }
 
     private void OnTrainWarped()
