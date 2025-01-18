@@ -45,6 +45,7 @@ internal class ModEntry : Mod
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
+        I18n.Init(helper.Translation);
         this.Config = helper.ReadConfig<ModConfig>();
         Instance = this;
 
@@ -65,7 +66,7 @@ internal class ModEntry : Mod
     {
         Response[] responses = this.GetBoatReponses().ToArray();
 
-        Game1.currentLocation.createQuestionDialogue(this.Helper.Translation.Get("ChooseDestination"), responses, this.BoatDestinationPicked);
+        Game1.currentLocation.createQuestionDialogue(I18n.ChooseDestination(), responses, this.BoatDestinationPicked);
     }
 
     public void OpenTrainMenu()
@@ -73,11 +74,11 @@ internal class ModEntry : Mod
         Response[] responses = this.GetReponses().ToArray();
         if (responses.Length <= 1) //only 1 response means there's only the cancel option
         {
-            Game1.drawObjectDialogue(this.Helper.Translation.Get("NoDestinations"));
+            Game1.drawObjectDialogue(I18n.NoDestinations());
             return;
         }
 
-        Game1.currentLocation.createQuestionDialogue(this.Helper.Translation.Get("ChooseDestination"), responses, this.DestinationPicked);
+        Game1.currentLocation.createQuestionDialogue(I18n.ChooseDestination(), responses, this.DestinationPicked);
     }
 
 
@@ -168,7 +169,7 @@ internal class ModEntry : Mod
             TargetX = this.Config.RailroadWarpX,
             TargetY = this.Config.RailroadWarpY,
             Cost = 0,
-            TranslatedName = this.Helper.Translation.Get("TrainStationDisplayName")
+            TranslatedName = I18n.TrainStationDisplayName()
         };
 
         //create stop in willy's boat room
@@ -179,7 +180,7 @@ internal class ModEntry : Mod
             TargetX = 4,
             TargetY = 9,
             Cost = 0,
-            TranslatedName = this.Helper.Translation.Get("BoatStationDisplayName")
+            TranslatedName = I18n.BoatStationDisplayName()
         };
 
         ContentPack content = new ContentPack();
@@ -306,9 +307,9 @@ internal class ModEntry : Mod
 
         if (Game1.currentLocation is BoatTunnel tunnel)
         {
-            responses.Add(new Response("GingerIsland", this.Helper.Translation.Get("GingerIsland") + $" - {tunnel.TicketPrice}g"));
+            responses.Add(new Response("GingerIsland", I18n.GingerIsland() + $" - {tunnel.TicketPrice}g"));
         }
-        responses.Add(new Response("Cancel", this.Helper.Translation.Get("MenuCancelOption")));
+        responses.Add(new Response("Cancel", I18n.MenuCancelOption()));
 
         return responses;
     }
@@ -335,7 +336,7 @@ internal class ModEntry : Mod
             responses.Add(new Response(stop.StopId, displayName));
         }
 
-        responses.Add(new Response("Cancel", this.Helper.Translation.Get("MenuCancelOption")));
+        responses.Add(new Response("Cancel", I18n.MenuCancelOption()));
 
         return responses;
     }
@@ -392,7 +393,7 @@ internal class ModEntry : Mod
     {
         if (!this.TryToChargeMoney(stop.Cost))
         {
-            Game1.drawObjectDialogue(this.Helper.Translation.Get("NotEnoughMoney", new { DestinationName = stop.TranslatedName }));
+            Game1.drawObjectDialogue(I18n.NotEnoughMoney(destinationName: stop.TranslatedName));
             return;
         }
         LocationRequest request = Game1.getLocationRequest(stop.TargetMapName);
@@ -403,12 +404,12 @@ internal class ModEntry : Mod
     {
         if (!this.TryToChargeMoney(stop.Cost))
         {
-            Game1.drawObjectDialogue(this.Helper.Translation.Get("NotEnoughMoney", new { DestinationName = stop.TranslatedName }));
+            Game1.drawObjectDialogue(I18n.NotEnoughMoney(destinationName: stop.TranslatedName));
             return;
         }
         LocationRequest request = Game1.getLocationRequest(stop.TargetMapName);
         request.OnWarp += this.Request_OnWarp;
-        this.DestinationMessage = this.Helper.Translation.Get("ArrivalMessage", new { DestinationName = stop.TranslatedName });
+        this.DestinationMessage = I18n.ArrivalMessage(destinationName: stop.TranslatedName);
 
         Game1.warpFarmer(request, stop.TargetX, stop.TargetY, stop.FacingDirectionAfterWarp);
 

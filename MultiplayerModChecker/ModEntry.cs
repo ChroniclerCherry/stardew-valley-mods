@@ -26,6 +26,8 @@ internal class ModEntry : Mod
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
+        I18n.Init(helper.Translation);
+
         helper.Events.Multiplayer.PeerContextReceived += this.OnPeerContextReceived;
         helper.Events.Multiplayer.ModMessageReceived += this.OnModMessageReceived;
         this.Config = helper.ReadConfig<ModConfig>();
@@ -52,7 +54,7 @@ internal class ModEntry : Mod
 
         if (string.IsNullOrEmpty(report.FarmhandName))
         {
-            report.FarmhandName = this.Helper.Translation.Get("UnnamedFarmhand");
+            report.FarmhandName = I18n.UnnamedFarmhand();
         }
 
         if (e.Peer.HasSmapi)
@@ -112,14 +114,12 @@ internal class ModEntry : Mod
 
         if (!reportData.SmapiGameGameVersions.FarmhandHasSmapi)
         {
-            report.Add(this.Helper.Translation.Get("FarmhandMissingSMAPI", new { FarmhandID = reportData.FarmhandId, FarmHandName = reportData.FarmhandName, ConnectionTime = reportData.TimeConnected }), LogLevel.Alert);
+            report.Add(I18n.FarmhandMissingSMAPI(farmhandId: reportData.FarmhandId, farmhandName: reportData.FarmhandName, connectionTime: reportData.TimeConnected), LogLevel.Alert);
         }
         else
         {
             if (!reportData.SmapiGameGameVersions.HostSmapiVersion.Equals(reportData.SmapiGameGameVersions.FarmhandSmapiVersion))
-                report.Add(this.Helper.Translation.Get("SMAPIVersionMismatch",
-                        new { HostVersion = reportData.SmapiGameGameVersions.HostSmapiVersion, FarmhandVersion = reportData.SmapiGameGameVersions.FarmhandSmapiVersion }),
-                    LogLevel.Warn);
+                report.Add(I18n.SMAPIVersionMismatch(hostVersion: reportData.SmapiGameGameVersions.HostSmapiVersion, farmhandVersion: reportData.SmapiGameGameVersions.FarmhandSmapiVersion), LogLevel.Warn);
 
             foreach (var modData in reportData.Mods)
             {
@@ -133,19 +133,19 @@ internal class ModEntry : Mod
                 }
                 else if (!modData.HostModVersion.Equals(modData.FarmhandModVersion))
                 {
-                    reportData.VersionMismatch.Add(this.Helper.Translation.Get("ModMismatch.Version.Each", new { ModName = modData.ModName, ModID = modData.ModUniqueId, HostVersion = modData.HostModVersion, FarmhandVersion = modData.FarmhandModVersion }));
+                    reportData.VersionMismatch.Add(I18n.ModMismatch_Version_Each(modName: modData.ModName, modId: modData.ModUniqueId, hostVersion: modData.HostModVersion, farmhandVersion: modData.FarmhandModVersion));
                 }
             }
         }
 
         if (reportData.MissingOnHost.Count > 0)
-            report.Add(this.Helper.Translation.Get("ModMismatch.Host", new { ModList = string.Join(",", reportData.MissingOnHost) }), LogLevel.Warn);
+            report.Add(I18n.ModMismatch_Host(modList: string.Join(",", reportData.MissingOnHost)), LogLevel.Warn);
 
         if (reportData.MissingOnFarmhand.Count > 0)
-            report.Add(this.Helper.Translation.Get("ModMismatch.Farmhand", new { ModList = string.Join(",", reportData.MissingOnFarmhand) }), LogLevel.Warn);
+            report.Add(I18n.ModMismatch_Farmhand(modList: string.Join(",", reportData.MissingOnFarmhand)), LogLevel.Warn);
 
         if (reportData.VersionMismatch.Count > 0)
-            report.Add(this.Helper.Translation.Get("ModMismatch.Version", new { ModList = string.Join(",", reportData.VersionMismatch) }), LogLevel.Warn);
+            report.Add(I18n.ModMismatch_Version(modList: string.Join(",", reportData.VersionMismatch)), LogLevel.Warn);
 
         this.Helper.Multiplayer.SendMessage(report, "MultiplayerReport", new[] { this.ModManifest.UniqueID }, new[] { reportData.FarmhandId });
         this.Helper.Data.WriteJsonFile("LatestMultiplayerModReport-Host.json", this.RawReports);
@@ -154,19 +154,13 @@ internal class ModEntry : Mod
 
     private void PublishReport(MultiplayerReportData reportData, Dictionary<string, LogLevel> report)
     {
-        string preface = "";
         if (report.Count > 0)
         {
-            if (reportData == null)
-            {
-                preface = this.Helper.Translation.Get("FarmhandReport");
-                this.Monitor.Log(preface, this.Config.HideReportInTrace ? LogLevel.Trace : LogLevel.Warn);
-            }
-            else
-            {
-                preface = this.Helper.Translation.Get("HostReport", new { FarmhandID = reportData.FarmhandId, FarmhandName = reportData.FarmhandName, ConnectionTime = reportData.TimeConnected });
-                this.Monitor.Log(preface, this.Config.HideReportInTrace ? LogLevel.Trace : LogLevel.Warn);
-            }
+            string preface = reportData == null
+                ? I18n.FarmhandReport()
+                : I18n.HostReport(farmhandId: reportData.FarmhandId, farmhandName: reportData.FarmhandName, connectionTime: reportData.TimeConnected);
+
+            this.Monitor.Log(preface, this.Config.HideReportInTrace ? LogLevel.Trace : LogLevel.Warn);
 
             foreach (var log in report)
             {
@@ -178,16 +172,11 @@ internal class ModEntry : Mod
         }
         else
         {
-            if (reportData == null)
-            {
-                this.Monitor.Log(this.Helper.Translation.Get("SuccessfulConnectionFarmhandside"),
-                    LogLevel.Info);
-            }
-            else
-            {
-                this.Monitor.Log(this.Helper.Translation.Get("SuccessfulConnectionHostSide", new { FarmhandID = reportData.FarmhandId, FarmhandName = reportData.FarmhandName }),
-                    LogLevel.Info);
-            }
+            string message = reportData == null
+                ? I18n.SuccessfulConnectionFarmhandSide()
+                : I18n.SuccessfulConnectionHostSide(farmhandId: reportData.FarmhandId, farmhandName: reportData.FarmhandName);
+
+            this.Monitor.Log(message, LogLevel.Info);
         }
     }
 }

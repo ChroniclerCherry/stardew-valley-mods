@@ -299,7 +299,7 @@ internal class ModEntry : Mod
     {
         if (Game1.getFarm().isThereABuildingUnderConstruction())
         {
-            Game1.drawObjectDialogue(this.Helper.Translation.Get("robin.busy"));
+            Game1.drawObjectDialogue(I18n.Robin_Busy());
             return;
         }
 
@@ -316,13 +316,13 @@ internal class ModEntry : Mod
             switch (cabinIndoors.upgradeLevel)
             {
                 case 0:
-                    displayInfo = $"{cabin.buildingType.Value} {this.Helper.Translation.Get("robin.hu1_materials")}";
+                    displayInfo = $"{cabin.buildingType.Value} {I18n.Robin_Hu1Materials()}";
                     break;
                 case 1:
-                    displayInfo = $"{cabin.buildingType.Value} {this.Helper.Translation.Get("robin.hu2_materials")}";
+                    displayInfo = $"{cabin.buildingType.Value} {I18n.Robin_Hu2Materials()}";
                     break;
                 case 2:
-                    displayInfo = $"{cabin.buildingType.Value} {this.Helper.Translation.Get("robin.hu3_materials")}";
+                    displayInfo = $"{cabin.buildingType.Value} {I18n.Robin_Hu3Materials()}";
                     break;
             }
             if (displayInfo != null)
@@ -331,9 +331,10 @@ internal class ModEntry : Mod
 
         if (cabinNames.Count > 0)
         {
-            cabinNames.Add(new Response("Cancel", this.Helper.Translation.Get("menu.cancel_option")));
+            cabinNames.Add(new Response("Cancel", I18n.Menu_CancelOption()));
             //Game1.activeClickableMenu = new CabinQuestionsBox("Which Cabin would you like to upgrade?", cabinNames);
-            Game1.currentLocation.createQuestionDialogue(this.Helper.Translation.Get("robin.whichcabin_question"),
+            Game1.currentLocation.createQuestionDialogue(
+                I18n.Robin_WhichCabinQuestion(),
                 cabinNames.ToArray(),
                 delegate (Farmer who, string answer)
                 {

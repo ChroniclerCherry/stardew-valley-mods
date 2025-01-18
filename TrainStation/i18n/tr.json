@@ -1,10 +1,10 @@
 ﻿{
-    "NotEnoughMoney": "{{DestinationName}}'na bilet almak için yeterince paran yok",
+    "NotEnoughMoney": "{{destinationName}}'na bilet almak için yeterince paran yok",
     "MenuCancelOption": "İptal",
     "NoDestinations": "Mevcut varış noktası yok",
     "ChooseDestination": "Varış Noktanı Seç",
     "BoatStationDisplayName": "Willy'nin Dükkanı",
     "TrainStationDisplayName": "Yıldızçiyi Vadisi İstasyonu",
-    "ArrivalMessage": "{{DestinationName}}'na vardın",
+    "ArrivalMessage": "{{destinationName}}'na vardın",
     "GingerIsland": "Zencefil Adası"
 }

@@ -31,12 +31,13 @@ internal class ModEntry : Mod
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
-        // read config
-        this.Config = helper.ReadConfig<ModConfig>();
-
-        // init fields
+        // init
+        I18n.Init(helper.Translation);
         this.FarmRearrangeId = this.ModManifest.UniqueID + "_FarmRearranger";
         this.FarmRearrangeQualifiedId = ItemRegistry.type_bigCraftable + this.FarmRearrangeId;
+
+        // read config
+        this.Config = helper.ReadConfig<ModConfig>();
 
         // hook events
         helper.Events.Content.AssetRequested += this.OnAssetRequested;
@@ -80,7 +81,7 @@ internal class ModEntry : Mod
             if (Game1.currentLocation.Name == "Farm" || this.Config.CanArrangeOutsideFarm)
                 this.RearrangeFarm();
             else
-                Game1.activeClickableMenu = new DialogueBox(this.Helper.Translation.Get("CantBuildOffFarm"));
+                Game1.activeClickableMenu = new DialogueBox(I18n.CantBuildOffFarm());
         }
     }
 
@@ -149,7 +150,7 @@ internal class ModEntry : Mod
             e.Edit(asset =>
             {
                 var data = asset.AsDictionary<string, string>().Data;
-                data["FarmRearrangerMail"] = this.Helper.Translation.Get("robinletter");
+                data["FarmRearrangerMail"] = I18n.RobinLetter();
             });
         }
 
@@ -164,8 +165,8 @@ internal class ModEntry : Mod
             {
                 var data = asset.AsDictionary<string, string>().Data;
 
-                data[$"{this.FarmRearrangeId}_Name"] = this.Helper.Translation.Get("FarmRearranger_Name");
-                data[$"{this.FarmRearrangeId}_Description"] = this.Helper.Translation.Get("FarmRearranger_Description");
+                data[$"{this.FarmRearrangeId}_Name"] = I18n.FarmRearrangerName();
+                data[$"{this.FarmRearrangeId}_Description"] = I18n.FarmRearrangerDescription();
             });
         }
     }

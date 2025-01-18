@@ -130,8 +130,8 @@ internal class ModEntry : Mod
             {
                 var data = asset.AsDictionary<string, string>().Data;
 
-                data["OrnamentalHayBale_Name"] = this.Helper.Translation.Get("DisplayName");
-                data["OrnamentalHayBale_Description"] = this.Helper.Translation.Get("Description").ToString().Replace("{{capacity}}", Config.HayPerBale.ToString());
+                data["OrnamentalHayBale_Name"] = I18n.DisplayName();
+                data["OrnamentalHayBale_Description"] = I18n.Description(capacity: Config.HayPerBale);
             });
         }
 

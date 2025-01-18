@@ -24,6 +24,8 @@ internal class ModEntry : Mod
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
+        I18n.Init(helper.Translation);
+
         ModEntry.StaticHelper = helper;
 
         this.DresserAndMirror = new DresserAndMirror(helper, this.ModManifest.UniqueID);

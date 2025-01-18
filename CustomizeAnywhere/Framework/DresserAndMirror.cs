@@ -176,11 +176,11 @@ internal class DresserAndMirror
             {
                 var data = asset.AsDictionary<string, string>().Data;
 
-                data[$"{this.CatalogueId}_Name"] = this.Helper.Translation.Get("Catalogue_Name");
-                data[$"{this.CatalogueId}_Description"] = this.Helper.Translation.Get("Catalogue_Description");
+                data[$"{this.CatalogueId}_Name"] = I18n.CatalogueName();
+                data[$"{this.CatalogueId}_Description"] = I18n.CatalogueDescription();
 
-                data[$"{this.MirrorId}_Name"] = this.Helper.Translation.Get("Mirror_Name");
-                data[$"{this.MirrorId}_Description"] = this.Helper.Translation.Get("Mirror_Description");
+                data[$"{this.MirrorId}_Name"] = I18n.MirrorName();
+                data[$"{this.MirrorId}_Description"] = I18n.MirrorDescription();
             });
         }
     }

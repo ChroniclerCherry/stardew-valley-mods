@@ -1,10 +1,10 @@
 ﻿{
-    "NotEnoughMoney": "У Вас недостаточно денег, чтобы купить билет до {{DestinationName}}",
+    "NotEnoughMoney": "У Вас недостаточно денег, чтобы купить билет до {{destinationName}}",
     "MenuCancelOption": "Отмена",
     "NoDestinations": "Нет доступных направлений",
     "ChooseDestination": "Выберите место назначения",
     "BoatStationDisplayName": "Willy's shop", // TODO
     "TrainStationDisplayName": "Станция долины Стардью",
-    "ArrivalMessage": "Вы прибыли на станцию {{DestinationName}}",
+    "ArrivalMessage": "Вы прибыли на станцию {{destinationName}}",
     "GingerIsland": "Ginger Island" // TODO
 }

@@ -2,7 +2,7 @@
     /*********
     ** In-game text
     *********/
-    "robin.whichcabin_question": "Which Cabin would you like to upgrade?",
+    "robin.whichCabinQuestion": "Which Cabin would you like to upgrade?",
     "robin.hu1_materials": "Kitchen upgrade: 10,000g and 450 pieces of wood",
     "robin.hu2_materials": "Nursery upgrade: 65,000g and 100 pieces of hardwood",
     "robin.hu3_materials": "Cellar upgrade: 100,000g",

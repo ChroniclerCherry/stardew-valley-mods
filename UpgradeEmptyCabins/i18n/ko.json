@@ -2,7 +2,7 @@
     /*********
     ** In-game text
     *********/
-    "robin.whichcabin_question": "어떤 오두막을 업그레이드 하시겠습니까?",
+    "robin.whichCabinQuestion": "어떤 오두막을 업그레이드 하시겠습니까?",
     "robin.hu1_materials": "주방 업그레이드 : 10,000 골드, 나무 450개",
     "robin.hu2_materials": "아이방 업그레이드: 65,000 골드, 단단한 나무 100개",
     "robin.hu3_materials": "지하실 업그레이드 : 100,000 골드",
