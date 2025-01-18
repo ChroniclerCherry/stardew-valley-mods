@@ -47,19 +47,18 @@ To add a destination to the boat or train menu:
    {
        "Action": "EditData",
        "Target": "Mods/Cherry.TrainStation/Destinations",
-       "TargetField": [ "TrainStops" ], // or BoatStops
        "Entries": {
            "{{ModId}}_ClintShop": { // should match your Id field below
                "Id": "{{ModId}}_ClintShop",
                "DisplayName": "Clint's Shop",
                "ToLocation": "Town",
-               "ToTile": { "X": 105, "Y": 80 },
-               "ToFacingDirection": "down"
+               "ToTile": { "X": 105, "Y": 80 }
            }
        }
    }
    ```
-3. Edit the data accordingly. You can list any number of boat or train stops in the same `EditData` patch.
+3. Edit the data accordingly (see the fields below). You can list any number of boat or train stops in the same
+   `EditData` patch.
 
 The available fields for a boat or train stop are:
 
@@ -70,6 +69,7 @@ field name          | usage
 `ToLocation`        | The internal name of the location to which the player should be warped to. You can see internal location names in-game using [Debug Mode](https://www.nexusmods.com/stardewvalley/mods/679).
 `ToTile`            | The tile position to which the player should be warped to. You can see tile coordinates in-game using [Debug Mode](https://www.nexusmods.com/stardewvalley/mods/679).
 `ToFacingDirection` | _(Optional)_ The direction the player should face after warping. The possible values are `up`, `down`, `left`, and `right`. Default `down`.
+`Network`           | _(Optional)_ How the player can reach the stop. The possible values are `Train` (default) and `Boat`.
 `Cost`              | _(Optional)_ The gold price to purchase a ticket. Default free.
 `Conditions`        | _(Optional)_ If set, the [game state query](https://stardewvalleywiki.com/Modding:Game_state_queries) which must be met for the destination to appear in the menu.
 

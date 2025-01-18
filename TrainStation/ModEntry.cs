@@ -52,19 +52,7 @@ internal class ModEntry : Mod
     /// <inheritdoc />
     public override object GetApi()
     {
-        return new Api(this.ContentManager, this.OpenBoatMenu, this.OpenTrainMenu);
-    }
-
-    /// <summary>Open the menu to choose a boat destination.</summary>
-    public void OpenBoatMenu()
-    {
-        this.OpenMenu(this.ContentManager.GetAvailableBoatStops().ToArray(), isBoat: true);
-    }
-
-    /// <summary>Open the menu to choose a train destination.</summary>
-    public void OpenTrainMenu()
-    {
-        this.OpenMenu(this.ContentManager.GetAvailableTrainStops().ToArray(), isBoat: false);
+        return new Api(this.ContentManager, this.OpenMenu);
     }
 
 
@@ -72,18 +60,18 @@ internal class ModEntry : Mod
     ** Private methods
     *********/
     /// <summary>Open the menu to choose a boat or train destination.</summary>
-    /// <param name="stops">The boat or train stops to choose from.</param>
-    /// <param name="isBoat">Whether we're traveling by boat; else by train.</param>
-    private void OpenMenu(StopModel[] stops, bool isBoat)
+    /// <param name="network">The network for which to get stops.</param>
+    private void OpenMenu(StopNetwork network)
     {
-        Response[] responses = this.GetResponses(stops).ToArray();
-        if (responses.Length <= 1)
+        StopModel[] stops = this.ContentManager.GetAvailableStops(network).ToArray();
+        if (stops.Length == 0)
         {
             Game1.drawObjectDialogue(I18n.NoDestinations());
             return;
         }
 
-        Game1.currentLocation.createQuestionDialogue(I18n.ChooseDestination(), responses, (_, selectedId) => this.DestinationPicked(selectedId, stops, isBoat));
+        Response[] responses = this.GetResponses(stops).ToArray();
+        Game1.currentLocation.createQuestionDialogue(I18n.ChooseDestination(), responses, (_, selectedId) => this.OnDestinationPicked(selectedId, stops, network));
     }
 
     /// <inheritdoc cref="IPlayerEvents.Warped" />
@@ -162,12 +150,10 @@ internal class ModEntry : Mod
         string tileProperty = Game1.currentLocation.doesTileHaveProperty((int)grabTile.X, (int)grabTile.Y, "Action", "Buildings");
 
         if (tileProperty == "TrainStation")
+            this.OpenMenu(StopNetwork.Train);
+        else if (tileProperty == "BoatTicket" && Game1.MasterPlayer.hasOrWillReceiveMail("willyBoatFixed") && this.ContentManager.GetAvailableStops(StopNetwork.Boat).Any())
         {
-            this.OpenTrainMenu();
-        }
-        else if (tileProperty == "BoatTicket" && Game1.MasterPlayer.hasOrWillReceiveMail("willyBoatFixed") && this.ContentManager.GetAvailableBoatStops().Any())
-        {
-            this.OpenBoatMenu();
+            this.OpenMenu(StopNetwork.Boat);
             this.Helper.Input.Suppress(e.Button);
         }
     }
@@ -194,15 +180,19 @@ internal class ModEntry : Mod
     /****
     ** Warp after choosing destination
     ****/
-    private void DestinationPicked(string selectedId, StopModel[] stops, bool isBoat)
+    /// <summary>Handle the player choosing a destination in the UI.</summary>
+    /// <param name="stopId">The selected stop ID.</param>
+    /// <param name="stops">The stops which the player chose from.</param>
+    /// <param name="network">The network containing the stop.</param>
+    private void OnDestinationPicked(string stopId, StopModel[] stops, StopNetwork network)
     {
         // special cases
-        switch (selectedId)
+        switch (stopId)
         {
             case "Cancel":
                 return;
 
-            case "Cherry.TrainStation_GingerIsland" when Game1.currentLocation is BoatTunnel tunnel:
+            case "Cherry.TrainStation_GingerIsland" when network is StopNetwork.Boat && Game1.currentLocation is BoatTunnel tunnel:
                 if (this.TryToChargeMoney(tunnel.TicketPrice))
                     tunnel.StartDeparture();
                 else
@@ -211,7 +201,7 @@ internal class ModEntry : Mod
         }
 
         // get stop
-        StopModel stop = stops.FirstOrDefault(s => s.Id == selectedId);
+        StopModel stop = stops.FirstOrDefault(s => s.Id == stopId);
         if (stop is null)
             return;
 
@@ -228,7 +218,7 @@ internal class ModEntry : Mod
 
         // warp
         LocationRequest request = Game1.getLocationRequest(stop.ToLocation);
-        if (!isBoat)
+        if (network is StopNetwork.Train)
         {
             request.OnWarp += this.OnTrainWarped;
             this.DestinationMessage = I18n.ArrivalMessage(destinationName: stop.DisplayName);

@@ -35,7 +35,8 @@ internal class LegacyStopModel : StopModel
     /// <summary>Construct an instance from a legacy content pack model.</summary>
     /// <param name="id"><inheritdoc cref="StopModel.Id" path="/summary"/></param>
     /// <param name="model">The content pack model to parse.</param>
-    public static StopModel FromContentPack(string id, StopContentPackModel model)
+    /// <param name="network"><inheritdoc cref="StopModel.Network" path="/summary" /></param>
+    public static StopModel FromContentPack(string id, StopContentPackModel model, StopNetwork network)
     {
         return FromApi(
             id: id,
@@ -44,6 +45,7 @@ internal class LegacyStopModel : StopModel
             toFacingDirection: model.FacingDirectionAfterWarp,
             cost: model.Cost,
             conditions: model.Conditions,
+            network: network,
             displayNameTranslations: model.LocalizedDisplayName,
             displayNameDefault: null
         );
@@ -56,9 +58,10 @@ internal class LegacyStopModel : StopModel
     /// <param name="toFacingDirection"><inheritdoc cref="StopModel.ToFacingDirection" path="/summary" /></param>
     /// <param name="cost"><inheritdoc cref="StopModel.Cost" path="/summary" /></param>
     /// <param name="conditions">The Expanded Preconditions Utility conditions.</param>
+    /// <param name="network"><inheritdoc cref="StopModel.Network" path="/summary" /></param>
     /// <param name="displayNameTranslations"><inheritdoc cref="DisplayNameTranslations" path="/summary" /></param>
     /// <param name="displayNameDefault"><inheritdoc cref="DisplayNameDefault" path="/summary" /></param>
-    public static StopModel FromApi(string id, string toLocation, Point toTile, int toFacingDirection, int cost, string[] conditions, Dictionary<string, string> displayNameTranslations, string displayNameDefault)
+    public static StopModel FromApi(string id, string toLocation, Point toTile, int toFacingDirection, int cost, string[] conditions, StopNetwork network, Dictionary<string, string> displayNameTranslations, string displayNameDefault)
     {
         return new LegacyStopModel
         {
@@ -69,6 +72,7 @@ internal class LegacyStopModel : StopModel
             ToFacingDirection = toFacingDirection.ToString(),
             Cost = cost,
             Conditions = BuildGameQueryForExpandedPreconditions(conditions),
+            Network = network,
 
             DisplayNameTranslations = displayNameTranslations,
             DisplayNameDefault = displayNameDefault

@@ -24,6 +24,9 @@ internal class StopModel
     /// <summary>The gold price to go to that stop.</summary>
     public int Cost { get; set; } = 0;
 
+    /// <summary>The network which has the given stop.</summary>
+    public StopNetwork Network { get; set; } = StopNetwork.Train;
+
     /// <summary>If set, a game state query which indicates whether this stop should appear in the menu at a given time. The contextual location is set to the player's current location.</summary>
     public string Conditions { get; set; }
 }

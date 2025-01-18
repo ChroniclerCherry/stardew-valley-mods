@@ -35,11 +35,8 @@ internal class ContentManager
     /*********
     ** Accessors
     *********/
-    /// <summary>The boat stops registered by Train Station packs or through the API.</summary>
-    public List<StopModel> LegacyBoatStops { get; } = new();
-
-    /// <summary>The train stops registered by Train Station packs or through the API.</summary>
-    public List<StopModel> LegacyTrainStops { get; } = new();
+    /// <summary>The stops registered by Train Station packs or through the API.</summary>
+    public List<StopModel> LegacyStops { get; } = new();
 
 
     /*********
@@ -59,16 +56,17 @@ internal class ContentManager
         this.Monitor = monitor;
     }
 
-    /// <summary>Get the boat stops which can be selected from the current location.</summary>
-    public IEnumerable<StopModel> GetAvailableBoatStops()
+    /// <summary>Get the stops which can be selected from the current location.</summary>
+    /// <param name="network">The network for which to get stops.</param>
+    public IEnumerable<StopModel> GetAvailableStops(StopNetwork network)
     {
-        return this.GetAvailableStops(content => content.BoatStops);
-    }
+        foreach (StopModel stop in this.ContentHelper.Load<List<StopModel>>(this.DataAssetName))
+        {
+            if (stop?.Network != network || stop.ToLocation == Game1.currentLocation.Name || Game1.getLocationFromName(stop.ToLocation) is null || !GameStateQuery.CheckConditions(stop.Conditions))
+                continue;
 
-    /// <summary>Get the train stops which can be selected from the current location.</summary>
-    public IEnumerable<StopModel> GetAvailableTrainStops()
-    {
-        return this.GetAvailableStops(content => content.TrainStops);
+            yield return stop;
+        }
     }
 
     /// <summary>Reload the data asset, so it'll be reloaded next time it's accessed.</summary>
@@ -101,8 +99,8 @@ internal class ContentManager
             {
                 for (int i = 0; i < cp.TrainStops.Count; i++)
                 {
-                    this.LegacyTrainStops.Add(
-                        LegacyStopModel.FromContentPack($"{pack.Manifest.UniqueID}_{i}", cp.TrainStops[i])
+                    this.LegacyStops.Add(
+                        LegacyStopModel.FromContentPack($"{pack.Manifest.UniqueID}_{i}", cp.TrainStops[i], StopNetwork.Train)
                     );
                 }
             }
@@ -111,8 +109,8 @@ internal class ContentManager
             {
                 for (int i = 0; i < cp.BoatStops.Count; i++)
                 {
-                    this.LegacyBoatStops.Add(
-                        LegacyStopModel.FromContentPack($"{pack.Manifest.UniqueID}_{i}", cp.BoatStops[i])
+                    this.LegacyStops.Add(
+                        LegacyStopModel.FromContentPack($"{pack.Manifest.UniqueID}_{i}", cp.BoatStops[i], StopNetwork.Boat)
                     );
                 }
             }
@@ -124,19 +122,21 @@ internal class ContentManager
     ** Private methods
     *********/
     /// <summary>Build the data asset model with the default stops and those provided through Train Station content packs and its API.</summary>
-    private ContentModel BuildDefaultContentModel()
+    private List<StopModel> BuildDefaultContentModel()
     {
         var config = this.Config();
-        var model = new ContentModel();
+        var stops = new List<StopModel>();
 
         // default stops
-        model.BoatStops.AddRange([
+        stops.AddRange([
+            // boat
             new StopModel
             {
                 Id = $"{this.ModId}_BoatTunnel",
                 DisplayName = I18n.BoatStationDisplayName(),
                 ToLocation = "BoatTunnel",
-                ToTile = new Point(4, 9)
+                ToTile = new Point(4, 9),
+                Network = StopNetwork.Boat
             },
             new StopModel
             {
@@ -146,62 +146,40 @@ internal class ContentManager
                 ToTile = new Point(21, 43),
                 ToFacingDirection = "up",
                 Cost = (Game1.getLocationFromName("BoatTunnel") as BoatTunnel)?.TicketPrice ?? 1000,
-                Conditions = "PLAYER_HAS_MAIL Host willyBoatTicketMachine, PLAYER_HAS_MAIL Host willyBoatFixed"
+                Network = StopNetwork.Boat
+            },
+
+            // train
+            new StopModel
+            {
+                Id = $"{this.ModId}_Railroad",
+                DisplayName = I18n.TrainStationDisplayName(),
+                ToLocation = "Railroad",
+                ToTile = new Point(config.RailroadWarpX, config.RailroadWarpY),
+                Network = StopNetwork.Train
             }
         ]);
-        model.TrainStops.Add(new StopModel
-        {
-            Id = $"{this.ModId}_Railroad",
-            DisplayName = I18n.TrainStationDisplayName(),
-            ToLocation = "Railroad",
-            ToTile = new Point(config.RailroadWarpX, config.RailroadWarpY)
-        });
 
         // stops from legacy content packs & API
-        foreach (StopModel stop in this.LegacyBoatStops)
+        foreach (StopModel stop in this.LegacyStops)
         {
-            model.BoatStops.Add(new StopModel
-            {
-                Id = stop.Id,
-                DisplayName = stop.DisplayName,
-                ToLocation = stop.ToLocation,
-                ToTile = stop.ToTile,
-                ToFacingDirection = stop.ToFacingDirection,
-                Cost = stop.Cost,
-                Conditions = stop.Conditions
-            });
+            stops.Add(
+                // We need a copy of the model here, since (a) we don't want asset edits to be persisted between resets
+                // and (b) we need the display name to be editable despite being auto-generated for legacy stop models.
+                new StopModel
+                {
+                    Id = stop.Id,
+                    DisplayName = stop.DisplayName,
+                    ToLocation = stop.ToLocation,
+                    ToTile = stop.ToTile,
+                    ToFacingDirection = stop.ToFacingDirection,
+                    Cost = stop.Cost,
+                    Conditions = stop.Conditions,
+                    Network = stop.Network
+                }
+            );
         }
 
-        foreach (StopModel stop in this.LegacyTrainStops)
-        {
-            model.TrainStops.Add(new StopModel
-            {
-                Id = stop.Id,
-                DisplayName = stop.DisplayName,
-                ToLocation = stop.ToLocation,
-                ToTile = stop.ToTile,
-                ToFacingDirection = stop.ToFacingDirection,
-                Cost = stop.Cost,
-                Conditions = stop.Conditions
-            });
-        }
-
-        return model;
-
-    }
-
-    /// <summary>Get the stops which can be selected from the current location.</summary>
-    /// <param name="getStops">Get the list of stops from the content model.</param>
-    private IEnumerable<StopModel> GetAvailableStops(Func<ContentModel, List<StopModel>> getStops)
-    {
-        ContentModel content = this.ContentHelper.Load<ContentModel>(this.DataAssetName);
-
-        foreach (StopModel stop in getStops(content))
-        {
-            if (stop.ToLocation == Game1.currentLocation.Name || Game1.getLocationFromName(stop.ToLocation) is null || !GameStateQuery.CheckConditions(stop.Conditions))
-                continue;
-
-            yield return stop;
-        }
+        return stops;
     }
 }
