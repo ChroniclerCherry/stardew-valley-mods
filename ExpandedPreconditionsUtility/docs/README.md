@@ -20,20 +20,34 @@ in game state queries or custom code, and extends them with new preconditions.
 
 ## Introduction
 ### Usage
-You can use extended preconditions in content pack fields that specifically support them (e.g. Shop Tile Framework).
-Depending on the framework mod consuming the content pack, conditions may be given as a single string:
-```js
-// all listed conditions must be true
-"Conditions": "season spring/time 600 1000" // (season is spring) AND (time is between 6am to 10am)
-```
-Or as an array of possible conditions:
-```js
-// at least one of the strings must be true
-"Conditions": [
-    "season spring/time 600 1000", // (season is spring) AND (time is between 6am to 10am)
-    "friendship Linus 2500"        // OR (player has 2500+ friendship points with Linus)
-]
-```
+There are two ways to use expanded preconditions:
+
+* In any [game state query](https://stardewvalleywiki.com/Modding:Game_state_queries) field, you can use the
+  `Cherry.ExpandedPreconditionsUtility` query to check preconditions. For example:
+  ```js
+  // can cook Salmon Dinner
+  "Condition": "Cherry.ExpandedPreconditionsUtility HasCookingRecipe Salmon_Dinner"
+  ```
+  You can list multiple conditions using `/` for AND logic, and use the game's built-in `ANY` query for OR logic. For
+  example:
+  ```js
+  // (can cook Salmon Dinner AND today is sunny) OR (today is rainy)
+  "Condition": 'ANY "Cherry.ExpandedPreconditionsUtility HasCookingRecipe Salmon_Dinner/Weather Sunny" "Cherry.ExpandedPreconditionsUtility Weather Rainy"'
+  ```
+* Or you can use preconditions in content pack fields that specifically support them (e.g. Shop Tile Framework).
+  Depending on the framework mod consuming the content pack, conditions may be given as a single string:
+  ```js
+  // all listed conditions must be true
+  "Conditions": "season spring/time 600 1000" // (season is spring) AND (time is between 6am to 10am)
+  ```
+  Or as an array of possible conditions:
+  ```js
+  // at least one of the strings must be true
+  "Conditions": [
+      "season spring/time 600 1000", // (season is spring) AND (time is between 6am to 10am)
+      "friendship Linus 2500"        // OR (player has 2500+ friendship points with Linus)
+  ]
+  ```
 
 ### Condition syntax
 Expanded Preconditions Utility uses the same syntax as [event preconditions](https://stardewvalleywiki.com/Modding:Event_data).

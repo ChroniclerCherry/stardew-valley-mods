@@ -2,7 +2,7 @@
 
 # Release notes
 ## Upcoming release
-- Internal refactoring.
+- You can now [check expanded preconditions using a game state query](README.md#usage).
 
 ## 1.0.2
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
