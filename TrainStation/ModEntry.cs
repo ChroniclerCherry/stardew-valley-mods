@@ -9,8 +9,6 @@ using StardewValley.Locations;
 using StardewValley.Menus;
 using TrainStation.Framework;
 using TrainStation.Framework.ContentModels;
-using xTile.Layers;
-using xTile.Tiles;
 
 namespace TrainStation;
 
@@ -125,37 +123,18 @@ internal class ModEntry : Mod
 
     private void DrawInTicketStation()
     {
-        GameLocation railway = Game1.getLocationFromName("Railroad");
-
-        //get references to all the stuff I need to edit the railroad map
-        Layer buildingsLayer = railway.map.GetLayer("Buildings");
-        Layer frontLayer = railway.map.GetLayer("Front");
-
-        TileSheet outdoorsTilesheet = railway.map.TileSheets[1];
-
+        // draw ticket machine
         try
         {
-            //draw the ticket station
-            buildingsLayer.Tiles[this.Config.TicketStationX, this.Config.TicketStationY] =
-                new StaticTile(buildingsLayer, outdoorsTilesheet, BlendMode.Alpha, this.TicketStationBottomTile);
-            frontLayer.Tiles[this.Config.TicketStationX, this.Config.TicketStationY - 1] =
-                new StaticTile(frontLayer, outdoorsTilesheet, BlendMode.Alpha, this.TicketStationTopTile);
+            GameLocation railroad = Game1.RequireLocation("Railroad");
+
+            railroad.setMapTile(this.Config.TicketStationX, this.Config.TicketStationY, this.TicketStationBottomTile, "Buildings", GameLocation.DefaultTileSheetId, action: "TrainStation");
+            railroad.setMapTile(this.Config.TicketStationX, this.Config.TicketStationY - 1, this.TicketStationTopTile, "Front", GameLocation.DefaultTileSheetId);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            this.Monitor.Log(e.ToString(), LogLevel.Error);
-            this.Monitor.Log("Train station has recovered from a crash and will continue to function, however the ticket station may be invisible or looked glitched. This is caused by the map mod you are using changing tilesheet orders through renaming vanilla tilesheets or not naming custom tilesheets properly. Please report this to the map mod you are using to fix this issue.", LogLevel.Alert);
-            //draw anything from the tilesheet
-            buildingsLayer.Tiles[this.Config.TicketStationX, this.Config.TicketStationY] =
-                new StaticTile(buildingsLayer, outdoorsTilesheet, BlendMode.Alpha, 1);
-            frontLayer.Tiles[this.Config.TicketStationX, this.Config.TicketStationY - 1] =
-                new StaticTile(frontLayer, outdoorsTilesheet, BlendMode.Alpha, 1);
+            this.Monitor.Log($"Train Station couldn't add the ticket machine to the railroad. This is likely due to another mod changing the tilesheets in a non-recommended way.\n\nTechnical details: {ex}", LogLevel.Error);
         }
-
-        //set the TrainStation property
-        railway.setTileProperty(this.Config.TicketStationX, this.Config.TicketStationY, "Buildings", "Action", "TrainStation");
-
-        railway.map.LoadTileSheets(Game1.mapDisplayDevice);
     }
 
 
