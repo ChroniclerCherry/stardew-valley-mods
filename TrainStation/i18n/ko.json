@@ -1,10 +1,7 @@
 ﻿{
     "NotEnoughMoney": "돈이 부족하여 {{destinationName}}행 티켓을 구입할 수 없다.",
-    "MenuCancelOption": "취소",
     "NoDestinations": "이용 가능한 목적지가 없습니다.",
-    "ChooseDestination": "목적지를 선택하세요.",
     "BoatStationDisplayName": "Willy's shop", // TODO
     "TrainStationDisplayName": "스타듀밸리 역",
-    "ArrivalMessage": "{{destinationName}}에 도착했다.",
-    "GingerIsland": "Ginger Island" // TODO
+    "ArrivalMessage": "{{destinationName}}에 도착했다."
 }

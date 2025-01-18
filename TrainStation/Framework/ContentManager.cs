@@ -141,7 +141,7 @@ internal class ContentManager
             new StopModel
             {
                 Id = $"{this.ModId}_GingerIsland",
-                DisplayName = I18n.GingerIsland(),
+                DisplayName = Game1.content.LoadString("Strings\\StringsFromCSFiles:IslandName"),
                 ToLocation = "IslandSouth",
                 ToTile = new Point(21, 43),
                 ToFacingDirection = "up",

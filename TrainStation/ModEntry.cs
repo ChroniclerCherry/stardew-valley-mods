@@ -71,7 +71,7 @@ internal class ModEntry : Mod
         }
 
         Response[] responses = this.GetResponses(stops).ToArray();
-        Game1.currentLocation.createQuestionDialogue(I18n.ChooseDestination(), responses, (_, selectedId) => this.OnDestinationPicked(selectedId, stops, network));
+        Game1.currentLocation.createQuestionDialogue(Game1.content.LoadString("Strings\\Locations:MineCart_ChooseDestination"), responses, (_, selectedId) => this.OnDestinationPicked(selectedId, stops, network));
     }
 
     /// <inheritdoc cref="IPlayerEvents.Warped" />
@@ -164,14 +164,14 @@ internal class ModEntry : Mod
 
         foreach (StopModel stop in stops)
         {
-            string displayName = stop.DisplayName;
-            if (stop.Cost > 0)
-                displayName += $" - {stop.Cost}g";
+            string label = stop.Cost > 0
+                ? Game1.content.LoadString("Strings\\Locations:MineCart_DestinationWithPrice", stop.DisplayName, Utility.getNumberWithCommas(stop.Cost))
+                : stop.DisplayName;
 
-            responses.Add(new Response(stop.Id, displayName));
+            responses.Add(new Response(stop.Id, label));
         }
 
-        responses.Add(new Response("Cancel", I18n.MenuCancelOption()));
+        responses.Add(new Response("Cancel", Game1.content.LoadString("Strings\\Locations:MineCart_Destination_Cancel")));
 
         return responses;
     }
