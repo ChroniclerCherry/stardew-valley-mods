@@ -2,8 +2,12 @@ using System.Collections.Generic;
 
 namespace TrainStation.Framework;
 
+/// <summary>The data loaded from a Train Station content pack.</summary>
 internal class ContentPack
 {
-    public List<TrainStop> TrainStops { get; set; }
-    public List<BoatStop> BoatStops { get; set; }
+    /// <summary>The train stops to register.</summary>
+    public List<StopContentPackModel> TrainStops { get; set; }
+
+    /// <summary>The boat stops to register.</summary>
+    public List<StopContentPackModel> BoatStops { get; set; }
 }

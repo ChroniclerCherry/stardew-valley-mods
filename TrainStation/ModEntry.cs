@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -54,29 +55,37 @@ internal class ModEntry : Mod
         return new Api(this.ContentManager, this.OpenBoatMenu, this.OpenTrainMenu);
     }
 
+    /// <summary>Open the menu to choose a boat destination.</summary>
     public void OpenBoatMenu()
     {
-        Response[] responses = this.GetBoatReponses().ToArray();
-
-        Game1.currentLocation.createQuestionDialogue(I18n.ChooseDestination(), responses, this.BoatDestinationPicked);
+        this.OpenMenu(this.ContentManager.BoatStops, isBoat: true);
     }
 
+    /// <summary>Open the menu to choose a train destination.</summary>
     public void OpenTrainMenu()
     {
-        Response[] responses = this.GetReponses().ToArray();
-        if (responses.Length <= 1) //only 1 response means there's only the cancel option
-        {
-            Game1.drawObjectDialogue(I18n.NoDestinations());
-            return;
-        }
-
-        Game1.currentLocation.createQuestionDialogue(I18n.ChooseDestination(), responses, this.DestinationPicked);
+        this.OpenMenu(this.ContentManager.TrainStops, isBoat: false);
     }
 
 
     /*********
     ** Private methods
     *********/
+    /// <summary>Open the menu to choose a boat or train destination.</summary>
+    /// <param name="stops">The boat or train stops to choose from.</param>
+    /// <param name="isBoat">Whether we're traveling by boat; else by train.</param>
+    private void OpenMenu(List<StopContentPackModel> stops, bool isBoat)
+    {
+        Response[] responses = this.GetResponses(stops, isBoat).ToArray();
+        if (responses.Length <= 1)
+        {
+            Game1.drawObjectDialogue(I18n.NoDestinations());
+            return;
+        }
+
+        Game1.currentLocation.createQuestionDialogue(I18n.ChooseDestination(), responses, (_, selectedId) => this.DestinationPicked(selectedId, stops, isBoat));
+    }
+
     /// <inheritdoc cref="IPlayerEvents.Warped" />
     private void OnWarped(object sender, WarpedEventArgs e)
     {
@@ -186,11 +195,11 @@ internal class ModEntry : Mod
         }
     }
 
-    private List<Response> GetBoatReponses()
+    private List<Response> GetResponses(List<StopContentPackModel> stops, bool isBoat)
     {
         List<Response> responses = new List<Response>();
 
-        foreach (BoatStop stop in this.ContentManager.BoatStops)
+        foreach (StopContentPackModel stop in stops)
         {
             if (stop.TargetMapName == Game1.currentLocation.Name) //remove stops to the current map
                 continue;
@@ -198,46 +207,15 @@ internal class ModEntry : Mod
             if (!this.ConditionsApi.CheckConditions(stop.Conditions)) //remove stops that don't meet conditions
                 continue;
 
-            string displayName = $"{stop.TranslatedName}";
-
+            string displayName = stop.DisplayName;
             if (stop.Cost > 0)
-            {
                 displayName += $" - {stop.Cost}g";
-            }
 
-            responses.Add(new Response(stop.StopId, displayName));
+            responses.Add(new Response(stop.Id, displayName));
         }
 
-        if (Game1.currentLocation is BoatTunnel tunnel)
-        {
+        if (isBoat && Game1.currentLocation is BoatTunnel tunnel)
             responses.Add(new Response("GingerIsland", I18n.GingerIsland() + $" - {tunnel.TicketPrice}g"));
-        }
-        responses.Add(new Response("Cancel", I18n.MenuCancelOption()));
-
-        return responses;
-    }
-
-    private List<Response> GetReponses()
-    {
-        List<Response> responses = new List<Response>();
-
-        foreach (TrainStop stop in this.ContentManager.TrainStops)
-        {
-            if (stop.TargetMapName == Game1.currentLocation.Name) //remove stops to the current map
-                continue;
-
-            if (!this.ConditionsApi.CheckConditions(stop.Conditions)) //remove stops that don't meet conditions
-                continue;
-
-            string displayName = $"{stop.TranslatedName}";
-
-            if (stop.Cost > 0)
-            {
-                displayName += $" - {stop.Cost}g";
-            }
-
-            responses.Add(new Response(stop.StopId, displayName));
-        }
 
         responses.Add(new Response("Cancel", I18n.MenuCancelOption()));
 
@@ -248,80 +226,49 @@ internal class ModEntry : Mod
     /****
     ** Warp after choosing destination
     ****/
-    private void BoatDestinationPicked(Farmer who, string whichAnswer)
+    private void DestinationPicked(string selectedId, List<StopContentPackModel> stops, bool isBoat)
     {
-        if (whichAnswer == "Cancel")
-            return;
-
-        if (whichAnswer == "GingerIsland")
+        // special cases
+        switch (selectedId)
         {
-            if (Game1.currentLocation is BoatTunnel tunnel)
-            {
-                if (Game1.player.Money >= tunnel.TicketPrice)
-                {
-                    Game1.player.Money -= tunnel.TicketPrice;
+            case "Cancel":
+                return;
+
+            case "GingerIsland" when isBoat && Game1.currentLocation is BoatTunnel tunnel:
+                if (this.TryToChargeMoney(tunnel.TicketPrice))
                     tunnel.StartDeparture();
-                }
-                else if (Game1.player.Money < tunnel.TicketPrice)
-                {
+                else
                     Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Locations:BusStop_NotEnoughMoneyForTicket"));
-                }
-            }
+                return;
         }
 
-        foreach (BoatStop stop in this.ContentManager.BoatStops)
-        {
-            if (stop.StopId == whichAnswer)
-            {
-                this.AttemptToWarpBoat(stop);
-            }
-        }
-    }
-
-    private void DestinationPicked(Farmer who, string whichAnswer)
-    {
-        if (whichAnswer == "Cancel")
+        // get stop
+        StopContentPackModel stop = stops.FirstOrDefault(s => s.Id == selectedId);
+        if (stop is null)
             return;
 
-        foreach (TrainStop stop in this.ContentManager.TrainStops)
-        {
-            if (stop.StopId == whichAnswer)
-            {
-                this.AttemptToWarp(stop);
-            }
-        }
-    }
-
-    private void AttemptToWarpBoat(BoatStop stop)
-    {
+        // charge ticket price
         if (!this.TryToChargeMoney(stop.Cost))
         {
-            Game1.drawObjectDialogue(I18n.NotEnoughMoney(destinationName: stop.TranslatedName));
+            Game1.drawObjectDialogue(I18n.NotEnoughMoney(destinationName: stop.DisplayName));
             return;
         }
+
+        // warp
         LocationRequest request = Game1.getLocationRequest(stop.TargetMapName);
+        if (!isBoat)
+        {
+            request.OnWarp += this.OnTrainWarped;
+            this.DestinationMessage = I18n.ArrivalMessage(destinationName: stop.DisplayName);
+
+            this.Cue = Game1.soundBank.GetCue("trainLoop");
+            this.Cue.SetVariable("Volume", 100f);
+            this.Cue.Play();
+        }
         Game1.warpFarmer(request, stop.TargetX, stop.TargetY, stop.FacingDirectionAfterWarp);
     }
 
-    private void AttemptToWarp(TrainStop stop)
-    {
-        if (!this.TryToChargeMoney(stop.Cost))
-        {
-            Game1.drawObjectDialogue(I18n.NotEnoughMoney(destinationName: stop.TranslatedName));
-            return;
-        }
-        LocationRequest request = Game1.getLocationRequest(stop.TargetMapName);
-        request.OnWarp += this.Request_OnWarp;
-        this.DestinationMessage = I18n.ArrivalMessage(destinationName: stop.TranslatedName);
-
-        Game1.warpFarmer(request, stop.TargetX, stop.TargetY, stop.FacingDirectionAfterWarp);
-
-        this.Cue = Game1.soundBank.GetCue("trainLoop");
-        this.Cue.SetVariable("Volume", 100f);
-        this.Cue.Play();
-    }
-
-    private void Request_OnWarp()
+    private void OnTrainWarped()
     {
         if (Game1.currentLocation?.currentEvent is null)
             Game1.pauseThenMessage(3000, this.DestinationMessage);

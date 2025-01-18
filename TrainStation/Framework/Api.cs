@@ -45,41 +45,35 @@ public class Api : IApi
 
     public void RegisterTrainStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName)
     {
-        var stop = this.ContentManager.TrainStops.SingleOrDefault(s => s.StopId.Equals(stopId));
-        if (stop == null)
-        {
-            stop = new TrainStop();
-            this.ContentManager.TrainStops.Add(stop);
-        }
-
-        stop.StopId = stopId;
-        stop.TargetMapName = targetMapName;
-        stop.LocalizedDisplayName = localizedDisplayName;
-        stop.TargetX = targetX;
-        stop.TargetY = targetY;
-        stop.Cost = cost;
-        stop.FacingDirectionAfterWarp = facingDirectionAfterWarp;
-        stop.Conditions = conditions;
-        stop.TranslatedName = translatedName;
+        this.Register(this.ContentManager.TrainStops, stopId, targetMapName, localizedDisplayName, targetX, targetY, cost, facingDirectionAfterWarp, conditions, translatedName);
     }
 
     public void RegisterBoatStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName)
     {
-        var stop = this.ContentManager.BoatStops.SingleOrDefault(s => s.StopId.Equals(stopId));
+        this.Register(this.ContentManager.BoatStops, stopId, targetMapName, localizedDisplayName, targetX, targetY, cost, facingDirectionAfterWarp, conditions, translatedName);
+    }
+
+
+    /*********
+    ** Private methods
+    *********/
+    private void Register(List<StopContentPackModel> stops, string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName)
+    {
+        var stop = this.ContentManager.BoatStops.SingleOrDefault(s => s.Id == stopId);
         if (stop == null)
         {
-            stop = new BoatStop();
-            this.ContentManager.BoatStops.Add(stop);
+            stop = new StopContentPackModel();
+            stops.Add(stop);
         }
 
-        stop.StopId = stopId;
-        stop.TargetMapName = targetMapName;
+        stop.Id = stopId;
+        stop.DisplayName = translatedName;
         stop.LocalizedDisplayName = localizedDisplayName;
+        stop.TargetMapName = targetMapName;
         stop.TargetX = targetX;
         stop.TargetY = targetY;
-        stop.Cost = cost;
         stop.FacingDirectionAfterWarp = facingDirectionAfterWarp;
+        stop.Cost = cost;
         stop.Conditions = conditions;
-        stop.TranslatedName = translatedName;
     }
 }

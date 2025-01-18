@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using StardewModdingAPI;
 using StardewValley;
 
@@ -26,10 +25,10 @@ internal class ContentManager
     ** Accessors
     *********/
     /// <summary>The boat stops registered by Train Station packs or through the API.</summary>
-    public List<BoatStop> BoatStops { get; } = new();
+    public List<StopContentPackModel> BoatStops { get; } = new();
 
     /// <summary>The train stops registered by Train Station packs or through the API.</summary>
-    public List<TrainStop> TrainStops { get; } = new();
+    public List<StopContentPackModel> TrainStops { get; } = new();
 
 
     /*********
@@ -51,30 +50,26 @@ internal class ContentManager
         var config = this.Config();
 
         //create the stop at the vanilla Railroad map
-        TrainStop railRoadStop = new TrainStop
+        StopContentPackModel railRoadStop = new()
         {
+            Id = "Cherry.TrainStation",
+            DisplayName = I18n.TrainStationDisplayName(),
             TargetMapName = "Railroad",
-            StopId = "Cherry.TrainStation",
             TargetX = config.RailroadWarpX,
             TargetY = config.RailroadWarpY,
-            Cost = 0,
-            TranslatedName = I18n.TrainStationDisplayName()
+            Cost = 0
         };
 
         //create stop in willy's boat room
-        BoatStop boatTunnelStop = new BoatStop()
+        StopContentPackModel boatTunnelStop = new()
         {
+            Id = "Cherry.TrainStation",
+            DisplayName = I18n.BoatStationDisplayName(),
             TargetMapName = "BoatTunnel",
-            StopId = "Cherry.TrainStation",
             TargetX = 4,
             TargetY = 9,
-            Cost = 0,
-            TranslatedName = I18n.BoatStationDisplayName()
+            Cost = 0
         };
-
-        ContentPack content = new ContentPack();
-        content.TrainStops = new List<TrainStop>();
-        content.BoatStops = new List<BoatStop>();
 
         this.TrainStops.Clear();
         this.BoatStops.Clear();
@@ -95,11 +90,11 @@ internal class ContentManager
             {
                 for (int i = 0; i < cp.TrainStops.Count; i++)
                 {
-                    TrainStop stop = cp.TrainStops.ElementAt(i);
-                    stop.StopId = $"{pack.Manifest.UniqueID}{i}"; //assigns a unique stopID to every stop
-                    stop.TranslatedName = this.Localize(stop.LocalizedDisplayName);
+                    StopContentPackModel stop = cp.TrainStops[i];
+                    stop.Id = $"{pack.Manifest.UniqueID}_{i}";
+                    stop.DisplayName = this.Localize(stop.LocalizedDisplayName);
 
-                    this.TrainStops.Add(cp.TrainStops.ElementAt(i));
+                    this.TrainStops.Add(stop);
                 }
             }
 
@@ -107,11 +102,11 @@ internal class ContentManager
             {
                 for (int i = 0; i < cp.BoatStops.Count; i++)
                 {
-                    BoatStop stop = cp.BoatStops.ElementAt(i);
-                    stop.StopId = $"{pack.Manifest.UniqueID}{i}"; //assigns a unique stopID to every stop
-                    stop.TranslatedName = this.Localize(stop.LocalizedDisplayName);
+                    StopContentPackModel stop = cp.BoatStops[i];
+                    stop.Id = $"{pack.Manifest.UniqueID}_{i}";
+                    stop.DisplayName = this.Localize(stop.LocalizedDisplayName);
 
-                    this.BoatStops.Add(cp.BoatStops.ElementAt(i));
+                    this.BoatStops.Add(stop);
                 }
             }
         }
@@ -120,24 +115,18 @@ internal class ContentManager
     /// <summary>Remove boat and train stops in locations which don't exist.</summary>
     public void RemoveInvalidLocations()
     {
-        for (int i = this.TrainStops.Count - 1; i >= 0; i--)
+        foreach (var stops in new[] { this.BoatStops, this.TrainStops })
         {
-            TrainStop stop = this.TrainStops[i];
-            if (Game1.getLocationFromName(stop.TargetMapName) == null)
+            stops.RemoveAll(stop =>
             {
-                this.Monitor.Log($"Could not find location {stop.TargetMapName}", LogLevel.Warn);
-                this.TrainStops.RemoveAt(i);
-            }
-        }
+                if (Game1.getLocationFromName(stop.TargetMapName) == null)
+                {
+                    this.Monitor.Log($"Could not find location {stop.TargetMapName}", LogLevel.Warn);
+                    return true;
+                }
 
-        for (int i = this.BoatStops.Count - 1; i >= 0; i--)
-        {
-            BoatStop stop = this.BoatStops[i];
-            if (Game1.getLocationFromName(stop.TargetMapName) == null)
-            {
-                this.Monitor.Log($"Could not find location {stop.TargetMapName}", LogLevel.Warn);
-                this.BoatStops.RemoveAt(i);
-            }
+                return false;
+            });
         }
     }
 
