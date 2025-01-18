@@ -18,8 +18,8 @@ internal class StopModel
     /// <summary>The tile position to which the player should warp when they select this stop.</summary>
     public Point ToTile { get; set; }
 
-    /// <summary>The direction the player should be facing after they warp, matching a constant like <see cref="Game1.down"/>.</summary>
-    public int ToFacingDirection { get; set; } = Game1.down;
+    /// <summary>The direction the player should be facing after they warp, matching a value recognized by <see cref="Utility.TryParseDirection"/>.</summary>
+    public string ToFacingDirection { get; set; } = "down";
 
     /// <summary>The gold price to go to that stop.</summary>
     public int Cost { get; set; } = 0;

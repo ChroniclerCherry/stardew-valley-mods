@@ -222,6 +222,10 @@ internal class ModEntry : Mod
             return;
         }
 
+        // parse facing direction
+        if (!Utility.TryParseDirection(stop.ToFacingDirection, out int toFacingDirection))
+            toFacingDirection = Game1.down;
+
         // warp
         LocationRequest request = Game1.getLocationRequest(stop.ToLocation);
         if (!isBoat)
@@ -233,7 +237,8 @@ internal class ModEntry : Mod
             this.Cue.SetVariable("Volume", 100f);
             this.Cue.Play();
         }
-        Game1.warpFarmer(request, stop.ToTile.X, stop.ToTile.Y, stop.ToFacingDirection);
+
+        Game1.warpFarmer(request, stop.ToTile.X, stop.ToTile.Y, toFacingDirection);
     }
 
     private void OnTrainWarped()

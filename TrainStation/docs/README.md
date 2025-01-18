@@ -54,7 +54,7 @@ To add a destination to the boat or train menu:
                "DisplayName": "Clint's Shop",
                "ToLocation": "Town",
                "ToTile": { "X": 105, "Y": 80 },
-               "ToFacingDirection": 2
+               "ToFacingDirection": "down"
            }
        }
    }
@@ -69,7 +69,7 @@ field name          | usage
 `DisplayName`       | The display name to show in the menu. This should usually be translated into the player's current language using Content Patcher's `i18n` token.
 `ToLocation`        | The internal name of the location to which the player should be warped to. You can see internal location names in-game using [Debug Mode](https://www.nexusmods.com/stardewvalley/mods/679).
 `ToTile`            | The tile position to which the player should be warped to. You can see tile coordinates in-game using [Debug Mode](https://www.nexusmods.com/stardewvalley/mods/679).
-`ToFacingDirection` | _(Optional)_ The direction the player should face after warping. The possible values are `0` (up), `1` (right), `2` (down), or `3` (left). Default down.
+`ToFacingDirection` | _(Optional)_ The direction the player should face after warping. The possible values are `up`, `down`, `left`, and `right`. Default `down`.
 `Cost`              | _(Optional)_ The gold price to purchase a ticket. Default free.
 `Conditions`        | _(Optional)_ If set, the [game state query](https://stardewvalleywiki.com/Modding:Game_state_queries) which must be met for the destination to appear in the menu.
 

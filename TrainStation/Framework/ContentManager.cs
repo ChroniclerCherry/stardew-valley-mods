@@ -188,7 +188,7 @@ internal class ContentManager
                 DisplayName = I18n.GingerIsland(),
                 ToLocation = "IslandSouth",
                 ToTile = new Point(21, 43),
-                ToFacingDirection = Game1.up,
+                ToFacingDirection = "up",
                 Cost = (Game1.getLocationFromName("BoatTunnel") as BoatTunnel)?.TicketPrice ?? 1000,
                 Conditions = "PLAYER_HAS_MAIL Host willyBoatTicketMachine, PLAYER_HAS_MAIL Host willyBoatFixed"
             }
@@ -210,7 +210,7 @@ internal class ContentManager
                 DisplayName = this.Localize(stop.LocalizedDisplayName, stop.DisplayName),
                 ToLocation = stop.TargetMapName,
                 ToTile = new Point(stop.TargetX, stop.TargetY),
-                ToFacingDirection = stop.FacingDirectionAfterWarp,
+                ToFacingDirection = stop.FacingDirectionAfterWarp.ToString(),
                 Cost = stop.Cost,
                 Conditions = this.BuildGameQueryForExpandedPreconditions(stop.Conditions)
             });
@@ -224,7 +224,7 @@ internal class ContentManager
                 DisplayName = this.Localize(stop.LocalizedDisplayName, stop.DisplayName),
                 ToLocation = stop.TargetMapName,
                 ToTile = new Point(stop.TargetX, stop.TargetY),
-                ToFacingDirection = stop.FacingDirectionAfterWarp,
+                ToFacingDirection = stop.FacingDirectionAfterWarp.ToString(),
                 Cost = stop.Cost,
                 Conditions = this.BuildGameQueryForExpandedPreconditions(stop.Conditions)
             });
