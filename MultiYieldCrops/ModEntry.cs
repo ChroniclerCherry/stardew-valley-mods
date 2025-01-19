@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using HarmonyLib;
 using Microsoft.Xna.Framework;
 using MultiYieldCrops.Framework;
 using StardewModdingAPI;
@@ -17,8 +16,6 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    public static ModEntry Instance;
-
     private Dictionary<string, List<Rule>> AllHarvestRules;
 
 
@@ -28,27 +25,21 @@ internal class ModEntry : Mod
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
-        Instance = this;
-
-        //harmony stuff
-        HarvestPatches.Initialize(this.Monitor);
-        Harmony harmony = new(this.ModManifest.UniqueID);
-        harmony.Patch(
-            original: AccessTools.Method(typeof(Crop), nameof(Crop.harvest)),
-            prefix: new HarmonyMethod(typeof(HarvestPatches), nameof(HarvestPatches.CropHarvest_prefix)),
-            postfix: new HarmonyMethod(typeof(HarvestPatches), nameof(HarvestPatches.CropHarvest_postfix))
-            );
-
-        //// patch for handling tea leaves
-        //harmony.Patch(
-        //    original: AccessTools.Method(typeof(StardewValley.TerrainFeatures.Bush), nameof(StardewValley.TerrainFeatures.Bush.performUseAction)),
-        //    postfix: new HarmonyMethod(typeof(HarvestPatches), nameof(HarvestPatches.BushPerformUseAction_postfix))
-        //);
+        GamePatcher.Apply(this.ModManifest.UniqueID, this.Monitor, this.SpawnHarvest);
 
         this.InitializeHarvestRules();
     }
 
-    public void SpawnHarvest(Vector2 tileLocation, string cropName, int fertilizer, JunimoHarvester junimo = null)
+
+    /*********
+    ** Private methods
+    *********/
+    /// <summary>Apply the custom rules when a crop is harvested.</summary>
+    /// <param name="tileLocation">The tile position that was harvested.</param>
+    /// <param name="cropName">The crop name that was harvested.</param>
+    /// <param name="fertilizer">The fertilizer on the harvested tile.</param>
+    /// <param name="junimo">The Junimo who harvested the tile, if applicable.</param>
+    private void SpawnHarvest(Vector2 tileLocation, string cropName, int fertilizer, JunimoHarvester junimo = null)
     {
         if (!this.AllHarvestRules.ContainsKey(cropName))
             return;
@@ -73,10 +64,6 @@ internal class ModEntry : Mod
         }
     }
 
-
-    /*********
-    ** Private methods
-    *********/
     private IEnumerable<Item> SpawnItems(Rule data, int fertilizerQualityLevel)
     {
         int quality = fertilizerQualityLevel;

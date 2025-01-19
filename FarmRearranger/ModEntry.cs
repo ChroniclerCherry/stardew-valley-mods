@@ -19,6 +19,7 @@ internal class ModEntry : Mod
     *********/
     private bool IsArranging;
 
+    /// <summary>The mod settings.</summary>
     private ModConfig Config;
 
     private string FarmRearrangeId;

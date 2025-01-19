@@ -11,6 +11,7 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
+    /// <summary>The mod settings.</summary>
     private ModConfig Config;
 
 

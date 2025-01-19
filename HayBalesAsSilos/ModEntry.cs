@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using ChroniclerCherry.Common.Integrations.GenericModConfigMenu;
-using HarmonyLib;
 using HayBalesAsSilos.Framework;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
@@ -18,10 +17,14 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    internal static ModConfig Config;
+    /// <summary>The mod settings.</summary>
+    private ModConfig Config;
 
+    /// <summary>The unqualified item ID for the Hay Bale item.</summary>
     private const string HayBaleId = "45";
-    internal const string HayBaleQualifiedId = ItemRegistry.type_bigCraftable + "45";
+
+    /// <summary>The qualified item ID for the Hay Bale item.</summary>
+    internal const string HayBaleQualifiedId = ItemRegistry.type_bigCraftable + HayBaleId;
 
 
     /*********
@@ -31,29 +34,14 @@ internal class ModEntry : Mod
     public override void Entry(IModHelper helper)
     {
         // init
+        this.Config = helper.ReadConfig<ModConfig>();
         I18n.Init(helper.Translation);
-        Config = helper.ReadConfig<ModConfig>();
-
-        // add patches
-        Harmony harmony = new(this.ModManifest.UniqueID);
-        harmony.Patch(
-            original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.GetHayCapacity)),
-            postfix: new HarmonyMethod(typeof(PatchGameLocation), nameof(PatchGameLocation.After_GetHayCapacity))
-        );
+        GamePatcher.Apply(this.ModManifest.UniqueID, () => this.Config, this.GetAllAffectedMaps);
 
         // hook events
         helper.Events.Content.AssetRequested += this.OnAssetRequested;
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
         helper.Events.Input.ButtonPressed += this.OnButtonPressed;
-    }
-
-    public static IEnumerable<GameLocation> GetAllAffectedMaps()
-    {
-        yield return Game1.getFarm();
-        foreach (Building building in Game1.getFarm().buildings.Where(building => building.indoors.Value != null))
-        {
-            yield return building.indoors.Value;
-        }
     }
 
 
@@ -65,8 +53,8 @@ internal class ModEntry : Mod
     {
         this.AddGenericModConfigMenu(
             new GenericModConfigMenuIntegrationForHayBaysAsSilos(),
-            get: () => ModEntry.Config,
-            set: config => ModEntry.Config = config
+            get: () => this.Config,
+            set: config => this.Config = config
         );
     }
 
@@ -79,7 +67,7 @@ internal class ModEntry : Mod
             return;
 
         GameLocation location = Game1.currentLocation;
-        if (!GetAllAffectedMaps().Contains(location))
+        if (!this.GetAllAffectedMaps().Contains(location))
             return;
 
         //action button works for right click on mouse and action button for controllers
@@ -131,7 +119,7 @@ internal class ModEntry : Mod
                 var data = asset.AsDictionary<string, string>().Data;
 
                 data["OrnamentalHayBale_Name"] = I18n.DisplayName();
-                data["OrnamentalHayBale_Description"] = I18n.Description(capacity: Config.HayPerBale);
+                data["OrnamentalHayBale_Description"] = I18n.Description(capacity: this.Config.HayPerBale);
             });
         }
 
@@ -148,11 +136,21 @@ internal class ModEntry : Mod
                     {
                         Id = HayBaleId,
                         ItemId = HayBaleId,
-                        Price = Config.HayBalePrice,
+                        Price = this.Config.HayBalePrice,
                         Condition = "PLAYER_HAS_MAIL Current FarmRearrangerMail Received"
                     });
                 }
             });
+        }
+    }
+
+    /// <summary>Get the locations whose hay storage should be affected.</summary>
+    private IEnumerable<GameLocation> GetAllAffectedMaps()
+    {
+        yield return Game1.getFarm();
+        foreach (Building building in Game1.getFarm().buildings.Where(building => building.indoors.Value != null))
+        {
+            yield return building.indoors.Value;
         }
     }
 }

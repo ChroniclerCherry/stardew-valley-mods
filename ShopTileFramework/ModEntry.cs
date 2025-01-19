@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
 using Microsoft.Xna.Framework;
 using ShopTileFramework.Framework;
 using ShopTileFramework.Framework.Apis;
-using ShopTileFramework.Framework.Patches;
 using ShopTileFramework.Framework.Shop;
 using ShopTileFramework.Framework.Utility;
 using StardewModdingAPI;
@@ -47,6 +45,8 @@ internal class ModEntry : Mod
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
+        GamePatcher.Apply(this.ModManifest.UniqueID);
+
         //make helper and monitor static so they can be accessed in other classes
         ModEntry.StaticHelper = helper;
         ModEntry.StaticMonitor = this.Monitor;
@@ -69,9 +69,6 @@ internal class ModEntry : Mod
 
         //get all the info from content packs
         ShopManager.LoadContentPacks();
-
-        Harmony harmony = new Harmony(this.ModManifest.UniqueID);
-        VanillaShopStockPatches.Apply(harmony);
     }
 
     /// <inheritdoc />
@@ -128,9 +125,9 @@ internal class ModEntry : Mod
             this.ChangedMarnieStock = true;
 
             //removes all animals on the exclusion list
-            List<SObject> newAnimalStock = (from animal in allAnimalsStock
-                                  where !AnimalShop.ExcludeFromMarnie.Contains(animal.Name)
-                                  select animal).ToList();
+            List<SObject> newAnimalStock = allAnimalsStock
+                .Where(animal => !AnimalShop.ExcludeFromMarnie.Contains(animal.Name))
+                .ToList();
             Game1.activeClickableMenu = new PurchaseAnimalsMenu(newAnimalStock);
         }
 

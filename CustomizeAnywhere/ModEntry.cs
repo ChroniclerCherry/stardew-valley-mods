@@ -12,7 +12,9 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
+    /// <summary>The mod settings.</summary>
     private ModConfig Config;
+
     internal static IModHelper StaticHelper;
 
     private DresserAndMirror DresserAndMirror;

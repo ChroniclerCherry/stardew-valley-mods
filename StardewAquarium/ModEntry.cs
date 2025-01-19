@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using HarmonyLib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewAquarium.Framework;
@@ -8,7 +7,6 @@ using StardewAquarium.Framework.Editors;
 using StardewAquarium.Framework.Framework;
 using StardewAquarium.Framework.Menus;
 using StardewAquarium.Framework.Models;
-using StardewAquarium.Framework.Patches;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
@@ -26,7 +24,8 @@ internal sealed class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    private static ModConfig Config = null!;
+    /// <summary>The mod settings.</summary>
+    private ModConfig Config = null!;
 
     /// <summary>The chance that a dolphin Easter egg appears in the player's current location.</summary>
     private readonly PerScreen<float> DolphinChance = new();
@@ -36,17 +35,13 @@ internal sealed class ModEntry : Mod
 
 
     /*********
-    ** Accessors
-    *********/
-    public static Harmony Harmony { get; } = new("Cherry.StardewAquarium");
-
-
-    /*********
     ** Public methods
     *********/
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
+        GamePatcher.Apply(this.ModManifest.UniqueID, this.Monitor, helper.Reflection, helper.Translation);
+
         Utils.Initialize(helper, this.Monitor, this.ModManifest);
         TileActions.Init(this.Monitor);
 
@@ -63,13 +58,12 @@ internal sealed class ModEntry : Mod
 
         if (Constants.TargetPlatform == GamePlatform.Android)
         {
-            AndroidShopMenuPatch.Initialize(helper, this.Monitor);
             helper.Events.Display.MenuChanged += this.AndroidPlsHaveMercyOnMe;
         }
 
         _ = new ReturnTrain(helper, this.Monitor);
 
-        Config = helper.ReadConfig<ModConfig>();
+        this.Config = helper.ReadConfig<ModConfig>();
 
 #if !DEBUG
         if (Config.EnableDebugCommands)
@@ -151,7 +145,7 @@ internal sealed class ModEntry : Mod
         if (!Context.CanPlayerMove)
             return;
 
-        if (Config.CheckDonationCollection.JustPressed())
+        if (this.Config.CheckDonationCollection.JustPressed())
             Game1.activeClickableMenu = new AquariumCollectionMenu(ContentPackHelper.LoadString("CollectionsMenu"));
     }
 

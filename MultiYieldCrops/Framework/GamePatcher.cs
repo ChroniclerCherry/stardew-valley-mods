@@ -1,4 +1,5 @@
 using System;
+using HarmonyLib;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
@@ -7,22 +8,46 @@ using StardewValley.TerrainFeatures;
 
 namespace MultiYieldCrops.Framework;
 
-internal class HarvestPatches
+/// <summary>Applies Harmony patches to the game code.</summary>
+internal static class GamePatcher
 {
     /*********
     ** Fields
     *********/
+    /// <summary>Encapsulates monitoring and logging</summary>
     private static IMonitor Monitor;
+
+    /// <summary>Apply the custom rules when a crop is harvested.</summary>
+    private static SpawnHarvestDelegate SpawnHarvest;
+
+    /// <inheritdoc cref="ModEntry.SpawnHarvest" />
+    public delegate void SpawnHarvestDelegate(Vector2 tileLocation, string cropName, int fertilizer, JunimoHarvester junimo = null);
 
 
     /*********
     ** Public methods
     *********/
-    public static void Initialize(IMonitor monitor)
+    /// <summary>Apply the patches.</summary>
+    /// <param name="modId">The unique mod ID.</param>
+    /// <param name="monitor">Encapsulates monitoring and logging</param>
+    /// <param name="spawnHarvest">Apply the custom rules when a crop is harvested.</param>
+    public static void Apply(string modId, IMonitor monitor, SpawnHarvestDelegate spawnHarvest)
     {
         Monitor = monitor;
+        SpawnHarvest = spawnHarvest;
+
+        Harmony harmony = new(modId);
+        harmony.Patch(
+            original: AccessTools.Method(typeof(Crop), nameof(Crop.harvest)),
+            prefix: new HarmonyMethod(typeof(GamePatcher), nameof(GamePatcher.CropHarvest_prefix)),
+            postfix: new HarmonyMethod(typeof(GamePatcher), nameof(GamePatcher.CropHarvest_postfix))
+        );
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     public static void CropHarvest_prefix(Crop __instance, out bool __state)
     {
         __state = CanHarvest(__instance);
@@ -46,7 +71,7 @@ internal class HarvestPatches
             string cropName = ItemRegistry.GetDataOrErrorItem(cropId).InternalName;
             int fertilizerQualityLevel = soil.GetFertilizerQualityBoostLevel();
 
-            ModEntry.Instance.SpawnHarvest(new Vector2(xTile, yTile), cropName, fertilizerQualityLevel, junimoHarvester);
+            SpawnHarvest(new Vector2(xTile, yTile), cropName, fertilizerQualityLevel, junimoHarvester);
 
         }
         catch (Exception ex)
@@ -55,10 +80,6 @@ internal class HarvestPatches
         }
     }
 
-
-    /*********
-    ** Private methods
-    *********/
     /// <summary>Get whether a crop can be harvested now.</summary>
     /// <param name="crop">The crop to check.</param>
     private static bool CanHarvest(Crop crop)

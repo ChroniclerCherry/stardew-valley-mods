@@ -11,8 +11,9 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    /// <summary>The mod configuration from the player.</summary>
+    /// <summary>The mod settings.</summary>
     private ModConfig Config;
+
     private float OriginalDifficulty;
 
 

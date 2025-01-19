@@ -19,6 +19,7 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
+    /// <summary>The mod settings.</summary>
     private ModConfig Config;
 
     /// <summary>Manages the Train Station content provided by content packs.</summary>

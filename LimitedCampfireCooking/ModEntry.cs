@@ -15,7 +15,9 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    private static ModConfig Config;
+    /// <summary>The mod settings.</summary>
+    private ModConfig Config;
+
     private ICustomCraftingStationsApi CustomCraftingStations;
 
     private Dictionary<string, string> AllCookingRecipes;
@@ -28,7 +30,7 @@ internal class ModEntry : Mod
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
-        Config = helper.ReadConfig<ModConfig>();
+        this.Config = helper.ReadConfig<ModConfig>();
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
         helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
         helper.Events.Input.ButtonPressed += this.OnButtonPressed;
@@ -52,12 +54,12 @@ internal class ModEntry : Mod
         this.AllCookingRecipes = CraftingRecipe.cookingRecipes;
         this.LimitedCookingRecipes = this.AllCookingRecipes;
 
-        if (!Config.EnableAllCookingRecipes)
+        if (!this.Config.EnableAllCookingRecipes)
         {
             this.LimitedCookingRecipes = new Dictionary<string, string>();
             foreach ((string key, string recipe) in this.AllCookingRecipes)
             {
-                if (Config.Recipes.Contains(key))
+                if (this.Config.Recipes.Contains(key))
                     this.LimitedCookingRecipes.Add(key, recipe);
             }
         }

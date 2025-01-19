@@ -87,3 +87,15 @@ dotnet_naming_rule.most_identifiers_should_be_pascal_case.severity=suggestion
 ##########
 [*.md]
 guidelines = 100
+
+##########
+## Suppress warnings in Harmony patches
+## See ReSharper docs: https://www.jetbrains.com/help/resharper/Reference__Code_Inspections_CSHARP.html.
+##########
+[GamePatcher.cs]
+dotnet_diagnostic.CS1591.severity = none                  # missing XML doc comment -- not meant to be used directly
+resharper_identifier_typo_highlighting = none             # identifier typo -- matches patched code
+resharper_inconsistent_naming_highlighting = none         # inconsistent naming -- matches patched code
+resharper_local_variable_hides_member_highlighting = none # local variable hides member -- matches patched code
+resharper_parameter_hides_member_highlighting = none      # parameter hides member -- matches patched code
+resharper_redundant_assignment_highlighting = none        # assignment is not used -- false positives due to `ref __result` parameters

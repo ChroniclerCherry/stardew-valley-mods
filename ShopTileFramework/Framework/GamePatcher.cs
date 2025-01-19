@@ -7,22 +7,31 @@ using StardewValley;
 using StardewValley.GameData.Shops;
 using StardewValley.Internal;
 
-namespace ShopTileFramework.Framework.Patches;
+namespace ShopTileFramework.Framework;
 
-internal class VanillaShopStockPatches
+/// <summary>Applies Harmony patches to the game code.</summary>
+internal static class GamePatcher
 {
     /*********
     ** Public methods
     *********/
-    public static void Apply(Harmony harmony)
+    /// <summary>Apply the patches.</summary>
+    /// <param name="modId">The unique mod ID.</param>
+    public static void Apply(string modId)
     {
+        Harmony harmony = new(modId);
+
         harmony.Patch(
-           original: AccessTools.Method(typeof(ShopBuilder), nameof(ShopBuilder.GetShopStock), new[] { typeof(string), typeof(ShopData) }),
-           postfix: new HarmonyMethod(typeof(VanillaShopStockPatches), nameof(VanillaShopStockPatches.ShopBuilder_GetShopStock))
+            original: AccessTools.Method(typeof(ShopBuilder), nameof(ShopBuilder.GetShopStock), new[] { typeof(string), typeof(ShopData) }),
+            postfix: new HarmonyMethod(typeof(GamePatcher), nameof(GamePatcher.After_ShopBuilder_GetShopStock))
         );
     }
 
-    public static void ShopBuilder_GetShopStock(string shopId, ShopData shop, ref Dictionary<ISalable, ItemStockInformation> __result)
+
+    /*********
+    ** Private methods
+    *********/
+    private static void After_ShopBuilder_GetShopStock(string shopId, ref Dictionary<ISalable, ItemStockInformation> __result)
     {
         // get STF shop ID
         string internalShopId = shopId switch
@@ -51,10 +60,6 @@ internal class VanillaShopStockPatches
             EditShopStock(internalShopId, ref __result);
     }
 
-
-    /*********
-    ** Private methods
-    *********/
     private static void EditShopStock(string shopName, ref Dictionary<ISalable, ItemStockInformation> __result)
     {
         ModEntry.JustOpenedVanilla = true;

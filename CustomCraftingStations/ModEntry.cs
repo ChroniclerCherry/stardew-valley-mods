@@ -28,7 +28,9 @@ internal class ModEntry : Mod
     private List<string> CookingRecipesToRemove;
     private List<string> CraftingRecipesToRemove;
 
+    /// <summary>The mod settings.</summary>
     private ModConfig Config;
+
     private Type CookingSkillMenu;
 
     private List<string> ReducedCookingRecipes { get; set; }
