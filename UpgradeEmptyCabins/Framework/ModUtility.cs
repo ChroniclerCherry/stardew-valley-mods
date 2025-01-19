@@ -11,7 +11,7 @@ internal static class ModUtility
     *********/
     public static Building GetCabin(string name)
     {
-        foreach (var cabin in GetCabins())
+        foreach (Building cabin in GetCabins())
         {
             if (cabin.GetIndoorsName() == name)
                 return cabin;
@@ -22,7 +22,7 @@ internal static class ModUtility
 
     public static IEnumerable<Building> GetCabins()
     {
-        foreach (var building in Game1.getFarm().buildings)
+        foreach (Building building in Game1.getFarm().buildings)
         {
             if (building.isCabin)
                 yield return building;

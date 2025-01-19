@@ -10,6 +10,7 @@ using StardewValley.Inventories;
 using StardewValley.Locations;
 using StardewValley.Menus;
 using StardewValley.Objects;
+using SObject = StardewValley.Object;
 
 namespace CustomCraftingStations;
 
@@ -79,14 +80,16 @@ internal class ModEntry : Mod
         this.ReducedCookingRecipes = new List<string>();
         this.ReducedCraftingRecipes = new List<string>();
 
-        foreach (var recipe in CraftingRecipe.craftingRecipes.Where(recipe => !this.CraftingRecipesToRemove.Contains(recipe.Key)))
+        foreach (string recipeId in CraftingRecipe.craftingRecipes.Keys)
         {
-            this.ReducedCraftingRecipes.Add(recipe.Key);
+            if (!this.CraftingRecipesToRemove.Contains(recipeId))
+                this.ReducedCraftingRecipes.Add(recipeId);
         }
 
-        foreach (var recipe in CraftingRecipe.cookingRecipes.Where(recipe => !this.CookingRecipesToRemove.Contains(recipe.Key)))
+        foreach (string recipeId in CraftingRecipe.cookingRecipes.Keys)
         {
-            this.ReducedCookingRecipes.Add(recipe.Key);
+            if (!this.CookingRecipesToRemove.Contains(recipeId))
+                this.ReducedCookingRecipes.Add(recipeId);
         }
     }
 
@@ -104,7 +107,7 @@ internal class ModEntry : Mod
         if (!MenuOverride) return;
         this.OpenedNonCustomMenu = true;
 
-        var activeMenu = Game1.activeClickableMenu;
+        IClickableMenu activeMenu = Game1.activeClickableMenu;
 
         IClickableMenu instance = activeMenu switch
         {
@@ -150,7 +153,7 @@ internal class ModEntry : Mod
 
         Vector2 grabTile = e.Cursor.GrabTile;
 
-        Game1.currentLocation.Objects.TryGetValue(grabTile, out var obj);
+        Game1.currentLocation.Objects.TryGetValue(grabTile, out SObject obj);
         if (obj != null && obj.bigCraftable.Value)
         {
             if (this.CraftableCraftingStations.ContainsKey(obj.Name))
@@ -180,14 +183,12 @@ internal class ModEntry : Mod
 
     private void RegisterContentPacks()
     {
-        var packs = this.Helper.ContentPacks.GetOwned();
-
         this.TileCraftingStations = new Dictionary<string, CraftingStationConfig>();
         this.CraftableCraftingStations = new Dictionary<string, CraftingStationConfig>();
         this.CookingRecipesToRemove = new List<string>();
         this.CraftingRecipesToRemove = new List<string>();
 
-        foreach (var pack in packs)
+        foreach (IContentPack pack in this.Helper.ContentPacks.GetOwned())
         {
             if (!pack.HasFile("content.json"))
             {
@@ -205,7 +206,7 @@ internal class ModEntry : Mod
     {
         if (craftingStations == null)
             return;
-        foreach (var station in craftingStations)
+        foreach (CraftingStationConfig station in craftingStations)
         {
             int numRecipes = station.CraftingRecipes.Count;
             for (int i = numRecipes - 1; i >= 0; i--)
@@ -274,8 +275,8 @@ internal class ModEntry : Mod
 
     private void OpenAndFixMenu(IClickableMenu instance)
     {
-        var isCooking = this.Helper.Reflection.GetField<bool>(instance, "cooking").GetValue();
-        var layoutRecipes = this.Helper.Reflection.GetMethod(instance, "layoutRecipes");
+        bool isCooking = this.Helper.Reflection.GetField<bool>(instance, "cooking").GetValue();
+        IReflectedMethod layoutRecipes = this.Helper.Reflection.GetMethod(instance, "layoutRecipes");
 
         var pagesOfCraftingRecipes = this.Helper.Reflection.GetField<List<Dictionary<ClickableTextureComponent, CraftingRecipe>>>(instance,
                 "pagesOfCraftingRecipes");
@@ -290,8 +291,7 @@ internal class ModEntry : Mod
     {
         List<IInventory> chests = new List<IInventory>();
 
-        IEnumerable<GameLocation> locs;
-        locs = Context.IsMainPlayer ? Game1.locations : this.Helper.Multiplayer.GetActiveLocations();
+        IEnumerable<GameLocation> locations = Context.IsMainPlayer ? Game1.locations : this.Helper.Multiplayer.GetActiveLocations();
 
         if (this.Config.CraftFromFridgeWhenInHouse)
             if (Game1.currentLocation is FarmHouse house)
@@ -306,30 +306,27 @@ internal class ModEntry : Mod
             if (!this.Config.CraftFromFridgeWhenInHouse) //so we dont add this twice
                 chests.Add((Game1.getLocationFromName("FarmHouse") as FarmHouse)?.fridge.Value.Items);
 
-            foreach (var location in locs)
+            foreach (GameLocation location in locations)
             {
-                foreach (var objs in location.objects)
+                foreach (SObject obj in location.objects.Values)
                 {
-                    foreach (var obj in objs)
-                    {
-                        if (obj.Value is Chest chest)
-                            chests.Add(chest.Items);
-                    }
+                    if (obj is Chest chest)
+                        chests.Add(chest.Items);
                 }
             }
         }
         else
         {
-            var loc = Game1.currentLocation;
+            GameLocation location = Game1.currentLocation;
 
             for (int i = -radius; i < radius; i++)
             {
                 for (int j = -radius; j < radius; j++)
                 {
-                    var tile = new Vector2(grabTile.X + i, grabTile.Y + j);
-                    if (!loc.objects.ContainsKey(tile)) continue;
+                    Vector2 tile = new(grabTile.X + i, grabTile.Y + j);
+                    if (!location.objects.ContainsKey(tile)) continue;
 
-                    var obj = loc.objects[tile];
+                    SObject obj = location.objects[tile];
                     if (obj is Chest chest)
                         chests.Add(chest.Items);
                 }

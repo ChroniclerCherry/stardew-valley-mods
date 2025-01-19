@@ -35,7 +35,7 @@ internal class ModEntry : Mod
         Config = helper.ReadConfig<ModConfig>();
 
         // add patches
-        var harmony = new Harmony(this.ModManifest.UniqueID);
+        Harmony harmony = new(this.ModManifest.UniqueID);
         harmony.Patch(
             original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.GetHayCapacity)),
             postfix: new HarmonyMethod(typeof(PatchGameLocation), nameof(PatchGameLocation.After_GetHayCapacity))

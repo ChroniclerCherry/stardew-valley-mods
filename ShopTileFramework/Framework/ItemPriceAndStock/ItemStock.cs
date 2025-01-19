@@ -149,7 +149,7 @@ internal class ItemStock : ItemStockModel
         if (this.ItemNames == null)
             return;
 
-        foreach (var itemName in this.ItemNames)
+        foreach (string itemName in this.ItemNames)
         {
             this.Builder.AddItemToStock(itemName, pricemultiplier);
         }
@@ -166,14 +166,14 @@ internal class ItemStock : ItemStockModel
         if (ApiManager.JsonAssets == null)
             return;
 
-        foreach (var jaPack in this.JaPacks)
+        foreach (string jaPack in this.JaPacks)
         {
             ModEntry.StaticMonitor.Log($"Adding all {this.ItemType}s from {jaPack}", LogLevel.Debug);
 
             if (this.ItemType == "Seed")
             {
-                var crops = ApiManager.JsonAssets.GetAllCropsFromContentPack(jaPack);
-                var trees = ApiManager.JsonAssets.GetAllFruitTreesFromContentPack(jaPack);
+                List<string> crops = ApiManager.JsonAssets.GetAllCropsFromContentPack(jaPack);
+                List<string> trees = ApiManager.JsonAssets.GetAllFruitTreesFromContentPack(jaPack);
 
 
                 if (crops != null)
@@ -201,7 +201,7 @@ internal class ItemStock : ItemStockModel
                 continue; //skip the rest of the loop so we don't also add the none-seed version
             }
 
-            var packs = this.GetJaItems(jaPack);
+            List<string> packs = this.GetJaItems(jaPack);
             if (packs == null)
             {
                 ModEntry.StaticMonitor.Log($"No {this.ItemType} from {jaPack} could be found");

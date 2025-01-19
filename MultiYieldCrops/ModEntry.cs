@@ -32,7 +32,7 @@ internal class ModEntry : Mod
 
         //harmony stuff
         HarvestPatches.Initialize(this.Monitor);
-        var harmony = new Harmony(this.ModManifest.UniqueID);
+        Harmony harmony = new(this.ModManifest.UniqueID);
         harmony.Patch(
             original: AccessTools.Method(typeof(Crop), nameof(Crop.harvest)),
             prefix: new HarmonyMethod(typeof(HarvestPatches), nameof(HarvestPatches.CropHarvest_prefix)),
@@ -189,7 +189,7 @@ internal class ModEntry : Mod
             this.Monitor.Log(ex.Message + ex.StackTrace, LogLevel.Error);
         }
 
-        foreach (var pack in this.Helper.ContentPacks.GetOwned())
+        foreach (IContentPack pack in this.Helper.ContentPacks.GetOwned())
         {
             if (!pack.HasFile("HarvestRules.json"))
             {
@@ -207,7 +207,7 @@ internal class ModEntry : Mod
         if (data == null)
             return;
 
-        foreach (var harvests in data.Harvests)
+        foreach (CropHarvestRules harvests in data.Harvests)
         {
             this.LoadCropHarvestRulesFor(harvests.CropName, harvests.HarvestRules);
         }

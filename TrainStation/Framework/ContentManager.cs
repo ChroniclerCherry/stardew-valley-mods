@@ -145,8 +145,8 @@ internal class ContentManager
     /// <summary>Build the data asset model with the default stops and those provided through Train Station content packs and its API.</summary>
     private List<StopModel> BuildDefaultContentModel()
     {
-        var config = this.Config();
-        var stops = new List<StopModel>();
+        ModConfig config = this.Config();
+        List<StopModel> stops = new();
 
         // default stops
         stops.AddRange([

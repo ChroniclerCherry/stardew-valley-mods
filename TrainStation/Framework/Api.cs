@@ -77,7 +77,7 @@ public class Api : IApi
     /// <param name="translatedName">The default display name for the stop if not overridden by <paramref name="localizedDisplayName"/>, shown in the bus or train menu.</param>
     private void Register(StopNetwork network, string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName)
     {
-        var stops = this.ContentManager.LegacyStops;
+        List<StopModel> stops = this.ContentManager.LegacyStops;
 
         stops.RemoveAll(s => s.Id == stopId);
         stops.Add(

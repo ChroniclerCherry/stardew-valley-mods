@@ -42,13 +42,14 @@ internal class ModEntry : Mod
     {
         if (!Context.IsMainPlayer) return;
 
-        var report = new MultiplayerReportData();
+        MultiplayerReportData report = new();
         report.TimeConnected = DateTime.Now;
 
         report.SmapiGameGameVersions.FarmhandHasSmapi = e.Peer.HasSmapi;
 
         report.FarmhandId = e.Peer.PlayerID;
-        report.FarmhandName = Game1.getAllFarmers()
+        report.FarmhandName = Game1
+            .getAllFarmers()
             .FirstOrDefault(f => f.UniqueMultiplayerID == e.Peer.PlayerID)
             ?.Name;
 
@@ -70,9 +71,9 @@ internal class ModEntry : Mod
             {
                 if (this.Config.IgnoredMods.Contains(mod)) continue;
 
-                var modVersionData = new ModVersions();
+                ModVersions modVersionData = new ModVersions();
 
-                var hostMod = this.Helper.ModRegistry.Get(mod);
+                IModInfo hostMod = this.Helper.ModRegistry.Get(mod);
                 if (hostMod != null)
                 {
                     modVersionData.DoesHostHave = true;
@@ -80,7 +81,7 @@ internal class ModEntry : Mod
                 }
 
 
-                var farmhandMod = e.Peer.GetMod(mod);
+                IMultiplayerPeerMod farmhandMod = e.Peer.GetMod(mod);
                 if (farmhandMod != null)
                 {
                     modVersionData.DoesFarmhandHave = true;
@@ -121,7 +122,7 @@ internal class ModEntry : Mod
             if (!reportData.SmapiGameGameVersions.HostSmapiVersion.Equals(reportData.SmapiGameGameVersions.FarmhandSmapiVersion))
                 report.Add(I18n.SMAPIVersionMismatch(hostVersion: reportData.SmapiGameGameVersions.HostSmapiVersion, farmhandVersion: reportData.SmapiGameGameVersions.FarmhandSmapiVersion), LogLevel.Warn);
 
-            foreach (var modData in reportData.Mods)
+            foreach (ModVersions modData in reportData.Mods)
             {
                 if (!modData.DoesHostHave)
                 {
@@ -162,9 +163,9 @@ internal class ModEntry : Mod
 
             this.Monitor.Log(preface, this.Config.HideReportInTrace ? LogLevel.Trace : LogLevel.Warn);
 
-            foreach (var log in report)
+            foreach ((string message, LogLevel logLevel) in report)
             {
-                this.Monitor.Log(log.Key, this.Config.HideReportInTrace ? LogLevel.Trace : log.Value);
+                this.Monitor.Log(message, this.Config.HideReportInTrace ? LogLevel.Trace : logLevel);
             }
 
             this.Reports.Add($"{preface}\n--------------------------------\n{string.Join("\n", report.Keys)}");

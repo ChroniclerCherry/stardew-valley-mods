@@ -67,7 +67,7 @@ internal class ConditionChecker
         }
 
         //if any of the conditions are met, return true
-        foreach (var con in conditions)
+        foreach (string con in conditions)
         {
             if (this.VerboseLogging)
                 this.Monitor.Log($"{this.UniqueId}: Checking condition string: \"{con}\"", LogLevel.Debug);
@@ -95,7 +95,7 @@ internal class ConditionChecker
     private bool CheckIndividualConditions(string[] conditions)
     {
         //if any of the conditions fail, return false
-        foreach (var condition in conditions)
+        foreach (string condition in conditions)
         {
             if (this.VerboseLogging)
                 this.Monitor.Log($"--{this.UniqueId} / Checking individual condition: {condition}", LogLevel.Debug);
@@ -217,7 +217,7 @@ internal class ConditionChecker
 
         //time period can be given as either the number of days in int, or as a string mapped to a number of days
         string timePeriod = conditionParams[2];
-        if (!int.TryParse(timePeriod, out var interval))
+        if (!int.TryParse(timePeriod, out int interval))
         {
             switch (timePeriod)
             {
@@ -251,7 +251,7 @@ internal class ConditionChecker
 
         ulong seed = Game1.uniqueIDForThisGame + (ulong)offset + (ulong)interval;
 
-        var rng = new Random((int)seed);
+        Random rng = new((int)seed);
         double roll = rng.NextDouble();
         return lowerCheck <= roll && roll < higherCheck;
 
@@ -266,7 +266,7 @@ internal class ConditionChecker
     private bool CheckNpcAt(string[] conditionParams)
     {
         //the second parameter at index 1 is the name of an npc
-        var npc = Game1.getCharacterFromName(conditionParams[1]);
+        NPC npc = Game1.getCharacterFromName(conditionParams[1]);
 
         //after that the expected parameter are sets of x y coordinates
         for (int i = 2; i < conditionParams.Length; i += 2)

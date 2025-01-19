@@ -95,9 +95,9 @@ internal class ItemPriceAndStockManager
     /// <param name="dict"></param>
     private void Add(Dictionary<ISalable, ItemStockInformation> dict)
     {
-        foreach (var kvp in dict)
+        foreach ((ISalable item, ItemStockInformation stock) in dict)
         {
-            this.ItemPriceAndStock.Add(kvp.Key, kvp.Value);
+            this.ItemPriceAndStock.Add(item, stock);
         }
     }
 }

@@ -124,7 +124,7 @@ internal class ShopManager
 
         if (data.VanillaShops != null)
         {
-            foreach (var vanillaShopPack in data.VanillaShops)
+            foreach (VanillaShop vanillaShopPack in data.VanillaShops)
             {
                 if (!VanillaShopNames.Contains(vanillaShopPack.ShopName))
                 {
@@ -192,7 +192,7 @@ internal class ShopManager
             itemShop.StockManager.Initialize();
         }
 
-        foreach (var manager in VanillaShops.Values.SelectMany(vanillaShop => vanillaShop.StockManagers))
+        foreach (ItemPriceAndStockManager manager in VanillaShops.Values.SelectMany(vanillaShop => vanillaShop.StockManagers))
         {
             manager.Initialize();
         }

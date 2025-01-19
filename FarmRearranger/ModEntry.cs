@@ -182,7 +182,7 @@ internal class ModEntry : Mod
 
         //open the carpenter menu then do everything that is normally done
         //when the move buildings option is clicked
-        var menu = new CarpenterMenu(Game1.builder_robin);
+        CarpenterMenu menu = new(Game1.builder_robin);
         Game1.activeClickableMenu = menu;
         Game1.globalFadeToBlack(menu.setUpForBuildingPlacement);
         Game1.playSound("smallSelect");

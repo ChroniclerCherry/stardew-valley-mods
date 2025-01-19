@@ -25,7 +25,7 @@ internal class ModEntry : Mod
     {
         Config = helper.ReadConfig<ModConfig>();
 
-        var harmony = new Harmony(this.ModManifest.UniqueID);
+        Harmony harmony = new(this.ModManifest.UniqueID);
 
         harmony.Patch(
             original: AccessTools.Method(typeof(Game1), nameof(Game1.pressActionButton)),

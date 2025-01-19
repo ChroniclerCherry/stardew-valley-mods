@@ -55,11 +55,10 @@ internal class ModEntry : Mod
         if (!Config.EnableAllCookingRecipes)
         {
             this.LimitedCookingRecipes = new Dictionary<string, string>();
-            foreach (var kvp in from KeyValuePair<string, string> kvp in this.AllCookingRecipes
-                                where Config.Recipes.Contains(kvp.Key)
-                                select kvp)
+            foreach ((string key, string recipe) in this.AllCookingRecipes)
             {
-                this.LimitedCookingRecipes.Add(kvp.Key, kvp.Value);
+                if (Config.Recipes.Contains(key))
+                    this.LimitedCookingRecipes.Add(key, recipe);
             }
         }
     }

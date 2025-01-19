@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ShopTileFramework.Framework.Data;
 using ShopTileFramework.Framework.Shop;
+using StardewModdingAPI;
 using StardewValley;
 
 namespace ShopTileFramework.Framework.Apis;
@@ -23,7 +24,7 @@ public class ShopTileFrameworkApi : IShopTileFrameworkApi
     public bool RegisterShops(string dir)
     {
         //registers a shops.json inside the given dir
-        var temp = ModEntry.StaticHelper.ContentPacks.CreateFake(dir);
+        IContentPack temp = ModEntry.StaticHelper.ContentPacks.CreateFake(dir);
         ContentPack newShopModel = temp.ReadJsonFile<ContentPack>("shops.json");
 
         if (newShopModel == null)
@@ -43,7 +44,7 @@ public class ShopTileFrameworkApi : IShopTileFrameworkApi
     public bool OpenItemShop(string shopName)
     {
         //opens up the shop of ShopName in-game
-        ShopManager.ItemShops.TryGetValue(shopName, out var shop);
+        ShopManager.ItemShops.TryGetValue(shopName, out ItemShop shop);
         if (shop == null)
         {
             return false;
@@ -61,7 +62,7 @@ public class ShopTileFrameworkApi : IShopTileFrameworkApi
     public bool OpenAnimalShop(string shopName)
     {
         //opens up the shop of ShopName in-game
-        ShopManager.AnimalShops.TryGetValue(shopName, out var shop);
+        ShopManager.AnimalShops.TryGetValue(shopName, out AnimalShop shop);
         if (shop == null)
         {
             return false;
@@ -79,7 +80,7 @@ public class ShopTileFrameworkApi : IShopTileFrameworkApi
     public bool ResetShopStock(string shopName)
     {
         //resets the stock of the given ShopName
-        ShopManager.ItemShops.TryGetValue(shopName, out var shop);
+        ShopManager.ItemShops.TryGetValue(shopName, out ItemShop shop);
         if (shop == null)
         {
             return false;
@@ -97,7 +98,7 @@ public class ShopTileFrameworkApi : IShopTileFrameworkApi
     public Dictionary<ISalable, ItemStockInformation> GetItemPriceAndStock(string shopName)
     {
         //gets the ItemStockAndPrice of the given ShopName
-        ShopManager.ItemShops.TryGetValue(shopName, out var shop);
+        ShopManager.ItemShops.TryGetValue(shopName, out ItemShop shop);
         if (shop == null)
         {
             return null;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
@@ -12,6 +13,7 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
 using xTile.ObjectModel;
+using SObject = StardewValley.Object;
 
 namespace ShopTileFramework;
 
@@ -122,11 +124,11 @@ internal class ModEntry : Mod
         {
             //close the current menu to open our own	
             Game1.exitActiveMenu();
-            var allAnimalsStock = Utility.getPurchaseAnimalStock(Game1.getFarm());
+            List<SObject> allAnimalsStock = Utility.getPurchaseAnimalStock(Game1.getFarm());
             this.ChangedMarnieStock = true;
 
             //removes all animals on the exclusion list
-            var newAnimalStock = (from animal in allAnimalsStock
+            List<SObject> newAnimalStock = (from animal in allAnimalsStock
                                   where !AnimalShop.ExcludeFromMarnie.Contains(animal.Name)
                                   select animal).ToList();
             Game1.activeClickableMenu = new PurchaseAnimalsMenu(newAnimalStock);

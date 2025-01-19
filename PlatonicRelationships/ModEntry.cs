@@ -45,7 +45,7 @@ internal class ModEntry : Mod
 
     private void ApplyPatches()
     {
-        var harmony = new Harmony("cherry.platonicrelationships");
+        Harmony harmony = new("cherry.platonicrelationships");
 
         try
         {

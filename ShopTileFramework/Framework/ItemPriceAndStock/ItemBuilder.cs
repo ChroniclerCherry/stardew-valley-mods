@@ -57,7 +57,7 @@ internal class ItemBuilder
             if (!ItemsUtil.IsInSeasonCrop(itemId)) return false;
         }
 
-        var item = this.CreateItem(itemId);
+        Item item = this.CreateItem(itemId);
         if (item == null)
         {
             return false;
@@ -72,7 +72,7 @@ internal class ItemBuilder
             }
         }
 
-        var priceStockCurrency = this.GetPriceStockAndCurrency(item, priceMultiplier);
+        ItemStockInformation priceStockCurrency = this.GetPriceStockAndCurrency(item, priceMultiplier);
         this.ItemPriceAndStock.Add(item, priceStockCurrency);
 
         return true;

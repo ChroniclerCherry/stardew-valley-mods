@@ -69,7 +69,7 @@ internal class VanillaShopStockPatches
         }
         else
         {
-            foreach (var key in customStock.Keys)
+            foreach (ISalable key in customStock.Keys)
             {
                 if (__result.ContainsKey(key))
                     return;

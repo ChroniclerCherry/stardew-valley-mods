@@ -179,7 +179,7 @@ internal static class ItemsUtil
 
         foreach (string pack in PacksToRemove)
         {
-            var items = ApiManager.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
+            List<string> items = ApiManager.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
             if (items != null)
                 ItemsToRemove.AddRange(items);
 
@@ -197,7 +197,7 @@ internal static class ItemsUtil
                 ItemsToRemove.AddRange(items);
             }
 
-            var crops = ApiManager.JsonAssets.GetAllCropsFromContentPack(pack);
+            List<string> crops = ApiManager.JsonAssets.GetAllCropsFromContentPack(pack);
 
             if (crops != null)
             {
@@ -207,7 +207,7 @@ internal static class ItemsUtil
                 }
             }
 
-            var trees = ApiManager.JsonAssets.GetAllFruitTreesFromContentPack(pack);
+            List<string> trees = ApiManager.JsonAssets.GetAllFruitTreesFromContentPack(pack);
             if (trees != null)
             {
                 foreach (string saplingId in trees.Select(GetSaplingId))
@@ -222,7 +222,7 @@ internal static class ItemsUtil
 
         foreach (string pack in RecipePacksToRemove)
         {
-            var items = ApiManager.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
+            List<string> items = ApiManager.JsonAssets.GetAllBigCraftablesFromContentPack(pack);
             if (items != null)
                 ItemsToRemove.AddRange(items.Select(i => (i + " Recipe")));
 
@@ -238,7 +238,7 @@ internal static class ItemsUtil
     {
         List<ISalable> removeItems = (stock.Keys.Where(item => ItemsToRemove.Contains(item.Name))).ToList();
 
-        foreach (var item in removeItems)
+        foreach (ISalable item in removeItems)
         {
             stock.Remove(item);
         }

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using ChroniclerCherry.Common.Integrations.GenericModConfigMenu;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
@@ -64,7 +63,7 @@ internal class ModEntry : Mod
         string cabin = arg2[0] + " Cabin"; //"Plank","Stone","Log"
         int style = int.Parse(arg2[1]);
 
-        foreach (var cab in ModUtility.GetCabins())
+        foreach (Building cab in ModUtility.GetCabins())
         {
             if (((Cabin)cab.indoors.Value).owner.Name != "")
                 continue;
@@ -81,7 +80,7 @@ internal class ModEntry : Mod
     private void ListCabins(string arg1, string[] arg2)
     {
         this.Monitor.Log("Upgrade Level 2 required for renovations.", LogLevel.Info);
-        foreach (var cab in ModUtility.GetCabins())
+        foreach (Building cab in ModUtility.GetCabins())
         {
             if (((Cabin)cab.indoors.Value).owner.Name != "")
                 continue;
@@ -100,13 +99,13 @@ internal class ModEntry : Mod
         string cabin = arg2[0]; //"Plank","Stone","Log"
         string reno = arg2[1]; //"renovation_bedroom_open", "renovation_southern_open", "renovation_corner_open", "renovation_extendedcorner_open", "renovation_dining_open", "renovation_diningroomwall_open", "renovation_cubby_open", "renovation_farupperroom_open"
 
-        foreach (var cab in ModUtility.GetCabins())
+        foreach (Building cab in ModUtility.GetCabins())
         {
             if (((Cabin)cab.indoors.Value).owner.Name != "")
                 continue;
             if (cab.GetIndoorsName() == cabin)
             {
-                var mail = ((Cabin)cab.indoors.Value).owner.mailReceived;
+                ISet<string> mail = ((Cabin)cab.indoors.Value).owner.mailReceived;
                 this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
 
                 if (reno == "renovation_diningroomwall_open")
@@ -161,7 +160,7 @@ internal class ModEntry : Mod
     private void RenovateCabinsCommand(string arg1, string[] arg2)
     {
         string[] renos = { "renovation_bedroom_open", "renovation_southern_open", "renovation_corner_open", "renovation_extendedcorner_open", "renovation_dining_open", "renovation_diningroomwall_open", "renovation_cubby_open", "renovation_farupperroom_open" };
-        foreach (var cab in ModUtility.GetCabins())
+        foreach (Building cab in ModUtility.GetCabins())
         {
             if (((Cabin)cab.indoors.Value).owner.Name != "")
                 continue;
@@ -173,7 +172,7 @@ internal class ModEntry : Mod
                 this.Monitor.Log("    Upgrade Level 2 required for renovations. Not Renovated.", LogLevel.Info);
                 continue;
             }
-            var mail = ((Cabin)cab.indoors.Value).owner.mailReceived;
+            ISet<string> mail = ((Cabin)cab.indoors.Value).owner.mailReceived;
             foreach (string reno in renos)
             {
                 if (mail.Contains(reno))
@@ -195,12 +194,12 @@ internal class ModEntry : Mod
 
     private void RemoveCabinBedsCommand(string arg1, string[] arg2)
     {
-        foreach (var cab in ModUtility.GetCabins())
+        foreach (Building cab in ModUtility.GetCabins())
         {
             BedFurniture bed = null;
             if (((Cabin)cab.indoors.Value).owner.Name != "")
                 continue;
-            foreach (var furniture in ((Cabin)cab.indoors.Value).furniture)
+            foreach (Furniture furniture in ((Cabin)cab.indoors.Value).furniture)
             {
                 if (furniture is BedFurniture b)
                 {
@@ -219,21 +218,20 @@ internal class ModEntry : Mod
 
     private void RemoveSeedBoxesCommand(string arg1, string[] arg2)
     {
-        foreach (var cab in ModUtility.GetCabins())
+        foreach (Building cab in ModUtility.GetCabins())
         {
-            if (((Cabin)cab.indoors.Value).owner.Name != "")
+            Cabin indoors = (Cabin)cab.indoors.Value;
+
+            if (indoors.owner.Name != "")
                 continue;
-            foreach (var obj in
-                     ((Cabin)cab.indoors.Value).Objects.SelectMany(objs =>
-                         objs.Where(obj => obj.Value is Chest).Select(obj => obj)))
+            foreach ((Vector2 tile, Object obj) in indoors.Objects.Pairs)
             {
-                Chest chest = (Chest)obj.Value;
-                if (!chest.giftbox.Value || chest.bigCraftable.Value)
+                if (obj is not Chest chest || !chest.giftbox.Value || chest.bigCraftable.Value)
                 {
                     continue;
                 }
 
-                ((Cabin)cab.indoors.Value).Objects.Remove(obj.Key);
+                indoors.Objects.Remove(tile);
                 this.Monitor.Log("Seed box removed from " + cab.GetIndoorsName(), LogLevel.Info);
             }
         }
@@ -277,7 +275,7 @@ internal class ModEntry : Mod
         if (!Context.IsMainPlayer)
             return;
 
-        foreach (var cabin in ModUtility.GetCabins())
+        foreach (Building cabin in ModUtility.GetCabins())
         {
             if (cabin.daysUntilUpgrade.Value == 1)
             {
@@ -288,7 +286,7 @@ internal class ModEntry : Mod
 
     private static void FinalUpgrade(Building cabin)
     {
-        var cabinIndoors = ((Cabin)cabin.indoors.Value);
+        Cabin cabinIndoors = ((Cabin)cabin.indoors.Value);
         cabin.daysUntilUpgrade.Value = -1;
         cabinIndoors.moveObjectsForHouseUpgrade(cabinIndoors.upgradeLevel + 1);
         cabinIndoors.setMapForUpgradeLevel(cabinIndoors.upgradeLevel);
@@ -304,10 +302,10 @@ internal class ModEntry : Mod
         }
 
         List<Response> cabinNames = new List<Response>();
-        foreach (var cabin in ModUtility.GetCabins())
+        foreach (Building cabin in ModUtility.GetCabins())
         {
             string displayInfo = null;
-            var cabinIndoors = ((Cabin)cabin.indoors.Value);
+            Cabin cabinIndoors = ((Cabin)cabin.indoors.Value);
 
             //if the cabin is occupied, we ignore it
             if (cabinIndoors.owner.Name != "")
@@ -363,7 +361,7 @@ internal class ModEntry : Mod
             return;
         }
 
-        var cabin = ((Cabin)cab.indoors.Value);
+        Cabin cabin = ((Cabin)cab.indoors.Value);
 
 
         switch (cabin.upgradeLevel)

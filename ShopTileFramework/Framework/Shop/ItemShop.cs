@@ -110,7 +110,7 @@ internal class ItemShop : ItemShopModel
         }
 
         string shopId = $"{this.ContentPack.Manifest.UniqueID}_{this.ShopName}";
-        var shopMenu = new ShopMenu(shopId, this.StockManager.ItemPriceAndStock, currency: currency)
+        ShopMenu shopMenu = new(shopId, this.StockManager.ItemPriceAndStock, currency: currency)
         {
             portraitTexture = this.Portrait
         };

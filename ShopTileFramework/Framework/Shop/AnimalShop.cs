@@ -68,7 +68,7 @@ internal class AnimalShop : AnimalShopModel
         this.AllAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock(Game1.getFarm());
 
         this.ShopAnimalStock = new List<Object>();
-        foreach (var animal in this.AllAnimalsStock)
+        foreach (Object animal in this.AllAnimalsStock)
         {
             if (this.AnimalStock.Contains(animal.Name))
             {
