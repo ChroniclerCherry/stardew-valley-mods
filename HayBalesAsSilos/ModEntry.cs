@@ -36,7 +36,7 @@ internal class ModEntry : Mod
         // init
         this.Config = helper.ReadConfig<ModConfig>();
         I18n.Init(helper.Translation);
-        GamePatcher.Apply(this.ModManifest.UniqueID, () => this.Config, this.GetAllAffectedMaps);
+        GamePatcher.Apply(this.ModManifest.UniqueID, this.Monitor, () => this.Config, this.GetAllAffectedMaps);
 
         // hook events
         helper.Events.Content.AssetRequested += this.OnAssetRequested;

@@ -37,41 +37,57 @@ internal class GamePatcher
         Reflection = reflection;
         Translation = translation;
 
-        Harmony harmony = new(modId);
-        harmony.Patch(
-            original: AccessTools.Method(typeof(ShopMenu), "tryToPurchaseItem"),
-            postfix: new HarmonyMethod(typeof(GamePatcher), nameof(tryToPurchaseItem_postfix))
-        );
+        if (Constants.TargetPlatform == GamePlatform.Android)
+        {
+            Harmony harmony = new(modId);
+            harmony.Patch(
+                original: AccessTools.Method(typeof(ShopMenu), "tryToPurchaseItem"),
+                postfix: new HarmonyMethod(typeof(GamePatcher), nameof(After_ShopMenu_TryToPurchaseItem))
+            );
 
-        harmony.Patch(
-            original: AccessTools.Method(typeof(ShopMenu), "setCurrentItem"),
-            postfix: new HarmonyMethod(typeof(GamePatcher), nameof(setCurrentItem_postfix))
-        );
+            harmony.Patch(
+                original: AccessTools.Method(typeof(ShopMenu), "setCurrentItem"),
+                postfix: new HarmonyMethod(typeof(GamePatcher), nameof(After_ShopMenu_SetCurrentItem))
+            );
+        }
     }
 
 
     /*********
     ** Private methods
     *********/
-    private static void setCurrentItem_postfix(ref ShopMenu __instance)
+    private static void After_ShopMenu_SetCurrentItem(ref ShopMenu __instance)
     {
-        if (Game1.currentLocation?.Name != ContentPackHelper.InteriorLocationName || __instance is not DonateFishMenuAndroid) return;
-
-        IReflectedField<string> nameItem = Reflection.GetField<string>(__instance, "nameItem");
-        string nameItemString = nameItem.GetValue();
-        nameItem.SetValue(Translation.Get("Donate") + nameItemString);
-
-        Reflection.GetField<string>(__instance, "descItem").SetValue(ContentPackHelper.LoadString("DonateDescription"));
-    }
-
-    private static void tryToPurchaseItem_postfix(ref ShopMenu __instance, ref ISalable item)
-    {
-        if (Game1.currentLocation?.Name != ContentPackHelper.InteriorLocationName || __instance is not DonateFishMenuAndroid) return;
         try
         {
-            if (!(item is Item donatedFish)) return; //this shouldn't happen but /shrug
+            if (Game1.currentLocation?.Name != ContentPackHelper.InteriorLocationName || __instance is not DonateFishMenuAndroid)
+                return;
 
-            if (!Utils.DonateFish(donatedFish)) return; //this also shouldnt happen
+            IReflectedField<string> nameItem = Reflection.GetField<string>(__instance, "nameItem");
+            string nameItemString = nameItem.GetValue();
+            nameItem.SetValue(Translation.Get("Donate") + nameItemString);
+
+            Reflection.GetField<string>(__instance, "descItem")
+                .SetValue(ContentPackHelper.LoadString("DonateDescription"));
+        }
+        catch (Exception ex)
+        {
+            Monitor.Log($"Failed in {nameof(After_ShopMenu_SetCurrentItem)} patch:\n{ex}", LogLevel.Error);
+        }
+    }
+
+    private static void After_ShopMenu_TryToPurchaseItem(ref ShopMenu __instance, ref ISalable item)
+    {
+        try
+        {
+            if (Game1.currentLocation?.Name != ContentPackHelper.InteriorLocationName || __instance is not DonateFishMenuAndroid)
+                return;
+
+            if (!(item is Item donatedFish))
+                return; // this shouldn't happen but /shrug
+
+            if (!Utils.DonateFish(donatedFish))
+                return; // this also shouldnt happen
 
             DonateFishMenuAndroid.Donated = true;
             Game1.player.removeItemFromInventory(donatedFish);
@@ -82,9 +98,9 @@ internal class GamePatcher
                 DonateFishMenuAndroid.PufferchickDonated = true;
             }
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Monitor.Log($"Failed in {nameof(tryToPurchaseItem_postfix)}: {e.Message} {e.StackTrace}", LogLevel.Error);
+            Monitor.Log($"Failed in {nameof(After_ShopMenu_TryToPurchaseItem)} patch:\n{ex}", LogLevel.Error);
         }
     }
 }

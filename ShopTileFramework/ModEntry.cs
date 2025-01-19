@@ -45,7 +45,7 @@ internal class ModEntry : Mod
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
-        GamePatcher.Apply(this.ModManifest.UniqueID);
+        GamePatcher.Apply(this.ModManifest.UniqueID, this.Monitor);
 
         //make helper and monitor static so they can be accessed in other classes
         ModEntry.StaticHelper = helper;

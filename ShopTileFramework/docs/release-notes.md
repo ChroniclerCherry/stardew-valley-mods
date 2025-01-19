@@ -2,6 +2,7 @@
 
 # Release notes
 ## Upcoming release
+- Improved error-handling in game patches.
 - Removed integration with Better Farm Animal Variety.
 - Internal refactoring.
 

@@ -25,7 +25,7 @@ internal class ModEntry : Mod
         // init
         this.Config = helper.ReadConfig<ModConfig>();
         I18n.Init(helper.Translation);
-        GamePatcher.Apply(this.ModManifest.UniqueID, () => this.Config);
+        GamePatcher.Apply(this.ModManifest.UniqueID, this.Monitor, () => this.Config);
 
         // add console commands
         helper.ConsoleCommands.Add("SetSlimeHutchLimit", "Changes the max number of slimes that can inhabit a slime hutch.\n\nUsage: SetSlimeHutchLimit <value>\n- value: the number of slimes", this.ChangeMaxSlimes);

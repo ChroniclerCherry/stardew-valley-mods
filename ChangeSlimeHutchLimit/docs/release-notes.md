@@ -1,6 +1,7 @@
 ﻿# Release notes
 ## Upcoming release
 - Added in-game config UI through [Generic Mod Config Menu](https://www.nexusmods.com/stardewvalley/mods/5098) (thanks to BSavage81!).
+- Improved error-handling in game patches.
 - Internal refactoring.
 
 ## 1.0.1

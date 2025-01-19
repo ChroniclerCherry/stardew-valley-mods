@@ -1,5 +1,6 @@
 using System;
 using HarmonyLib;
+using StardewModdingAPI;
 using StardewValley;
 
 namespace ChangeSlimeHutchLimit.Framework;
@@ -10,6 +11,9 @@ internal static class GamePatcher
     /*********
     ** Fields
     *********/
+    /// <summary>Encapsulates monitoring and logging.</summary>
+    private static IMonitor Monitor;
+
     /// <summary>Get the mod config.</summary>
     private static Func<ModConfig> Config;
 
@@ -19,15 +23,17 @@ internal static class GamePatcher
     *********/
     /// <summary>Apply the patches.</summary>
     /// <param name="modId">The unique mod ID.</param>
+    /// <param name="monitor">Encapsulates monitoring and logging.</param>
     /// <param name="config">Get the mod config.</param>
-    public static void Apply(string modId, Func<ModConfig> config)
+    public static void Apply(string modId, IMonitor monitor, Func<ModConfig> config)
     {
+        Monitor = monitor;
         Config = config;
 
-        Harmony harmony = new Harmony(modId);
+        Harmony harmony = new(modId);
         harmony.Patch(
             original: AccessTools.Method(typeof(SlimeHutch), nameof(SlimeHutch.isFull)),
-            postfix: new HarmonyMethod(typeof(GamePatcher), nameof(GamePatcher.SlimeHutch_isFull_postfix))
+            postfix: new HarmonyMethod(typeof(GamePatcher), nameof(GamePatcher.After_SlimeHutch_IsFull))
         );
     }
 
@@ -35,8 +41,15 @@ internal static class GamePatcher
     /*********
     ** Private methods
     *********/
-    private static void SlimeHutch_isFull_postfix(GameLocation __instance, ref bool __result)
+    private static void After_SlimeHutch_IsFull(GameLocation __instance, ref bool __result)
     {
-        __result = __instance.characters.Count >= Config().MaxSlimesInHutch;
+        try
+        {
+            __result = __instance.characters.Count >= Config().MaxSlimesInHutch;
+        }
+        catch (Exception ex)
+        {
+            Monitor.Log($"Failed in {nameof(After_SlimeHutch_IsFull)} patch:\n{ex}", LogLevel.Error);
+        }
     }
 }

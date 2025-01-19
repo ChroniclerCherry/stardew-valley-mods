@@ -1,6 +1,7 @@
 ﻿# Release notes
 ## Upcoming release
 - Updated for Stardew Valley 1.6.9–15 (thanks to zBoggler!).
+- Improved error-handling in game patches.
 - Internal refactoring.
 
 ## 1.0.1

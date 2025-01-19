@@ -1,5 +1,6 @@
 using System;
 using HarmonyLib;
+using StardewModdingAPI;
 using StardewValley;
 using SObject = StardewValley.Object;
 
@@ -11,6 +12,9 @@ internal static class GamePatcher
     /*********
     ** Fields
     *********/
+    /// <summary>Encapsulates monitoring and logging.</summary>
+    private static IMonitor Monitor;
+
     /// <summary>Get the mod config.</summary>
     private static Func<ModConfig> Config;
 
@@ -20,9 +24,11 @@ internal static class GamePatcher
     *********/
     /// <summary>Apply the patches.</summary>
     /// <param name="modId">The unique mod ID.</param>
+    /// <param name="monitor">Encapsulates monitoring and logging.</param>
     /// <param name="config">Get the mod config.</param>
-    public static void Apply(string modId, Func<ModConfig> config)
+    public static void Apply(string modId, IMonitor monitor, Func<ModConfig> config)
     {
+        Monitor = monitor;
         Config = config;
 
         Harmony harmony = new(modId);
@@ -48,18 +54,33 @@ internal static class GamePatcher
     /// <param name="__state">The previous object edibility, or <c>null</c> if it didn't change.</param>
     private static void Before_Game1_PressActionButton(out int? __state)
     {
-        if (Config().HoldToActivate.IsDown())
-            TryReplaceEdibility(Game1.player.ActiveObject, out __state);
-        else
+        try
+        {
+            if (Config().HoldToActivate.IsDown())
+                TryReplaceEdibility(Game1.player.ActiveObject, out __state);
+            else
+                __state = null;
+        }
+        catch (Exception ex)
+        {
             __state = null;
+            Monitor.Log($"Failed in {nameof(Before_Game1_PressActionButton)} patch:\n{ex}", LogLevel.Error);
+        }
     }
 
     /// <summary>Restore the held object's original edibility after handling the action button, if applicable.</summary>
     /// <param name="__state">The previous object edibility, or <c>null</c> if it didn't change.</param>
     private static void After_Game1_PressActionButton(int? __state)
     {
-        if (Config().HoldToActivate.IsDown())
-            TryRestoreEdibility(Game1.player.ActiveObject, __state);
+        try
+        {
+            if (Config().HoldToActivate.IsDown())
+                TryRestoreEdibility(Game1.player.ActiveObject, __state);
+        }
+        catch (Exception ex)
+        {
+            Monitor.Log($"Failed in {nameof(After_Game1_PressActionButton)} patch:\n{ex}", LogLevel.Error);
+        }
     }
 
     /// <summary>Mark the held object edible when it's eaten, if applicable.</summary>
@@ -67,7 +88,15 @@ internal static class GamePatcher
     /// <param name="__state">The previous object edibility, or <c>null</c> if it didn't change.</param>
     private static void Before_Farmer_EatObject(SObject o, out int? __state)
     {
-        TryReplaceEdibility(o, out __state);
+        try
+        {
+            TryReplaceEdibility(o, out __state);
+        }
+        catch (Exception ex)
+        {
+            __state = null;
+            Monitor.Log($"Failed in {nameof(Before_Farmer_EatObject)} patch:\n{ex}", LogLevel.Error);
+        }
     }
 
     /// <summary>Restore the held object's original edibility after the eat handler, and mark the item-to-eat edible if needed.</summary>
@@ -75,10 +104,17 @@ internal static class GamePatcher
     /// <param name="__state">The previous object edibility, or <c>null</c> if it didn't change.</param>
     private static void After_Farmer_EatObject(SObject o, int? __state)
     {
-        TryRestoreEdibility(o, __state);
+        try
+        {
+            TryRestoreEdibility(o, __state);
 
-        Game1.player.itemToEat = Game1.player.itemToEat?.getOne();
-        TryReplaceEdibility(Game1.player.itemToEat as SObject, out _);
+            Game1.player.itemToEat = Game1.player.itemToEat?.getOne();
+            TryReplaceEdibility(Game1.player.itemToEat as SObject, out _);
+        }
+        catch (Exception ex)
+        {
+            Monitor.Log($"Failed in {nameof(After_Farmer_EatObject)} patch:\n{ex}", LogLevel.Error);
+        }
     }
 
     /// <summary>Make the item snackable if needed.</summary>

@@ -1,5 +1,6 @@
 ﻿# Release notes
 ## Upcoming release
+- Improved error-handling in game patches.
 - Internal refactoring.
 
 ## 1.1.0

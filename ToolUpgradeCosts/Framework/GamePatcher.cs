@@ -48,11 +48,11 @@ internal static class GamePatcher
     *********/
     private static void After_ShopBuilder_GetShopStock(string shopId, ref Dictionary<ISalable, ItemStockInformation> __result)
     {
-        if (shopId != Game1.shop_blacksmithUpgrades)
-            return;
-
         try
         {
+            if (shopId != Game1.shop_blacksmithUpgrades)
+                return;
+
             var config = Config();
 
             Dictionary<ISalable, ItemStockInformation> editedStock = new Dictionary<ISalable, ItemStockInformation>();

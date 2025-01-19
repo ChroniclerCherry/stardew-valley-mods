@@ -21,6 +21,6 @@ internal class ModEntry : Mod
     {
         this.Config = helper.ReadConfig<ModConfig>();
 
-        GamePatcher.Apply(this.ModManifest.UniqueID, () => this.Config);
+        GamePatcher.Apply(this.ModManifest.UniqueID, this.Monitor, () => this.Config);
     }
 }

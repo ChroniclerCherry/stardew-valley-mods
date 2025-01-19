@@ -39,8 +39,8 @@ internal static class GamePatcher
         Harmony harmony = new(modId);
         harmony.Patch(
             original: AccessTools.Method(typeof(Crop), nameof(Crop.harvest)),
-            prefix: new HarmonyMethod(typeof(GamePatcher), nameof(GamePatcher.CropHarvest_prefix)),
-            postfix: new HarmonyMethod(typeof(GamePatcher), nameof(GamePatcher.CropHarvest_postfix))
+            prefix: new HarmonyMethod(typeof(GamePatcher), nameof(GamePatcher.Before_Crop_Harvest)),
+            postfix: new HarmonyMethod(typeof(GamePatcher), nameof(GamePatcher.After_Crop_Harvest))
         );
     }
 
@@ -48,35 +48,42 @@ internal static class GamePatcher
     /*********
     ** Private methods
     *********/
-    public static void CropHarvest_prefix(Crop __instance, out bool __state)
+    public static void Before_Crop_Harvest(Crop __instance, out bool __state)
     {
-        __state = CanHarvest(__instance);
-    }
-
-    public static void CropHarvest_postfix(int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester, Crop __instance, bool __state, ref bool __result)
-    {
-        // wasn't marked harvestable
-        if (!__state)
-            return;
-
-        // The vanilla function will either return true (for single-yield crops) or reset the instance (for
-        // multi-yield crops). If neither is true, the crop didn't get harvested (e.g. because the player's
-        // inventory was full).
-        if (!__result && CanHarvest(__instance))
-            return;
-
         try
         {
+            __state = CanHarvest(__instance);
+        }
+        catch (Exception ex)
+        {
+            __state = false;
+            Monitor.Log($"Failed in {nameof(Before_Crop_Harvest)} patch:\n{ex}", LogLevel.Error);
+        }
+    }
+
+    public static void After_Crop_Harvest(int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester, Crop __instance, bool __state, ref bool __result)
+    {
+        try
+        {
+            // wasn't marked harvestable
+            if (!__state)
+                return;
+
+            // The vanilla function will either return true (for single-yield crops) or reset the instance (for
+            // multi-yield crops). If neither is true, the crop didn't get harvested (e.g. because the player's
+            // inventory was full).
+            if (!__result && CanHarvest(__instance))
+                return;
+
             string cropId = __instance.indexOfHarvest.Value;
             string cropName = ItemRegistry.GetDataOrErrorItem(cropId).InternalName;
             int fertilizerQualityLevel = soil.GetFertilizerQualityBoostLevel();
 
             SpawnHarvest(new Vector2(xTile, yTile), cropName, fertilizerQualityLevel, junimoHarvester);
-
         }
         catch (Exception ex)
         {
-            Monitor.Log($"Failed in {nameof(CropHarvest_postfix)}:\n{ex}", LogLevel.Error);
+            Monitor.Log($"Failed in {nameof(After_Crop_Harvest)} patch:\n{ex}", LogLevel.Error);
         }
     }
 
