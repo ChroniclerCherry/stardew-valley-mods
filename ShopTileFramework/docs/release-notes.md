@@ -4,6 +4,7 @@
 ## Upcoming release
 - Improved error-handling in game patches.
 - Removed integration with Better Farm Animal Variety.
+- Removed unused mod API methods.
 - Internal refactoring.
 
 ## 1.0.10

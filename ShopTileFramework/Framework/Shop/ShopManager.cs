@@ -83,10 +83,77 @@ internal class ShopManager
     }
 
     /// <summary>
-    /// Saves each shop as long as its has a unique name
+    /// Update all trans;ations for each shop when a save file is loaded
     /// </summary>
-    /// <param name="data"></param>
-    /// <param name="contentPack"></param>
+    public static void UpdateTranslations()
+    {
+        foreach (ItemShop itemShop in ItemShops.Values)
+        {
+            itemShop.UpdateTranslations();
+        }
+
+        foreach (AnimalShop animalShop in AnimalShops.Values)
+        {
+            animalShop.UpdateTranslations();
+        }
+    }
+
+    /// <summary>
+    /// Initializes all shops once the game is loaded
+    /// </summary>
+    public static void InitializeShops()
+    {
+        foreach (ItemShop itemShop in ItemShops.Values)
+        {
+            itemShop.Initialize();
+        }
+    }
+
+    /// <summary>
+    /// Initializes the stocks of each shop after the save file has loaded so that item IDs are available to generate items
+    /// </summary>
+    public static void InitializeItemStocks()
+    {
+        foreach (ItemShop itemShop in ItemShops.Values)
+        {
+            itemShop.StockManager.Initialize();
+        }
+
+        foreach (ItemPriceAndStockManager manager in VanillaShops.Values.SelectMany(vanillaShop => vanillaShop.StockManagers))
+        {
+            manager.Initialize();
+        }
+    }
+
+    /// <summary>
+    /// Updates the stock for all itemshops at the start of each day
+    /// and updates their portraits too to match the current season
+    /// </summary>
+    internal static void UpdateStock()
+    {
+        if (ItemShops.Count > 0)
+            ModEntry.StaticMonitor.Log("Refreshing stock for all custom shops...", LogLevel.Debug);
+
+        foreach (ItemShop store in ItemShops.Values)
+        {
+            store.UpdateItemPriceAndStock();
+            store.UpdatePortrait();
+        }
+
+        if (VanillaShops.Count > 0)
+            ModEntry.StaticMonitor.Log("Refreshing stock for all Vanilla shops...", LogLevel.Debug);
+
+        foreach (VanillaShop shop in VanillaShops.Values)
+        {
+            shop.UpdateItemPriceAndStock();
+        }
+    }
+
+
+    /*********
+    ** Private methods
+    *********/
+    /// <summary>Saves each shop as long as it has a unique name.</summary>
     public static void RegisterShops(ContentPack data, IContentPack contentPack)
     {
         ItemsUtil.RegisterPacksToRemove(data.RemovePacksFromVanilla, data.RemovePackRecipesFromVanilla, data.RemoveItemsFromVanilla);
@@ -152,73 +219,6 @@ internal class ShopManager
                     VanillaShops.Add(vanillaShopPack.ShopName, vanillaShopPack);
                 }
             }
-        }
-    }
-
-    /// <summary>
-    /// Update all trans;ations for each shop when a save file is loaded
-    /// </summary>
-    public static void UpdateTranslations()
-    {
-        foreach (ItemShop itemShop in ItemShops.Values)
-        {
-            itemShop.UpdateTranslations();
-        }
-
-        foreach (AnimalShop animalShop in AnimalShops.Values)
-        {
-            animalShop.UpdateTranslations();
-        }
-    }
-
-    /// <summary>
-    /// Initializes all shops once the game is loaded
-    /// </summary>
-    public static void InitializeShops()
-    {
-        foreach (ItemShop itemShop in ItemShops.Values)
-        {
-            itemShop.Initialize();
-        }
-    }
-
-    /// <summary>
-    /// Initializes the stocks of each shop after the save file has loaded so that item IDs are available to generate items
-    /// </summary>
-    public static void InitializeItemStocks()
-    {
-        foreach (ItemShop itemShop in ItemShops.Values)
-        {
-            itemShop.StockManager.Initialize();
-        }
-
-        foreach (ItemPriceAndStockManager manager in VanillaShops.Values.SelectMany(vanillaShop => vanillaShop.StockManagers))
-        {
-            manager.Initialize();
-        }
-    }
-
-    /// <summary>
-    /// Updates the stock for all itemshops at the start of each day
-    /// and updates their portraits too to match the current season
-    /// </summary>
-    internal static void UpdateStock()
-    {
-        if (ItemShops.Count > 0)
-            ModEntry.StaticMonitor.Log("Refreshing stock for all custom shops...", LogLevel.Debug);
-
-        foreach (ItemShop store in ItemShops.Values)
-        {
-            store.UpdateItemPriceAndStock();
-            store.UpdatePortrait();
-        }
-
-        if (VanillaShops.Count > 0)
-            ModEntry.StaticMonitor.Log("Refreshing stock for all Vanilla shops...", LogLevel.Debug);
-
-        foreach (VanillaShop shop in VanillaShops.Values)
-        {
-            shop.UpdateItemPriceAndStock();
         }
     }
 }
