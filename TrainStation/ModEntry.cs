@@ -19,7 +19,6 @@ internal class ModEntry : Mod
     ** Fields
     *********/
     private ModConfig Config;
-    private IConditionsChecker ConditionsApi;
 
     /// <summary>Manages the Train Station content provided by content packs.</summary>
     private ContentManager ContentManager;
@@ -39,7 +38,7 @@ internal class ModEntry : Mod
     {
         I18n.Init(helper.Translation);
         this.Config = helper.ReadConfig<ModConfig>();
-        this.ContentManager = new(this.ModManifest.UniqueID, () => this.Config, helper.GameContent, this.Monitor);
+        this.ContentManager = new(this.ModManifest.UniqueID, () => this.Config, helper.GameContent, this.Monitor, helper.ModRegistry.IsLoaded("Cherry.ExpandedPreconditionsUtility"));
 
         helper.Events.Content.AssetRequested += this.ContentManager.OnAssetRequested;
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
@@ -50,9 +49,9 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc />
-    public override object GetApi()
+    public override object GetApi(IModInfo mod)
     {
-        return new Api(this.ContentManager, this.OpenMenu);
+        return new Api(this.ContentManager, this.OpenMenu, mod.Manifest.Name);
     }
 
 
@@ -88,12 +87,6 @@ internal class ModEntry : Mod
     /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
     private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
     {
-        // load Expanded Preconditions Utility
-        this.ConditionsApi = this.Helper.ModRegistry.GetApi<IConditionsChecker>("Cherry.ExpandedPreconditionsUtility");
-        this.ConditionsApi?.Initialize(false, this.ModManifest.UniqueID);
-        if (this.ConditionsApi == null)
-            this.Monitor.Log("Expanded Preconditions Utility API not detected. Something went wrong, please check that your installation of Expanded Preconditions Utility is valid", LogLevel.Error);
-
         // load content packs
         this.ContentManager.LoadContentPacks(this.Helper.ContentPacks.GetOwned());
     }

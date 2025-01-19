@@ -6,11 +6,5 @@
     "UniqueID": "Cherry.TrainStation",
     "EntryDll": "TrainStation.dll",
     "MinimumApiVersion": "4.0.0",
-    "UpdateKeys": [ "Nexus:6183" ],
-    "Dependencies": [
-        {
-            "UniqueID": "Cherry.ExpandedPreconditionsUtility",
-            "MinimumVersion": "1.0.0"
-        }
-    ]
+    "UpdateKeys": [ "Nexus:6183" ]
 }

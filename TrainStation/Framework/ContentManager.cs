@@ -31,6 +31,9 @@ internal class ContentManager
     /// <summary>Encapsulates monitoring and logging.</summary>
     private readonly IMonitor Monitor;
 
+    /// <summary>Whether the Expanded Preconditions Utility mod is installed.</summary>
+    private readonly bool HasExpandedPreconditionsUtility;
+
 
     /*********
     ** Accessors
@@ -47,13 +50,15 @@ internal class ContentManager
     /// <param name="config">Get the current mod config.</param>
     /// <param name="contentHelper">The SMAPI API for loading and managing content assets.</param>
     /// <param name="monitor">Encapsulates monitoring and logging.</param>
-    public ContentManager(string modId, Func<ModConfig> config, IGameContentHelper contentHelper, IMonitor monitor)
+    /// <param name="hasExpandedPreconditionsUtility">Whether the Expanded Preconditions Utility mod is installed.</param>
+    public ContentManager(string modId, Func<ModConfig> config, IGameContentHelper contentHelper, IMonitor monitor, bool hasExpandedPreconditionsUtility)
     {
         this.ModId = modId;
         this.DataAssetName = $"Mods/{modId}/Destinations";
         this.Config = config;
         this.ContentHelper = contentHelper;
         this.Monitor = monitor;
+        this.HasExpandedPreconditionsUtility = hasExpandedPreconditionsUtility;
     }
 
     /// <summary>Get the stops which can be selected from the current location.</summary>
@@ -100,7 +105,7 @@ internal class ContentManager
                 for (int i = 0; i < cp.TrainStops.Count; i++)
                 {
                     this.LegacyStops.Add(
-                        LegacyStopModel.FromContentPack($"{pack.Manifest.UniqueID}_{i}", cp.TrainStops[i], StopNetwork.Train)
+                        LegacyStopModel.FromContentPack($"{pack.Manifest.UniqueID}_{i}", cp.TrainStops[i], StopNetwork.Train, ConvertExpandedPreconditions)
                     );
                 }
             }
@@ -110,11 +115,27 @@ internal class ContentManager
                 for (int i = 0; i < cp.BoatStops.Count; i++)
                 {
                     this.LegacyStops.Add(
-                        LegacyStopModel.FromContentPack($"{pack.Manifest.UniqueID}_{i}", cp.BoatStops[i], StopNetwork.Boat)
+                        LegacyStopModel.FromContentPack($"{pack.Manifest.UniqueID}_{i}", cp.BoatStops[i], StopNetwork.Boat, ConvertExpandedPreconditions)
                     );
                 }
             }
+
+            string ConvertExpandedPreconditions(string[] conditions) => this.BuildGameQueryForExpandedPreconditionsIfInstalled(conditions, pack.Manifest.Name);
         }
+    }
+
+    /// <summary>Build a game state query equivalent to the provided Expanded Preconditions Utility conditions. If that mod isn't installed, log a warning instead.</summary>
+    /// <param name="conditions">The Expanded Preconditions Utility conditions.</param>
+    /// <param name="fromModName">The name of the mod for which the conditions are being parsed.</param>
+    public string BuildGameQueryForExpandedPreconditionsIfInstalled(string[] conditions, string fromModName)
+    {
+        if (!this.HasExpandedPreconditionsUtility)
+        {
+            this.Monitor.LogOnce($"The '{fromModName}' mod adds destinations with Expanded Preconditions Utility conditions, but you don't have Expanded Preconditions Utility installed. The destinations will default to always visible.", LogLevel.Warn);
+            return null;
+        }
+
+        return LegacyStopModel.BuildGameQueryForExpandedPreconditions(conditions);
     }
 
 

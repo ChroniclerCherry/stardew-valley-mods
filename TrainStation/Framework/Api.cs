@@ -18,6 +18,9 @@ public class Api : IApi
     /// <summary>Open the UI to choose a boat or train destination.</summary>
     private readonly Action<StopNetwork> OpenMenu;
 
+    /// <summary>The name of the mod calling the API.</summary>
+    private readonly string FromModName;
+
 
     /*********
     ** Public methods
@@ -25,10 +28,12 @@ public class Api : IApi
     /// <summary>Construct an instance.</summary>
     /// <param name="contentManager">Manages the Train Station content provided by content packs.</param>
     /// <param name="openMenu">Open the UI to choose a boat or train destination.</param>
-    internal Api(ContentManager contentManager, Action<StopNetwork> openMenu)
+    /// <param name="fromModName">The name of the mod calling the API.</param>
+    internal Api(ContentManager contentManager, Action<StopNetwork> openMenu, string fromModName)
     {
         this.ContentManager = contentManager;
         this.OpenMenu = openMenu;
+        this.FromModName = fromModName;
     }
 
     /// <inheritdoc />
@@ -85,8 +90,16 @@ public class Api : IApi
                 conditions: conditions,
                 network: network,
                 displayNameTranslations: localizedDisplayName,
-                displayNameDefault: translatedName
+                displayNameDefault: translatedName,
+                convertExpandedPreconditions: this.BuildGameQueryForExpandedPreconditionsIfInstalled
             )
         );
+    }
+
+    /// <summary>Build a game state query equivalent to the provided Expanded Preconditions Utility conditions. If that mod isn't installed, log a warning instead.</summary>
+    /// <param name="conditions">The Expanded Preconditions Utility conditions.</param>
+    private string BuildGameQueryForExpandedPreconditionsIfInstalled(string[] conditions)
+    {
+        return this.ContentManager.BuildGameQueryForExpandedPreconditionsIfInstalled(conditions, this.FromModName);
     }
 }

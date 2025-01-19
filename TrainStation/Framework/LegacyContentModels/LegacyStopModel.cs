@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using StardewValley;
@@ -36,7 +37,8 @@ internal class LegacyStopModel : StopModel
     /// <param name="id"><inheritdoc cref="StopModel.Id" path="/summary"/></param>
     /// <param name="model">The content pack model to parse.</param>
     /// <param name="network"><inheritdoc cref="StopModel.Network" path="/summary" /></param>
-    public static StopModel FromContentPack(string id, StopContentPackModel model, StopNetwork network)
+    /// <param name="convertExpandedPreconditions">Convert Expanded Preconditions Utility conditions into a game state query.</param>
+    public static StopModel FromContentPack(string id, StopContentPackModel model, StopNetwork network, Func<string[], string> convertExpandedPreconditions)
     {
         return FromApi(
             id: id,
@@ -47,7 +49,8 @@ internal class LegacyStopModel : StopModel
             conditions: model.Conditions,
             network: network,
             displayNameTranslations: model.LocalizedDisplayName,
-            displayNameDefault: null
+            displayNameDefault: null,
+            convertExpandedPreconditions: convertExpandedPreconditions
         );
     }
 
@@ -61,7 +64,8 @@ internal class LegacyStopModel : StopModel
     /// <param name="network"><inheritdoc cref="StopModel.Network" path="/summary" /></param>
     /// <param name="displayNameTranslations"><inheritdoc cref="DisplayNameTranslations" path="/summary" /></param>
     /// <param name="displayNameDefault"><inheritdoc cref="DisplayNameDefault" path="/summary" /></param>
-    public static StopModel FromApi(string id, string toLocation, Point toTile, int toFacingDirection, int cost, string[] conditions, StopNetwork network, Dictionary<string, string> displayNameTranslations, string displayNameDefault)
+    /// <param name="convertExpandedPreconditions">Convert Expanded Preconditions Utility conditions into a game state query.</param>
+    public static StopModel FromApi(string id, string toLocation, Point toTile, int toFacingDirection, int cost, string[] conditions, StopNetwork network, Dictionary<string, string> displayNameTranslations, string displayNameDefault, Func<string[], string> convertExpandedPreconditions)
     {
         return new LegacyStopModel
         {
@@ -71,7 +75,7 @@ internal class LegacyStopModel : StopModel
             ToTile = toTile,
             ToFacingDirection = toFacingDirection.ToString(),
             Cost = cost,
-            Conditions = BuildGameQueryForExpandedPreconditions(conditions),
+            Conditions = convertExpandedPreconditions(conditions),
             Network = network,
 
             DisplayNameTranslations = displayNameTranslations,
@@ -79,13 +83,9 @@ internal class LegacyStopModel : StopModel
         };
     }
 
-
-    /*********
-    ** Private methods
-    *********/
-    /// <summary>Build a game state query equivalent to the provided Expanded Preconditions Utility conditions.</summary>
+    /// <summary>Build a game state query for a set of Expanded Preconditions Utility conditions.</summary>
     /// <param name="conditions">The Expanded Preconditions Utility conditions.</param>
-    private static string BuildGameQueryForExpandedPreconditions(string[] conditions)
+    public static string BuildGameQueryForExpandedPreconditions(string[] conditions)
     {
         const string expandedPreconditionsQuery = "Cherry.ExpandedPreconditionsUtility";
 
@@ -109,6 +109,10 @@ internal class LegacyStopModel : StopModel
         }
     }
 
+
+    /*********
+    ** Private methods
+    *********/
     /// <summary>Get the localized text for a content pack dictionary.</summary>
     /// <param name="translations">The translation dictionary to read.</param>
     /// <param name="defaultName">The default text to return if no translation is found, or <c>null</c> for a generic 'no translation' message.</param>
