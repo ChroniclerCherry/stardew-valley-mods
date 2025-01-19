@@ -10,8 +10,8 @@ internal class ReturnTrain
     /*********
     ** Fields
     *********/
-    private IModHelper Helper;
-    private IMonitor Monitor;
+    private readonly IModHelper Helper;
+    private readonly IMonitor Monitor;
     private ITrainStationApi TrainStationApi;
 
 

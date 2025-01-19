@@ -20,12 +20,12 @@ internal class AquariumCollectionMenu : IClickableMenu
     *********/
     private string HoverText = "";
 
-    private List<List<ClickableTextureComponent>> Collections = new List<List<ClickableTextureComponent>>();
-    private ClickableTextureComponent BackButton;
-    private ClickableTextureComponent ForwardButton;
+    private readonly List<List<ClickableTextureComponent>> Collections = new List<List<ClickableTextureComponent>>();
+    private readonly ClickableTextureComponent BackButton;
+    private readonly ClickableTextureComponent ForwardButton;
 
     private int CurrentPage;
-    private string Title;
+    private readonly string Title;
     private readonly bool IsAndroid = Constants.TargetPlatform == GamePlatform.Android;
 
 

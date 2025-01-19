@@ -15,7 +15,7 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    private List<MultiplayerReportData> RawReports = new List<MultiplayerReportData>();
+    private readonly List<MultiplayerReportData> RawReports = new List<MultiplayerReportData>();
     private readonly List<string> Reports = new List<string>();
     private ModConfig Config;
 

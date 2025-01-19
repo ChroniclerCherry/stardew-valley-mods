@@ -11,7 +11,7 @@ internal class DonateFishMenuAndroid : ShopMenu
     /*********
     ** Fields
     *********/
-    private Dictionary<ISalable, ItemStockInformation> Donations = new Dictionary<ISalable, ItemStockInformation>();
+    private readonly Dictionary<ISalable, ItemStockInformation> Donations = new Dictionary<ISalable, ItemStockInformation>();
 
 
     /*********

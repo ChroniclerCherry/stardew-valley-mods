@@ -15,7 +15,7 @@ internal class DresserAndMirror
     /*********
     ** Fields
     *********/
-    private IModHelper Helper;
+    private readonly IModHelper Helper;
 
     private readonly string ModId;
     private readonly string DresserShopId;
