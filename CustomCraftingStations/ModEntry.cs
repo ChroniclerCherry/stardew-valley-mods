@@ -330,7 +330,7 @@ internal class ModEntry : Mod
                     if (!loc.objects.ContainsKey(tile)) continue;
 
                     var obj = loc.objects[tile];
-                    if (obj != null && obj is Chest chest)
+                    if (obj is Chest chest)
                         chests.Add(chest.Items);
                 }
             }

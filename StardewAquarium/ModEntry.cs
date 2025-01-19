@@ -48,7 +48,7 @@ internal sealed class ModEntry : Mod
     public override void Entry(IModHelper helper)
     {
         Utils.Initialize(helper, this.Monitor, this.ModManifest);
-        TileActions.Init(helper, this.Monitor);
+        TileActions.Init(this.Monitor);
 
         AssetEditor.Init(helper.Events.Content, this.Monitor);
 
@@ -99,7 +99,7 @@ internal sealed class ModEntry : Mod
             return;
 
         Farmer player = Game1.player;
-        Utility.ForEachLocation((loc) =>
+        Utility.ForEachLocation(loc =>
         {
             if (loc.Animals?.Count() is 0 or null)
                 return true;
@@ -227,7 +227,7 @@ internal sealed class ModEntry : Mod
 
     private void AndroidDonateFish(string arg1, string[] arg2)
     {
-        Game1.activeClickableMenu = new DonateFishMenuAndroid(this.Helper, this.Monitor);
+        Game1.activeClickableMenu = new DonateFishMenuAndroid();
     }
 
     /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />

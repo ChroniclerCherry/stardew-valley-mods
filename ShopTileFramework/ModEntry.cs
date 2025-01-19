@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using HarmonyLib;
 using Microsoft.Xna.Framework;
@@ -35,7 +36,7 @@ internal class ModEntry : Mod
 
     public static bool VerboseLogging;
 
-    public static bool JustOpenedVanilla = false;
+    public static bool JustOpenedVanilla;
 
 
     /*********
@@ -165,7 +166,7 @@ internal class ModEntry : Mod
         ApiManager.RegisterExpandedPreconditionsUtility();
     }
 
-    private void OnJsonAssetsAddedItemsToShop(object sender, System.EventArgs e)
+    private void OnJsonAssetsAddedItemsToShop(object sender, EventArgs e)
     {
         //make sure we only remove all objects if we camew from a vanilla store
         //this stops us from removing all packs from custom TMXL or STF stores

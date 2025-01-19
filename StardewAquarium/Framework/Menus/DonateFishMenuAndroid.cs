@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
 using Object = StardewValley.Object;
@@ -25,7 +24,7 @@ internal class DonateFishMenuAndroid : ShopMenu
     /*********
     ** Public methods
     *********/
-    public DonateFishMenuAndroid(IModHelper helper, IMonitor monitor)
+    public DonateFishMenuAndroid()
         : base("-1", new Dictionary<ISalable, ItemStockInformation>())
     {
         //look android forced me to do this terrible thing don't judge me just pretend they're not static

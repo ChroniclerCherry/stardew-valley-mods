@@ -17,7 +17,7 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    private bool IsArranging = false;
+    private bool IsArranging;
 
     private ModConfig Config;
 

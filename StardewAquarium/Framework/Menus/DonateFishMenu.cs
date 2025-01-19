@@ -21,7 +21,7 @@ internal class DonateFishMenu : InventoryMenu
     ** Public methods
     *********/
     public DonateFishMenu()
-        : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, false, null, Utils.IsUnDonatedFish, 36, 3)
+        : base(Game1.viewport.Width / 2 - 768 / 2, Game1.viewport.Height / 2 + 36, false, null, Utils.IsUnDonatedFish, 36)
     {
         this.showGrayedOutSlots = true;
         this.exitFunction = () => Utils.DonationMenuExit(this.Donated, this.PufferchickDonated);
@@ -49,7 +49,7 @@ internal class DonateFishMenu : InventoryMenu
                 this.PufferchickDonated = true;
             }
 
-            Game1.Multiplayer.globalChatInfoMessage($"{ContentPackHelper.ContentPackId}_FishDonated", [Game1.player.Name, item.DisplayName]); // TokenStringBuilder.ItemNameFor(item)
+            Game1.Multiplayer.globalChatInfoMessage($"{ContentPackHelper.ContentPackId}_FishDonated", Game1.player.Name, item.DisplayName); // TokenStringBuilder.ItemNameFor(item)
         }
     }
 
@@ -62,7 +62,7 @@ internal class DonateFishMenu : InventoryMenu
             base.drawBackground(b);
 
         SpriteText.drawStringWithScrollCenteredAt(b, this.Title, Game1.viewport.Width / 2,
-            Game1.viewport.Height / 2 - 128, SpriteText.getWidthOfString(this.Title) + 16, 1f, null, 0, 0.88f, false);
+            Game1.viewport.Height / 2 - 128, SpriteText.getWidthOfString(this.Title) + 16);
 
         Game1.drawDialogueBox(this.xPositionOnScreen - 64, this.yPositionOnScreen - 128, this.width + 128, this.height + 176, false, true);
 

@@ -245,7 +245,7 @@ internal class ConditionChecker
 
         if (interval != 0)
         {
-            interval = (int)(Game1.Date.TotalDays / interval);
+            interval = Game1.Date.TotalDays / interval;
         }
 
 

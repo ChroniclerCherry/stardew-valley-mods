@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using StardewModdingAPI;
 using StardewValley;
 
 namespace ShopTileFramework.Framework.Utility;
@@ -21,7 +20,7 @@ internal class Translations
     /// <summary>
     /// Given the english string, and then a dictionary of localized versions of the string,
     /// return the string of the current selected language
-    /// Pretty much copy&pasted from Json Assets
+    /// Pretty much copy and pasted from Json Assets
     /// </summary>
     /// <param name="english">the english string</param>
     /// <param name="translations">each key is a language code with the value being the translated string</param>
@@ -41,6 +40,6 @@ internal class Translations
     public static void UpdateSelectedLanguage()
     {
         SelectedLanguage = LocalizedContentManager.CurrentLanguageCode;
-        ModEntry.StaticMonitor.Log($"Updating current language settings: {SelectedLanguage}", LogLevel.Trace);
+        ModEntry.StaticMonitor.Log($"Updating current language settings: {SelectedLanguage}");
     }
 }

@@ -45,7 +45,7 @@ internal class ItemBuilder
 
         if (itemId is null)
         {
-            ModEntry.StaticMonitor.Log($"{this.ItemStock.ItemType} with the name or ID \"{itemIdOrName}\" could not be added to the shop {this.ItemStock.ShopName}", LogLevel.Trace);
+            ModEntry.StaticMonitor.Log($"{this.ItemStock.ItemType} with the name or ID \"{itemIdOrName}\" could not be added to the shop {this.ItemStock.ShopName}");
             return false;
         }
 
@@ -67,7 +67,7 @@ internal class ItemBuilder
         {
             if (!ItemsUtil.RecipesList.Contains(item.Name))
             {
-                ModEntry.StaticMonitor.Log($"{item.Name} is not a valid recipe and won't be added.", LogLevel.Trace);
+                ModEntry.StaticMonitor.Log($"{item.Name} is not a valid recipe and won't be added.");
                 return false;
             }
         }

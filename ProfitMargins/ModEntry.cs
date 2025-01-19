@@ -47,20 +47,14 @@ internal class ModEntry : Mod
         if (this.CheckContext())
         {
             Game1.player.difficultyModifier = this.OriginalDifficulty;
-            this.Monitor.Log("During save, DL:" + Game1.player.difficultyModifier.ToString(), LogLevel.Debug);
+            this.Monitor.Log("During save, DL:" + Game1.player.difficultyModifier, LogLevel.Debug);
         }
     }
 
     private bool CheckContext()
     {
-        if (!Context.IsMainPlayer)
-        {
-            return false;
-        }
-        else if (Context.IsMultiplayer && !this.Config.EnableInMultiplayer)
-        {
-            return false;
-        }
-        return true;
+        return
+            Context.IsMainPlayer
+            && (!Context.IsMultiplayer || this.Config.EnableInMultiplayer);
     }
 }

@@ -205,7 +205,7 @@ internal class ShopManager
     internal static void UpdateStock()
     {
         if (ItemShops.Count > 0)
-            ModEntry.StaticMonitor.Log($"Refreshing stock for all custom shops...", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log("Refreshing stock for all custom shops...", LogLevel.Debug);
 
         foreach (ItemShop store in ItemShops.Values)
         {
@@ -214,7 +214,7 @@ internal class ShopManager
         }
 
         if (VanillaShops.Count > 0)
-            ModEntry.StaticMonitor.Log($"Refreshing stock for all Vanilla shops...", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log("Refreshing stock for all Vanilla shops...", LogLevel.Debug);
 
         foreach (VanillaShop shop in VanillaShops.Values)
         {

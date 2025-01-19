@@ -204,7 +204,7 @@ internal class ItemStock : ItemStockModel
             var packs = this.GetJaItems(jaPack);
             if (packs == null)
             {
-                ModEntry.StaticMonitor.Log($"No {this.ItemType} from {jaPack} could be found", LogLevel.Trace);
+                ModEntry.StaticMonitor.Log($"No {this.ItemType} from {jaPack} could be found");
                 continue;
             }
 

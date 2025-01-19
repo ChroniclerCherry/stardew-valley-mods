@@ -336,7 +336,7 @@ internal class ModEntry : Mod
             Game1.currentLocation.createQuestionDialogue(
                 I18n.Robin_WhichCabinQuestion(),
                 cabinNames.ToArray(),
-                delegate (Farmer who, string answer)
+                delegate (Farmer _, string answer)
                 {
                     Game1.activeClickableMenu = null;
                     this.HouseUpgradeAccept(ModUtility.GetCabin(answer));

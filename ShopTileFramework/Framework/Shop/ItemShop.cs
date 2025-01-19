@@ -20,12 +20,6 @@ internal class ItemShop : ItemShopModel
     *********/
     private Texture2D Portrait;
 
-    /// <summary>
-    /// This is used to make sure that JA only adds items to this shop the first time it is opened each day
-    /// or else items will be added every time the shop is opened
-    /// </summary>
-    private bool ShopOpenedToday;
-
 
     /*********
     ** Accessors
@@ -81,7 +75,6 @@ internal class ItemShop : ItemShopModel
     /// </summary>
     public void UpdateItemPriceAndStock()
     {
-        this.ShopOpenedToday = false;
         ModEntry.StaticMonitor.Log($"Generating stock for {this.ShopName}", LogLevel.Debug);
         this.StockManager.Update();
     }
@@ -91,7 +84,7 @@ internal class ItemShop : ItemShopModel
     /// </summary>
     public void DisplayShop(bool debug = false)
     {
-        ModEntry.StaticMonitor.Log($"Attempting to open the shop \"{this.ShopName}\"", LogLevel.Trace);
+        ModEntry.StaticMonitor.Log($"Attempting to open the shop \"{this.ShopName}\"");
 
         //if conditions aren't met, display closed message if there is one
         //skips condition checking if debug mode
@@ -129,7 +122,6 @@ internal class ItemShop : ItemShopModel
             shopMenu.potraitPersonDialogue = Game1.parseText(this.Quote, Game1.dialogueFont, 304);
 
         Game1.activeClickableMenu = shopMenu;
-        this.ShopOpenedToday = true;
     }
 
     /// <summary>

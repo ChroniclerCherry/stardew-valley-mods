@@ -71,7 +71,7 @@ internal class ConsoleCommands
     {
         if (args.Length == 0)
         {
-            ModEntry.StaticMonitor.Log($"A shop name is required", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log("A shop name is required", LogLevel.Debug);
             return;
         }
 
@@ -84,7 +84,7 @@ internal class ConsoleCommands
         {
             if (!Context.IsPlayerFree)
             {
-                ModEntry.StaticMonitor.Log($"The player isn't free to act; can't display a menu right now", LogLevel.Debug);
+                ModEntry.StaticMonitor.Log("The player isn't free to act; can't display a menu right now", LogLevel.Debug);
                 return;
             }
 
@@ -101,7 +101,7 @@ internal class ConsoleCommands
     {
         if (args.Length == 0)
         {
-            ModEntry.StaticMonitor.Log($"A shop name is required", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log("A shop name is required", LogLevel.Debug);
             return;
         }
 
@@ -114,7 +114,7 @@ internal class ConsoleCommands
         {
             if (!Context.IsPlayerFree)
             {
-                ModEntry.StaticMonitor.Log($"The player isn't free to act; can't display a menu right now", LogLevel.Debug);
+                ModEntry.StaticMonitor.Log("The player isn't free to act; can't display a menu right now", LogLevel.Debug);
                 return;
             }
 
@@ -131,7 +131,7 @@ internal class ConsoleCommands
     {
         if (args.Length == 0)
         {
-            ModEntry.StaticMonitor.Log($"A shop name is required", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log("A shop name is required", LogLevel.Debug);
             return;
         }
 
@@ -144,7 +144,7 @@ internal class ConsoleCommands
         {
             if (!Context.IsWorldReady)
             {
-                ModEntry.StaticMonitor.Log($"The world hasn't loaded; shop stock can't be updated at this time", LogLevel.Debug);
+                ModEntry.StaticMonitor.Log("The world hasn't loaded; shop stock can't be updated at this time", LogLevel.Debug);
                 return;
             }
             shop.UpdateItemPriceAndStock();
@@ -158,7 +158,7 @@ internal class ConsoleCommands
     {
         if (ShopManager.ItemShops.Count == 0)
         {
-            ModEntry.StaticMonitor.Log($"No shops were found", LogLevel.Debug);
+            ModEntry.StaticMonitor.Log("No shops were found", LogLevel.Debug);
         }
         else
         {

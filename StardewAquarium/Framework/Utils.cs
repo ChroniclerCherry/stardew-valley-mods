@@ -35,14 +35,14 @@ internal static class Utils
     /// <summary>
     /// Maps the InternalName of the fish to its internalname without spaces, eg. Rainbow Trout to RainbowTrout
     /// </summary>
-    public static Dictionary<string, string> InternalNameToDonationName { get; private set; } = [];
+    public static Dictionary<string, string> InternalNameToDonationName { get; } = [];
 
     public static List<string> FishIDs { get; set; } = [];
 
     /// <summary>
     /// Maps the internal name without spaces to its localized display name
     /// </summary>
-    public static Dictionary<string, string> FishDisplayNames { get; private set; } = [];
+    public static Dictionary<string, string> FishDisplayNames { get; } = [];
 
 
     /*********

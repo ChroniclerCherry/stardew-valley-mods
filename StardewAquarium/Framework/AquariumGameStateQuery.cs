@@ -49,7 +49,7 @@ internal static class AquariumGameStateQuery
             return GameStateQuery.Helpers.ErrorResult(query, error);
         }
 
-        return GameStateQuery.Helpers.WithPlayer(context.Player, playerKey, (target) =>
+        return GameStateQuery.Helpers.WithPlayer(context.Player, playerKey, target =>
         {
             SObject bait = (target?.CurrentTool as FishingRod)?.GetBait();
 

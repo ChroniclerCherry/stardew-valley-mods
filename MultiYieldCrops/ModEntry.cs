@@ -224,7 +224,7 @@ internal class ModEntry : Mod
                 {
                     if (this.Helper.ModRegistry.IsLoaded(mod))
                     {
-                        this.Monitor.Log($"A rule was skipped for {cropName} because {mod} was found", LogLevel.Trace);
+                        this.Monitor.Log($"A rule was skipped for {cropName} because {mod} was found");
                         skipRule = true;
                         break;
                     }

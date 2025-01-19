@@ -84,12 +84,12 @@ internal class ModEntry : Mod
             GameLocation loc = Game1.currentLocation;
 
             Vector2 tile = this.Helper.Input.GetCursorPosition().GrabTile;
-            loc.Objects.TryGetValue(tile, out StardewValley.Object obj);
+            loc.Objects.TryGetValue(tile, out Object obj);
 
-            if (obj != null && obj.Name == "Campfire" && obj.IsOn)
+            if (obj is { Name: "Campfire", IsOn: true })
             {
                 this.Helper.Input.Suppress(e.Button);
-                Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, 0, 0);
+                Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2);
 
                 this.CustomCraftingStations?.SetCCSCraftingMenuOverride(false);
                 CraftingRecipe.cookingRecipes = this.LimitedCookingRecipes;

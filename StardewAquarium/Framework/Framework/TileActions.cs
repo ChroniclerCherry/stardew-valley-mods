@@ -11,15 +11,13 @@ internal static class TileActions
     ** Fields
     *********/
     private static IMonitor Monitor;
-    private static IModHelper Helper;
 
 
     /*********
     ** Public methods
     *********/
-    public static void Init(IModHelper helper, IMonitor monitor)
+    public static void Init(IMonitor monitor)
     {
-        Helper = helper;
         Monitor = monitor;
 
         GameLocation.RegisterTileAction("AquariumDonationMenu", DonationMenu);
@@ -76,7 +74,7 @@ internal static class TileActions
                 return;
 
             case "OptionYes" when Constants.TargetPlatform == GamePlatform.Android:
-                Game1.activeClickableMenu = new DonateFishMenuAndroid(Helper, Monitor);
+                Game1.activeClickableMenu = new DonateFishMenuAndroid();
                 break;
 
             case "OptionYes":

@@ -3,7 +3,7 @@ using StardewValley;
 
 namespace TrainStation.Framework.ContentModels;
 
-/// <summary>As part of <see cref="ContentModel"/>, a boat or train stop that can be visited by the player.</summary>
+/// <summary>A boat or train stop that can be visited by the player.</summary>
 internal class StopModel
 {
     /// <summary>A unique identifier for this stop.</summary>

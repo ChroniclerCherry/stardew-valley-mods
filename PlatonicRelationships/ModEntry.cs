@@ -72,7 +72,6 @@ internal class ModEntry : Mod
         catch (Exception e)
         {
             this.Monitor.Log($"Failed in Patching Utility.GetMaximumHeartsForCharacter: \n{e}", LogLevel.Error);
-            return;
         }
     }
 }

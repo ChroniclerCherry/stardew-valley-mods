@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -250,7 +251,7 @@ internal class ModEntry : Mod
     {
         //Game1.drawObjectDialogue(destinationMessage);
         Game1.playSound("trainWhistle");
-        this.Cue.Stop(Microsoft.Xna.Framework.Audio.AudioStopOptions.AsAuthored);
+        this.Cue.Stop(AudioStopOptions.AsAuthored);
     }
 
 
