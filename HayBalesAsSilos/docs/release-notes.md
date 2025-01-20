@@ -1,5 +1,6 @@
 ﻿# Release notes
 ## Upcoming release
+- Hay bales now work anywhere, not just the main farm.
 - Improved error-handling in game patches.
 - Fixed configured price not applied in Marnie's shop.
 

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HarmonyLib;
 using StardewModdingAPI;
 using StardewValley;
@@ -19,8 +17,8 @@ internal class GamePatcher
     /// <summary>Get the mod config.</summary>
     private static Func<ModConfig> Config;
 
-    /// <summary>Get the locations whose hay storage should be affected.</summary>
-    private static Func<IEnumerable<GameLocation>> GetAllAffectedMaps;
+    /// <summary>Get the number of hay bales currently placed in a given location.</summary>
+    private static Func<GameLocation, int> CountHayBalesIn;
 
 
     /*********
@@ -30,12 +28,12 @@ internal class GamePatcher
     /// <param name="modId">The unique mod ID.</param>
     /// <param name="monitor">Encapsulates monitoring and logging.</param>
     /// <param name="config">Get the mod config.</param>
-    /// <param name="getAllAffectedMaps">Get the locations whose hay storage should be affected.</param>
-    public static void Apply(string modId, IMonitor monitor, Func<ModConfig> config, Func<IEnumerable<GameLocation>> getAllAffectedMaps)
+    /// <param name="countHayBalesIn">Get the number of hay bales currently placed in a given location.</param>
+    public static void Apply(string modId, IMonitor monitor, Func<ModConfig> config, Func<GameLocation, int> countHayBalesIn)
     {
         Monitor = monitor;
         Config = config;
-        GetAllAffectedMaps = getAllAffectedMaps;
+        CountHayBalesIn = countHayBalesIn;
 
         Harmony harmony = new(modId);
         harmony.Patch(
@@ -52,19 +50,10 @@ internal class GamePatcher
     {
         try
         {
-            if (!GetAllAffectedMaps().Contains(Game1.currentLocation))
-                return;
-
             ModConfig config = Config();
 
             if (__result > 0 || !config.RequiresConstructedSilo)
-            {
-                int hayBales = __instance.Objects.Values.Count(p => p.QualifiedItemId == ModEntry.HayBaleQualifiedId);
-                if (hayBales == 0)
-                    return;
-
-                __result += hayBales * config.HayPerBale;
-            }
+                __result += CountHayBalesIn(__instance) * config.HayPerBale;
         }
         catch (Exception ex)
         {
