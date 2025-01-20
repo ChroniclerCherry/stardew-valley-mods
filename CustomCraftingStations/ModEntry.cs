@@ -98,11 +98,7 @@ internal class ModEntry : Mod
     /// <inheritdoc cref="IDisplayEvents.MenuChanged" />
     private void OnMenuChanged(object sender, MenuChangedEventArgs e)
     {
-        if (e.OldMenu == null ||
-            e.OldMenu is CustomCraftingMenu
-            || e.OldMenu is CraftingPage
-            || e.OldMenu is GameMenu
-            || e.OldMenu.GetType() == this.CookingSkillMenu)
+        if (e.OldMenu is (null or CustomCraftingMenu or CraftingPage or GameMenu) || e.OldMenu.GetType() == this.CookingSkillMenu)
         {
             this.OpenedNonCustomMenu = false;
             if (e.NewMenu == null)

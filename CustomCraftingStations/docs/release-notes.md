@@ -2,6 +2,7 @@
 
 # Release notes
 ## Upcoming release
+- Older content packs which target Json Assets recipes before Json Assets 1.11.0 are now automatically migrated to Json Assets' new recipe keys.
 - Internal refactoring.
 
 ## 1.2.0

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using StardewModdingAPI;
 using StardewValley;
 
@@ -55,7 +56,7 @@ namespace CustomCraftingStations.Framework
 
                 ContentPack contentPack = pack.ModContent.Load<ContentPack>("content.json");
 
-                this.RegisterCraftingStations(contentPack.CraftingStations);
+                this.RegisterCraftingStations(pack, contentPack.CraftingStations);
             }
 
             // track exclusive recipes
@@ -72,31 +73,18 @@ namespace CustomCraftingStations.Framework
             }
         }
 
-        private void RegisterCraftingStations(List<CraftingStationConfig> craftingStations)
+        /// <summary>Register the crafting stations added by a content pack.</summary>
+        /// <param name="contentPack">The content pack registering crafting stations.</param>
+        /// <param name="craftingStations">The crafting stations to register.</param>
+        private void RegisterCraftingStations(IContentPack contentPack, List<CraftingStationConfig> craftingStations)
         {
             if (craftingStations == null)
                 return;
+
             foreach (CraftingStationConfig station in craftingStations)
             {
-                int numRecipes = station.CraftingRecipes.Count;
-                for (int i = numRecipes - 1; i >= 0; i--)
-                {
-                    if (!CraftingRecipe.craftingRecipes.Keys.Contains(station.CraftingRecipes[i]))
-                    {
-                        this.Monitor.Log($"The recipe for {station.CraftingRecipes[i]} could not be found.");
-                        station.CraftingRecipes.RemoveAt(i);
-                    }
-                }
-
-                numRecipes = station.CookingRecipes.Count;
-                for (int i = numRecipes - 1; i >= 0; i--)
-                {
-                    if (!CraftingRecipe.cookingRecipes.Keys.Contains(station.CookingRecipes[i]))
-                    {
-                        this.Monitor.Log($"The recipe for {station.CookingRecipes[i]} could not be found.");
-                        station.CookingRecipes.RemoveAt(i);
-                    }
-                }
+                this.PreprocessContentPackRecipeKeys(contentPack, station.BigCraftable, station.CraftingRecipes, CraftingRecipe.craftingRecipes, "crafting");
+                this.PreprocessContentPackRecipeKeys(contentPack, station.BigCraftable, station.CookingRecipes, CraftingRecipe.cookingRecipes, "cooking");
 
                 if (station.ExclusiveRecipes)
                 {
@@ -130,6 +118,78 @@ namespace CustomCraftingStations.Framework
                     if (station.BigCraftable != null) this.CraftableCraftingStations.Add(station.BigCraftable, station);
                 }
             }
+        }
+
+        /// <summary>Preprocess the recipe keys in a content pack to either fix or remove broken keys.</summary>
+        /// <param name="contentPack">The content pack whose recipe keys are being preprocessed.</param>
+        /// <param name="stationName">The name of the station whose recipes are being preprocessed.</param>
+        /// <param name="stationRecipes">The recipe keys from the content pack to preprocess.</param>
+        /// <param name="gameRecipes">The recipes from <c>Data/CookingRecipes</c> or <c>Data/CraftingRecipes</c> to match.</param>
+        /// <param name="type">The recipe type to show in error messages, like 'cooking' or 'crafting'.</param>
+        private void PreprocessContentPackRecipeKeys(IContentPack contentPack, string stationName, List<string> stationRecipes, Dictionary<string, string> gameRecipes, string type)
+        {
+            for (int i = stationRecipes.Count - 1; i >= 0; i--)
+            {
+                string key = stationRecipes[i];
+
+                if (this.TryResolveRecipeKey(contentPack, stationName, gameRecipes, type, key, out string foundKey))
+                    stationRecipes[i] = foundKey;
+                else
+                {
+                    this.Monitor.Log($"Content pack '{contentPack.Manifest.Name}' has station '{stationName}' with {type} recipe '{key}' which couldn't be found.");
+                    stationRecipes.RemoveAt(i);
+                }
+            }
+        }
+
+        /// <summary>Resolve a recipe key from a content pack to the actual key in <c>Data/CookingRecipes</c> or <c>Data/CraftingRecipes</c>.</summary>
+        /// <param name="contentPack">The content pack whose recipe keys are being resolved.</param>
+        /// <param name="stationName">The name of the station whose recipes are being preprocessed.</param>
+        /// <param name="recipes">The recipes from <c>Data/CookingRecipes</c> or <c>Data/CraftingRecipes</c> to match.</param>
+        /// <param name="type">The recipe type to show in error messages, like 'cooking' or 'crafting'.</param>
+        /// <param name="key">The recipe key from the content pack.</param>
+        /// <param name="foundKey">The equivalent key in <c>Data/CookingRecipes</c> or <c>Data/CraftingRecipes</c>, if resolved successfully.</param>
+        /// <returns>Returns whether the key was resolved successfully.</returns>
+        private bool TryResolveRecipeKey(IContentPack contentPack, string stationName, Dictionary<string, string> recipes, string type, string key, out string foundKey)
+        {
+            // exact match
+            if (recipes.ContainsKey(key))
+            {
+                foundKey = key;
+                return true;
+            }
+
+            // Json Assets changed its recipe keys from name to a generated internal ID, which breaks mods which refer to
+            // the old names. If a recipe isn't found, see if there's a unique match by suffix.
+            {
+                string suffix = "_" + Regex.Replace(key, "[/&@#$%*{}\\[\\]\\s\\\\]", "_").Trim(); // based on FixIdJA in the Json Assets code: https://github.com/spacechase0/StardewValleyMods/blob/develop/JsonAssets/Mod.cs#L44
+
+                string match = null;
+                foreach (string gameKey in recipes.Keys)
+                {
+                    if (gameKey.EndsWith(suffix))
+                    {
+                        if (match is null)
+                            match = gameKey;
+                        else
+                        {
+                            match = null;
+                            break;
+                        }
+                    }
+                }
+
+                if (match != null)
+                {
+                    this.Monitor.Log($"Content pack '{contentPack.Manifest.Name}' has station '{stationName}' with {type} recipe '{key}' which couldn't be found. Resolved to likely recipe key '{match}'.");
+                    foundKey = match;
+                    return true;
+                }
+            }
+
+            // no match found
+            foundKey = null;
+            return false;
         }
     }
 }
