@@ -78,7 +78,7 @@ internal class DresserAndMirror
                 };
                 data[this.MirrorId] = new BigCraftableData
                 {
-                    Name = this.CatalogueId,
+                    Name = this.MirrorId,
                     DisplayName = TokenStringBuilder.LocalizedText($"Strings/BigCraftables:{this.MirrorId}_Name"),
                     Description = TokenStringBuilder.LocalizedText($"Strings/BigCraftables:{this.MirrorId}_Description"),
                     Texture = $"LooseSprites/{this.MirrorId}"
