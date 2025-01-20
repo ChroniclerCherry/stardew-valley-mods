@@ -20,21 +20,15 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
+    /// <summary>Manages content loaded from Custom Crafting Stations content packs.</summary>
+    private ContentManager ContentManager;
+
     private bool OpenedNonCustomMenu;
-
-    private Dictionary<string, CraftingStationConfig> TileCraftingStations;
-    private Dictionary<string, CraftingStationConfig> CraftableCraftingStations;
-
-    private List<string> CookingRecipesToRemove;
-    private List<string> CraftingRecipesToRemove;
 
     /// <summary>The mod settings.</summary>
     private ModConfig Config;
 
     private Type CookingSkillMenu;
-
-    private List<string> ReducedCookingRecipes { get; set; }
-    private List<string> ReducedCraftingRecipes { get; set; }
 
     public static bool MenuOverride = true;
 
@@ -75,38 +69,15 @@ internal class ModEntry : Mod
     /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
     private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
     {
-        //register content packs
-        this.RegisterContentPacks();
-
-        //remove exclusive recipes
-        this.ReducedCookingRecipes = new List<string>();
-        this.ReducedCraftingRecipes = new List<string>();
-
-        foreach (string recipeId in CraftingRecipe.craftingRecipes.Keys)
-        {
-            if (!this.CraftingRecipesToRemove.Contains(recipeId))
-                this.ReducedCraftingRecipes.Add(recipeId);
-        }
-
-        foreach (string recipeId in CraftingRecipe.cookingRecipes.Keys)
-        {
-            if (!this.CookingRecipesToRemove.Contains(recipeId))
-                this.ReducedCookingRecipes.Add(recipeId);
-        }
+        this.ContentManager = new ContentManager(this.Helper.ContentPacks.GetOwned(), this.Monitor);
     }
 
     /// <inheritdoc cref="IDisplayEvents.RenderingActiveMenu" />
     private void OnRenderingActiveMenu(object sender, RenderingActiveMenuEventArgs e)
     {
-        if (!Context.IsWorldReady)
+        if (!Context.IsWorldReady || this.OpenedNonCustomMenu || !MenuOverride)
             return;
 
-        if (this.OpenedNonCustomMenu)
-        {
-            return;
-        }
-
-        if (!MenuOverride) return;
         this.OpenedNonCustomMenu = true;
 
         IClickableMenu activeMenu = Game1.activeClickableMenu;
@@ -120,7 +91,8 @@ internal class ModEntry : Mod
                 : null
         };
 
-        if (instance is not (null or CustomCraftingMenu)) this.OpenAndFixMenu(instance);
+        if (instance is not (null or CustomCraftingMenu))
+            this.OpenAndFixMenu(instance);
     }
 
     /// <inheritdoc cref="IDisplayEvents.MenuChanged" />
@@ -158,9 +130,9 @@ internal class ModEntry : Mod
         Game1.currentLocation.Objects.TryGetValue(grabTile, out SObject obj);
         if (obj != null && obj.bigCraftable.Value)
         {
-            if (this.CraftableCraftingStations.ContainsKey(obj.Name))
+            if (this.ContentManager.CraftableCraftingStations.TryGetValue(obj.Name, out CraftingStationConfig config))
             {
-                this.OpenCraftingMenu(this.CraftableCraftingStations[obj.Name], e.Cursor.GrabTile);
+                this.OpenCraftingMenu(config, e.Cursor.GrabTile);
                 this.Helper.Input.Suppress(e.Button);
                 return;
             }
@@ -173,93 +145,12 @@ internal class ModEntry : Mod
             return;
 
         string[] properties = tileProperty.Split(' ');
-        if (properties[0] != "CraftingStation")
-            return;
-
-        if (this.TileCraftingStations.ContainsKey(properties[1]))
+        if (properties[0] == "CraftingStation")
         {
-            this.OpenCraftingMenu(this.TileCraftingStations[properties[1]], e.Cursor.GrabTile);
-            this.Helper.Input.Suppress(e.Button);
-        }
-    }
-
-    private void RegisterContentPacks()
-    {
-        this.TileCraftingStations = new Dictionary<string, CraftingStationConfig>();
-        this.CraftableCraftingStations = new Dictionary<string, CraftingStationConfig>();
-        this.CookingRecipesToRemove = new List<string>();
-        this.CraftingRecipesToRemove = new List<string>();
-
-        foreach (IContentPack pack in this.Helper.ContentPacks.GetOwned())
-        {
-            if (!pack.HasFile("content.json"))
+            if (this.ContentManager.TileCraftingStations.TryGetValue(properties[1], out CraftingStationConfig config))
             {
-                this.Monitor.Log($"{pack.Manifest.UniqueID} is missing a content.json", LogLevel.Error);
-                continue;
-            }
-
-            ContentPack contentPack = pack.ModContent.Load<ContentPack>("content.json");
-
-            this.RegisterCraftingStations(contentPack.CraftingStations);
-        }
-    }
-
-    private void RegisterCraftingStations(List<CraftingStationConfig> craftingStations)
-    {
-        if (craftingStations == null)
-            return;
-        foreach (CraftingStationConfig station in craftingStations)
-        {
-            int numRecipes = station.CraftingRecipes.Count;
-            for (int i = numRecipes - 1; i >= 0; i--)
-            {
-                if (!CraftingRecipe.craftingRecipes.Keys.Contains(station.CraftingRecipes[i]))
-                {
-                    this.Monitor.Log($"The recipe for {station.CraftingRecipes[i]} could not be found.");
-                    station.CraftingRecipes.RemoveAt(i);
-                }
-            }
-
-            numRecipes = station.CookingRecipes.Count;
-            for (int i = numRecipes - 1; i >= 0; i--)
-            {
-                if (!CraftingRecipe.cookingRecipes.Keys.Contains(station.CookingRecipes[i]))
-                {
-                    this.Monitor.Log($"The recipe for {station.CookingRecipes[i]} could not be found.");
-                    station.CookingRecipes.RemoveAt(i);
-                }
-            }
-
-            if (station.ExclusiveRecipes)
-            {
-                this.CraftingRecipesToRemove.AddRange(station.CraftingRecipes);
-                this.CookingRecipesToRemove.AddRange(station.CookingRecipes);
-            }
-
-            if (station.TileData != null)
-            {
-                if (this.TileCraftingStations.Keys.Contains(station.TileData))
-                {
-                    this.Monitor.Log(
-                        $"Multiple mods are trying to use the Tiledata {station.TileData}; Only one will be applied.",
-                        LogLevel.Error);
-                }
-                else
-                {
-                    if (station.TileData != null) this.TileCraftingStations.Add(station.TileData, station);
-                }
-            }
-
-            if (station.BigCraftable == null) continue;
-            if (this.CraftableCraftingStations.Keys.Contains(station.BigCraftable))
-            {
-                this.Monitor.Log(
-                    $"Multiple mods are trying to use the BigCraftable {station.BigCraftable}; Only one will be applied.",
-                    LogLevel.Error);
-            }
-            else
-            {
-                if (station.BigCraftable != null) this.CraftableCraftingStations.Add(station.BigCraftable, station);
+                this.OpenCraftingMenu(config, e.Cursor.GrabTile);
+                this.Helper.Input.Suppress(e.Button);
             }
         }
     }
@@ -284,9 +175,9 @@ internal class ModEntry : Mod
                 "pagesOfCraftingRecipes");
         pagesOfCraftingRecipes.SetValue(new List<Dictionary<ClickableTextureComponent, CraftingRecipe>>());
 
-        List<string> knownCraftingRecipes = this.ReducedCraftingRecipes.Where(recipe => Game1.player.craftingRecipes.ContainsKey(recipe)).ToList();
+        List<string> knownCraftingRecipes = this.ContentManager.ReducedCraftingRecipes.Where(recipe => Game1.player.craftingRecipes.ContainsKey(recipe)).ToList();
 
-        layoutRecipes.Invoke(isCooking ? this.ReducedCookingRecipes : knownCraftingRecipes);
+        layoutRecipes.Invoke(isCooking ? this.ContentManager.ReducedCookingRecipes : knownCraftingRecipes);
     }
 
     private List<IInventory> GetChests(Vector2 grabTile)
