@@ -132,13 +132,11 @@ internal class ModEntry : Mod
 
                 if (data.TryGetValue(Game1.shop_animalSupplies, out ShopData shop))
                 {
-                    shop.Items.Add(new ShopItemData
+                    foreach (ShopItemData item in shop.Items)
                     {
-                        Id = HayBaleId,
-                        ItemId = HayBaleId,
-                        Price = this.Config.HayBalePrice,
-                        Condition = "PLAYER_HAS_MAIL Current FarmRearrangerMail Received"
-                    });
+                        if (item?.ItemId is HayBaleId or HayBaleQualifiedId)
+                            item.Price = this.Config.HayBalePrice;
+                    }
                 }
             });
         }

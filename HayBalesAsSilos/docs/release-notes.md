@@ -1,7 +1,7 @@
 ﻿# Release notes
 ## Upcoming release
 - Improved error-handling in game patches.
-- Internal refactoring.
+- Fixed configured price not applied in Marnie's shop.
 
 ## 1.1.0
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
