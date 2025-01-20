@@ -88,7 +88,7 @@ public class ModEntry : Mod
             }
         }
 
-        return true;
+        return false;
     }
 
     private void ChangeMaxSlimes(string arg1, string[] arg2)
