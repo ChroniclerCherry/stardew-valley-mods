@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Extensions;
 
 namespace CustomCraftingStations.Framework
 {
@@ -15,18 +16,27 @@ namespace CustomCraftingStations.Framework
         /// <summary>Encapsulates monitoring and logging.</summary>
         private readonly IMonitor Monitor;
 
+        /// <summary>The cooking recipes which should only appear in a crafting station, not the default crafting menu.</summary>
+        private readonly HashSet<string> ExclusiveCookingRecipes = new();
+
+        /// <summary>The crafting recipes which should only appear in a crafting station, not the default crafting menu.</summary>
+        private readonly HashSet<string> ExclusiveCraftingRecipes = new();
+
 
         /*********
         ** Accessors
         *********/
+        /// <summary>The crafting stations for tiles with the <c>Action CraftingStation {id}</c> tile property, indexed by ID.</summary>
         public Dictionary<string, CraftingStationConfig> TileCraftingStations { get; } = new();
+
+        /// <summary>The crafting stations for placed big-craftable-type items.</summary>
         public Dictionary<string, CraftingStationConfig> CraftableCraftingStations { get; } = new();
 
-        public List<string> CookingRecipesToRemove { get; } = new();
-        public List<string> CraftingRecipesToRemove { get; } = new();
+        /// <summary>The cooking recipes to show in the default crafting menus.</summary>
+        public HashSet<string> DefaultCookingRecipes { get; } = new();
 
-        public List<string> ReducedCookingRecipes { get; } = new();
-        public List<string> ReducedCraftingRecipes { get; } = new();
+        /// <summary>The crafting recipes to show in the default crafting menus.</summary>
+        public HashSet<string> DefaultCraftingRecipes { get; } = new();
 
 
         /*********
@@ -62,14 +72,14 @@ namespace CustomCraftingStations.Framework
             // track exclusive recipes
             foreach (string recipeId in CraftingRecipe.craftingRecipes.Keys)
             {
-                if (!this.CraftingRecipesToRemove.Contains(recipeId))
-                    this.ReducedCraftingRecipes.Add(recipeId);
+                if (!this.ExclusiveCraftingRecipes.Contains(recipeId))
+                    this.DefaultCraftingRecipes.Add(recipeId);
             }
 
             foreach (string recipeId in CraftingRecipe.cookingRecipes.Keys)
             {
-                if (!this.CookingRecipesToRemove.Contains(recipeId))
-                    this.ReducedCookingRecipes.Add(recipeId);
+                if (!this.ExclusiveCookingRecipes.Contains(recipeId))
+                    this.DefaultCookingRecipes.Add(recipeId);
             }
         }
 
@@ -88,8 +98,8 @@ namespace CustomCraftingStations.Framework
 
                 if (station.ExclusiveRecipes)
                 {
-                    this.CraftingRecipesToRemove.AddRange(station.CraftingRecipes);
-                    this.CookingRecipesToRemove.AddRange(station.CookingRecipes);
+                    this.ExclusiveCraftingRecipes.AddRange(station.CraftingRecipes);
+                    this.ExclusiveCookingRecipes.AddRange(station.CookingRecipes);
                 }
 
                 if (station.TileData != null)

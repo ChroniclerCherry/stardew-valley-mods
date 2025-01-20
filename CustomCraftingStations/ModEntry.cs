@@ -86,7 +86,7 @@ internal class ModEntry : Mod
         {
             CraftingPage => activeMenu,
             GameMenu gameMenu => gameMenu.pages[GameMenu.craftingTab],
-            _ => activeMenu is not null && activeMenu.GetType() == this.CookingSkillMenu
+            _ => activeMenu?.GetType() == this.CookingSkillMenu
                 ? activeMenu
                 : null
         };
@@ -115,16 +115,16 @@ internal class ModEntry : Mod
     /// <inheritdoc cref="IInputEvents.ButtonPressed" />
     private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
-        if (!Context.CanPlayerMove)
+        if (!Context.CanPlayerMove || !e.Button.IsActionButton())
             return;
 
-        if (!e.Button.IsActionButton())
-            return;
-
+        // get tile position
         Vector2 grabTile = e.Cursor.GrabTile;
+        int tileX = (int)grabTile.X;
+        int tileY = (int)grabTile.Y;
 
-        Game1.currentLocation.Objects.TryGetValue(grabTile, out SObject obj);
-        if (obj != null && obj.bigCraftable.Value)
+        // check object stations
+        if (Game1.currentLocation.Objects.TryGetValue(grabTile, out SObject obj) && obj.bigCraftable.Value)
         {
             if (this.ContentManager.CraftableCraftingStations.TryGetValue(obj.Name, out CraftingStationConfig config))
             {
@@ -134,16 +134,10 @@ internal class ModEntry : Mod
             }
         }
 
-        //No relevant BigCraftable found so check for tiledata
-        string tileProperty =
-            Game1.currentLocation.doesTileHaveProperty((int)grabTile.X, (int)grabTile.Y, "Action", "Buildings");
-        if (tileProperty == null)
-            return;
-
-        string[] properties = tileProperty.Split(' ');
-        if (properties[0] == "CraftingStation")
+        // check tile property stations
+        if (Game1.currentLocation.doesTileHaveProperty(tileX, tileY, "Action", "Buildings")?.Split(' ', 2) is ["CraftingStation", not null] property)
         {
-            if (this.ContentManager.TileCraftingStations.TryGetValue(properties[1], out CraftingStationConfig config))
+            if (this.ContentManager.TileCraftingStations.TryGetValue(property[1], out CraftingStationConfig config))
             {
                 this.OpenCraftingMenu(config, e.Cursor.GrabTile);
                 this.Helper.Input.Suppress(e.Button);
@@ -155,9 +149,7 @@ internal class ModEntry : Mod
     {
         List<IInventory> chests = this.GetChests(grabTile);
 
-        Vector2 centeringOnScreen =
-            Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2,
-                600 + IClickableMenu.borderWidth * 2);
+        Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2);
 
         Game1.activeClickableMenu = new CustomCraftingMenu((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, chests, station.CraftingRecipes, station.CookingRecipes);
     }
@@ -167,32 +159,29 @@ internal class ModEntry : Mod
         bool isCooking = this.Helper.Reflection.GetField<bool>(instance, "cooking").GetValue();
         IReflectedMethod layoutRecipes = this.Helper.Reflection.GetMethod(instance, "layoutRecipes");
 
-        var pagesOfCraftingRecipes = this.Helper.Reflection.GetField<List<Dictionary<ClickableTextureComponent, CraftingRecipe>>>(instance,
-                "pagesOfCraftingRecipes");
+        var pagesOfCraftingRecipes = this.Helper.Reflection.GetField<List<Dictionary<ClickableTextureComponent, CraftingRecipe>>>(instance, "pagesOfCraftingRecipes");
         pagesOfCraftingRecipes.SetValue(new List<Dictionary<ClickableTextureComponent, CraftingRecipe>>());
 
-        List<string> knownCraftingRecipes = this.ContentManager.ReducedCraftingRecipes.Where(recipe => Game1.player.craftingRecipes.ContainsKey(recipe)).ToList();
+        List<string> knownRecipes = isCooking
+            ? this.ContentManager.DefaultCookingRecipes.ToList()
+            : Game1.player.craftingRecipes.Keys.Where(this.ContentManager.DefaultCraftingRecipes.Contains).ToList();
 
-        layoutRecipes.Invoke(isCooking ? this.ContentManager.ReducedCookingRecipes : knownCraftingRecipes);
+        layoutRecipes.Invoke(knownRecipes);
     }
 
     private List<IInventory> GetChests(Vector2 grabTile)
     {
         List<IInventory> chests = new List<IInventory>();
-
         IEnumerable<GameLocation> locations = Context.IsMainPlayer ? Game1.locations : this.Helper.Multiplayer.GetActiveLocations();
 
-        if (this.Config.CraftFromFridgeWhenInHouse)
-            if (Game1.currentLocation is FarmHouse house)
-                chests.Add(house.fridge.Value.Items);
+        // get fridge
+        if (this.Config.CraftFromFridgeWhenInHouse && Game1.currentLocation is FarmHouse house)
+            chests.Add(house.fridge.Value.Items);
 
-        int radius = this.Config.CraftingFromChestsRadius;
-        if (radius == 0 && !this.Config.GlobalCraftFromChest)
-            return chests;
-
+        // get chests in radius
         if (this.Config.GlobalCraftFromChest)
         {
-            if (!this.Config.CraftFromFridgeWhenInHouse) //so we dont add this twice
+            if (!this.Config.CraftFromFridgeWhenInHouse) // so we don't add this twice
                 chests.Add((Game1.getLocationFromName("FarmHouse") as FarmHouse)?.fridge.Value.Items);
 
             foreach (GameLocation location in locations)
@@ -206,23 +195,25 @@ internal class ModEntry : Mod
         }
         else
         {
-            GameLocation location = Game1.currentLocation;
-
-            for (int i = -radius; i < radius; i++)
+            int radius = this.Config.CraftingFromChestsRadius;
+            if (radius > 0)
             {
-                for (int j = -radius; j < radius; j++)
-                {
-                    Vector2 tile = new(grabTile.X + i, grabTile.Y + j);
-                    if (!location.objects.ContainsKey(tile)) continue;
+                GameLocation location = Game1.currentLocation;
 
-                    SObject obj = location.objects[tile];
-                    if (obj is Chest chest)
-                        chests.Add(chest.Items);
+                for (int x = -radius; x < radius; x++)
+                {
+                    for (int y = -radius; y < radius; y++)
+                    {
+                        Vector2 tile = new(grabTile.X + x, grabTile.Y + y);
+                        if (!location.objects.ContainsKey(tile)) continue;
+
+                        if (location.objects[tile] is Chest chest)
+                            chests.Add(chest.Items);
+                    }
                 }
             }
         }
 
         return chests;
-
     }
 }
