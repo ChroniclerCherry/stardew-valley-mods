@@ -73,7 +73,7 @@ internal class ModEntry : Mod
             Vector2 tile = this.Helper.Input.GetCursorPosition().GrabTile;
             if (location.Objects.GetValueOrDefault(tile) is { QualifiedItemId: HayBaleQualifiedId })
             {
-                if (location.getBuildingByType("Silo") is null)
+                if (this.Config.RequiresConstructedSilo && location.getBuildingByType("Silo") is null)
                 {
                     Game1.showRedMessage(Game1.content.LoadString("Strings\\Buildings:NeedSilo"));
                     return;
