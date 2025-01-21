@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using ChroniclerCherry.Common.Integrations.GenericModConfigMenu;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -7,6 +6,7 @@ using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Locations;
 using StardewValley.Objects;
+using StardewValley.TokenizableStrings;
 using UpgradeEmptyCabins.Framework;
 
 namespace UpgradeEmptyCabins;
@@ -15,13 +15,6 @@ namespace UpgradeEmptyCabins;
 internal class ModEntry : Mod
 {
     /*********
-    ** Fields
-    *********/
-    /// <summary>The mod settings.</summary>
-    private ModConfig Config;
-
-
-    /*********
     ** Public methods
     *********/
     /// <inheritdoc />
@@ -29,7 +22,6 @@ internal class ModEntry : Mod
     {
         // init
         I18n.Init(helper.Translation);
-        this.Config = helper.ReadConfig<ModConfig>();
 
         helper.ConsoleCommands.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", this.UpgradeCabinsCommand);
         helper.ConsoleCommands.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", this.RemoveSeedBoxesCommand);
@@ -40,25 +32,13 @@ internal class ModEntry : Mod
         helper.ConsoleCommands.Add("toggle_renovate", "Toggles a renovation for an unclaimed cabin.", this.ToggleRenovateCommand);
         helper.ConsoleCommands.Add("set_crib_style", "Sets the crib style for an unclaimed cabin.", this.SetCribStyleCommand);
 
-        helper.Events.GameLoop.DayEnding += this.OnDayEnding;
         helper.Events.Input.ButtonPressed += this.OnButtonPressed;
-        helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
     }
 
 
     /*********
     ** Private methods
     *********/
-    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
-    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
-    {
-        this.AddGenericModConfigMenu(
-            new GenericModConfigMenuIntegrationForUpgradeEmptyCabins(),
-            get: () => this.Config,
-            set: config => this.Config = config
-        );
-    }
-
     private void SetCribStyleCommand(string arg1, string[] arg2)
     {
         string cabin = arg2[0] + " Cabin"; //"Plank","Stone","Log"
@@ -269,29 +249,15 @@ internal class ModEntry : Mod
 
     }
 
-    /// <inheritdoc cref="IGameLoopEvents.DayEnding" />
-    private void OnDayEnding(object sender, DayEndingEventArgs e)
+    /// <summary>Upgrade a cabin to its next level.</summary>
+    /// <param name="cabin">The cabin building to upgrade.</param>
+    /// <remarks>Derived from <see cref="Farmer.dayupdate"/>.</remarks>
+    private void PerformUpgrade(Building cabin)
     {
-        //so this doesn't end up happening for every single player online....
-        if (!Context.IsMainPlayer)
-            return;
-
-        foreach (Building cabin in ModUtility.GetCabins())
-        {
-            if (cabin.daysUntilUpgrade.Value == 1)
-            {
-                FinalUpgrade(cabin);
-            }
-        }
-    }
-
-    private static void FinalUpgrade(Building cabin)
-    {
-        Cabin cabinIndoors = ((Cabin)cabin.indoors.Value);
-        cabin.daysUntilUpgrade.Value = -1;
-        cabinIndoors.moveObjectsForHouseUpgrade(cabinIndoors.upgradeLevel + 1);
-        cabinIndoors.setMapForUpgradeLevel(cabinIndoors.upgradeLevel);
-        cabinIndoors.upgradeLevel++;
+        Cabin indoors = (Cabin)cabin.indoors.Value;
+        indoors.moveObjectsForHouseUpgrade(indoors.upgradeLevel + 1);
+        indoors.upgradeLevel++;
+        indoors.setMapForUpgradeLevel(indoors.upgradeLevel);
     }
 
     private void AskForUpgrade()
@@ -338,81 +304,68 @@ internal class ModEntry : Mod
                 delegate (Farmer _, string answer)
                 {
                     Game1.activeClickableMenu = null;
-                    this.HouseUpgradeAccept(ModUtility.GetCabin(answer));
+                    this.OnSelectedHouseUpgrade(ModUtility.GetCabin(answer));
                 }
             );
         }
     }
 
-    private void HouseUpgradeAccept(Building cab)
+    /// <summary>Handle the player accepting a cabin upgrade.</summary>
+    /// <param name="cabin">The cabin to upgrade.</param>
+    /// <remarks>Derived from <see cref="GameLocation.houseUpgradeAccept"/>, modified to work for cabins not owned by the current player and build instantly (since the game doesn't track upgrades for non-active players).</remarks>
+    private void OnSelectedHouseUpgrade(Building cabin)
     {
         Game1.activeClickableMenu = null;
         Game1.player.canMove = true;
-        if (cab == null)
+        if (cabin == null)
         {
             Game1.playSound("smallSelect");
             return;
         }
 
-        if (this.Config.InstantBuild)
-        {
-            FinalUpgrade(cab);
-            Game1.getCharacterFromName("Robin").setNewDialogue("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted");
-            Game1.drawDialogue(Game1.getCharacterFromName("Robin"));
-            return;
-        }
+        NPC robin = Game1.RequireCharacter("Robin");
+        Cabin indoors = (Cabin)cabin.indoors.Value;
+        string displayName = TokenParser.ParseText(cabin.GetData()?.Name);
 
-        Cabin cabin = ((Cabin)cab.indoors.Value);
-
-
-        switch (cabin.upgradeLevel)
+        switch (indoors.upgradeLevel)
         {
             case 0:
-                if (Game1.player.Money >= 10000 && Game1.player.Items.ContainsId("(O)388", 450))
+                if (Game1.player.Money >= 10000 && Game1.player.Items.ContainsId(Object.woodQID, 450))
                 {
-                    cab.daysUntilUpgrade.Value = 3;
                     Game1.player.Money -= 10000;
-                    Game1.player.Items.ReduceId("(O)388", 450);
-                    Game1.getCharacterFromName("Robin").setNewDialogue("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted");
-                    Game1.drawDialogue(Game1.getCharacterFromName("Robin"));
-                    break;
+                    Game1.player.Items.ReduceId(Object.woodQID, 450);
+                    Game1.DrawDialogue(robin, "Data\\ExtraDialogue:Robin_Instant", displayName.ToLower(), displayName);
+                    this.PerformUpgrade(cabin);
                 }
-                if (Game1.player.Money < 10000)
-                {
+                else if (Game1.player.Money < 10000)
                     Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\UI:NotEnoughMoney3"));
-                    break;
-                }
-                Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Locations:ScienceHouse_Carpenter_NotEnoughWood1"));
+                else
+                    Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Locations:ScienceHouse_Carpenter_NotEnoughWood", 450));
                 break;
+
             case 1:
-                if (Game1.player.Money >= 65000 && Game1.player.Items.ContainsId("(O)709", 100))
+                if (Game1.player.Money >= 65000 && Game1.player.Items.ContainsId("(O)709"/* hardwood */, 100))
                 {
-                    cab.daysUntilUpgrade.Value = 3;
                     Game1.player.Money -= 65000;
                     Game1.player.Items.ReduceId("(O)709", 100);
-                    Game1.getCharacterFromName("Robin").setNewDialogue("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted");
-                    Game1.drawDialogue(Game1.getCharacterFromName("Robin"));
-                    break;
+                    Game1.DrawDialogue(robin, "Data\\ExtraDialogue:Robin_Instant", displayName.ToLower(), displayName);
+                    this.PerformUpgrade(cabin);
                 }
-                if (Game1.player.Money < 65000)
-                {
+                else if (Game1.player.Money < 65000)
                     Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\UI:NotEnoughMoney3"));
-                    break;
-                }
-                Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Locations:ScienceHouse_Carpenter_NotEnoughWood2", "100"));
+                else
+                    Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Locations:ScienceHouse_Carpenter_NotEnoughHardwood", 100));
                 break;
+
             case 2:
                 if (Game1.player.Money >= 100000)
                 {
-                    cab.daysUntilUpgrade.Value = 3;
                     Game1.player.Money -= 100000;
-                    Game1.getCharacterFromName("Robin").setNewDialogue("Data\\ExtraDialogue:Robin_HouseUpgrade_Accepted");
-                    Game1.drawDialogue(Game1.getCharacterFromName("Robin"));
-                    break;
+                    Game1.DrawDialogue(robin, "Data\\ExtraDialogue:Robin_Instant", displayName.ToLower(), displayName);
+                    this.PerformUpgrade(cabin);
                 }
-                if (Game1.player.Money >= 100000)
-                    break;
-                Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\UI:NotEnoughMoney3"));
+                else if (Game1.player.Money < 100000)
+                    Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\UI:NotEnoughMoney3"));
                 break;
         }
     }
