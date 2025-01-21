@@ -56,12 +56,17 @@ public class ModEntry : Mod
     {
         if (!Config.EnableSlimeBallOverride) return true; // Skip custom logic if override is disabled
 
+        int numberSlimes = __instance.characters.Count;
+        if (numberSlimes < 20) { return true; }
+
         // Count the number of water spots that are watered
-        int total_wateredSpots = __instance.waterSpots.Count();
         int wateredSpots = __instance.waterSpots.Count(watered => watered);
 
         // Calculate slime-based limit, factoring in watered spots
-        int slimeBasedLimit = (((__instance.characters.Count / total_wateredSpots) * wateredSpots) / 5);
+        int slimeBasedLimit = wateredSpots > 0
+            ? ((((numberSlimes - 20) / 4) * wateredSpots) / 5)
+            : 0;
+
 
         // Respect the user-defined maximum daily limit, if set
         int maxBallsToPlace = Config.MaxDailySlimeBalls > 0
@@ -88,7 +93,7 @@ public class ModEntry : Mod
             }
         }
 
-        return false;
+        return true;
     }
 
     private void ChangeMaxSlimes(string arg1, string[] arg2)
