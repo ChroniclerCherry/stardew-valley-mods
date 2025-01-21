@@ -5,7 +5,6 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.GameData.Shops;
 using StardewValley.Internal;
-using StardewValley.Tools;
 
 namespace ToolUpgradeCosts.Framework;
 
@@ -61,10 +60,7 @@ internal static class GamePatcher
                 if (item is Tool tool && Enum.IsDefined(typeof(UpgradeMaterials), tool.UpgradeLevel) && stockInfo is not null)
                 {
                     UpgradeMaterials upgradeLevel = (UpgradeMaterials)tool.UpgradeLevel;
-                    if (tool is GenericTool)
-                    {
-                        upgradeLevel++;
-                    }
+
                     editedStock[tool] = new ItemStockInformation(
                         price: config.UpgradeCosts[upgradeLevel].Cost,
                         tradeItemCount: config.UpgradeCosts[upgradeLevel].MaterialStack,

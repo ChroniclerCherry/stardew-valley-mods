@@ -1,6 +1,7 @@
 ﻿# Release notes
 ## Upcoming release
 - Updated for Stardew Valley 1.6.9–15 (thanks to zBoggler!).
+- Fixed trash cans requiring higher-grade materials than other tools.
 - Improved error-handling in game patches.
 - Internal refactoring.
 
