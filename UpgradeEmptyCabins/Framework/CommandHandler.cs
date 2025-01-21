@@ -41,7 +41,6 @@ namespace UpgradeEmptyCabins.Framework
             // general
             commandHelper.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", this.UpgradeCabinsCommand);
             commandHelper.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", this.RemoveSeedBoxesCommand);
-            commandHelper.Add("remove_cabin_beds", "Removes beds from all unclaimed cabins.", this.RemoveCabinBedsCommand);
             commandHelper.Add("renovate_cabins", "Removes cribs and adds all the extra rooms to all unclaimed cabins.", this.RenovateCabinsCommand);
 
             // renovate specific cabins
@@ -76,29 +75,6 @@ namespace UpgradeEmptyCabins.Framework
 
                     indoors.Objects.Remove(tile);
                     this.Monitor.Log("Seed box removed from " + cabin.GetIndoorsName(), LogLevel.Info);
-                }
-            }
-        }
-
-        private void RemoveCabinBedsCommand(string arg1, string[] arg2)
-        {
-            foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
-            {
-                BedFurniture bed = null;
-
-                foreach (Furniture furniture in indoors.furniture)
-                {
-                    if (furniture is BedFurniture b)
-                    {
-                        bed = b;
-                        break;
-                    }
-                }
-
-                if (bed != null)
-                {
-                    indoors.furniture.Remove(bed);
-                    this.Monitor.Log("Bed removed from " + cabin.GetIndoorsName(), LogLevel.Info);
                 }
             }
         }

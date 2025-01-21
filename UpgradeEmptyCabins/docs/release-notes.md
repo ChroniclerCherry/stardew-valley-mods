@@ -2,14 +2,15 @@
 ## Upcoming release
 - Cabin upgrades now always complete instantly, but still apply the upgrade costs.
 - You can now move beds in any unowned cabin.
-- Added two commands: `list_cabins` and `list_renovations` (thanks to XTFOX!).
-- The `renovate_cabins` command now adds all renovations to all cabins that are level 2 or higher, including removing walls (thanks to XTFOX!).
 - The config menu UI text is now translatable.
 - Updated for the new 1.6 renovations and renovation costs (thanks to XTFOX!).
 - Fixed broken dialogue in Stardew Valley 1.6 when you don't have enough wood.
 - Fixed furniture not moved correctly when upgrading a cabin (thanks to XTFOX!).
 - Fixed dialogue issues (thanks to XTFOX!).
-- Internal refactoring.
+- Improved console commands:
+  - Added `list_cabins` and `list_renovations` (thanks to XTFOX!).
+  - `renovate_cabins` now adds all renovations to all cabins that are level 2 or higher, including removing walls (thanks to XTFOX!).
+  - Removed `remove_cabin_beds` (no longer needed since you can now remove them normally).
 
 ## 1.1.0
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
