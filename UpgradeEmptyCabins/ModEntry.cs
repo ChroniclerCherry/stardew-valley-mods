@@ -22,6 +22,7 @@ internal class ModEntry : Mod
     {
         // init
         I18n.Init(helper.Translation);
+        GamePatcher.Apply(this.ModManifest.UniqueID, this.Monitor);
 
         helper.ConsoleCommands.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", this.UpgradeCabinsCommand);
         helper.ConsoleCommands.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", this.RemoveSeedBoxesCommand);

@@ -1,6 +1,7 @@
 ﻿# Release notes
 ## Upcoming release
 - Cabin upgrades now always complete instantly, but still apply the upgrade costs.
+- You can now move beds in any unowned cabin.
 - Added two commands: `list_cabins` and `list_renovations` (thanks to XTFOX!).
 - The `renovate_cabins` command now adds all renovations to all cabins that are level 2 or higher, including removing walls (thanks to XTFOX!).
 - The config menu UI text is now translatable.
