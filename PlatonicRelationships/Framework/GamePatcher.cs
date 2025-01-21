@@ -24,7 +24,7 @@ internal static class GamePatcher
             monitor.Log("Transpile patching SocialPage.drawNPCSlotHeart");
             harmony.Patch(
                 original: AccessTools.Method(typeof(SocialPage), name: "drawNPCSlotHeart"),
-                prefix: new HarmonyMethod(methodType: typeof(GamePatcher), nameof(GamePatcher.Before_SocialPage_DrawNpcSlot))
+                prefix: new HarmonyMethod(methodType: typeof(GamePatcher), nameof(GamePatcher.Before_SocialPage_DrawNpcSlotHeart))
             );
         }
         catch (Exception e)
@@ -51,7 +51,7 @@ internal static class GamePatcher
     /*********
     ** Private methods
     *********/
-    private static void Before_SocialPage_DrawNpcSlot(ref bool isDating)
+    private static void Before_SocialPage_DrawNpcSlotHeart(ref bool isDating)
     {
         isDating = true; // don't lock hearts
     }

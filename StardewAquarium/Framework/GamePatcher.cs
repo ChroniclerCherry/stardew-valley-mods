@@ -46,7 +46,7 @@ internal class GamePatcher
             );
 
             harmony.Patch(
-                original: AccessTools.Method(typeof(ShopMenu), "setCurrentItem"),
+                original: AccessTools.Method(typeof(ShopMenu), "setCurrentItem"), // Android-only method
                 postfix: new HarmonyMethod(typeof(GamePatcher), nameof(After_ShopMenu_SetCurrentItem))
             );
         }
