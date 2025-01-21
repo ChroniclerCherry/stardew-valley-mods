@@ -57,6 +57,7 @@ internal class ModEntry : Mod
             if (data is not null)
             {
                 data.RomanticEvents ??= new();
+                data.RomanticTriggerActions ??= new();
                 return data;
             }
 

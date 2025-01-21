@@ -1,6 +1,7 @@
 ﻿# Release notes
 ## Upcoming release
 - Moved romantic event data into an `assets/data.json` file to allow customization.
+- Fixed 'add dating requirement to romantic events' option not working for some events changed in recent game updates.
 
 ## 1.4.7
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
