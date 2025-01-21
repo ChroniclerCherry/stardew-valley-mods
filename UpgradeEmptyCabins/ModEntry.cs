@@ -5,7 +5,6 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Locations;
-using StardewValley.Objects;
 using StardewValley.TokenizableStrings;
 using UpgradeEmptyCabins.Framework;
 
@@ -15,6 +14,13 @@ namespace UpgradeEmptyCabins;
 internal class ModEntry : Mod
 {
     /*********
+    ** Fields
+    *********/
+    /// <summary>Handles console commands registered by the mod.</summary>
+    private CommandHandler CommandHandler;
+
+
+    /*********
     ** Public methods
     *********/
     /// <inheritdoc />
@@ -23,15 +29,9 @@ internal class ModEntry : Mod
         // init
         I18n.Init(helper.Translation);
         GamePatcher.Apply(this.ModManifest.UniqueID, this.Monitor);
+        this.CommandHandler = new CommandHandler(this.Monitor, this.AskForUpgrade);
 
-        helper.ConsoleCommands.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", this.UpgradeCabinsCommand);
-        helper.ConsoleCommands.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", this.RemoveSeedBoxesCommand);
-        helper.ConsoleCommands.Add("remove_cabin_beds", "Removes beds from all unclaimed cabins.", this.RemoveCabinBedsCommand);
-        helper.ConsoleCommands.Add("renovate_cabins", "Removes cribs and adds all the extra rooms to all unclaimed cabins.", this.RenovateCabinsCommand);
-        helper.ConsoleCommands.Add("list_cabins", "Lists cabin names for toggle_renovate.", this.ListCabins);
-        helper.ConsoleCommands.Add("list_renovations", "Lists renovation names for toggle_renovate.", this.ListRenovations);
-        helper.ConsoleCommands.Add("toggle_renovate", "Toggles a renovation for an unclaimed cabin.", this.ToggleRenovateCommand);
-        helper.ConsoleCommands.Add("set_crib_style", "Sets the crib style for an unclaimed cabin.", this.SetCribStyleCommand);
+        this.CommandHandler.Register(helper.ConsoleCommands);
 
         helper.Events.Input.ButtonPressed += this.OnButtonPressed;
     }
@@ -40,190 +40,6 @@ internal class ModEntry : Mod
     /*********
     ** Private methods
     *********/
-    private void SetCribStyleCommand(string arg1, string[] arg2)
-    {
-        string cabin = arg2[0] + " Cabin"; //"Plank","Stone","Log"
-        int style = int.Parse(arg2[1]);
-
-        foreach (Building cab in ModUtility.GetCabins())
-        {
-            if (((Cabin)cab.indoors.Value).owner.Name != "")
-                continue;
-            if (cab.buildingType.ToString() == cabin)
-            {
-                ((Cabin)cab.indoors.Value).cribStyle.Set(style);
-                this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
-                this.Monitor.Log("Cabin Type: " + cab.buildingType.Value, LogLevel.Info);
-                this.Monitor.Log("cribStyle: " + ((Cabin)cab.indoors.Value).cribStyle.Value, LogLevel.Info);
-            }
-        }
-    }
-
-    private void ListCabins(string arg1, string[] arg2)
-    {
-        this.Monitor.Log("Upgrade Level 2 required for renovations.", LogLevel.Info);
-        foreach (Building cab in ModUtility.GetCabins())
-        {
-            if (((Cabin)cab.indoors.Value).owner.Name != "")
-                continue;
-            this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
-            this.Monitor.Log("    Upgrade Level: " + ((Cabin)cab.indoors.Value).upgradeLevel, LogLevel.Info);
-        }
-    }
-
-    private void ListRenovations(string arg1, string[] arg2)
-    {
-        this.Monitor.Log("renovation_bedroom_open, renovation_southern_open, renovation_corner_open, renovation_extendedcorner_open, renovation_dining_open, renovation_diningroomwall_open, renovation_cubby_open, renovation_farupperroom_open", LogLevel.Info);
-    }
-
-    private void ToggleRenovateCommand(string arg1, string[] arg2)
-    {
-        string cabin = arg2[0]; //"Plank","Stone","Log"
-        string reno = arg2[1]; //"renovation_bedroom_open", "renovation_southern_open", "renovation_corner_open", "renovation_extendedcorner_open", "renovation_dining_open", "renovation_diningroomwall_open", "renovation_cubby_open", "renovation_farupperroom_open"
-
-        foreach (Building cab in ModUtility.GetCabins())
-        {
-            if (((Cabin)cab.indoors.Value).owner.Name != "")
-                continue;
-            if (cab.GetIndoorsName() == cabin)
-            {
-                ISet<string> mail = ((Cabin)cab.indoors.Value).owner.mailReceived;
-                this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
-
-                if (reno == "renovation_diningroomwall_open")
-                {
-                    if (!mail.Contains("renovation_dining_open"))
-                    {
-                        mail.Add("renovation_dining_open");
-                        mail.Remove(reno);
-                        this.Monitor.Log("Renovation Added: renovation_dining_open" + reno, LogLevel.Info);
-                        this.Monitor.Log("Renovation Removed: " + reno, LogLevel.Info);
-                    }
-                    else if (mail.Contains("renovation_dining_open") && !mail.Contains("renovation_diningroomwall_open"))
-                    {
-                        mail.Add(reno);
-                        this.Monitor.Log("Renovation Added: " + reno, LogLevel.Info);
-                    }
-                    else
-                    {
-                        mail.Remove(reno);
-                        this.Monitor.Log("Renovation Removed: " + reno, LogLevel.Info);
-                    }
-                }
-                else if (mail.Contains(reno))
-                {
-                    if (reno == "renovation_corner_open")
-                    {
-                        mail.Remove("renovation_extendedcorner_open");
-                        this.Monitor.Log("Renovation Removed: renovation_extendedcorner_open", LogLevel.Info);
-                    }
-                    if (reno == "renovation_dining_open" && mail.Contains("renovation_diningroomwall_open"))
-                    {
-                        mail.Remove("renovation_diningroomwall_open");
-                        this.Monitor.Log("Renovation Removed: renovation_diningroomwall_open", LogLevel.Info);
-                    }
-                    mail.Remove(reno);
-                    this.Monitor.Log("Renovation Removed: " + reno, LogLevel.Info);
-                }
-                else
-                {
-                    if (reno == "renovation_extendedcorner_open")
-                    {
-                        mail.Add("renovation_corner_open");
-                        this.Monitor.Log("Renovation Added: renovation_corner_open", LogLevel.Info);
-                    }
-                    mail.Add(reno);
-                    this.Monitor.Log("Renovation Added: " + reno, LogLevel.Info);
-                }
-            }
-        }
-    }
-
-    private void RenovateCabinsCommand(string arg1, string[] arg2)
-    {
-        string[] renos = { "renovation_bedroom_open", "renovation_southern_open", "renovation_corner_open", "renovation_extendedcorner_open", "renovation_dining_open", "renovation_diningroomwall_open", "renovation_cubby_open", "renovation_farupperroom_open" };
-        foreach (Building cab in ModUtility.GetCabins())
-        {
-            if (((Cabin)cab.indoors.Value).owner.Name != "")
-                continue;
-            this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
-            this.Monitor.Log("    Type: " + cab.buildingType.Value, LogLevel.Info);
-            if (((Cabin)cab.indoors.Value).upgradeLevel < 2)
-            {
-                this.Monitor.Log("    Upgrade Level: " + ((Cabin)cab.indoors.Value).upgradeLevel, LogLevel.Info);
-                this.Monitor.Log("    Upgrade Level 2 required for renovations. Not Renovated.", LogLevel.Info);
-                continue;
-            }
-            ISet<string> mail = ((Cabin)cab.indoors.Value).owner.mailReceived;
-            foreach (string reno in renos)
-            {
-                if (mail.Contains(reno))
-                    this.Monitor.Log("Renovation already done: " + reno + " " + cab.GetIndoorsName(), LogLevel.Info);
-                else
-                {
-                    if (reno == "renovation_diningroomwall_open")
-                        mail.Remove(reno);
-                    else
-                        mail.Add(reno);
-                }
-            }
-
-            ((Cabin)cab.indoors.Value).cribStyle.Set(0);
-            this.Monitor.Log("    cribStyle:  " + ((Cabin)cab.indoors.Value).cribStyle.Value, LogLevel.Info);
-            this.Monitor.Log("    flags: " + mail, LogLevel.Info);
-        }
-    }
-
-    private void RemoveCabinBedsCommand(string arg1, string[] arg2)
-    {
-        foreach (Building cab in ModUtility.GetCabins())
-        {
-            BedFurniture bed = null;
-            if (((Cabin)cab.indoors.Value).owner.Name != "")
-                continue;
-            foreach (Furniture furniture in ((Cabin)cab.indoors.Value).furniture)
-            {
-                if (furniture is BedFurniture b)
-                {
-                    bed = b;
-                    break;
-                }
-            }
-
-            if (bed != null)
-            {
-                ((Cabin)cab.indoors.Value).furniture.Remove(bed);
-                this.Monitor.Log("Bed removed from " + cab.GetIndoorsName(), LogLevel.Info);
-            }
-        }
-    }
-
-    private void RemoveSeedBoxesCommand(string arg1, string[] arg2)
-    {
-        foreach (Building cab in ModUtility.GetCabins())
-        {
-            Cabin indoors = (Cabin)cab.indoors.Value;
-
-            if (indoors.owner.Name != "")
-                continue;
-            foreach ((Vector2 tile, Object obj) in indoors.Objects.Pairs)
-            {
-                if (obj is not Chest chest || !chest.giftbox.Value || chest.bigCraftable.Value)
-                {
-                    continue;
-                }
-
-                indoors.Objects.Remove(tile);
-                this.Monitor.Log("Seed box removed from " + cab.GetIndoorsName(), LogLevel.Info);
-            }
-        }
-    }
-
-    private void UpgradeCabinsCommand(string arg1, string[] arg2)
-    {
-        this.AskForUpgrade();
-    }
-
     /// <inheritdoc cref="IInputEvents.ButtonPressed" />
     private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
@@ -261,6 +77,7 @@ internal class ModEntry : Mod
         indoors.setMapForUpgradeLevel(indoors.upgradeLevel);
     }
 
+    /// <summary>Show the UI to choose a cabin to upgrade.</summary>
     private void AskForUpgrade()
     {
         if (Game1.getFarm().isThereABuildingUnderConstruction())
