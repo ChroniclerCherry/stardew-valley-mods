@@ -3,11 +3,8 @@ using StardewModdingAPI;
 
 namespace PlatonicRelationships.Framework;
 
-/// <summary>
-/// Changes all the vanilla 10 heart events that doesn't have a "Dating" prerequisite to have one
-/// so that they don't play while platonically at 10 hearts
-/// </summary>
-internal class AddDatingPrereq
+/// <summary>Adjusts event data to disable vanilla 10-heart events for NPCs the player isn't dating.</summary>
+internal class EventEditor
 {
     /*********
     ** Public methods

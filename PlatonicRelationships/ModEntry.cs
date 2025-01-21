@@ -13,7 +13,8 @@ internal class ModEntry : Mod
     /// <summary>The mod settings.</summary>
     private ModConfig Config;
 
-    private readonly AddDatingPrereq Editor = new AddDatingPrereq();
+    /// <summary>Adjusts event data to disable vanilla 10-heart events for NPCs the player isn't dating.</summary>
+    private readonly EventEditor EventEditor = new EventEditor();
 
 
     /*********
@@ -36,7 +37,7 @@ internal class ModEntry : Mod
     /// <inheritdoc cref="IContentEvents.AssetRequested" />
     private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
     {
-        if (this.Editor.CanEdit(e.NameWithoutLocale))
-            e.Edit(this.Editor.Edit);
+        if (this.EventEditor.CanEdit(e.NameWithoutLocale))
+            e.Edit(this.EventEditor.Edit);
     }
 }
