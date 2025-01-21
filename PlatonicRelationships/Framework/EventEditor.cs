@@ -1,5 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using StardewModdingAPI;
+using StardewModdingAPI.Events;
+using StardewValley;
 
 namespace PlatonicRelationships.Framework;
 
@@ -7,94 +11,80 @@ namespace PlatonicRelationships.Framework;
 internal class EventEditor
 {
     /*********
+    ** Fields
+    *********/
+    /// <inheritdoc cref="DataModel.RomanticEvents" />
+    private readonly Dictionary<IAssetName, Dictionary<string, string>> RomanticEvents;
+
+
+    /*********
     ** Public methods
     *********/
-    public bool CanEdit(IAssetName asset)
+    /// <summary>Construct an instance.</summary>
+    /// <param name="data">The data loaded from the mod files.</param>
+    /// <param name="parseAssetName">Parse a raw asset name.</param>
+    public EventEditor(DataModel data, Func<string, IAssetName> parseAssetName)
     {
-        return (
-            asset.IsEquivalentTo("Data/Events/Farm") ||
-            asset.IsEquivalentTo("Data/Events/Beach") ||
-            asset.IsEquivalentTo("Data/Events/Mine") ||
-            asset.IsEquivalentTo("Data/Events/HaleyHouse") ||
-            asset.IsEquivalentTo("Data/Events/Forest") ||
-            asset.IsEquivalentTo("Data/Events/ScienceHouse") ||
-            asset.IsEquivalentTo("Data/Events/Mountain")
-        );
+        this.RomanticEvents = this.ReadRomanticEvents(data, parseAssetName);
     }
 
-    public void Edit(IAssetData asset)
+    /// <inheritdoc cref="IContentEvents.AssetRequested" />
+    public void OnAssetRequested(AssetRequestedEventArgs e)
     {
         // TODO: add kill contexts for platonic versions of event ("/k <event id>")
-        IDictionary<string, string> data = asset.AsDictionary<string, string>().Data;
-        if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/Farm"))
+
+        if (this.RomanticEvents.TryGetValue(e.NameWithoutLocale, out Dictionary<string, string> events))
         {
-            this.ChangeMails(data);
-        }
-        else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/Beach"))
-        {
-            if (data.TryGetValue("43/f Elliott 2500/w sunny/t 700 1300", out string oldScript))
+            e.Edit(asset =>
             {
-                data.Add("43/f Elliott 2500 /D Elliott/w sunny /t 700 1300", oldScript);
-                data.Remove("43/f Elliott 2500/w sunny/t 700 1300");
-            }
-        }
-        else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/Mine"))
-        {
-            if (data.TryGetValue("901756/f Abigail 2500/t 1700 2400/o Abigail", out string oldScript))
-            {
-                data.Add("901756/f Abigail 2500/D Abigail/t 1700 2400/o Abigail", oldScript);
-                data.Remove("901756/f Abigail 2500/t 1700 2400/o Abigail");
-            }
-        }
-        else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/HaleyHouse"))
-        {
-            if (data.TryGetValue("15/f Haley 2500/p Haley", out string oldScript))
-            {
-                data.Add("15/f Haley 2500/D Haley/p Haley", oldScript);
-                data.Remove("15/f Haley 2500/p Haley");
-            }
-        }
-        else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/Forest"))
-        {
-            if (data.TryGetValue("54/f Leah 2500/t 1100 1600/z winter", out string oldScript))
-            {
-                data.Add("54/f Leah 2500/D Leah/t 1100 1600/z winter", oldScript);
-                data.Remove("54/f Leah 2500/t 1100 1600/z winter");
-            }
-        }
-        else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/ScienceHouse"))
-        {
-            if (data.TryGetValue("10/f Maru 2500/t 900 1600", out string oldScript))
-            {
-                data.Add("10/f Maru 2500/D Maru/t 900 1600", oldScript);
-                data.Remove("10/f Maru 2500/t 900 1600");
-            }
-        }
-        else if (asset.NameWithoutLocale.IsEquivalentTo("Data/Events/Mountain"))
-        {
-            if (data.TryGetValue("384882/f Sebastian 2500/t 2000 2400", out string oldScript))
-            {
-                data.Add("384882/f Sebastian 2500/D Sebastian/t 2000 2400", oldScript);
-                data.Remove("384882/f Sebastian 2500/t 2000 2400");
-            }
+                var data = asset.AsDictionary<string, string>().Data;
+
+                foreach ((string eventId, string npcName) in events)
+                {
+                    if (data.Remove(eventId, out string script))
+                        data[this.AddDatingRequirement(eventId, npcName)] = script;
+                }
+            });
         }
     }
 
-    public void ChangeMails(IDictionary<string, string> data)
+
+    /*********
+    ** Private methods
+    *********/
+    /// <summary>Read the romantic events from the raw data model.</summary>
+    /// <param name="data">The data loaded from the mod files.</param>
+    /// <param name="parseAssetName">Parse a raw asset name.</param>
+    private Dictionary<IAssetName, Dictionary<string, string>> ReadRomanticEvents(DataModel data, Func<string, IAssetName> parseAssetName)
     {
-        if (data.Remove("2346094/f Elliott 2502/x elliottBoat"))
-            data.Add("2346094/f Elliott 2502/D Elliott/x elliottBoat", "null");
+        var romanticEvents = new Dictionary<IAssetName, Dictionary<string, string>>();
 
-        if (data.Remove("2346093/f Harvey 2502/x harveyBalloon"))
-            data.Add("2346093/f Harvey 2502/D Harvey/x harveyBalloon", "null");
+        foreach ((string rawAssetName, Dictionary<string, string> rawEvents) in data.RomanticEvents)
+        {
+            IAssetName assetName = parseAssetName(rawAssetName);
 
-        if (data.Remove("2346092/f Sam 2502/x samMessage"))
-            data.Add("2346092/f Sam 2502/D Sam/x samMessage", "null");
+            Dictionary<string, string> events = new();
+            foreach ((string eventId, string npcName) in rawEvents)
+                events.Add(eventId, npcName);
 
-        if (data.Remove("2346091/f Alex 2502/x joshMessage"))
-            data.Add("2346091/f Alex 2502/D Alex/x joshMessage", "null");
+            romanticEvents[assetName] = events;
+        }
 
-        if (data.Remove("2346096/f Penny 2505/x pennySpa"))
-            data.Add("2346096/f Penny 2505/D Penny/x pennySpa", "null");
+        return romanticEvents;
+    }
+
+    /// <summary>Add a dating requirement to an event ID.</summary>
+    /// <param name="eventId">The event ID with preconditions to edit.</param>
+    /// <param name="npcName">The NPC whom the NPC must date to see the event.</param>
+    /// <returns>Returns the modified event ID.</returns>
+    private string AddDatingRequirement(string eventId, string npcName)
+    {
+        // Add right after the event ID, to avoid conflicting with preconditions that immediately end evaluation like
+        // SendMail.
+
+        string[] split = Event.SplitPreconditions(eventId);
+        return split.Length == 1
+            ? $"{eventId}/D {npcName}"
+            : $"{split[0]}/D {npcName}/{string.Join('/', split.Skip(1))}";
     }
 }

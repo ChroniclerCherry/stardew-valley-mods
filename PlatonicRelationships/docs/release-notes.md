@@ -1,6 +1,6 @@
 ﻿# Release notes
 ## Upcoming release
-- Internal refactoring.
+- Moved romantic event data into an `assets/data.json` file to allow customization.
 
 ## 1.4.7
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
