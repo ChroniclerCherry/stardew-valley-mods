@@ -70,7 +70,7 @@ public class ModEntry : Mod
 
         // Respect the user-defined maximum daily limit, if set
         int maxBallsToPlace = Config.MaxDailySlimeBalls > 0
-            ? Math.Min(slimeBasedLimit, Config.MaxDailySlimeBalls)
+            ? Math.Min(slimeBasedLimit, (Config.MaxDailySlimeBalls - wateredSpots))
             : slimeBasedLimit;
 
         for (int i = maxBallsToPlace; i > 0; i--)
