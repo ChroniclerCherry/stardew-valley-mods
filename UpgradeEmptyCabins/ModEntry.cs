@@ -87,16 +87,11 @@ internal class ModEntry : Mod
         }
 
         List<Response> cabinNames = new List<Response>();
-        foreach (Building cabin in ModUtility.GetCabins())
+        foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
         {
             string displayInfo = null;
-            Cabin cabinIndoors = ((Cabin)cabin.indoors.Value);
 
-            //if the cabin is occupied, we ignore it
-            if (cabinIndoors.owner.Name != "")
-                continue;
-
-            switch (cabinIndoors.upgradeLevel)
+            switch (indoors.upgradeLevel)
             {
                 case 0:
                     displayInfo = $"{cabin.buildingType.Value} {I18n.Robin_Hu1Materials()}";
@@ -122,7 +117,7 @@ internal class ModEntry : Mod
                 delegate (Farmer _, string answer)
                 {
                     Game1.activeClickableMenu = null;
-                    this.OnSelectedHouseUpgrade(ModUtility.GetCabin(answer));
+                    this.OnSelectedHouseUpgrade(ModUtility.GetEmptyCabin(answer)?.building);
                 }
             );
         }

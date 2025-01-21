@@ -65,12 +65,8 @@ namespace UpgradeEmptyCabins.Framework
 
         private void RemoveSeedBoxesCommand(string arg1, string[] arg2)
         {
-            foreach (Building cab in ModUtility.GetCabins())
+            foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
             {
-                Cabin indoors = (Cabin)cab.indoors.Value;
-
-                if (indoors.owner.Name != "")
-                    continue;
                 foreach ((Vector2 tile, Object obj) in indoors.Objects.Pairs)
                 {
                     if (obj is not Chest chest || !chest.giftbox.Value || chest.bigCraftable.Value)
@@ -79,19 +75,18 @@ namespace UpgradeEmptyCabins.Framework
                     }
 
                     indoors.Objects.Remove(tile);
-                    this.Monitor.Log("Seed box removed from " + cab.GetIndoorsName(), LogLevel.Info);
+                    this.Monitor.Log("Seed box removed from " + cabin.GetIndoorsName(), LogLevel.Info);
                 }
             }
         }
 
         private void RemoveCabinBedsCommand(string arg1, string[] arg2)
         {
-            foreach (Building cab in ModUtility.GetCabins())
+            foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
             {
                 BedFurniture bed = null;
-                if (((Cabin)cab.indoors.Value).owner.Name != "")
-                    continue;
-                foreach (Furniture furniture in ((Cabin)cab.indoors.Value).furniture)
+
+                foreach (Furniture furniture in indoors.furniture)
                 {
                     if (furniture is BedFurniture b)
                     {
@@ -102,8 +97,8 @@ namespace UpgradeEmptyCabins.Framework
 
                 if (bed != null)
                 {
-                    ((Cabin)cab.indoors.Value).furniture.Remove(bed);
-                    this.Monitor.Log("Bed removed from " + cab.GetIndoorsName(), LogLevel.Info);
+                    indoors.furniture.Remove(bed);
+                    this.Monitor.Log("Bed removed from " + cabin.GetIndoorsName(), LogLevel.Info);
                 }
             }
         }
@@ -111,23 +106,22 @@ namespace UpgradeEmptyCabins.Framework
         private void RenovateCabinsCommand(string arg1, string[] arg2)
         {
             string[] renos = { "renovation_bedroom_open", "renovation_southern_open", "renovation_corner_open", "renovation_extendedcorner_open", "renovation_dining_open", "renovation_diningroomwall_open", "renovation_cubby_open", "renovation_farupperroom_open" };
-            foreach (Building cab in ModUtility.GetCabins())
+
+            foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
             {
-                if (((Cabin)cab.indoors.Value).owner.Name != "")
-                    continue;
-                this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
-                this.Monitor.Log("    Type: " + cab.buildingType.Value, LogLevel.Info);
-                if (((Cabin)cab.indoors.Value).upgradeLevel < 2)
+                this.Monitor.Log("Cabin: " + cabin.GetIndoorsName(), LogLevel.Info);
+                this.Monitor.Log("    Type: " + cabin.buildingType.Value, LogLevel.Info);
+                if (indoors.upgradeLevel < 2)
                 {
-                    this.Monitor.Log("    Upgrade Level: " + ((Cabin)cab.indoors.Value).upgradeLevel, LogLevel.Info);
+                    this.Monitor.Log("    Upgrade Level: " + indoors.upgradeLevel, LogLevel.Info);
                     this.Monitor.Log("    Upgrade Level 2 required for renovations. Not Renovated.", LogLevel.Info);
                     continue;
                 }
-                ISet<string> mail = ((Cabin)cab.indoors.Value).owner.mailReceived;
+                ISet<string> mail = indoors.owner.mailReceived;
                 foreach (string reno in renos)
                 {
                     if (mail.Contains(reno))
-                        this.Monitor.Log("Renovation already done: " + reno + " " + cab.GetIndoorsName(), LogLevel.Info);
+                        this.Monitor.Log("Renovation already done: " + reno + " " + cabin.GetIndoorsName(), LogLevel.Info);
                     else
                     {
                         if (reno == "renovation_diningroomwall_open")
@@ -137,8 +131,8 @@ namespace UpgradeEmptyCabins.Framework
                     }
                 }
 
-                ((Cabin)cab.indoors.Value).cribStyle.Set(0);
-                this.Monitor.Log("    cribStyle:  " + ((Cabin)cab.indoors.Value).cribStyle.Value, LogLevel.Info);
+                indoors.cribStyle.Set(0);
+                this.Monitor.Log("    cribStyle:  " + indoors.cribStyle.Value, LogLevel.Info);
                 this.Monitor.Log("    flags: " + mail, LogLevel.Info);
             }
         }
@@ -149,12 +143,11 @@ namespace UpgradeEmptyCabins.Framework
         private void ListCabins(string arg1, string[] arg2)
         {
             this.Monitor.Log("Upgrade Level 2 required for renovations.", LogLevel.Info);
-            foreach (Building cab in ModUtility.GetCabins())
+
+            foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
             {
-                if (((Cabin)cab.indoors.Value).owner.Name != "")
-                    continue;
-                this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
-                this.Monitor.Log("    Upgrade Level: " + ((Cabin)cab.indoors.Value).upgradeLevel, LogLevel.Info);
+                this.Monitor.Log("Cabin: " + cabin.GetIndoorsName(), LogLevel.Info);
+                this.Monitor.Log("    Upgrade Level: " + indoors.upgradeLevel, LogLevel.Info);
             }
         }
 
@@ -165,36 +158,32 @@ namespace UpgradeEmptyCabins.Framework
 
         private void SetCribStyleCommand(string arg1, string[] arg2)
         {
-            string cabin = arg2[0] + " Cabin"; //"Plank","Stone","Log"
+            string cabinType = arg2[0] + " Cabin"; //"Plank","Stone","Log"
             int style = int.Parse(arg2[1]);
 
-            foreach (Building cab in ModUtility.GetCabins())
+            foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
             {
-                if (((Cabin)cab.indoors.Value).owner.Name != "")
-                    continue;
-                if (cab.buildingType.ToString() == cabin)
+                if (cabin.buildingType.ToString() == cabinType)
                 {
-                    ((Cabin)cab.indoors.Value).cribStyle.Set(style);
-                    this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
-                    this.Monitor.Log("Cabin Type: " + cab.buildingType.Value, LogLevel.Info);
-                    this.Monitor.Log("cribStyle: " + ((Cabin)cab.indoors.Value).cribStyle.Value, LogLevel.Info);
+                    indoors.cribStyle.Set(style);
+                    this.Monitor.Log("Cabin: " + cabin.GetIndoorsName(), LogLevel.Info);
+                    this.Monitor.Log("Cabin Type: " + cabin.buildingType.Value, LogLevel.Info);
+                    this.Monitor.Log("cribStyle: " + indoors.cribStyle.Value, LogLevel.Info);
                 }
             }
         }
 
         private void ToggleRenovateCommand(string arg1, string[] arg2)
         {
-            string cabin = arg2[0]; //"Plank","Stone","Log"
+            string cabinType = arg2[0]; //"Plank","Stone","Log"
             string reno = arg2[1]; //"renovation_bedroom_open", "renovation_southern_open", "renovation_corner_open", "renovation_extendedcorner_open", "renovation_dining_open", "renovation_diningroomwall_open", "renovation_cubby_open", "renovation_farupperroom_open"
 
-            foreach (Building cab in ModUtility.GetCabins())
+            foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
             {
-                if (((Cabin)cab.indoors.Value).owner.Name != "")
-                    continue;
-                if (cab.GetIndoorsName() == cabin)
+                if (cabin.GetIndoorsName() == cabinType)
                 {
-                    ISet<string> mail = ((Cabin)cab.indoors.Value).owner.mailReceived;
-                    this.Monitor.Log("Cabin: " + cab.GetIndoorsName(), LogLevel.Info);
+                    ISet<string> mail = indoors.owner.mailReceived;
+                    this.Monitor.Log("Cabin: " + cabin.GetIndoorsName(), LogLevel.Info);
 
                     if (reno == "renovation_diningroomwall_open")
                     {

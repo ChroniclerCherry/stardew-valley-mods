@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using StardewValley;
 using StardewValley.Buildings;
+using StardewValley.Locations;
 
 namespace UpgradeEmptyCabins.Framework;
 
@@ -9,23 +10,26 @@ internal static class ModUtility
     /*********
     ** Public methods
     *********/
-    public static Building GetCabin(string name)
+    /// <summary>Get an empty cabin by its unique interior name.</summary>
+    /// <param name="name">The unique name for its interior location.</param>
+    public static (Building building, Cabin indoors)? GetEmptyCabin(string name)
     {
-        foreach (Building cabin in GetCabins())
+        foreach (var pair in GetEmptyCabins())
         {
-            if (cabin.GetIndoorsName() == name)
-                return cabin;
+            if (pair.building.GetIndoorsName() == name)
+                return pair;
         }
 
         return null;
     }
 
-    public static IEnumerable<Building> GetCabins()
+    /// <summary>Get all empty cabins in the save.</summary>
+    public static IEnumerable<(Building building, Cabin indoors)> GetEmptyCabins()
     {
         foreach (Building building in Game1.getFarm().buildings)
         {
-            if (building.isCabin)
-                yield return building;
+            if (building.isCabin && building.GetIndoors() is Cabin { IsOwnerActivated: false } indoors)
+                yield return (building, indoors);
         }
     }
 }
