@@ -130,6 +130,9 @@ namespace UpgradeEmptyCabins.Framework
         /*********
         ** Private methods
         *********/
+        /****
+        ** General commands
+        ****/
         /// <summary>Handle the <c>upgrade_cabins</c> console command.</summary>
         /// <param name="commandName">The command name.</param>
         /// <param name="args">The command arguments.</param>
@@ -144,6 +147,74 @@ namespace UpgradeEmptyCabins.Framework
             this.AskForUpgrade();
         }
 
+        /// <summary>Handle the <c>list_cabins</c> console command.</summary>
+        /// <param name="commandName">The command name.</param>
+        /// <param name="args">The command arguments.</param>
+        private void HandleListCabins(string commandName, string[] args)
+        {
+            if (!this.AssertSaveLoaded(out string error))
+            {
+                this.LogCommandError(commandName, error);
+                return;
+            }
+
+            // get cabins
+            var cabins = ModUtility.GetEmptyCabins().ToArray();
+            if (cabins.Length == 0)
+            {
+                this.Monitor.Log("You don't have any empty cabins in this save.", LogLevel.Info);
+                return;
+            }
+
+            // list cabin info
+            StringBuilder summary = new StringBuilder();
+            summary.AppendLine($"You have {cabins.Length} empty cabin{(cabins.Length > 1 ? "s" : "")} in this save:");
+
+            for (int i = 0; i < cabins.Length; i++)
+            {
+                (Building cabin, Cabin indoors) = cabins[i];
+
+                summary
+                    .Append($"  {i + 1}. {ModUtility.GetCabinDescription(cabin)}, ")
+                    .Append(indoors.upgradeLevel switch
+                    {
+                        0 => "not upgraded yet.",
+                        1 => $"upgrade level {indoors.upgradeLevel} (kitchen).",
+                        2 => $"upgrade level {indoors.upgradeLevel} (kitchen + extra rooms).",
+                        3 => $"upgrade level {indoors.upgradeLevel} (kitchen + extra rooms + cellar).",
+                        _ => $"upgrade level {indoors.upgradeLevel}."
+                    })
+                    .Append(ReferenceEquals(Game1.player.currentLocation, indoors)
+                        ? " You are here."
+                        : ""
+                    )
+                    .AppendLine();
+            }
+
+            summary
+                .AppendLine()
+                .AppendLine("You can use the cabin number in other commands, like `remove_seed_box 1` to remove it from the first cabin above.");
+
+            this.Monitor.Log(summary.ToString(), LogLevel.Info);
+        }
+
+        /// <summary>Handle the <c>list_renovations</c> console command.</summary>
+        /// <param name="commandName">The command name.</param>
+        /// <param name="args">The command arguments.</param>
+        private void HandleListRenovations(string commandName, string[] args)
+        {
+            if (!this.AssertSaveLoaded(out string error))
+            {
+                this.LogCommandError(commandName, error);
+                return;
+            }
+
+            this.Monitor.Log("renovation_bedroom_open, renovation_southern_open, renovation_corner_open, renovation_extendedcorner_open, renovation_dining_open, renovation_diningroomwall_open, renovation_cubby_open, renovation_farupperroom_open", LogLevel.Info);
+        }
+
+        /****
+        ** Specific cabin commands
+        ****/
         /// <summary>Handle the <c>remove_seed_box</c> console command.</summary>
         /// <param name="commandName">The command name.</param>
         /// <param name="args">The command arguments.</param>
@@ -217,74 +288,6 @@ namespace UpgradeEmptyCabins.Framework
                 summary.AppendLine("  - cribs: removed.");
             }
             this.Monitor.Log(summary.ToString(), LogLevel.Info);
-        }
-
-        /****
-        ** Renovate specific cabins
-        ****/
-        /// <summary>Handle the <c>list_cabins</c> console command.</summary>
-        /// <param name="commandName">The command name.</param>
-        /// <param name="args">The command arguments.</param>
-        private void HandleListCabins(string commandName, string[] args)
-        {
-            if (!this.AssertSaveLoaded(out string error))
-            {
-                this.LogCommandError(commandName, error);
-                return;
-            }
-
-            // get cabins
-            var cabins = ModUtility.GetEmptyCabins().ToArray();
-            if (cabins.Length == 0)
-            {
-                this.Monitor.Log("You don't have any empty cabins in this save.", LogLevel.Info);
-                return;
-            }
-
-            // list cabin info
-            StringBuilder summary = new StringBuilder();
-            summary.AppendLine($"You have {cabins.Length} empty cabin{(cabins.Length > 1 ? "s" : "")} in this save:");
-
-            for (int i = 0; i < cabins.Length; i++)
-            {
-                (Building cabin, Cabin indoors) = cabins[i];
-
-                summary
-                    .Append($"  {i + 1}. {ModUtility.GetCabinDescription(cabin)}, ")
-                    .Append(indoors.upgradeLevel switch
-                    {
-                        0 => "not upgraded yet.",
-                        1 => $"upgrade level {indoors.upgradeLevel} (kitchen).",
-                        2 => $"upgrade level {indoors.upgradeLevel} (kitchen + extra rooms).",
-                        3 => $"upgrade level {indoors.upgradeLevel} (kitchen + extra rooms + cellar).",
-                        _ => $"upgrade level {indoors.upgradeLevel}."
-                    })
-                    .Append(ReferenceEquals(Game1.player.currentLocation, indoors)
-                        ? " You are here."
-                        : ""
-                    )
-                    .AppendLine();
-            }
-
-            summary
-                .AppendLine()
-                .AppendLine("You can use the cabin number in other commands, like `remove_seed_box 1` to remove it from the first cabin above.");
-
-            this.Monitor.Log(summary.ToString(), LogLevel.Info);
-        }
-
-        /// <summary>Handle the <c>list_renovations</c> console command.</summary>
-        /// <param name="commandName">The command name.</param>
-        /// <param name="args">The command arguments.</param>
-        private void HandleListRenovations(string commandName, string[] args)
-        {
-            if (!this.AssertSaveLoaded(out string error))
-            {
-                this.LogCommandError(commandName, error);
-                return;
-            }
-
-            this.Monitor.Log("renovation_bedroom_open, renovation_southern_open, renovation_corner_open, renovation_extendedcorner_open, renovation_dining_open, renovation_diningroomwall_open, renovation_cubby_open, renovation_farupperroom_open", LogLevel.Info);
         }
 
         /// <summary>Handle the <c>set_crib_style</c> console command.</summary>
@@ -372,6 +375,9 @@ namespace UpgradeEmptyCabins.Framework
             this.Monitor.Log(summary.ToString(), LogLevel.Info);
         }
 
+        /****
+        ** Helpers
+        ****/
         /// <summary>Log an error indicating a command failed.</summary>
         /// <param name="commandName">The command name.</param>
         /// <param name="error">The error phrase indicating what went wrong.</param>
