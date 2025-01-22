@@ -4,54 +4,60 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
 
-namespace CustomizeAnywhere
+namespace CustomizeAnywhere;
+
+/// <summary>The mod entry point.</summary>
+internal class ModEntry : Mod
 {
-    public class ModEntry : Mod
+    /*********
+    ** Fields
+    *********/
+    /// <summary>The mod settings.</summary>
+    private ModConfig Config;
+
+    internal static IModHelper StaticHelper;
+
+    private DresserAndMirror DresserAndMirror;
+
+
+    /*********
+    ** Public methods
+    *********/
+    /// <inheritdoc />
+    public override void Entry(IModHelper helper)
     {
-        private ModConfig Config;
-        internal static IMonitor monitor;
-        internal static IModHelper helper;
+        I18n.Init(helper.Translation);
 
-        private DresserAndMirror DresserAndMirror;
+        ModEntry.StaticHelper = helper;
 
-        public override void Entry(IModHelper h)
+        this.DresserAndMirror = new DresserAndMirror(helper, this.ModManifest.UniqueID);
+
+        this.Config = helper.ReadConfig<ModConfig>();
+        helper.Events.Input.ButtonsChanged += this.OnButtonsChanged;
+    }
+
+
+    /*********
+    ** Private methods
+    *********/
+    /// <inheritdoc cref="IInputEvents.ButtonsChanged" />
+    private void OnButtonsChanged(object sender, ButtonsChangedEventArgs e)
+    {
+        // ignore if player isn't free to move or direct access is turned off in the config
+        if (!Context.CanPlayerMove || !this.Config.CanAccessMenusAnywhere)
+            return;
+
+        if (this.Config.CustomizeKey.JustPressed())
+            Game1.activeClickableMenu = new CharacterCustomization(CharacterCustomization.Source.Wizard);
+        else if (this.Config.DresserKey.JustPressed())
+            this.DresserAndMirror.OpenDresser();
+
+        else if (this.Config.CanTailorWithoutEvent || Game1.player.eventsSeen.Contains("992559"))
         {
-            helper = h;
-            monitor = this.Monitor;
-
-            this.DresserAndMirror = new DresserAndMirror(helper, this.ModManifest.UniqueID);
-
-            this.Config = this.Helper.ReadConfig<ModConfig>();
-            helper.Events.Input.ButtonPressed += this.OnButtonPressed;
-        }
-
-
-        private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
-        {
-            // ignore if player isn't free to move or direct access is turned off in the config
-            if (!Context.CanPlayerMove || !this.Config.canAccessMenusAnywhere)
-                return;
-
-            var input = this.Helper.Input;
-            if (input.IsDown(this.Config.ActivateButton))
-            {
-                if (input.IsDown(this.Config.customizeButton))
-                    Game1.activeClickableMenu = new CharacterCustomization(CharacterCustomization.Source.Wizard);
-                else if (input.IsDown(this.Config.dresserButton))
-                    this.DresserAndMirror.OpenDresser();
-
-                if (this.Config.canTailorWithoutEvent || Game1.player.eventsSeen.Contains("992559"))
-                {
-                    if (input.IsDown(this.Config.dyeButton))
-                    {
-                        Game1.activeClickableMenu = new DyeMenu();
-                    }
-                    else if (input.IsDown(this.Config.tailoringButton))
-                    {
-                        Game1.activeClickableMenu = new TailoringMenu();
-                    }
-                }
-            }
+            if (this.Config.DyeKey.JustPressed())
+                Game1.activeClickableMenu = new DyeMenu();
+            else if (this.Config.TailoringKey.JustPressed())
+                Game1.activeClickableMenu = new TailoringMenu();
         }
     }
 }

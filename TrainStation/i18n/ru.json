@@ -1,8 +1,7 @@
 ﻿{
-    "NotEnoughMoney": "У Вас недостаточно денег, чтобы купить билет до {{DestinationName}}",
-    "MenuCancelOption": "Отмена",
+    "NotEnoughMoney": "У Вас недостаточно денег, чтобы купить билет до {{destinationName}}",
     "NoDestinations": "Нет доступных направлений",
-    "ChooseDestination": "Выберите место назначения",
+    "BoatStationDisplayName": "Willy's shop", // TODO
     "TrainStationDisplayName": "Станция долины Стардью",
-    "ArrivalMessage": "Вы прибыли на станцию {{DestinationName}}"
+    "ArrivalMessage": "Вы прибыли на станцию {{destinationName}}"
 }

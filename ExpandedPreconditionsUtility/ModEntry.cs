@@ -1,21 +1,47 @@
 using ExpandedPreconditionsUtility.Framework;
 using StardewModdingAPI;
+using StardewValley;
+using StardewValley.Delegates;
 
-namespace ExpandedPreconditionsUtility
+namespace ExpandedPreconditionsUtility;
+
+/// <summary>The mod entry point.</summary>
+internal class ModEntry : Mod
 {
-    public class ModEntry : Mod
-    {
-        private IModHelper _helper;
-        private IMonitor _monitor;
-        public override void Entry(IModHelper helper)
-        {
-            this._helper = this.Helper;
-            this._monitor = this.Monitor;
-        }
+    /*********
+    ** Fields
+    *********/
+    /// <summary>The conditions checker.</summary>
+    private ConditionsChecker ConditionsChecker;
 
-        public override object GetApi()
-        {
-            return new ConditionsChecker(this._monitor, this._helper);
-        }
+
+    /*********
+    ** Public methods
+    *********/
+    /// <inheritdoc />
+    public override void Entry(IModHelper helper)
+    {
+        this.ConditionsChecker = new ConditionsChecker(this.Monitor, this.Helper);
+
+        GameStateQuery.Register($"{this.ModManifest.UniqueID}", this.HandleGameStateQuery);
+    }
+
+    /// <inheritdoc />
+    public override object GetApi()
+    {
+        return this.ConditionsChecker;
+    }
+
+
+    /*********
+    ** Private methods
+    *********/
+    /// <summary>Handle the game state query that checks an Expanded Preconditions Utility condition.</summary>
+    /// <inheritdoc cref="GameStateQueryDelegate" />
+    private bool HandleGameStateQuery(string[] query, GameStateQueryContext context)
+    {
+        string queryStr = string.Join(" ", ArgUtility.GetSubsetOf(query, 1));
+
+        return this.ConditionsChecker.CheckConditions(queryStr);
     }
 }

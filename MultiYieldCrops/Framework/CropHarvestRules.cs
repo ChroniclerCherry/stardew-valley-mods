@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 
-namespace MultiYieldCrops.Framework
+namespace MultiYieldCrops.Framework;
+
+internal class CropHarvestRules
 {
-    class CropHarvestRules
-    {
-        public string CropName;
-        public List<Rule> HarvestRules;
-    }
+    public string CropName;
+    public List<Rule> HarvestRules;
 }

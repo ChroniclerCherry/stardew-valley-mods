@@ -1,73 +1,51 @@
 using StardewModdingAPI;
 
-namespace ShopTileFramework.Framework.Apis
+namespace ShopTileFramework.Framework.Apis;
+
+/// <summary>
+/// This class is used to register external APIs and hold the instances of those APIs to be accessed
+/// by the rest of the mod
+/// </summary>
+internal class ApiManager
 {
+    /*********
+    ** Accessors
+    *********/
+    public static IJsonAssetsApi JsonAssets { get; private set; }
+    public static IConditionsApi Conditions { get; private set; }
+
+
+    /*********
+    ** Public methods
+    *********/
     /// <summary>
-    /// This class is used to register external APIs and hold the instances of those APIs to be accessed
-    /// by the rest of the mod
+    /// Register the API for Json Assets
     /// </summary>
-    class ApiManager
+    public static void RegisterJsonAssets()
     {
-        internal static IJsonAssetsApi JsonAssets;
-        internal static IBetterFarmAnimalVarietyApi BetterFarmAnimalVariety;
-        internal static IConditionsApi Conditions;
+        JsonAssets = ModEntry.StaticHelper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
 
-        /// <summary>
-        /// Register the API for Json Assets
-        /// </summary>
-        public static void RegisterJsonAssets()
+        if (JsonAssets == null)
         {
-            JsonAssets = ModEntry.helper.ModRegistry.GetApi<IJsonAssetsApi>("spacechase0.JsonAssets");
+            ModEntry.StaticMonitor.Log("Json Assets API not detected. This is only an issue if you're using cystom Json Assets items and shops trying to sell them, as custom items will not appear in shops.",
+                LogLevel.Info);
+        }
+    }
 
-            if (JsonAssets == null)
-            {
-                ModEntry.monitor.Log("Json Assets API not detected. This is only an issue if you're using cystom Json Assets items and shops trying to sell them, as custom items will not appear in shops.",
-                    LogLevel.Info);
-            }
+    /// <summary>
+    /// Register the API for Expanded Preconditions Utility
+    /// </summary>
+    public static void RegisterExpandedPreconditionsUtility()
+    {
+        Conditions = ModEntry.StaticHelper.ModRegistry.GetApi<IConditionsApi>("Cherry.ExpandedPreconditionsUtility");
+
+        if (Conditions == null)
+        {
+            ModEntry.StaticMonitor.Log("Expanded Preconditions Utility API not detected. Something went wrong, please check that your installation of Expanded Preconditions Utility is valid",
+                LogLevel.Error);
+            return;
         }
 
-        /// <summary>
-        /// Registers the API for Better Farm Animal Variety, and check if it has been disabled in the user's options.
-        /// If so, set it to null
-        /// </summary>
-        public static void RegisterBetterFarmAnimalVariety()
-        {
-            BetterFarmAnimalVariety = ModEntry.helper.ModRegistry.GetApi<IBetterFarmAnimalVarietyApi>("Paritee.BetterFarmAnimalVariety");
-
-            if (BetterFarmAnimalVariety == null)
-            {
-                ModEntry.monitor.Log("BFAV API not detected. This is only an issue if you're using custom BFAV animals and a custom shop that's supposed to sell them, as custom animals will not appear in those shops.",
-                    LogLevel.Info);
-            }
-            else if (!BetterFarmAnimalVariety.IsEnabled())
-            {
-                BetterFarmAnimalVariety = null;
-                ModEntry.monitor.Log("BFAV is installed but not enabled. This is only an issue if you're using custom BFAV animals and a custom shop that's supposed to sell them, as custom animals will not appear in those shops",
-                    LogLevel.Info);
-            }
-        }
-
-        /// <summary>
-        /// Register the API for Expanded Preconditions Utility
-        /// </summary>
-        public static void RegisterExpandedPreconditionsUtility()
-        {
-            Conditions = ModEntry.helper.ModRegistry.GetApi<IConditionsApi>("Cherry.ExpandedPreconditionsUtility");
-
-            if (Conditions == null)
-            {
-                ModEntry.monitor.Log("Expanded Preconditions Utility API not detected. Something went wrong, please check that your installation of Expanded Preconditions Utility is valid",
-                    LogLevel.Error);
-                return;
-            }
-
-            Conditions.Initialize(ModEntry.VerboseLogging, "Cherry.ShopTileFramework");
-
-        }
-
-        public static void RegisterFarmAnimalVarietyRedux()
-        {
-            //TODO: when FAVR is released, start deprecating support for BFAV
-        }
+        Conditions.Initialize(ModEntry.VerboseLogging, "Cherry.ShopTileFramework");
     }
 }

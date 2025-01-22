@@ -1,0 +1,38 @@
+﻿{
+    /**
+     * The events considered romantic, which should be disabled if the player isn't dating the NPC.
+     * This maps event asset name -> event ID -> NPC who must be dated.
+     */
+    "RomanticEvents": {
+        "Data/Events/Beach": {
+            "43/f Elliott 2500/w sunny/t 700 1300/G !IS_PASSIVE_FESTIVAL_TODAY SquidFest": "Elliott"
+        },
+        "Data/Events/Forest": {
+            "54/f Leah 2500/t 1100 1600/z winter/w sunny": "Leah"
+        },
+        "Data/Events/HaleyHouse": {
+            "15/f Haley 2500/p Haley": "Haley"
+        },
+        "Data/Events/Mine": {
+            "901756/f Abigail 2500/t 1700 2400/o Abigail": "Abigail"
+        },
+        "Data/Events/Mountain": {
+            "384882/f Sebastian 2500/t 2000 2400": "Sebastian"
+        },
+        "Data/Events/ScienceHouse": {
+            "10/f Maru 2500/t 900 1600": "Maru"
+        }
+    },
+
+    /**
+     * The trigger actions considered romantic, which should be disabled if the player isn't dating the NPC.
+     * This maps trigger ID -> NPC who must be dated.
+     */
+    "RomanticTriggerActions": {
+        "Mail_Alex_10heart": "Alex",
+        "Mail_Elliott_10heart": "Elliott",
+        "Mail_Harvey_10heart": "Harvey",
+        "Mail_Penny_10heart": "Penny",
+        "Mail_Sam_10heart": "Sam"
+    }
+}

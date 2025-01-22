@@ -1,10 +1,7 @@
 ﻿{
-    "NotEnoughMoney": "You don't have enough money to buy the ticket to {{DestinationName}}",
-    "MenuCancelOption": "Cancel",
-    "NoDestinations": "There are no available destinations",
-    "ChooseDestination": "Choose your destination",
-    "TrainStationDisplayName": "Stardew Valley Station",
+    "NotEnoughMoney": "You don't have enough money to buy the ticket to {{destinationName}}.",
+    "NoDestinations": "There are no available destinations.",
     "BoatStationDisplayName": "Willy's shop",
-    "ArrivalMessage": "You have arrived at {{DestinationName}}",
-    "GingerIsland": "Ginger Island"
+    "TrainStationDisplayName": "Stardew Valley Station",
+    "ArrivalMessage": "You have arrived at {{destinationName}}."
 }

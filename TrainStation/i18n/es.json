@@ -1,8 +1,7 @@
 ﻿{
-    "NotEnoughMoney": "No tienes suficiente dinero para pagar el boleto hacia {{DestinationName}}",
-    "MenuCancelOption": "Cancelar",
+    "NotEnoughMoney": "No tienes suficiente dinero para pagar el boleto hacia {{destinationName}}",
     "NoDestinations": "No hay destinos disponibles",
-    "ChooseDestination": "Elige tu destino",
+    "BoatStationDisplayName": "Willy's shop", // TODO
     "TrainStationDisplayName": "Estación de stardew Valley",
-    "ArrivalMessage": "Has llegado a {{DestinationName}}"
+    "ArrivalMessage": "Has llegado a {{destinationName}}"
 }

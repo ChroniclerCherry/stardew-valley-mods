@@ -9,187 +9,186 @@ using StardewValley.GameData.Shops;
 using StardewValley.Menus;
 using StardewValley.TokenizableStrings;
 
-namespace FarmRearranger
+namespace FarmRearranger;
+
+/// <summary>The mod entry point.</summary>
+internal class ModEntry : Mod
 {
-    class ModEntry : Mod
+    /*********
+    ** Fields
+    *********/
+    private bool IsArranging;
+
+    /// <summary>The mod settings.</summary>
+    private ModConfig Config;
+
+    private string FarmRearrangeId;
+    private string FarmRearrangeQualifiedId;
+
+
+    /*********
+    ** Public methods
+    *********/
+    /// <inheritdoc />
+    public override void Entry(IModHelper helper)
     {
-        private bool isArranging = false;
+        // init
+        I18n.Init(helper.Translation);
+        this.FarmRearrangeId = this.ModManifest.UniqueID + "_FarmRearranger";
+        this.FarmRearrangeQualifiedId = ItemRegistry.type_bigCraftable + this.FarmRearrangeId;
 
-        private ModConfig Config;
+        // read config
+        this.Config = helper.ReadConfig<ModConfig>();
 
-        private string FarmRearrangeId;
-        private string FarmRearrangeQualifiedId;
+        // hook events
+        helper.Events.Content.AssetRequested += this.OnAssetRequested;
+        helper.Events.GameLoop.UpdateTicking += this.OnUpdateTicking;
+        helper.Events.GameLoop.DayEnding += this.OnDayEnding;
+        helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+    }
 
 
-        /// <summary>
-        /// Entry function, the starting point of the mod called by SMAPI
-        /// </summary>
-        /// <param name="helper">provides useful apis for modding</param>
-        public override void Entry(IModHelper helper)
+    /*********
+    ** Private methods
+    *********/
+    /// <inheritdoc cref="IGameLoopEvents.DayEnding" />
+    /// <remarks>This checks for friendship with robin at the end of the day.</remarks>
+    private void OnDayEnding(object sender, DayEndingEventArgs e)
+    {
+        //if friendship is higher enough, send the mail tomorrow
+        if (Game1.player.getFriendshipLevelForNPC("Robin") >= this.Config.FriendshipPointsRequired)
         {
-            // read config
-            this.Config = this.Helper.ReadConfig<ModConfig>();
-
-            // init fields
-            this.FarmRearrangeId = this.ModManifest.UniqueID + "_FarmRearranger";
-            this.FarmRearrangeQualifiedId = ItemRegistry.type_bigCraftable + this.FarmRearrangeId;
-
-            // hook events
-            helper.Events.Content.AssetRequested += this.OnAssetRequested;
-            helper.Events.GameLoop.UpdateTicking += this.GameLoop_UpdateTicking;
-            helper.Events.GameLoop.DayEnding += this.GameLoop_DayEnding;
-            helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
+            Game1.addMailForTomorrow("FarmRearrangerMail");
         }
+    }
 
-        /// <summary>
-        /// Check for friendship with robin at the end of the day
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void GameLoop_DayEnding(object sender, DayEndingEventArgs e)
+    /// <inheritdoc cref="IInputEvents.ButtonPressed" />
+    /// <remarks>This checks if the farm rearranger was clicked, then opens the menu if applicable.</remarks>
+    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
+    {
+        //ignore input if the player isnt free to move aka world not loaded,
+        //they're in an event, a menu is up, etc
+        if (!Context.CanPlayerMove)
+            return;
+
+        //action button works for right click on mouse and action button for controllers
+        if (!e.Button.IsActionButton())
+            return;
+
+        //check if the clicked tile contains a Farm Renderer
+        Vector2 tile = this.Helper.Input.GetCursorPosition().Tile;
+        if (Game1.currentLocation.Objects.TryGetValue(tile, out Object obj) && obj.QualifiedItemId == this.FarmRearrangeQualifiedId)
         {
-            //if friendship is higher enough, send the mail tomorrow
-            if (Game1.player.getFriendshipLevelForNPC("Robin") >= this.Config.FriendshipPointsRequired)
+            if (Game1.currentLocation.Name == "Farm" || this.Config.CanArrangeOutsideFarm)
+                this.RearrangeFarm();
+            else
+                Game1.activeClickableMenu = new DialogueBox(I18n.CantBuildOffFarm());
+        }
+    }
+
+    /// <inheritdoc cref="IGameLoopEvents.UpdateTicking" />
+    /// <remarks>When move buildings is exited, by default it returns the player to Robin's house and the menu becomes the menu to choose buildings. This detects when that happens and returns the player to their original location and closes the menu.</remarks>
+    private void OnUpdateTicking(object sender, UpdateTickingEventArgs e)
+    {
+        if (this.IsArranging)
+        {
+            if (Game1.activeClickableMenu is not CarpenterMenu menu)
+                this.IsArranging = false;
+            else if (!menu.onFarm)
             {
-                Game1.addMailForTomorrow("FarmRearrangerMail");
+                this.IsArranging = false;
+                Game1.exitActiveMenu();
             }
         }
+    }
 
-        /// <summary>
-        /// This checks if the farm rearranger was clicked then open the menu if applicable
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
+    /// <inheritdoc cref="IContentEvents.AssetRequested" />
+    private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+    {
+        string modId = this.ModManifest.UniqueID;
+
+        // add item data
+        if (e.NameWithoutLocale.IsEquivalentTo("Data/BigCraftables"))
         {
-            //ignore input if the player isnt free to move aka world not loaded,
-            //they're in an event, a menu is up, etc
-            if (!Context.CanPlayerMove)
-                return;
-
-            //action button works for right click on mouse and action button for controllers
-            if (!e.Button.IsActionButton())
-                return;
-
-            //check if the clicked tile contains a Farm Renderer
-            Vector2 tile = this.Helper.Input.GetCursorPosition().Tile;
-            if (Game1.currentLocation.Objects.TryGetValue(tile, out Object obj) && obj.QualifiedItemId == this.FarmRearrangeQualifiedId)
+            e.Edit(asset =>
             {
-                if (Game1.currentLocation.Name == "Farm" || this.Config.CanArrangeOutsideFarm)
-                    this.RearrangeFarm();
-                else
-                    Game1.activeClickableMenu = new DialogueBox(this.Helper.Translation.Get("CantBuildOffFarm"));
-            }
-        }
+                var data = asset.AsDictionary<string, BigCraftableData>().Data;
 
-        /// <summary>
-        /// When move buildings is exited, on default it returns the player to Robin's house
-        /// and the menu becomes the menu to choose buildings
-        /// This detects when that happens and returns the player to their original location and closs the menu
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void GameLoop_UpdateTicking(object sender, UpdateTickingEventArgs e)
-        {
-            if (this.isArranging)
-            {
-                if (Game1.activeClickableMenu is not CarpenterMenu menu)
-                    this.isArranging = false;
-                else if (!menu.onFarm)
+                data[this.FarmRearrangeId] = new BigCraftableData
                 {
-                    this.isArranging = false;
-                    Game1.exitActiveMenu();
+                    Name = this.FarmRearrangeId,
+                    DisplayName = TokenStringBuilder.LocalizedText($"Strings\\BigCraftables:{this.FarmRearrangeId}_Name"),
+                    Description = TokenStringBuilder.LocalizedText($"Strings\\BigCraftables:{this.FarmRearrangeId}_Description"),
+                    Price = 1,
+                    Texture = $"LooseSprites/{modId}"
+                };
+            });
+        }
+
+        // add to shop
+        else if (e.NameWithoutLocale.IsEquivalentTo("Data/Shops"))
+        {
+            e.Edit(asset =>
+            {
+                var data = asset.AsDictionary<string, ShopData>().Data;
+
+                if (data.TryGetValue(Game1.shop_carpenter, out ShopData shop))
+                {
+                    shop.Items.Add(new ShopItemData
+                    {
+                        Id = this.FarmRearrangeId,
+                        ItemId = this.FarmRearrangeId,
+                        Price = this.Config.Price,
+                        Condition = "PLAYER_HAS_MAIL Current FarmRearrangerMail Received"
+                    });
                 }
-            }
+            });
         }
 
-        private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+        // add mail
+        else if (e.NameWithoutLocale.IsEquivalentTo("Data/mail"))
         {
-            string modId = this.ModManifest.UniqueID;
-
-            // add item data
-            if (e.NameWithoutLocale.IsEquivalentTo("Data/BigCraftables"))
+            e.Edit(asset =>
             {
-                e.Edit(asset =>
-                {
-                    var data = asset.AsDictionary<string, BigCraftableData>().Data;
-
-                    data[this.FarmRearrangeId] = new BigCraftableData
-                    {
-                        Name = this.FarmRearrangeId,
-                        DisplayName = TokenStringBuilder.LocalizedText($"Strings\\BigCraftables:{this.FarmRearrangeId}_Name"),
-                        Description = TokenStringBuilder.LocalizedText($"Strings\\BigCraftables:{this.FarmRearrangeId}_Description"),
-                        Price = 1,
-                        Texture = $"LooseSprites/{modId}"
-                    };
-                });
-            }
-
-            // add to shop
-            else if (e.NameWithoutLocale.IsEquivalentTo("Data/Shops"))
-            {
-                e.Edit(asset =>
-                {
-                    var data = asset.AsDictionary<string, ShopData>().Data;
-
-                    if (data.TryGetValue(Game1.shop_carpenter, out ShopData shop))
-                    {
-                        shop.Items.Add(new ShopItemData
-                        {
-                            Id = this.FarmRearrangeId,
-                            ItemId = this.FarmRearrangeId,
-                            Price = this.Config.Price,
-                            Condition = "PLAYER_HAS_MAIL Current FarmRearrangerMail Received"
-                        });
-                    }
-                });
-            }
-
-            // add mail
-            else if (e.NameWithoutLocale.IsEquivalentTo("Data/mail"))
-            {
-                e.Edit(asset =>
-                {
-                    var data = asset.AsDictionary<string, string>().Data;
-                    data["FarmRearrangerMail"] = this.Helper.Translation.Get("robinletter");
-                });
-            }
-
-            // add texture
-            else if (e.NameWithoutLocale.IsEquivalentTo($"LooseSprites/{modId}"))
-                e.LoadFromModFile<Texture2D>("assets/farm-rearranger.png", AssetLoadPriority.Exclusive);
-
-            // add translation text
-            else if (e.NameWithoutLocale.IsEquivalentTo("Strings/BigCraftables"))
-            {
-                e.Edit(asset =>
-                {
-                    var data = asset.AsDictionary<string, string>().Data;
-
-                    data[$"{this.FarmRearrangeId}_Name"] = this.Helper.Translation.Get("FarmRearranger_Name");
-                    data[$"{this.FarmRearrangeId}_Description"] = this.Helper.Translation.Get("FarmRearranger_Description");
-                });
-            }
+                var data = asset.AsDictionary<string, string>().Data;
+                data["FarmRearrangerMail"] = I18n.RobinLetter();
+            });
         }
 
-        /// <summary>
-        /// Brings up the menu to move the building
-        /// </summary>
-        private void RearrangeFarm()
+        // add texture
+        else if (e.NameWithoutLocale.IsEquivalentTo($"LooseSprites/{modId}"))
+            e.LoadFromModFile<Texture2D>("assets/farm-rearranger.png", AssetLoadPriority.Exclusive);
+
+        // add translation text
+        else if (e.NameWithoutLocale.IsEquivalentTo("Strings/BigCraftables"))
         {
-            //our boolean to keep track that we are currently in a Farm rearranger menu
-            //so we don't mess with any other vanilla warps to robin's house
-            this.isArranging = true;
+            e.Edit(asset =>
+            {
+                var data = asset.AsDictionary<string, string>().Data;
 
-            //open the carpenter menu then do everything that is normally done
-            //when the move buildings option is clicked
-            var menu = new CarpenterMenu(Game1.builder_robin);
-            Game1.activeClickableMenu = menu;
-            Game1.globalFadeToBlack(menu.setUpForBuildingPlacement);
-            Game1.playSound("smallSelect");
-
-            menu.onFarm = true;
-            menu.moving = true;
+                data[$"{this.FarmRearrangeId}_Name"] = I18n.FarmRearrangerName();
+                data[$"{this.FarmRearrangeId}_Description"] = I18n.FarmRearrangerDescription();
+            });
         }
+    }
+
+    /// <summary>
+    /// Brings up the menu to move the building
+    /// </summary>
+    private void RearrangeFarm()
+    {
+        //our boolean to keep track that we are currently in a Farm rearranger menu
+        //so we don't mess with any other vanilla warps to robin's house
+        this.IsArranging = true;
+
+        //open the carpenter menu then do everything that is normally done
+        //when the move buildings option is clicked
+        CarpenterMenu menu = new(Game1.builder_robin);
+        Game1.activeClickableMenu = menu;
+        Game1.globalFadeToBlack(menu.setUpForBuildingPlacement);
+        Game1.playSound("smallSelect");
+
+        menu.onFarm = true;
+        menu.Action = CarpenterMenu.CarpentryAction.Move;
     }
 }

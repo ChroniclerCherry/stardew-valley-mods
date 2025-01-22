@@ -5,59 +5,74 @@ using ShopTileFramework.Framework.Utility;
 using StardewValley;
 using StardewValley.Menus;
 
-namespace ShopTileFramework.Framework.Shop
+namespace ShopTileFramework.Framework.Shop;
+
+/// <summary>
+/// This class represents each animal store
+/// </summary>
+internal class AnimalShop : AnimalShopModel
 {
+    /*********
+    ** Fields
+    *********/
+    private List<Object> ShopAnimalStock;
+    private List<Object> AllAnimalsStock;
+
+
+    /*********
+    ** Accessors
+    *********/
+    internal static List<string> ExcludeFromMarnie = new List<string>();
+
+
+    /*********
+    ** Public methods
+    *********/
     /// <summary>
-    /// This class represents each animal store
+    /// Translate what needs to be translated on game saved, in case of the language being changed
     /// </summary>
-    class AnimalShop : AnimalShopModel
+    public void UpdateTranslations()
     {
-        private List<Object> _shopAnimalStock;
-        private List<Object> _allAnimalsStock;
+        this.ClosedMessage = Translations.Localize(this.ClosedMessage, this.LocalizedClosedMessage);
+    }
 
-        internal static List<string> ExcludeFromMarnie = new List<string>();
-
-        /// <summary>
-        /// Translate what needs to be translated on game saved, in case of the language being changed
-        /// </summary>
-        public void UpdateTranslations()
+    public void DisplayShop(bool debug = false)
+    {
+        //skip condition checking if called from console commands
+        if (debug || ApiManager.Conditions.CheckConditions(this.When))
         {
-            this.ClosedMessage = Translations.Localize(this.ClosedMessage, this.LocalizedClosedMessage);
+            //get animal stock each time to refresh requirement checks
+            this.UpdateShopAnimalStock();
+
+            //sets variables I use to control hardcoded warps
+            ModEntry.SourceLocation = Game1.currentLocation;
+            Game1.activeClickableMenu = new PurchaseAnimalsMenu(this.ShopAnimalStock);
         }
-
-        /// <summary>
-        /// Updates the stock by grabbing the current data from getPurchaseAnimalStock and taking the info 
-        /// for the animals that will be sold in this store
-        /// </summary>
-        private void UpdateShopAnimalStock()
+        else if (this.ClosedMessage != null)
         {
-            //BFAV patches this anyways so it'll automatically work if installed
-            this._allAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock(Game1.getFarm());
-
-            this._shopAnimalStock = new List<Object>();
-            foreach (var animal in this._allAnimalsStock)
-            {
-                if (this.AnimalStock.Contains(animal.Name))
-                {
-                    this._shopAnimalStock.Add(animal);
-                }
-            }
+            Game1.activeClickableMenu = new DialogueBox(this.ClosedMessage);
         }
-        public void DisplayShop(bool debug = false)
-        {
-            //skip condition checking if called from console commands
-            if (debug || ApiManager.Conditions.CheckConditions(this.When))
-            {
-                //get animal stock each time to refresh requirement checks
-                this.UpdateShopAnimalStock();
+    }
 
-                //sets variables I use to control hardcoded warps
-                ModEntry.SourceLocation = Game1.currentLocation;
-                Game1.activeClickableMenu = new PurchaseAnimalsMenu(this._shopAnimalStock);
-            }
-            else if (this.ClosedMessage != null)
+
+    /*********
+    ** Private methods
+    *********/
+    /// <summary>
+    /// Updates the stock by grabbing the current data from getPurchaseAnimalStock and taking the info 
+    /// for the animals that will be sold in this store
+    /// </summary>
+    private void UpdateShopAnimalStock()
+    {
+        //BFAV patches this anyways so it'll automatically work if installed
+        this.AllAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock(Game1.getFarm());
+
+        this.ShopAnimalStock = new List<Object>();
+        foreach (Object animal in this.AllAnimalsStock)
+        {
+            if (this.AnimalStock.Contains(animal.Name))
             {
-                Game1.activeClickableMenu = new DialogueBox(this.ClosedMessage);
+                this.ShopAnimalStock.Add(animal);
             }
         }
     }

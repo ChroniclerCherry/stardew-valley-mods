@@ -1,8 +1,7 @@
 ﻿{
-    "NotEnoughMoney": "Vous n'avez pas asser d'argent pour vous rendre à {{DestinationName}}",
-    "MenuCancelOption": "Annuler",
+    "NotEnoughMoney": "Vous n'avez pas asser d'argent pour vous rendre à {{destinationName}}",
     "NoDestinations": "Il n'y as pas de destionations disponibles.There are no available destinations",
-    "ChooseDestination": "Choisissez votre destination",
+    "BoatStationDisplayName": "Willy's shop", // TODO
     "TrainStationDisplayName": "Station de la Vallée des Rosées",
-    "ArrivalMessage": "Vous êtes arrivés à {{DestinationName}}"
+    "ArrivalMessage": "Vous êtes arrivés à {{destinationName}}"
 }

@@ -3,30 +3,42 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 
-namespace CataloguesAnywhere
+namespace CataloguesAnywhere;
+
+/// <summary>The mod entry point.</summary>
+internal class ModEntry : Mod
 {
-    public class ModEntry : Mod
+    /*********
+    ** Fields
+    *********/
+    /// <summary>The mod settings.</summary>
+    private ModConfig Config;
+
+
+    /*********
+    ** Public methods
+    *********/
+    /// <inheritdoc />
+    public override void Entry(IModHelper helper)
     {
-        private ModConfig Config;
-        public override void Entry(IModHelper helper)
-        {
-            this.Config = this.Helper.ReadConfig<ModConfig>();
-            helper.Events.Input.ButtonPressed += this.OnButtonPressed;
-        }
+        this.Config = helper.ReadConfig<ModConfig>();
 
-        private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
-        {
-            if (!Context.CanPlayerMove || !this.Config.Enabled)
-                return;
+        helper.Events.Input.ButtonsChanged += this.OnButtonsChanged;
+    }
 
-            var input = this.Helper.Input;
-            if (input.IsDown(this.Config.ActivateButton))
-            {
-                if (input.IsDown(this.Config.furnitureButton))
-                    Utility.TryOpenShopMenu("Furniture Catalogue", null as string);
-                else if (input.IsDown(this.Config.WallpaperButton))
-                    Utility.TryOpenShopMenu("Catalogue", null as string);
-            }
-        }
+
+    /*********
+    ** Private methods
+    *********/
+    /// <inheritdoc cref="IInputEvents.ButtonsChanged" />
+    private void OnButtonsChanged(object sender, ButtonsChangedEventArgs e)
+    {
+        if (!Context.CanPlayerMove || !this.Config.Enabled)
+            return;
+
+        if (this.Config.FurnitureKey.JustPressed())
+            Utility.TryOpenShopMenu("Furniture Catalogue", null as string);
+        else if (this.Config.WallpaperKey.JustPressed())
+            Utility.TryOpenShopMenu("Catalogue", null as string);
     }
 }

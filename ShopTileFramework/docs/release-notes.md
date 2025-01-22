@@ -1,6 +1,15 @@
 ﻿[← back to readme](README.md)
 
 # Release notes
+## 1.0.11
+Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
+- Updated for Stardew Valley 1.6.15.
+- Improved error-handling in game patches.
+- Removed integration with Better Farm Animal Variety.
+- Removed unused mod API methods.
+- Internal refactoring.
+
 ## 1.0.10
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
 

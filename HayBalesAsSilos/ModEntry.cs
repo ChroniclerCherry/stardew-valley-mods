@@ -1,98 +1,79 @@
 using System.Collections.Generic;
-using System.Linq;
-using HarmonyLib;
+using ChroniclerCherry.Common.Integrations.GenericModConfigMenu;
 using HayBalesAsSilos.Framework;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
-using StardewValley.Buildings;
 using StardewValley.GameData.Shops;
 
-namespace HayBalesAsSilos
+namespace HayBalesAsSilos;
+
+/// <summary>The mod entry point.</summary>
+internal class ModEntry : Mod
 {
-    public class ModEntry : Mod
+    /*********
+    ** Fields
+    *********/
+    /// <summary>The mod settings.</summary>
+    private ModConfig Config;
+
+    /// <summary>The unqualified item ID for the Hay Bale item.</summary>
+    private const string HayBaleId = "45";
+
+    /// <summary>The qualified item ID for the Hay Bale item.</summary>
+    internal const string HayBaleQualifiedId = ItemRegistry.type_bigCraftable + HayBaleId;
+
+    /// <summary>The cached number of hay bales in each location.</summary>
+    /// <remarks>Most code should use <see cref="CountHayBalesIn"/> instead.</remarks>
+    private readonly Dictionary<string, int> HayBalesByLocation = new();
+
+
+    /*********
+    ** Public methods
+    *********/
+    /// <inheritdoc />
+    public override void Entry(IModHelper helper)
     {
-        internal static IMonitor monitor;
-        internal static ModConfig Config;
+        // init
+        this.Config = helper.ReadConfig<ModConfig>();
+        I18n.Init(helper.Translation);
+        GamePatcher.Apply(this.ModManifest.UniqueID, this.Monitor, () => this.Config, this.CountHayBalesIn);
 
-        internal static readonly string HayBaleId = "45";
-        internal static readonly string HayBaleQualifiedId = ItemRegistry.type_bigCraftable + "45";
+        // hook events
+        helper.Events.Content.AssetRequested += this.OnAssetRequested;
+        helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+        helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+        helper.Events.GameLoop.TimeChanged += this.GameLoopOnTimeChanged;
+        helper.Events.World.ObjectListChanged += this.OnObjectListChanged;
+    }
 
-        public override void Entry(IModHelper helper)
+
+    /*********
+     ** Private methods
+     *********/
+    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
+    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+    {
+        this.AddGenericModConfigMenu(
+            new GenericModConfigMenuIntegrationForHayBaysAsSilos(),
+            get: () => this.Config,
+            set: config => this.Config = config
+        );
+    }
+
+    /// <inheritdoc cref="IInputEvents.ButtonPressed" />
+    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
+    {
+        // handle click on hay bale
+        if (Context.CanPlayerMove && (e.Button.IsActionButton() || e.Button.IsUseToolButton()))
         {
-            monitor = this.Monitor;
-            Config = this.Helper.ReadConfig<ModConfig>();
-
-            var harmony = new Harmony(this.ModManifest.UniqueID);
-            harmony.Patch(
-                original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.GetHayCapacity)),
-                postfix: new HarmonyMethod(typeof(PatchGameLocation), nameof(PatchGameLocation.After_GetHayCapacity))
-            );
-
-            helper.Events.Content.AssetRequested += this.OnAssetRequested;
-            helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
-            helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
-        }
-
-        // Add GMCM compatibility
-        private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
-        {
-            var configMenu = this.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
-            if (configMenu is null)
-                return;
-
-            configMenu.Register(
-                mod: this.ModManifest,
-                reset: () => Config = new ModConfig(),
-                save: () => this.Helper.WriteConfig(Config)
-            );
-
-            configMenu.AddBoolOption(
-                mod: this.ModManifest,
-                name: () => this.Helper.Translation.Get("config.require-constructed-silo.name"),
-                tooltip: () => this.Helper.Translation.Get("config.require-constructed-silo.desc"),
-                getValue: () => Config.RequiresConstructedSilo,
-                setValue: value => Config.RequiresConstructedSilo = value
-            );
-
-            configMenu.AddNumberOption(
-                mod: this.ModManifest,
-                name: () => this.Helper.Translation.Get("config.hay-per-bale.name"),
-                tooltip: () => this.Helper.Translation.Get("config.hay-per-bale.desc"),
-                getValue: () => Config.HayPerBale,
-                setValue: value => Config.HayPerBale = value
-            );
-
-            configMenu.AddNumberOption(
-                mod: this.ModManifest,
-                name: () => this.Helper.Translation.Get("config.purchase-price.name"),
-                tooltip: () => this.Helper.Translation.Get("config.purchase-price.desc"),
-                getValue: () => Config.HaybalePrice,
-                setValue: value => Config.HaybalePrice = value
-            );
-        }
-
-        private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
-        {
-            //ignore input if the player isnt free to move aka world not loaded,
-            //they're in an event, a menu is up, etc
-            if (!Context.CanPlayerMove)
-                return;
-
             GameLocation location = Game1.currentLocation;
-            if (!GetAllAffectedMaps().Contains(location))
-                return;
 
-            //action button works for right click on mouse and action button for controllers
-            if (!e.Button.IsActionButton() && !e.Button.IsUseToolButton())
-                return;
-
-            //check if the clicked tile contains a Farm Renderer
             Vector2 tile = this.Helper.Input.GetCursorPosition().GrabTile;
-            if (location.Objects.TryGetValue(tile, out Object obj) && obj.QualifiedItemId == HayBaleQualifiedId)
+            if (location.Objects.GetValueOrDefault(tile) is { QualifiedItemId: HayBaleQualifiedId })
             {
-                if (location.getBuildingByType("Silo") is null)
+                if (this.Config.RequiresConstructedSilo && location.getBuildingByType("Silo") is null)
                 {
                     Game1.showRedMessage(Game1.content.LoadString("Strings\\Buildings:NeedSilo"));
                     return;
@@ -121,49 +102,68 @@ namespace HayBalesAsSilos
                 }
             }
         }
+    }
 
-        private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+    /// <inheritdoc cref="IContentEvents.AssetRequested" />
+    private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+    {
+        // edit hay bale text
+        if (e.NameWithoutLocale.IsEquivalentTo("Strings/BigCraftables"))
         {
-            // edit hay bale text
-            if (e.NameWithoutLocale.IsEquivalentTo("Strings/BigCraftables"))
+            e.Edit(asset =>
             {
-                e.Edit(asset =>
-                {
-                    var data = asset.AsDictionary<string, string>().Data;
+                var data = asset.AsDictionary<string, string>().Data;
 
-                    data["OrnamentalHayBale_Name"] = this.Helper.Translation.Get("DisplayName");
-                    data["OrnamentalHayBale_Description"] = this.Helper.Translation.Get("Description").ToString().Replace("{{capacity}}", Config.HayPerBale.ToString());
-                });
-            }
+                data["OrnamentalHayBale_Name"] = I18n.DisplayName();
+                data["OrnamentalHayBale_Description"] = I18n.Description(capacity: this.Config.HayPerBale);
+            });
+        }
 
-            // add to shop
-            else if (e.NameWithoutLocale.IsEquivalentTo("Data/Shops"))
+        // add to shop
+        else if (e.NameWithoutLocale.IsEquivalentTo("Data/Shops"))
+        {
+            e.Edit(asset =>
             {
-                e.Edit(asset =>
-                {
-                    var data = asset.AsDictionary<string, ShopData>().Data;
+                var data = asset.AsDictionary<string, ShopData>().Data;
 
-                    if (data.TryGetValue(Game1.shop_animalSupplies, out ShopData shop))
+                if (data.TryGetValue(Game1.shop_animalSupplies, out ShopData shop))
+                {
+                    foreach (ShopItemData item in shop.Items)
                     {
-                        shop.Items.Add(new ShopItemData
-                        {
-                            Id = HayBaleId,
-                            ItemId = HayBaleId,
-                            Price = Config.HaybalePrice,
-                            Condition = "PLAYER_HAS_MAIL Current FarmRearrangerMail Received"
-                        });
+                        if (item?.ItemId is HayBaleId or HayBaleQualifiedId)
+                            item.Price = this.Config.HayBalePrice;
                     }
-                });
-            }
+                }
+            });
         }
+    }
 
-        internal static IEnumerable<GameLocation> GetAllAffectedMaps()
-        {
-            yield return Game1.getFarm();
-            foreach (Building building in Game1.getFarm().buildings.Where(building => building.indoors.Value != null))
-            {
-                yield return building.indoors.Value;
-            }
-        }
+    /// <inheritdoc cref="IGameLoopEvents.TimeChanged" />
+    private void GameLoopOnTimeChanged(object sender, TimeChangedEventArgs e)
+    {
+        this.HayBalesByLocation.Clear();
+    }
+
+    /// <inheritdoc cref="IWorldEvents.ObjectListChanged" />
+    private void OnObjectListChanged(object sender, ObjectListChangedEventArgs e)
+    {
+        string locationKey = e.Location.NameOrUniqueName;
+
+        if (locationKey != null)
+            this.HayBalesByLocation.Remove(locationKey);
+    }
+
+    /// <summary>Get the number of hay bales currently placed in a given location.</summary>
+    /// <param name="location">The location to check.</param>
+    private int CountHayBalesIn(GameLocation location)
+    {
+        string locationKey = location?.NameOrUniqueName;
+        if (locationKey is null)
+            return 0;
+
+        if (!this.HayBalesByLocation.TryGetValue(locationKey, out int count))
+            this.HayBalesByLocation[locationKey] = count = location.numberOfObjectsOfType(HayBaleId, bigCraftable: true);
+
+        return count;
     }
 }

@@ -1,7 +1,6 @@
-namespace LimitedCampfireCooking.Framework
+namespace LimitedCampfireCooking.Framework;
+
+public interface ICustomCraftingStationsApi
 {
-    public interface ICustomCraftingStationsApi
-    {
-        void SetCCSCraftingMenuOverride(bool menuOverride);
-    }
+    void SetCCSCraftingMenuOverride(bool menuOverride);
 }

@@ -1,10 +1,9 @@
-namespace ToolUpgradeCosts.Framework
+namespace ToolUpgradeCosts.Framework;
+
+internal enum UpgradeMaterials
 {
-    public enum UpgradeMaterials
-    {
-        Copper = 1,
-        Steel,
-        Gold,
-        Iridium
-    }
+    Copper = 1,
+    Steel,
+    Gold,
+    Iridium
 }

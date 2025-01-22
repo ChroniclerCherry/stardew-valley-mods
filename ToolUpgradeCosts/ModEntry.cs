@@ -1,96 +1,60 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
-using StardewValley.GameData.Shops;
-using StardewValley.Internal;
-using StardewValley.Tools;
 using ToolUpgradeCosts.Framework;
 
-namespace ToolUpgradeCosts
+namespace ToolUpgradeCosts;
+
+/// <summary>The mod entry point.</summary>
+internal class ModEntry : Mod
 {
-    public class ModEntry : Mod
+    /*********
+    ** Fields
+    *********/
+    private readonly Dictionary<UpgradeMaterials, string> DefaultMaterials = new()
     {
-        private static ModEntry _instance;
+        {UpgradeMaterials.Copper, "334"},
+        {UpgradeMaterials.Steel, "335"},
+        {UpgradeMaterials.Gold, "336"},
+        {UpgradeMaterials.Iridium, "337"}
+    };
 
-        private readonly Dictionary<UpgradeMaterials, string> _defaultMaterials = new()
+    /// <summary>The mod settings.</summary>
+    private ModConfig Config;
+
+
+    /*********
+    ** Public methods
+    *********/
+    /// <inheritdoc />
+    public override void Entry(IModHelper helper)
+    {
+        this.Config = helper.ReadConfig<ModConfig>();
+        GamePatcher.Apply(this.ModManifest.UniqueID, this.Monitor, () => this.Config);
+
+        helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
+    }
+
+
+    /*********
+    ** Private methods
+    *********/
+    /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
+    private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+    {
+        foreach (KeyValuePair<UpgradeMaterials, Upgrade> upgrade in this.Config.UpgradeCosts)
         {
-            {UpgradeMaterials.Copper, "334"},
-            {UpgradeMaterials.Steel, "335"},
-            {UpgradeMaterials.Gold, "336"},
-            {UpgradeMaterials.Iridium, "337"}
-        };
+            string name = upgrade.Value.MaterialName;
 
-        private Config _config;
-
-        public override void Entry(IModHelper helper)
-        {
-            _instance = this;
-            this._config = helper.ReadConfig<Config>();
-            this.Helper.Events.GameLoop.SaveLoaded += this.GetIndexes;
-
-            Harmony harmony = new Harmony(this.ModManifest.UniqueID);
-
-            harmony.Patch(
-                AccessTools.Method(typeof(ShopBuilder), nameof(ShopBuilder.GetShopStock), new[] { typeof(string), typeof(ShopData) }),
-                postfix: new HarmonyMethod(typeof(ModEntry), nameof(ShopBuilder_GetShopStock_Postfix))
-            );
-        }
-
-        private void GetIndexes(object sender, SaveLoadedEventArgs e)
-        {
-            foreach (KeyValuePair<UpgradeMaterials, Upgrade> upgrade in this._config.UpgradeCosts)
+            string id = Game1.objectData.FirstOrDefault(kvp => kvp.Value.Name == name).Key;
+            if (id is null)
             {
-                string name = upgrade.Value.MaterialName;
-
-                string id = Game1.objectData.FirstOrDefault(kvp => kvp.Value.Name == name).Key;
-                if (id is null)
-                {
-                    this.Monitor.Log($"Object named \"{name}\" not found for the tool upgrade level of {upgrade.Key}. Vanilla upgrade item will be used", LogLevel.Error);
-                    id = this._defaultMaterials[upgrade.Key];
-                }
-                upgrade.Value.MaterialId = id;
+                this.Monitor.Log($"Object named \"{name}\" not found for the tool upgrade level of {upgrade.Key}. Vanilla upgrade item will be used", LogLevel.Error);
+                id = this.DefaultMaterials[upgrade.Key];
             }
-        }
-
-        public static void ShopBuilder_GetShopStock_Postfix(string shopId, ref Dictionary<ISalable, ItemStockInformation> __result)
-        {
-            if (shopId != Game1.shop_blacksmithUpgrades)
-                return;
-
-            try
-            {
-                Dictionary<ISalable, ItemStockInformation> editedStock = new Dictionary<ISalable, ItemStockInformation>();
-                foreach ((ISalable item, ItemStockInformation stockInfo) in __result)
-                {
-                    if (item is Tool tool && Enum.IsDefined(typeof(UpgradeMaterials), tool.UpgradeLevel))
-                    {
-                        UpgradeMaterials upgradeLevel = (UpgradeMaterials)tool.UpgradeLevel;
-                        if (tool is GenericTool)
-                        {
-                            upgradeLevel++;
-                        }
-                        editedStock[tool] = stockInfo with
-                        {
-                            Price = _instance._config.UpgradeCosts[upgradeLevel].Cost,
-                            TradeItem = _instance._config.UpgradeCosts[upgradeLevel].MaterialId,
-                            TradeItemCount = _instance._config.UpgradeCosts[upgradeLevel].MaterialStack
-                        };
-                    }
-                    else
-                    {
-                        editedStock[item] = stockInfo;
-                    }
-                }
-                __result = editedStock;
-            }
-            catch (Exception ex)
-            {
-                _instance.Monitor.Log($"Failed in {nameof(ShopBuilder_GetShopStock_Postfix)}:\n{ex}", LogLevel.Error);
-            }
+            upgrade.Value.MaterialId = id;
         }
     }
 }

@@ -1,4 +1,13 @@
 ﻿# Release notes
+## 1.2.0
+Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
+- Updated for Stardew Valley 1.6.15.
+- Hay bales now work anywhere, not just the main farm.
+- Improved error-handling in game patches.
+- Fixed configured price not applied in Marnie's shop.
+- Fixed 'Silo required' shown even when the 'require silo construction' option is disabled.
+
 ## 1.1.0
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.
 

@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 
-namespace CustomCraftingStations.Framework
+namespace CustomCraftingStations.Framework;
+
+internal class ContentPack
 {
-    public class ContentPack
-    {
-        public List<CraftingStationConfig> CraftingStations;
-    }
+    public List<CraftingStationConfig> CraftingStations;
 }

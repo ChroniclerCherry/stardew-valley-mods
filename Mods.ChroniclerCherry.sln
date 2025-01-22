@@ -45,9 +45,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{9ECF932E
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = ".Common", "Common\.Common.shproj", "{1BDDC0C7-CF26-47FD-B6EB-BF945B0862B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -133,5 +136,11 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E0F41F45-94BD-4BE2-A9D4-55D9F437464D}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Common\Common.projitems*{15f86daa-1648-494f-9fb9-67532a1ed38c}*SharedItemsImports = 5
+		Common\Common.projitems*{1bddc0c7-cf26-47fd-b6eb-bf945b0862b9}*SharedItemsImports = 13
+		Common\Common.projitems*{1c8c8299-8421-429e-b02a-e00c1a36d800}*SharedItemsImports = 5
+		Common\Common.projitems*{9f11d9c1-e5a3-4e03-a003-8dc6931c80cb}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

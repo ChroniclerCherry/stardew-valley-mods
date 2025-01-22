@@ -1,65 +1,73 @@
-using StardewModdingAPI;
-using StardewValley;
-using StardewValley.Menus;
 using System;
-using HarmonyLib;
 using PlatonicRelationships.Framework;
+using StardewModdingAPI;
 using StardewModdingAPI.Events;
 
-namespace PlatonicRelationships
+namespace PlatonicRelationships;
+
+/// <summary>The mod entry point.</summary>
+internal class ModEntry : Mod
 {
-    public class ModEntry : Mod
+    /*********
+    ** Fields
+    *********/
+    /// <summary>The mod settings.</summary>
+    private ModConfig Config;
+
+    /// <summary>Adjusts event data to disable vanilla 10-heart events for NPCs the player isn't dating.</summary>
+    private EventEditor EventEditor;
+
+
+    /*********
+    ** Public methods
+    *********/
+    /// <inheritdoc />
+    public override void Entry(IModHelper helper)
     {
-        private ModConfig Config;
-        private readonly AddDatingPrereq Editor = new AddDatingPrereq();
+        this.Config = helper.ReadConfig<ModConfig>();
+        GamePatcher.Apply(this.ModManifest.UniqueID, this.Monitor);
 
-        public override void Entry(IModHelper helper)
+        DataModel data = this.LoadDataFile();
+
+        if (this.Config.AddDatingRequirementToRomanticEvents)
         {
-            this.Config = this.Helper.ReadConfig<ModConfig>();
-            if (this.Config.AddDatingRequirementToRomanticEvents)
-                helper.Events.Content.AssetRequested += this.OnAssetRequested;
+            this.EventEditor = new EventEditor(data, helper.GameContent.ParseAssetName);
 
-            //apply harmony patches
-            this.ApplyPatches();
+            helper.Events.Content.AssetRequested += this.OnAssetRequested;
+        }
+    }
+
+
+    /*********
+    ** Private methods
+    *********/
+    /// <inheritdoc cref="IContentEvents.AssetRequested" />
+    private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+    {
+        this.EventEditor.OnAssetRequested(e);
+    }
+
+    /// <summary>Load the mod data from the <c>assets/data.json</c> file.</summary>
+    private DataModel LoadDataFile()
+    {
+        const string filePath = "assets/data.json";
+        try
+        {
+            DataModel data = this.Helper.Data.ReadJsonFile<DataModel>(filePath);
+            if (data is not null)
+            {
+                data.RomanticEvents ??= new();
+                data.RomanticTriggerActions ??= new();
+                return data;
+            }
+
+            this.Monitor.Log($"The '{filePath}' file is missing or empty, so Platonic Relationships may not work correctly. You can try reinstalling the mod to reset the file.");
+        }
+        catch (Exception ex)
+        {
+            this.Monitor.Log($"The '{filePath}' file couldn't be loaded, so Platonic Relationships may not work correctly. You can try reinstalling the mod to reset the file.\n\nTechnical details: {ex}");
         }
 
-        private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
-        {
-            if (this.Editor.CanEdit(e.NameWithoutLocale))
-                e.Edit(this.Editor.Edit);
-        }
-
-        public void ApplyPatches()
-        {
-            var harmony = new Harmony("cherry.platonicrelationships");
-
-            try
-            {
-                this.Monitor.Log("Transpile patching SocialPage.drawNPCSlotHeart");
-                harmony.Patch(
-                    original: AccessTools.Method(typeof(SocialPage), name: "drawNPCSlotHeart"),
-                    prefix: new HarmonyMethod(methodType: typeof(PatchDrawNpcSlotHeart), nameof(PatchDrawNpcSlotHeart.Prefix))
-                );
-            }
-            catch (Exception e)
-            {
-                this.Monitor.Log($"Failed in Patching SocialPage.drawNPCSlotHeart: \n{e}", LogLevel.Error);
-                return;
-            }
-
-            try
-            {
-                this.Monitor.Log("Postfix patching Utility.GetMaximumHeartsForCharacter");
-                harmony.Patch(
-                    original: AccessTools.Method(typeof(Utility), name: "GetMaximumHeartsForCharacter"),
-                    postfix: new HarmonyMethod(typeof(patchGetMaximumHeartsForCharacter), nameof(patchGetMaximumHeartsForCharacter.Postfix))
-                );
-            }
-            catch (Exception e)
-            {
-                this.Monitor.Log($"Failed in Patching Utility.GetMaximumHeartsForCharacter: \n{e}", LogLevel.Error);
-                return;
-            }
-        }
+        return new DataModel();
     }
 }
