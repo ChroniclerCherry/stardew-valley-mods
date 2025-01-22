@@ -32,4 +32,15 @@ internal static class ModUtility
                 yield return (building, indoors);
         }
     }
+
+    /// <summary>Get a detailed description for a cabin to help identify it in lists.</summary>
+    /// <param name="cabin">The cabin building.</param>
+    public static string GetCabinDescription(Building cabin)
+    {
+        string cabinName = cabin.skinId.Value is null or ""
+            ? "Stone Cabin"
+            : cabin.skinId.Value;
+
+        return $"{cabinName} at tile position {cabin.tileX.Value + 2} {cabin.tileY.Value + 1}"; // show tile position of door
+    }
 }

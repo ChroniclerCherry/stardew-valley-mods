@@ -89,22 +89,16 @@ internal class ModEntry : Mod
         List<Response> cabinNames = new List<Response>();
         foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
         {
-            string displayInfo = null;
-
-            switch (indoors.upgradeLevel)
+            string upgradeString = indoors.upgradeLevel switch
             {
-                case 0:
-                    displayInfo = $"{cabin.buildingType.Value} {I18n.Robin_Hu1Materials()}";
-                    break;
-                case 1:
-                    displayInfo = $"{cabin.buildingType.Value} {I18n.Robin_Hu2Materials()}";
-                    break;
-                case 2:
-                    displayInfo = $"{cabin.buildingType.Value} {I18n.Robin_Hu3Materials()}";
-                    break;
-            }
-            if (displayInfo != null)
-                cabinNames.Add(new Response(cabin.GetIndoorsName(), displayInfo));
+                0 => I18n.Robin_Hu1Materials(),
+                1 => I18n.Robin_Hu2Materials(),
+                2 => I18n.Robin_Hu3Materials(),
+                _ => null
+            };
+
+            if (upgradeString != null)
+                cabinNames.Add(new Response(cabin.GetIndoorsName(), $"{ModUtility.GetCabinDescription(cabin)}: {upgradeString}."));
         }
 
         if (cabinNames.Count > 0)

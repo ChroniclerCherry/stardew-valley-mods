@@ -1,8 +1,9 @@
 ﻿# Release notes
 ## Upcoming release
-- Cabin upgrades now always complete instantly, but still apply the upgrade costs.
+- Cabin upgrades are now always instant, but still apply the upgrade costs.
 - You can now move beds in any empty cabin.
-- You can now paint any empty cabin through Robin's menu.
+- You can now change the appearance of any empty cabin through Robin's menu.
+- Robin's upgrade menu now shows a more detailed description of each cabin, to make it easier to choose the one you want.
 - The config menu UI text is now translatable.
 - Updated for the new 1.6 renovations and renovation costs (thanks to XTFOX!).
 - Fixed broken dialogue in Stardew Valley 1.6 when you don't have enough wood.
