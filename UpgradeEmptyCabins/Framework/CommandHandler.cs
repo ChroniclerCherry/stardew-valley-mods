@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Text;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
+using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Locations;
 using StardewValley.Objects;
@@ -10,6 +14,7 @@ using Object = StardewValley.Object;
 namespace UpgradeEmptyCabins.Framework
 {
     /// <summary>Handles console commands registered by the mod.</summary>
+    [SuppressMessage("ReSharper", "StringLiteralTypo", Justification = "Strings contain renovation IDs, which must match exactly.")]
     internal class CommandHandler
     {
         /*********
@@ -39,175 +44,384 @@ namespace UpgradeEmptyCabins.Framework
         public void Register(ICommandHelper commandHelper)
         {
             // general
-            commandHelper.Add("upgrade_cabin", "If Robin is free, brings up the menu to upgrade cabins.", this.UpgradeCabinsCommand);
-            commandHelper.Add("remove_seed_boxes", "Removes seed boxes from all unclaimed cabins.", this.RemoveSeedBoxesCommand);
-            commandHelper.Add("renovate_cabins", "Removes cribs and adds all the extra rooms to all unclaimed cabins.", this.RenovateCabinsCommand);
+            commandHelper.Add(
+                "upgrade_cabins",
+                """
+                If Robin is free, show the menu to upgrade cabins.
 
-            // renovate specific cabins
-            commandHelper.Add("list_cabins", "Lists cabin names for toggle_renovate.", this.ListCabins);
-            commandHelper.Add("list_renovations", "Lists renovation names for toggle_renovate.", this.ListRenovations);
-            commandHelper.Add("set_crib_style", "Sets the crib style for an unclaimed cabin.", this.SetCribStyleCommand);
-            commandHelper.Add("toggle_renovate", "Toggles a renovation for an unclaimed cabin.", this.ToggleRenovateCommand);
+                Usage:
+                    upgrade_cabins
+                """,
+                this.HandleUpgradeCabins
+            );
+            commandHelper.Add(
+                "list_cabins",
+                """
+                List all empty cabins in the save. The number before each cabin can be used in other commands, like `renovate_cabin 1` to renovate the first one.
+
+                Usage:
+                    list_cabins
+                """,
+                this.HandleListCabins
+            );
+            commandHelper.Add(
+                "list_renovations",
+                """
+                List the renovation names that can be used with the `toggle_renovate` command.
+                
+                Usage:
+                    list_renovations
+                """,
+                this.HandleListRenovations
+            );
+
+            // specific cabins
+            commandHelper.Add(
+                "remove_seed_box",
+                """
+                Remove the seed box from an empty cabin.
+
+                Usage:
+                   remove_seed_box <cabin number>
+
+                Enter `list_cabins` to see a list of cabin numbers.
+                """,
+                this.HandleRemoveSeedBox
+            );
+            commandHelper.Add(
+                "renovate_cabin",
+                """
+                Remove cribs and add all extra rooms in an empty cabin.
+
+                Usage:
+                    renovate_cabin <cabin number>
+
+                Enter `list_cabins` to see a list of cabin numbers.
+                """,
+                this.HandleRenovateCabin
+            );
+            commandHelper.Add(
+                "set_crib_style",
+                """
+                Set the crib style for an empty cabin.
+
+                Usage:
+                    set_crib_style <cabin number> <style>
+
+                Enter `list_cabins` to see a list of cabin numbers. The crib style should usually be '0' (none) or '1' (added).
+                """,
+                this.HandleSetCribStyle
+            );
+            commandHelper.Add(
+                "toggle_renovation",
+                """
+                Toggle a renovation for an empty cabin.
+
+                Usage:
+                    toggle_renovation <cabin number> <renovation ID>
+
+                Enter `list_cabins` to see a list of cabin numbers, and `list_renovations` for a list of renovation IDs.
+                """,
+                this.HandleToggleRenovation
+            );
         }
 
 
         /*********
         ** Private methods
         *********/
-        /****
-        ** General
-        ****/
-        private void UpgradeCabinsCommand(string arg1, string[] arg2)
+        /// <summary>Handle the <c>upgrade_cabins</c> console command.</summary>
+        /// <param name="commandName">The command name.</param>
+        /// <param name="args">The command arguments.</param>
+        private void HandleUpgradeCabins(string commandName, string[] args)
         {
+            if (!this.AssertSaveLoaded(out string error))
+            {
+                this.LogCommandError(commandName, error);
+                return;
+            }
+
             this.AskForUpgrade();
         }
 
-        private void RemoveSeedBoxesCommand(string arg1, string[] arg2)
+        /// <summary>Handle the <c>remove_seed_box</c> console command.</summary>
+        /// <param name="commandName">The command name.</param>
+        /// <param name="args">The command arguments.</param>
+        private void HandleRemoveSeedBox(string commandName, string[] args)
         {
-            foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
+            // read args
+            if (!this.AssertSaveLoaded(out string error) || !this.TryGetCabinFromArg(args, 0, out Building cabin, out Cabin indoors, out error))
             {
-                foreach ((Vector2 tile, Object obj) in indoors.Objects.Pairs)
-                {
-                    if (obj is not Chest chest || !chest.giftbox.Value || chest.bigCraftable.Value)
-                    {
-                        continue;
-                    }
-
-                    indoors.Objects.Remove(tile);
-                    this.Monitor.Log("Seed box removed from " + cabin.GetIndoorsName(), LogLevel.Info);
-                }
+                this.LogCommandError(commandName, error);
+                return;
             }
-        }
 
-        private void RenovateCabinsCommand(string arg1, string[] arg2)
-        {
-            string[] renos = { "renovation_bedroom_open", "renovation_southern_open", "renovation_corner_open", "renovation_extendedcorner_open", "renovation_dining_open", "renovation_diningroomwall_open", "renovation_cubby_open", "renovation_farupperroom_open" };
-
-            foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
+            // remove seed box
+            bool removed = false;
+            foreach ((Vector2 tile, Object obj) in indoors.Objects.Pairs)
             {
-                this.Monitor.Log("Cabin: " + cabin.GetIndoorsName(), LogLevel.Info);
-                this.Monitor.Log("    Type: " + cabin.buildingType.Value, LogLevel.Info);
-                if (indoors.upgradeLevel < 2)
+                if (obj is not Chest chest || !chest.giftbox.Value || chest.bigCraftable.Value)
                 {
-                    this.Monitor.Log("    Upgrade Level: " + indoors.upgradeLevel, LogLevel.Info);
-                    this.Monitor.Log("    Upgrade Level 2 required for renovations. Not Renovated.", LogLevel.Info);
                     continue;
                 }
+
+                indoors.Objects.Remove(tile);
+                removed = true;
+                this.Monitor.Log($"Seed box removed from {ModUtility.GetCabinDescription(cabin)}.", LogLevel.Info);
+            }
+            if (!removed)
+                this.Monitor.Log($"No seed box found in {ModUtility.GetCabinDescription(cabin)}.", LogLevel.Info);
+        }
+
+        /// <summary>Handle the <c>renovate_cabin</c> console command.</summary>
+        /// <param name="commandName">The command name.</param>
+        /// <param name="args">The command arguments.</param>
+        private void HandleRenovateCabin(string commandName, string[] args)
+        {
+            // read args
+            if (!this.AssertSaveLoaded(out string error) || !this.TryGetCabinFromArg(args, 0, out Building cabin, out Cabin indoors, out error))
+            {
+                this.LogCommandError(commandName, error);
+                return;
+            }
+
+            // validate upgrade level
+            if (indoors.upgradeLevel < 2)
+            {
+                this.Monitor.Log($"Can't apply renovations to {ModUtility.GetCabinDescription(cabin)}: cabins need upgrade level 2 for renovations, but it only has upgrade level {indoors.upgradeLevel}. You can run `upgrade_cabins` to upgrade it.", LogLevel.Error);
+                return;
+            }
+
+            // apply
+            StringBuilder summary = new();
+            {
+                summary.AppendLine($"Adding all renovations to {ModUtility.GetCabinDescription(cabin)}...");
+
                 ISet<string> mail = indoors.owner.mailReceived;
-                foreach (string reno in renos)
+                foreach (string renovationId in new[] { "renovation_bedroom_open", "renovation_southern_open", "renovation_corner_open", "renovation_extendedcorner_open", "renovation_dining_open", "renovation_diningroomwall_open", "renovation_cubby_open", "renovation_farupperroom_open" })
                 {
-                    if (mail.Contains(reno))
-                        this.Monitor.Log("Renovation already done: " + reno + " " + cabin.GetIndoorsName(), LogLevel.Info);
+                    if (mail.Contains(renovationId))
+                        summary.AppendLine($"  - {renovationId}: already applied.");
                     else
                     {
-                        if (reno == "renovation_diningroomwall_open")
-                            mail.Remove(reno);
+                        if (renovationId == "renovation_diningroomwall_open")
+                            mail.Remove(renovationId);
                         else
-                            mail.Add(reno);
+                            mail.Add(renovationId);
+
+                        summary.AppendLine($"  - {renovationId}: added.");
                     }
                 }
 
                 indoors.cribStyle.Set(0);
-                this.Monitor.Log("    cribStyle:  " + indoors.cribStyle.Value, LogLevel.Info);
-                this.Monitor.Log("    flags: " + mail, LogLevel.Info);
+                summary.AppendLine("  - cribs: removed.");
             }
+            this.Monitor.Log(summary.ToString(), LogLevel.Info);
         }
 
         /****
         ** Renovate specific cabins
         ****/
-        private void ListCabins(string arg1, string[] arg2)
+        /// <summary>Handle the <c>list_cabins</c> console command.</summary>
+        /// <param name="commandName">The command name.</param>
+        /// <param name="args">The command arguments.</param>
+        private void HandleListCabins(string commandName, string[] args)
         {
-            this.Monitor.Log("Upgrade Level 2 required for renovations.", LogLevel.Info);
-
-            foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
+            if (!this.AssertSaveLoaded(out string error))
             {
-                this.Monitor.Log("Cabin: " + cabin.GetIndoorsName(), LogLevel.Info);
-                this.Monitor.Log("    Upgrade Level: " + indoors.upgradeLevel, LogLevel.Info);
+                this.LogCommandError(commandName, error);
+                return;
             }
+
+            // get cabins
+            var cabins = ModUtility.GetEmptyCabins().ToArray();
+            if (cabins.Length == 0)
+            {
+                this.Monitor.Log("You don't have any empty cabins in this save.", LogLevel.Info);
+                return;
+            }
+
+            // list cabin info
+            StringBuilder summary = new StringBuilder();
+            summary.AppendLine($"You have {cabins.Length} empty cabin{(cabins.Length > 1 ? "s" : "")} in this save:");
+
+            for (int i = 0; i < cabins.Length; i++)
+            {
+                (Building cabin, Cabin indoors) = cabins[i];
+
+                summary
+                    .Append($"  {i + 1}. {ModUtility.GetCabinDescription(cabin)}, ")
+                    .Append(indoors.upgradeLevel switch
+                    {
+                        0 => "not upgraded yet.",
+                        1 => $"upgrade level {indoors.upgradeLevel} (kitchen).",
+                        2 => $"upgrade level {indoors.upgradeLevel} (kitchen + extra rooms).",
+                        3 => $"upgrade level {indoors.upgradeLevel} (kitchen + extra rooms + cellar).",
+                        _ => $"upgrade level {indoors.upgradeLevel}."
+                    })
+                    .Append(ReferenceEquals(Game1.player.currentLocation, indoors)
+                        ? " You are here."
+                        : ""
+                    )
+                    .AppendLine();
+            }
+
+            summary
+                .AppendLine()
+                .AppendLine("You can use the cabin number in other commands, like `remove_seed_box 1` to remove it from the first cabin above.");
+
+            this.Monitor.Log(summary.ToString(), LogLevel.Info);
         }
 
-        private void ListRenovations(string arg1, string[] arg2)
+        /// <summary>Handle the <c>list_renovations</c> console command.</summary>
+        /// <param name="commandName">The command name.</param>
+        /// <param name="args">The command arguments.</param>
+        private void HandleListRenovations(string commandName, string[] args)
         {
+            if (!this.AssertSaveLoaded(out string error))
+            {
+                this.LogCommandError(commandName, error);
+                return;
+            }
+
             this.Monitor.Log("renovation_bedroom_open, renovation_southern_open, renovation_corner_open, renovation_extendedcorner_open, renovation_dining_open, renovation_diningroomwall_open, renovation_cubby_open, renovation_farupperroom_open", LogLevel.Info);
         }
 
-        private void SetCribStyleCommand(string arg1, string[] arg2)
+        /// <summary>Handle the <c>set_crib_style</c> console command.</summary>
+        /// <param name="commandName">The command name.</param>
+        /// <param name="args">The command arguments.</param>
+        private void HandleSetCribStyle(string commandName, string[] args)
         {
-            string cabinType = arg2[0] + " Cabin"; //"Plank","Stone","Log"
-            int style = int.Parse(arg2[1]);
-
-            foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
+            // read args
+            if (!this.AssertSaveLoaded(out string error) || !this.TryGetCabinFromArg(args, 0, out Building cabin, out Cabin indoors, out error) || !ArgUtility.TryGetInt(args, 1, out int cribStyle, out error))
             {
-                if (cabin.buildingType.ToString() == cabinType)
-                {
-                    indoors.cribStyle.Set(style);
-                    this.Monitor.Log("Cabin: " + cabin.GetIndoorsName(), LogLevel.Info);
-                    this.Monitor.Log("Cabin Type: " + cabin.buildingType.Value, LogLevel.Info);
-                    this.Monitor.Log("cribStyle: " + indoors.cribStyle.Value, LogLevel.Info);
-                }
+                this.LogCommandError(commandName, error);
+                return;
             }
+
+            // apply
+            indoors.cribStyle.Value = cribStyle;
+            this.Monitor.Log($"Crib style {cribStyle} set for {ModUtility.GetCabinDescription(cabin)}.", LogLevel.Info);
         }
 
-        private void ToggleRenovateCommand(string arg1, string[] arg2)
+        /// <summary>Handle the <c>toggle_renovation</c> console command.</summary>
+        /// <param name="commandName">The command name.</param>
+        /// <param name="args">The command arguments.</param>
+        private void HandleToggleRenovation(string commandName, string[] args)
         {
-            string cabinType = arg2[0]; //"Plank","Stone","Log"
-            string reno = arg2[1]; //"renovation_bedroom_open", "renovation_southern_open", "renovation_corner_open", "renovation_extendedcorner_open", "renovation_dining_open", "renovation_diningroomwall_open", "renovation_cubby_open", "renovation_farupperroom_open"
-
-            foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
+            // read args
+            if (!this.AssertSaveLoaded(out string error) || !this.TryGetCabinFromArg(args, 0, out Building cabin, out Cabin indoors, out error) || !ArgUtility.TryGet(args, 1, out string renovationId, out error, allowBlank: false))
             {
-                if (cabin.GetIndoorsName() == cabinType)
-                {
-                    ISet<string> mail = indoors.owner.mailReceived;
-                    this.Monitor.Log("Cabin: " + cabin.GetIndoorsName(), LogLevel.Info);
+                this.LogCommandError(commandName, error);
+                return;
+            }
 
-                    if (reno == "renovation_diningroomwall_open")
+            // apply
+            StringBuilder summary = new();
+            {
+                summary.AppendLine($"Toggling renovation '{renovationId}' for {ModUtility.GetCabinDescription(cabin)}...");
+
+                ISet<string> mail = indoors.owner.mailReceived;
+                if (renovationId == "renovation_diningroomwall_open")
+                {
+                    if (mail.Add("renovation_dining_open"))
                     {
-                        if (!mail.Contains("renovation_dining_open"))
-                        {
-                            mail.Add("renovation_dining_open");
-                            mail.Remove(reno);
-                            this.Monitor.Log("Renovation Added: renovation_dining_open" + reno, LogLevel.Info);
-                            this.Monitor.Log("Renovation Removed: " + reno, LogLevel.Info);
-                        }
-                        else if (mail.Contains("renovation_dining_open") && !mail.Contains("renovation_diningroomwall_open"))
-                        {
-                            mail.Add(reno);
-                            this.Monitor.Log("Renovation Added: " + reno, LogLevel.Info);
-                        }
-                        else
-                        {
-                            mail.Remove(reno);
-                            this.Monitor.Log("Renovation Removed: " + reno, LogLevel.Info);
-                        }
+                        mail.Remove(renovationId);
+                        summary.AppendLine($"  Added 'renovation_dining_open{renovationId}' and removed '{renovationId}'.");
                     }
-                    else if (mail.Contains(reno))
+                    else if (mail.Contains("renovation_dining_open") && !mail.Contains("renovation_diningroomwall_open"))
                     {
-                        if (reno == "renovation_corner_open")
-                        {
-                            mail.Remove("renovation_extendedcorner_open");
-                            this.Monitor.Log("Renovation Removed: renovation_extendedcorner_open", LogLevel.Info);
-                        }
-                        if (reno == "renovation_dining_open" && mail.Contains("renovation_diningroomwall_open"))
-                        {
-                            mail.Remove("renovation_diningroomwall_open");
-                            this.Monitor.Log("Renovation Removed: renovation_diningroomwall_open", LogLevel.Info);
-                        }
-                        mail.Remove(reno);
-                        this.Monitor.Log("Renovation Removed: " + reno, LogLevel.Info);
+                        mail.Add(renovationId);
+                        summary.AppendLine($"  Added '{renovationId}'.");
                     }
                     else
                     {
-                        if (reno == "renovation_extendedcorner_open")
-                        {
-                            mail.Add("renovation_corner_open");
-                            this.Monitor.Log("Renovation Added: renovation_corner_open", LogLevel.Info);
-                        }
-                        mail.Add(reno);
-                        this.Monitor.Log("Renovation Added: " + reno, LogLevel.Info);
+                        mail.Remove(renovationId);
+                        summary.AppendLine($"  Removed '{renovationId}'.");
                     }
                 }
+                else if (mail.Contains(renovationId))
+                {
+                    if (renovationId == "renovation_corner_open")
+                    {
+                        mail.Remove("renovation_extendedcorner_open");
+                        summary.AppendLine("  Removed 'renovation_extendedcorner_open'.");
+                    }
+
+                    if (renovationId == "renovation_dining_open" && mail.Contains("renovation_diningroomwall_open"))
+                    {
+                        mail.Remove("renovation_diningroomwall_open");
+                        summary.AppendLine("  Removed 'renovation_diningroomwall_open'.");
+                    }
+
+                    mail.Remove(renovationId);
+                    summary.AppendLine($"  Removed '{renovationId}'.");
+                }
+                else
+                {
+                    if (renovationId == "renovation_extendedcorner_open")
+                    {
+                        mail.Add("renovation_corner_open");
+                        summary.AppendLine("  Added 'renovation_corner_open'.");
+                    }
+
+                    mail.Add(renovationId);
+                    summary.AppendLine($"  Added '{renovationId}'.");
+                }
             }
+            this.Monitor.Log(summary.ToString(), LogLevel.Info);
+        }
+
+        /// <summary>Log an error indicating a command failed.</summary>
+        /// <param name="commandName">The command name.</param>
+        /// <param name="error">The error phrase indicating what went wrong.</param>
+        private void LogCommandError(string commandName, string error)
+        {
+            this.Monitor.Log($"The '{commandName}' command failed: {error}. You can enter `help {commandName}` for instructions.", LogLevel.Error);
+        }
+
+        /// <summary>Assert that a save was loaded before running the current command.</summary>
+        /// <param name="error">An error indicating a save must be loaded, if applicable.</param>
+        /// <returns>Returns whether a save is loaded.</returns>
+        private bool AssertSaveLoaded(out string error)
+        {
+            if (!Context.IsWorldReady)
+            {
+                error = "you must load a save to use this command";
+                return false;
+            }
+
+            error = null;
+            return true;
+        }
+
+        /// <summary>Try to get the cabin matching a cabin number argument.</summary>
+        /// <param name="args">The arguments to read.</param>
+        /// <param name="index">The index in <paramref name="args"/> containing the cabin number.</param>
+        /// <param name="cabin">The cabin building, if found.</param>
+        /// <param name="indoors">The cabin interior, if found.</param>
+        /// <param name="error">The error message if the cabin could not be found.</param>
+        /// <returns>Returns whether a cabin was successfully matched.</returns>
+        private bool TryGetCabinFromArg(string[] args, int index, out Building cabin, out Cabin indoors, out string error)
+        {
+            if (!ArgUtility.TryGetInt(args, index, out int cabinNumber, out error))
+            {
+                cabin = null;
+                indoors = null;
+                return false;
+            }
+
+            (cabin, indoors) = ModUtility.GetEmptyCabins().Skip(cabinNumber - 1).FirstOrDefault();
+            if (cabin is null || indoors is null)
+            {
+                cabin = null;
+                indoors = null;
+                error = $"required index {index} ({nameof(cabinNumber)}) has value {cabinNumber}, which doesn't match any cabin listed by the `list_cabins` command";
+                return false;
+            }
+
+            error = null;
+            return true;
         }
     }
 }

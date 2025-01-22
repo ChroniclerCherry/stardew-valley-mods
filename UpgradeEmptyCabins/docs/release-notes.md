@@ -10,6 +10,8 @@
 - Fixed furniture not moved correctly when upgrading a cabin (thanks to XTFOX!).
 - Fixed dialogue issues (thanks to XTFOX!).
 - Improved console commands:
+  - Overhauled console commands. You can now use `list_cabins` to get detailed cabin info, then use the cabin number in other commands.
+  - Added detailed instructions and errors for all console commands.
   - Added `list_cabins` and `list_renovations` (thanks to XTFOX!).
   - `renovate_cabins` now adds all renovations to all cabins that are level 2 or higher, including removing walls (thanks to XTFOX!).
   - Removed `remove_cabin_beds` (no longer needed since you can now remove them normally).
