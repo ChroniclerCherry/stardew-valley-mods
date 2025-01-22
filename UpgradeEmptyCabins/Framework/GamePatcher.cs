@@ -2,7 +2,9 @@ using System;
 using HarmonyLib;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Buildings;
 using StardewValley.Locations;
+using StardewValley.Menus;
 using StardewValley.Objects;
 
 namespace UpgradeEmptyCabins.Framework;
@@ -31,7 +33,12 @@ internal static class GamePatcher
 
         harmony.Patch(
             AccessTools.Method(typeof(BedFurniture), nameof(BedFurniture.CanModifyBed)),
-            postfix: new HarmonyMethod(typeof(GamePatcher), nameof(After_CanModifyBed))
+            postfix: new HarmonyMethod(typeof(GamePatcher), nameof(After_BedFurniture_CanModifyBed))
+        );
+
+        harmony.Patch(
+            AccessTools.Method(typeof(CarpenterMenu), nameof(CarpenterMenu.HasPermissionsToPaint)),
+            postfix: new HarmonyMethod(typeof(GamePatcher), nameof(After_CarpenterMenu_HasPermissionToPaint))
         );
     }
 
@@ -39,7 +46,7 @@ internal static class GamePatcher
     /*********
     ** Private methods
     *********/
-    private static void After_CanModifyBed(BedFurniture __instance, Farmer who, ref bool __result)
+    private static void After_BedFurniture_CanModifyBed(BedFurniture __instance, Farmer who, ref bool __result)
     {
         try
         {
@@ -50,7 +57,24 @@ internal static class GamePatcher
         }
         catch (Exception ex)
         {
-            Monitor.Log($"Failed in {nameof(After_CanModifyBed)}:\n{ex}", LogLevel.Error);
+            Monitor.Log($"Failed in {nameof(After_BedFurniture_CanModifyBed)}:\n{ex}", LogLevel.Error);
+        }
+    }
+
+    private static void After_CarpenterMenu_HasPermissionToPaint(Building b, ref bool __result)
+    {
+        try
+        {
+            if (__result)
+                return;
+
+            __result =
+                b is { isCabin: true }
+                && b.GetIndoors() is Cabin { IsOwnerActivated: false }; // can paint any unowned cabin
+        }
+        catch (Exception ex)
+        {
+            Monitor.Log($"Failed in {nameof(After_CarpenterMenu_HasPermissionToPaint)}:\n{ex}", LogLevel.Error);
         }
     }
 }
