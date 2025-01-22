@@ -1,5 +1,8 @@
 ﻿# Release notes
-## Upcoming release
+## 1.5.0
+Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
+- Updated for Stardew Valley 1.6.15.
 - Moved romantic event data into an `assets/data.json` file to allow customization.
 - Fixed 'add dating requirement to romantic events' option not working for some events changed in recent game updates.
 

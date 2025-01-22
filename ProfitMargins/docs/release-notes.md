@@ -1,5 +1,8 @@
 ﻿# Release notes
-## Upcoming release
+## 1.4.2
+Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
+- Updated for Stardew Valley 1.6.15.
 - Internal refactoring.
 
 ## 1.4.1

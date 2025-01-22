@@ -1,10 +1,10 @@
 ﻿{
     "Name": "Catalogues Anywhere",
     "Author": "Cherry",
-    "Version": "1.0.1",
+    "Version": "1.1.0",
     "Description": "Access Furniture and Wallpaper Catalogues anytime, anywhere",
     "UniqueID": "Cherry.CataloguesAnywhere",
     "EntryDll": "CataloguesAnywhere.dll",
-    "MinimumApiVersion": "4.0.0",
+    "MinimumApiVersion": "4.1.10",
     "UpdateKeys": [ "Nexus:4949" ]
 }

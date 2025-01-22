@@ -1,5 +1,7 @@
 ﻿# Release notes
-## Upcoming release
+## 2.1.1
+Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
 - Added support for controller and [multi-key bindings](https://stardewvalleywiki.com/Modding:Player_Guide/Key_Bindings#Multi-key_bindings) for the 'check collection' key bind.
 - Improved error-handling in game patches.
 - Internal refactoring.

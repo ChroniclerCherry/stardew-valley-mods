@@ -1,6 +1,8 @@
 ﻿# Release notes
-## Upcoming release
-- Updated for Stardew Valley 1.6.9–15 (thanks to zBoggler!).
+## 1.0.2
+Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
+- Updated for Stardew Valley 1.6.15 (thanks to zBoggler!).
 - Fixed trash cans requiring higher-grade materials than other tools.
 - Improved error-handling in game patches.
 - Internal refactoring.

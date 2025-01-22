@@ -1,10 +1,10 @@
 ﻿{
     "Name": "Change Slime Hutch Limit",
     "Author": "Cherry",
-    "Version": "1.0.1",
+    "Version": "1.1.0",
     "Description": "A straightforward mod that lets you adjust how many slimes you can have in the slime hutch",
     "UniqueID": "Cherry.SlimeHutchLimit",
     "EntryDll": "ChangeSlimeHutchLimit.dll",
-    "MinimumApiVersion": "4.0.0",
+    "MinimumApiVersion": "4.1.10",
     "UpdateKeys": [ "Nexus:6455" ]
 }
