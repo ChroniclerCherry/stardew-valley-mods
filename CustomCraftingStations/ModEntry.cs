@@ -151,7 +151,12 @@ internal class ModEntry : Mod
 
         Vector2 centeringOnScreen = Utility.getTopLeftPositionForCenteringOnScreen(800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2);
 
-        Game1.activeClickableMenu = new CustomCraftingMenu((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, chests, station.CraftingRecipes, station.CookingRecipes);
+        bool isCooking = station.CookingRecipes.Count > 0;
+        var recipes = isCooking
+            ? station.CookingRecipes
+            : station.CraftingRecipes;
+
+        Game1.activeClickableMenu = new CustomCraftingMenu((int)centeringOnScreen.X, (int)centeringOnScreen.Y, 800 + IClickableMenu.borderWidth * 2, 600 + IClickableMenu.borderWidth * 2, chests, recipes, isCooking);
     }
 
     private void OpenAndFixMenu(IClickableMenu instance)

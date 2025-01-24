@@ -4,7 +4,7 @@ Custom Crafting Stations (CCS) is a framework mod that allows modders to create 
 
 Recipes from these stations can be excluded from non-custom cooking/crafting menus, allowing access to recipes to be limited to only the custom crafting station.
 
-Custom stations can support crafting recipes, cooking recipes, or both in one menu
+Each custom stations can support either crafting recipes or cooking recipes (but not both at once).
 
 ## Compatibility
 
@@ -49,9 +49,9 @@ CookingRecipes | Optional | list of strings | A list of the name of cooking  rec
 
 \* You can specify both if you wish to attach the station to both a bigcraftable and tiledata.
 
-\** Both crafting and cooking recipes can be added to the same menu
+\** You should specify one or the other, not both.
 
-BigCraftables can be vanilla, but most likely you'll want to add custom ones. Those along with custom recipes will likely be handled with Json Assets.
+BigCraftables can be vanilla, but most likely you'll want to add custom ones.
 
 For Tiledata, they should be an `Action` tile on the `Buildings` layer with a format of `CraftingStation <StationName>` with StationName being what was put into the `TileData` field of the content.json
 

@@ -93,39 +93,38 @@ namespace CustomCraftingStations.Framework
 
             foreach (CraftingStationConfig station in craftingStations)
             {
-                this.PreprocessContentPackRecipeKeys(contentPack, station.BigCraftable, station.CraftingRecipes, CraftingRecipe.craftingRecipes, "crafting");
-                this.PreprocessContentPackRecipeKeys(contentPack, station.BigCraftable, station.CookingRecipes, CraftingRecipe.cookingRecipes, "cooking");
+                string stationName = !string.IsNullOrWhiteSpace(station.BigCraftable)
+                    ? station.BigCraftable
+                    : station.TileData;
 
+                // validate
+                this.PreprocessContentPackRecipeKeys(contentPack, stationName, station.CraftingRecipes, CraftingRecipe.craftingRecipes, "crafting");
+                this.PreprocessContentPackRecipeKeys(contentPack, stationName, station.CookingRecipes, CraftingRecipe.cookingRecipes, "cooking");
+                if (station.CookingRecipes.Count > 0 && station.CraftingRecipes.Count > 0)
+                    this.Monitor.Log($"Content pack '{contentPack.Manifest.Name}' has station '{stationName}' with both cooking and crafting recipes; each station can only provide one recipe type.");
+
+                // track exclusive recipes
                 if (station.ExclusiveRecipes)
                 {
                     this.ExclusiveCraftingRecipes.AddRange(station.CraftingRecipes);
                     this.ExclusiveCookingRecipes.AddRange(station.CookingRecipes);
                 }
 
+                // track station
                 if (station.TileData != null)
                 {
                     if (this.TileCraftingStations.Keys.Contains(station.TileData))
-                    {
-                        this.Monitor.Log(
-                            $"Multiple mods are trying to use the Tiledata {station.TileData}; Only one will be applied.",
-                            LogLevel.Error);
-                    }
+                        this.Monitor.Log($"Multiple mods are trying to use the Tiledata {station.TileData}; Only one will be applied.", LogLevel.Error);
                     else
-                    {
-                        if (station.TileData != null) this.TileCraftingStations.Add(station.TileData, station);
-                    }
+                        this.TileCraftingStations.Add(station.TileData, station);
                 }
 
-                if (station.BigCraftable == null) continue;
-                if (this.CraftableCraftingStations.Keys.Contains(station.BigCraftable))
+                if (station.BigCraftable != null)
                 {
-                    this.Monitor.Log(
-                        $"Multiple mods are trying to use the BigCraftable {station.BigCraftable}; Only one will be applied.",
-                        LogLevel.Error);
-                }
-                else
-                {
-                    if (station.BigCraftable != null) this.CraftableCraftingStations.Add(station.BigCraftable, station);
+                    if (this.CraftableCraftingStations.Keys.Contains(station.BigCraftable))
+                        this.Monitor.Log($"Multiple mods are trying to use the BigCraftable {station.BigCraftable}; Only one will be applied.", LogLevel.Error);
+                    else
+                        this.CraftableCraftingStations.Add(station.BigCraftable, station);
                 }
             }
         }
