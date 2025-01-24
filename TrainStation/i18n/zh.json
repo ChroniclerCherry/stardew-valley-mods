@@ -1,7 +1,7 @@
-﻿{
+{
     "NotEnoughMoney": "您没有足够的钱购买前往 {{destinationName}} 的火车票",
     "NoDestinations": "没有可去的目的地",
-    "BoatStationDisplayName": "Willy's shop", // TODO
+    "BoatStationDisplayName": "威利的商店", // 注释
     "TrainStationDisplayName": "星露谷火车站",
     "ArrivalMessage": "您已经抵达了 {{destinationName}}"
 }
