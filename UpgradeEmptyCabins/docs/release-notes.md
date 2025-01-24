@@ -1,4 +1,7 @@
 ﻿# Release notes
+## Upcoming release
+* Improved translations. Thanks to BlackRosePetals (added Chinese)!
+
 ## 1.2.0
 Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
 
