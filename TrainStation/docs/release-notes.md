@@ -1,15 +1,25 @@
 ﻿[← back to readme](README.md)
 
 # Release notes
+## 2.1.0
+Released 25 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
+- Removed the support for Content Patcher destinations added in 2.0.0.  
+  _This needs a bit more work, and will be released as a separate mod instead. However, all the other improvements and
+  stability fixes from the 2.0.0 rewrite still apply._
+- Fixed train sounds looping forever in some cases.
+- Fixed content packs which provide both boat and train stops sometimes warping to the wrong stop.
+- Improved translations. Thanks to BlackRosePetals (updated Chinese)!
+
 ## 2.0.0
 Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
 
 - Updated for Stardew Valley 1.6.15.
-- Mod authors can now [add boat & train destinations through Content Patcher](README.md#add-a-destination).
+- ~~Mod authors can now add boat & train destinations through Content Patcher.~~ [removed in 2.1.0]
 - The Ginger Island destination is now available from any boat stop once it's unlocked, not only from Willy's boat house.
-- Expanded Preconditions Utility is no longer required, except when a legacy content pack uses its conditions.
+- Expanded Preconditions Utility is no longer required, except when a content pack uses its conditions.
 - Fixed error drawing railroad ticket machine when some mods are installed.
-- Internal refactoring.
+- Internal rewrite.
 
 ## 1.2.0
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.

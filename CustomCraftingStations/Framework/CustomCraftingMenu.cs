@@ -10,18 +10,17 @@ internal class CustomCraftingMenu : CraftingPage
     /*********
     ** Fields
     *********/
-    private readonly List<string> CraftingRecipes;
-    private readonly List<string> CookingRecipes;
+    /// <summary>The custom recipe names to show.</summary>
+    private readonly List<string> Recipes;
 
 
     /*********
     ** Public methods
     *********/
-    public CustomCraftingMenu(int x, int y, int width, int height, List<IInventory> materialContainers, List<string> craftingRecipes, List<string> cookingRecipes)
-        : base(x, y, width, height, standaloneMenu: true, materialContainers: materialContainers)
+    public CustomCraftingMenu(int x, int y, int width, int height, List<IInventory> materialContainers, List<string> recipes, bool cooking)
+        : base(x, y, width, height, standaloneMenu: true, materialContainers: materialContainers, cooking: cooking)
     {
-        this.CraftingRecipes = craftingRecipes;
-        this.CookingRecipes = cookingRecipes;
+        this.Recipes = recipes;
 
         this.RepositionElements();
     }
@@ -30,7 +29,7 @@ internal class CustomCraftingMenu : CraftingPage
     protected override List<string> GetRecipesToDisplay()
     {
         return
-            this.CraftingRecipes?.Union(this.CookingRecipes).ToList()
+            this.Recipes?.ToList()
             ?? base.GetRecipesToDisplay(); // not initialized yet
     }
 }
