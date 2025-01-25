@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ChroniclerCherry.Common.Integrations.GenericModConfigMenu;
 using CustomCraftingStations.Framework;
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
@@ -45,6 +46,7 @@ internal class ModEntry : Mod
             return;
         }
 
+        I18n.Init(helper.Translation);
         this.Config = helper.ReadConfig<ModConfig>();
 
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
@@ -110,6 +112,12 @@ internal class ModEntry : Mod
     private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
     {
         this.CookingSkillMenu = Type.GetType("CookingSkill.NewCraftingPage, CookingSkill");
+
+        this.AddGenericModConfigMenu(
+            new GenericModConfigMenuIntegrationForCustomCraftingStations(),
+            get: () => this.Config,
+            set: config => this.Config = config
+        );
     }
 
     /// <inheritdoc cref="IInputEvents.ButtonPressed" />

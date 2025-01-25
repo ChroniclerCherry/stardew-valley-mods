@@ -1,0 +1,13 @@
+﻿{
+    /*********
+    ** Generic Mod Config Menu UI
+    *********/
+    "config.craft-from-global-chests.name": "Craft From Global Chests",
+    "config.craft-from-global-chests.desc": "Whether crafting will pull ingredients from all chests everywhere. This overrides '{{craftFromChestsRadiusName}}' if true.",
+
+    "config.craft-from-fridge.name": "Craft From Fridge",
+    "config.craft-from-fridge.desc": "Whether crafting will pull ingredients from the fridge when in a farmhouse.",
+
+    "config.craft-from-chest-radius.name": "Craft From Chest Radius",
+    "config.craft-from-chest-radius.desc": "The tile radius around the station from which to pull ingredients from chests. A value of 1 matches vanilla workbench behavior (i.e. chests must be directly adjacent)."
+}

@@ -1,7 +1,38 @@
 ﻿{
+    /*********
+    ** Items
+    *********/
     "Catalogue_Name": "Clothing Catalogue",
     "Catalogue_Description": "Provides unlimited access to every clothing item... from the convenience of your home!",
 
     "Mirror_Name": "Customization Mirror",
-    "Mirror_Description": "A magical mirror that lets you change your appearances"
+    "Mirror_Description": "A magical mirror that lets you change your appearances",
+
+
+    /*********
+    ** Generic Mod Config Menu UI
+    *********/
+    // main options
+    "config.section.main": "Main options",
+
+    "config.enable-key-binds.name": "Enable key binds",
+    "config.enable-key-binds.desc": "Whether you can use the key bindings to open the menus. If false, the menus can only be accessed through the in-game Clothing Catalogue and Customization Mirror. Default true.",
+
+    "config.always-allow-tailoring.name": "Always allow tailoring",
+    "config.always-allow-tailoring.desc": "Whether the tailoring UI is available before you've unlocked tailoring in the base game. Default false.",
+
+    // controls
+    "config.section.controls": "Controls",
+
+    "config.clothing-catalogue-key.name": "Clothing Catalogue Key",
+    "config.clothing-catalogue-key.desc": "The key bind which opens the clothing catalogue UI.",
+
+    "config.customize-key.name": "Customize Key",
+    "config.customize-key.desc": "The key bind which opens the character customization UI.",
+
+    "config.dye-key.name": "Dye Key",
+    "config.dye-key.desc": "The key bind which opens the dye pot UI.",
+
+    "config.tailor-key.name": "Tailor Key",
+    "config.tailor-key.desc": "The key bind which opens the tailoring UI."
 }

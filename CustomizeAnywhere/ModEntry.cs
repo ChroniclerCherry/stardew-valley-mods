@@ -1,3 +1,4 @@
+using ChroniclerCherry.Common.Integrations.GenericModConfigMenu;
 using CustomizeAnywhere.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -15,8 +16,6 @@ internal class ModEntry : Mod
     /// <summary>The mod settings.</summary>
     private ModConfig Config;
 
-    internal static IModHelper StaticHelper;
-
     private DresserAndMirror DresserAndMirror;
 
 
@@ -28,11 +27,11 @@ internal class ModEntry : Mod
     {
         I18n.Init(helper.Translation);
 
-        ModEntry.StaticHelper = helper;
-
         this.DresserAndMirror = new DresserAndMirror(helper, this.ModManifest.UniqueID);
 
         this.Config = helper.ReadConfig<ModConfig>();
+
+        helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
         helper.Events.Input.ButtonsChanged += this.OnButtonsChanged;
     }
 
@@ -40,6 +39,16 @@ internal class ModEntry : Mod
     /*********
     ** Private methods
     *********/
+    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
+    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+    {
+        this.AddGenericModConfigMenu(
+            new GenericModConfigMenuIntegrationForCustomizeAnywhere(),
+            get: () => this.Config,
+            set: config => this.Config = config
+        );
+    }
+
     /// <inheritdoc cref="IInputEvents.ButtonsChanged" />
     private void OnButtonsChanged(object sender, ButtonsChangedEventArgs e)
     {
