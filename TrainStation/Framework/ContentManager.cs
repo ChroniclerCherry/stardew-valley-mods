@@ -1,17 +1,15 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Locations;
 using TrainStation.Framework.ContentModels;
-using TrainStation.Framework.LegacyContentModels;
 
 namespace TrainStation.Framework;
 
-/// <summary>Manages the Train Station content provided by content packs.</summary>
-internal class ContentManager
+/// <summary>Manages the available boat and train stops.</summary>
+internal class StopManager
 {
     /*********
     ** Fields
@@ -19,14 +17,8 @@ internal class ContentManager
     /// <summary>The unique mod ID for Train Station.</summary>
     private readonly string ModId;
 
-    /// <summary>The asset name for the data asset containing boat and train stops.</summary>
-    private readonly string DataAssetName;
-
     /// <summary>Get the current mod config.</summary>
     private readonly Func<ModConfig> Config;
-
-    /// <summary>The SMAPI API for loading and managing content assets.</summary>
-    private readonly IGameContentHelper ContentHelper;
 
     /// <summary>Encapsulates monitoring and logging.</summary>
     private readonly IMonitor Monitor;
@@ -34,12 +26,19 @@ internal class ContentManager
     /// <summary>Whether the Expanded Preconditions Utility mod is installed.</summary>
     private readonly bool HasExpandedPreconditionsUtility;
 
+    /// <summary>The Expanded Preconditions Utility API, if available.</summary>
+    /// <remarks>This becomes available after <see cref="IGameLoopEvents.GameLaunched"/>, so it shouldn't be used for initial validation.</remarks>
+    private readonly Func<IConditionsChecker> ConditionsApi;
+
+    /// <summary>The defined boat and train stops, including both boat and train stops.</summary>
+    private List<StopModel> Stops;
+
 
     /*********
     ** Accessors
     *********/
     /// <summary>The stops registered by Train Station packs or through the API.</summary>
-    public List<StopModel> LegacyStops { get; } = new();
+    public List<StopModel> CustomStops { get; } = new();
 
 
     /*********
@@ -48,26 +47,30 @@ internal class ContentManager
     /// <summary>Construct an instance.</summary>
     /// <param name="modId">The unique mod ID for Train Station.</param>
     /// <param name="config">Get the current mod config.</param>
-    /// <param name="contentHelper">The SMAPI API for loading and managing content assets.</param>
-    /// <param name="monitor">Encapsulates monitoring and logging.</param>
     /// <param name="hasExpandedPreconditionsUtility">Whether the Expanded Preconditions Utility mod is installed.</param>
-    public ContentManager(string modId, Func<ModConfig> config, IGameContentHelper contentHelper, IMonitor monitor, bool hasExpandedPreconditionsUtility)
+    /// <param name="conditionsApi">The Expanded Preconditions Utility API, if available.</param>
+    /// <param name="monitor">Encapsulates monitoring and logging.</param>
+    public StopManager(string modId, Func<ModConfig> config, bool hasExpandedPreconditionsUtility, Func<IConditionsChecker> conditionsApi, IMonitor monitor)
     {
         this.ModId = modId;
-        this.DataAssetName = $"Mods/{modId}/Destinations";
         this.Config = config;
-        this.ContentHelper = contentHelper;
-        this.Monitor = monitor;
         this.HasExpandedPreconditionsUtility = hasExpandedPreconditionsUtility;
+        this.ConditionsApi = conditionsApi;
+        this.Monitor = monitor;
     }
 
     /// <summary>Get the stops which can be selected from the current location.</summary>
-    /// <param name="network">The network for which to get stops.</param>
-    public IEnumerable<StopModel> GetAvailableStops(StopNetwork network)
+    /// <param name="isBoat">Whether this is a boat stop; else it's a train stop.</param>
+    public IEnumerable<StopModel> GetAvailableStops(bool isBoat)
     {
-        foreach (StopModel stop in this.ContentHelper.Load<List<StopModel>>(this.DataAssetName))
+        this.Stops ??= this.BuildStopsList();
+
+        foreach (StopModel stop in this.Stops)
         {
-            if (stop?.Network != network || stop.ToLocation == Game1.currentLocation.Name || Game1.getLocationFromName(stop.ToLocation) is null || !GameStateQuery.CheckConditions(stop.Conditions))
+            if (stop?.IsBoat != isBoat || stop.TargetMapName == Game1.currentLocation.Name || Game1.getLocationFromName(stop.TargetMapName) is null)
+                continue;
+
+            if (stop.Conditions?.Length > 0 && this.HasExpandedPreconditionsUtility && !this.ConditionsApi().CheckConditions(stop.Conditions))
                 continue;
 
             yield return stop;
@@ -75,16 +78,9 @@ internal class ContentManager
     }
 
     /// <summary>Reload the data asset, so it'll be reloaded next time it's accessed.</summary>
-    public void ResetAsset()
+    public void ResetData()
     {
-        this.ContentHelper.InvalidateCache(this.DataAssetName);
-    }
-
-    /// <inheritdoc cref="IPlayerEvents.Warped" />
-    public void OnAssetRequested(object sender, AssetRequestedEventArgs e)
-    {
-        if (e.Name.IsEquivalentTo(this.DataAssetName))
-            e.LoadFrom(this.BuildDefaultContentModel, AssetLoadPriority.Exclusive);
+        this.Stops = null;
     }
 
     /// <summary>Load the boat and train stops from loaded content packs.</summary>
@@ -103,101 +99,102 @@ internal class ContentManager
             if (cp.TrainStops != null)
             {
                 for (int i = 0; i < cp.TrainStops.Count; i++)
-                {
-                    this.LegacyStops.Add(
-                        LegacyStopModel.FromContentPack($"{pack.Manifest.UniqueID}_{i}", cp.TrainStops[i], StopNetwork.Train, ConvertExpandedPreconditions)
-                    );
-                }
+                    this.LoadStop(pack, cp.TrainStops[i], false, i);
             }
 
             if (cp.BoatStops != null)
             {
                 for (int i = 0; i < cp.BoatStops.Count; i++)
-                {
-                    this.LegacyStops.Add(
-                        LegacyStopModel.FromContentPack($"{pack.Manifest.UniqueID}_{i}", cp.BoatStops[i], StopNetwork.Boat, ConvertExpandedPreconditions)
-                    );
-                }
+                    this.LoadStop(pack, cp.BoatStops[i], true, i);
             }
-
-            string ConvertExpandedPreconditions(string[] conditions) => this.BuildGameQueryForExpandedPreconditionsIfInstalled(conditions, pack.Manifest.Name);
         }
     }
 
-    /// <summary>Build a game state query equivalent to the provided Expanded Preconditions Utility conditions. If that mod isn't installed, log a warning instead.</summary>
+    /// <summary>Load a single boat or train stop from a content pack.</summary>
+    /// <param name="contentPack">The content pack being loaded.</param>
+    /// <param name="rawModel">The raw stop data from the content pack.</param>
+    /// <param name="isBoat"><inheritdoc cref="StopModel.IsBoat" path="/summary" /></param>
+    /// <param name="index">The index of this stop in the content pack's list.</param>
+    private void LoadStop(IContentPack contentPack, ContentPackStopModel rawModel, bool isBoat, int index)
+    {
+        this.ValidateExpandedPreconditionsInstalledIfNeeded(rawModel.Conditions, contentPack.Manifest.Name);
+
+        this.CustomStops.Add(
+            StopModel.FromContentPack($"{contentPack.Manifest.UniqueID}_{(isBoat ? "Boat" : "Train")}_{index}", rawModel, isBoat)
+        );
+    }
+
+    /// <summary>Log an error message if a mod uses Expanded Preconditions Utility conditions, but it isn't installed.</summary>
     /// <param name="conditions">The Expanded Preconditions Utility conditions.</param>
     /// <param name="fromModName">The name of the mod for which the conditions are being parsed.</param>
-    public string BuildGameQueryForExpandedPreconditionsIfInstalled(string[] conditions, string fromModName)
+    /// <returns>Returns the input <paramref name="conditions" /> for chaining.</returns>
+    public string[] ValidateExpandedPreconditionsInstalledIfNeeded(string[] conditions, string fromModName)
     {
         if (!this.HasExpandedPreconditionsUtility)
-        {
             this.Monitor.LogOnce($"The '{fromModName}' mod adds destinations with Expanded Preconditions Utility conditions, but you don't have Expanded Preconditions Utility installed. The destinations will default to always visible.", LogLevel.Warn);
-            return null;
-        }
 
-        return LegacyStopModel.BuildGameQueryForExpandedPreconditions(conditions);
+        return conditions;
     }
 
 
     /*********
     ** Private methods
     *********/
-    /// <summary>Build the data asset model with the default stops and those provided through Train Station content packs and its API.</summary>
-    private List<StopModel> BuildDefaultContentModel()
+    /// <summary>Build the list of stops that can be accessed by the player.</summary>
+    private List<StopModel> BuildStopsList()
     {
         ModConfig config = this.Config();
-        List<StopModel> stops = new();
 
         // default stops
-        stops.AddRange([
+        List<StopModel> stops = [
             // boat
-            new StopModel
-            {
-                Id = $"{this.ModId}_BoatTunnel",
-                DisplayName = I18n.BoatStationDisplayName(),
-                ToLocation = "BoatTunnel",
-                ToTile = new Point(4, 9),
-                Network = StopNetwork.Boat
-            },
-            new StopModel
-            {
-                Id = $"{this.ModId}_GingerIsland",
-                DisplayName = Game1.content.LoadString("Strings\\StringsFromCSFiles:IslandName"),
-                ToLocation = "IslandSouth",
-                ToTile = new Point(21, 43),
-                ToFacingDirection = "up",
-                Cost = (Game1.getLocationFromName("BoatTunnel") as BoatTunnel)?.TicketPrice ?? 1000,
-                Network = StopNetwork.Boat
-            },
+            StopModel.FromData(
+                id: $"{this.ModId}_BoatTunnel",
+                targetMapName: "BoatTunnel",
+                targetX: 4,
+                targetY: 9,
+                facingDirectionAfterWarp: Game1.down,
+                cost: 0,
+                conditions: null,
+                isBoat: true,
+                displayNameTranslations: null,
+                displayNameDefault: I18n.BoatStationDisplayName()
+            ),
+            StopModel.FromData(
+                id: $"{this.ModId}_GingerIsland",
+                targetMapName: "IslandSouth",
+                targetX: 21,
+                targetY: 43,
+                facingDirectionAfterWarp: Game1.up,
+                cost: (Game1.getLocationFromName("BoatTunnel") as BoatTunnel)?.TicketPrice ?? 1000,
+                conditions: null,
+                isBoat: true,
+                displayNameTranslations: null,
+                displayNameDefault: Game1.content.LoadString("Strings\\StringsFromCSFiles:IslandName")
+            ),
 
             // train
-            new StopModel
-            {
-                Id = $"{this.ModId}_Railroad",
-                DisplayName = I18n.TrainStationDisplayName(),
-                ToLocation = "Railroad",
-                ToTile = new Point(config.RailroadWarpX, config.RailroadWarpY),
-                Network = StopNetwork.Train
-            }
-        ]);
+            StopModel.FromData(
+                id: $"{this.ModId}_Railroad",
+                targetMapName: "Railroad",
+                targetX: config.RailroadWarpX,
+                targetY: config.RailroadWarpY,
+                facingDirectionAfterWarp: Game1.down,
+                cost: 0,
+                conditions: null,
+                isBoat: false,
+                displayNameTranslations: null,
+                displayNameDefault: I18n.TrainStationDisplayName()
+            )
+        ];
 
         // stops from legacy content packs & API
-        foreach (StopModel stop in this.LegacyStops)
+        foreach (StopModel stop in this.CustomStops)
         {
+            // We need a copy of the model here, since (a) we don't want asset edits to be persisted between resets
+            // and (b) we need the display name to be editable despite being auto-generated for legacy stop models.
             stops.Add(
-                // We need a copy of the model here, since (a) we don't want asset edits to be persisted between resets
-                // and (b) we need the display name to be editable despite being auto-generated for legacy stop models.
-                new StopModel
-                {
-                    Id = stop.Id,
-                    DisplayName = stop.DisplayName,
-                    ToLocation = stop.ToLocation,
-                    ToTile = stop.ToTile,
-                    ToFacingDirection = stop.ToFacingDirection,
-                    Cost = stop.Cost,
-                    Conditions = stop.Conditions,
-                    Network = stop.Network
-                }
+                StopModel.FromData(stop)
             );
         }
 
