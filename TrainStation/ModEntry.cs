@@ -7,7 +7,6 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Locations;
-using StardewValley.Menus;
 using TrainStation.Framework;
 using TrainStation.Framework.ContentModels;
 
@@ -32,7 +31,6 @@ internal class ModEntry : Mod
     private readonly int TicketStationBottomTile = 1057;
     private string DestinationMessage;
     private ICue Cue;
-    private bool FinishedTrainWarp;
 
 
     /*********
@@ -48,7 +46,6 @@ internal class ModEntry : Mod
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
         helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
         helper.Events.Input.ButtonPressed += this.OnButtonPressed;
-        helper.Events.Display.MenuChanged += this.OnMenuChanged;
         helper.Events.Player.Warped += this.OnWarped;
     }
 
@@ -230,31 +227,21 @@ internal class ModEntry : Mod
 
     private void OnTrainWarped()
     {
+        const int delay = 3000;
+
+        // show arrival message
         if (Game1.currentLocation?.currentEvent is null)
-            Game1.pauseThenMessage(3000, this.DestinationMessage);
+            Game1.pauseThenMessage(delay, this.DestinationMessage);
 
-        this.FinishedTrainWarp = true;
-    }
-
-    /// <inheritdoc cref="IDisplayEvents.MenuChanged" />
-    private void OnMenuChanged(object sender, MenuChangedEventArgs e)
-    {
-        if (!this.FinishedTrainWarp)
-            return;
-
-        if (e.NewMenu is DialogueBox)
-        {
-            this.AfterWarpPause();
-        }
-
-        this.FinishedTrainWarp = false;
-    }
-
-    private void AfterWarpPause()
-    {
-        //Game1.drawObjectDialogue(destinationMessage);
-        Game1.playSound("trainWhistle");
-        this.Cue.Stop(AudioStopOptions.AsAuthored);
+        // stop train sounds
+        DelayedAction.functionAfterDelay(
+            () =>
+            {
+                Game1.playSound("trainWhistle");
+                this.Cue?.Stop(AudioStopOptions.Immediate);
+            },
+            delay
+        );
     }
 
 
