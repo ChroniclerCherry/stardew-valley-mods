@@ -1,7 +1,9 @@
 ﻿[← back to readme](README.md)
 
 # Release notes
-## Upcoming release
+## 2.1.0
+Released 25 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
 - Removed the support for Content Patcher destinations added in 2.0.0.  
   _This needs a bit more work, and will be released as a separate mod instead. However, all the other improvements and
   stability fixes from the 2.0.0 rewrite still apply._

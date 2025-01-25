@@ -1,7 +1,7 @@
 ﻿{
     "Name": "Custom Crafting Stations",
     "Author": "Cherry",
-    "Version": "1.3.0",
+    "Version": "1.4.0",
     "Description": "Allows modders to add specialized crafting stations",
     "UniqueID": "Cherry.CustomCraftingStations",
     "EntryDll": "CustomCraftingStations.dll",

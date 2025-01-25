@@ -1,7 +1,9 @@
 ﻿[← back to readme](README.md)
 
 # Release notes
-## Upcoming release
+## 1.4.0
+Released 25 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
 - Added in-game config UI through [Generic Mod Config Menu](https://www.nexusmods.com/stardewvalley/mods/5098).
 - Added validation error if a custom station has both cooking and crafting recipes, which isn't supported by the vanilla menu used since 1.2.0.
 - Fixed cooking recipes in recent versions.

@@ -1,7 +1,9 @@
 ﻿[← back to readme](README.md)
 
 # Release notes
-## Upcoming release
+## 1.4.0
+Released 25 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
 - Added in-game config UI through [Generic Mod Config Menu](https://www.nexusmods.com/stardewvalley/mods/5098).
 - Improved translations. Thanks to BlackRosePetals (added Chinese)!
 
