@@ -21,6 +21,10 @@ internal class ModEntry : Mod
     /// <summary>The mod settings.</summary>
     private ModConfig Config;
 
+    /// <summary>Whether the Central Station mod is installed.</summary>
+    /// <remarks>When Central Station is installed, Train Station provides its stops but defers to Central Station to display the destination menu.</remarks>
+    private bool HasCentralStation;
+
     /// <summary>The Expanded Preconditions Utility API, if available.</summary>
     private IConditionsChecker ConditionsApi;
 
@@ -42,6 +46,7 @@ internal class ModEntry : Mod
         I18n.Init(helper.Translation);
         this.Config = helper.ReadConfig<ModConfig>();
         this.StopManager = new(this.ModManifest.UniqueID, () => this.Config, helper.ModRegistry.IsLoaded("Cherry.ExpandedPreconditionsUtility"), () => this.ConditionsApi, this.Monitor);
+        this.HasCentralStation = helper.ModRegistry.IsLoaded("Pathoschild.CentralStation");
 
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
         helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
@@ -77,10 +82,10 @@ internal class ModEntry : Mod
     /// <inheritdoc cref="IPlayerEvents.Warped" />
     private void OnWarped(object sender, WarpedEventArgs e)
     {
-        if (e.NewLocation.Name != "Railroad") return;
+        if (e.NewLocation.Name != "Railroad")
+            return;
 
-        string property = e.NewLocation.doesTileHaveProperty(this.Config.TicketStationX, this.Config.TicketStationY,
-            "Action", "Buildings");
+        string property = e.NewLocation.doesTileHaveProperty(this.Config.TicketStationX, this.Config.TicketStationY, "Action", "Buildings");
         if (property != "TrainStation")
             this.DrawInTicketStation();
     }
@@ -109,6 +114,9 @@ internal class ModEntry : Mod
 
     private void DrawInTicketStation()
     {
+        if (this.HasCentralStation)
+            return; // Central Station will add the ticket machine
+
         // draw ticket machine
         try
         {
@@ -130,6 +138,9 @@ internal class ModEntry : Mod
     /// <inheritdoc cref="IInputEvents.ButtonPressed" />
     private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
     {
+        if (this.HasCentralStation)
+            return; // Central Station will show its own menu including Train Station's stops
+
         if (!Context.CanPlayerMove)
             return;
 

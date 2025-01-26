@@ -25,6 +25,9 @@ and interact with the ticket machine there once it's been repaired:
 You can also interact with ticket machines in various mod locations.
 
 ### Compatibility
+If the [Central Station](https://www.nexusmods.com/stardewvalley/mods/8000) mod is installed, the stops added through
+Train Station are automatically available through Central Station.
+
 The ticket station and the warp to the railroad may end up somewhere invalid if a map mod changes the shape of the map.
 If so, you can adjust those coordinates in the `config.json` file:
 ```js
