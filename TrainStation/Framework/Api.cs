@@ -58,6 +58,12 @@ public class Api : IApi
         this.Register(true, stopId, targetMapName, localizedDisplayName, targetX, targetY, cost, facingDirectionAfterWarp, conditions, translatedName);
     }
 
+    /// <inheritdoc />
+    public IEnumerable<IStopModel> GetAvailableStops(bool isBoat)
+    {
+        return this.StopManager.GetAvailableStops(isBoat);
+    }
+
 
     /*********
     ** Private methods

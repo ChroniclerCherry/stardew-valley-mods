@@ -38,4 +38,8 @@ public interface IApi
     /// <param name="translatedName">The default display name for the stop if not overridden by <paramref name="localizedDisplayName"/>, shown in the bus or train menu.</param>
     [Obsolete("Registering stations through the mod API is deprecated. Consider registering them through the standard data asset instead. See the Train Station README for more info.")]
     void RegisterBoatStation(string stopId, string targetMapName, Dictionary<string, string> localizedDisplayName, int targetX, int targetY, int cost, int facingDirectionAfterWarp, string[] conditions, string translatedName);
+
+    /// <summary>Get the available stops from the player's current location.</summary>
+    /// <param name="isBoat">Whether to get boat stops (<c>true</c>) or train stops (<c>false</c>).</param>
+    IEnumerable<IStopModel> GetAvailableStops(bool isBoat);
 }

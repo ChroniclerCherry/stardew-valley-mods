@@ -1,6 +1,12 @@
 ﻿[← back to readme](README.md)
 
 # Release notes
+## 2.2.0
+Released 26 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
+- Added integration with the upcoming Central Station mod.
+- Added C# mod API to get the available boat or train destinations.
+
 ## 2.1.0
 Released 25 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
 

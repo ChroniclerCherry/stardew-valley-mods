@@ -3,8 +3,8 @@ using StardewValley;
 
 namespace TrainStation.Framework.ContentModels;
 
-/// <summary>A boat or train stop that can be visited by the player.</summary>
-internal class StopModel
+/// <inheritdoc cref="IStopModel" />
+internal class StopModel : IStopModel
 {
     /*********
     ** Private fields
@@ -19,28 +19,31 @@ internal class StopModel
     /*********
     ** Accessors
     *********/
-    /// <summary>A unique identifier for this stop.</summary>
+    /// <inheritdoc />
     public string Id { get; init; }
 
-    /// <summary>The internal name of the location to which the player should warp when they select this stop.</summary>
+    /// <summary>The localized display name.</summary>
+    string IStopModel.DisplayName => this.GetDisplayName();
+
+    /// <inheritdoc />
     public string TargetMapName { get; init; }
 
-    /// <summary>The tile X position to which the player should warp when they select this stop.</summary>
-    public int TargetX { get; set; }
+    /// <inheritdoc />
+    public int TargetX { get; init; }
 
-    /// <summary>The tile Y position to which the player should warp when they select this stop.</summary>
-    public int TargetY { get; set; }
+    /// <inheritdoc />
+    public int TargetY { get; init; }
 
-    /// <summary>The direction the player should be facing after they warp, matching a value recognized by <see cref="Utility.TryParseDirection"/>.</summary>
+    /// <inheritdoc />
     public int FacingDirectionAfterWarp { get; init; }
 
-    /// <summary>The gold price to go to that stop.</summary>
+    /// <inheritdoc />
     public int Cost { get; init; }
 
-    /// <summary>Whether this is a boat stop; else it's a train stop.</summary>
+    /// <inheritdoc />
     public bool IsBoat { get; init; }
 
-    /// <summary>If set, the Expanded Precondition Utility conditions which indicate whether this stop should appear in the menu at a given time.</summary>
+    /// <inheritdoc />
     public string[] Conditions { get; init; }
 
 
