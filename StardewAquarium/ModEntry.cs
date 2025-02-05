@@ -61,8 +61,6 @@ internal sealed class ModEntry : Mod
             helper.Events.Display.MenuChanged += this.AndroidPlsHaveMercyOnMe;
         }
 
-        _ = new ReturnTrain(helper, this.Monitor);
-
         this.Config = helper.ReadConfig<ModConfig>();
 
 #if !DEBUG
