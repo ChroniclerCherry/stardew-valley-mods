@@ -1,6 +1,6 @@
-{
+﻿{
     /*********
-    ** 物品
+    ** Items (物品)
     *********/
     "Catalogue_Name": "服装目录",
     "Catalogue_Description": "在家中就能无限制地挑选每件衣物......非常方便!",
@@ -9,11 +9,10 @@
     "Mirror_Description": "一面能让你改头换面的魔镜.",
 
 
-    /***********************
-    ** 通用模组管理菜单界面
-    ***********************/
-    // 主要选项
-    // 注释
+    /*********
+    ** Generic Mod Config Menu UI (通用模组管理菜单界面)
+    *********/
+    // main options (主要选项)
     "config.section.main": "主要选项",
 
     "config.enable-key-binds.name": "启用按键绑定",
@@ -22,8 +21,7 @@
     "config.always-allow-tailoring.name": "始终允许定制",
     "config.always-allow-tailoring.desc": "在游戏解锁缝纫机之前, 玩家是否可以访问相关界面. 默认设置为'false'.",
 
-    // 控制选项
-    // 注释
+    // controls (控制选项)
     "config.section.controls": "控制选项",
 
     "config.clothing-catalogue-key.name": "服装目录快捷键",
