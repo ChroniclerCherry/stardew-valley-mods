@@ -1,6 +1,6 @@
-﻿{
+{
     /*********
-    ** Items
+    ** 物品
     *********/
     "Catalogue_Name": "服装目录",
     "Catalogue_Description": "在家中就能无限制地挑选每件衣物......非常方便!",
@@ -9,32 +9,32 @@
     "Mirror_Description": "一面能让你改头换面的魔镜.",
 
 
-    /*********
-    ** Generic Mod Config Menu UI
-    *********/
-    // main options
-    // TODO
-    "config.section.main": "Main options",
+    /***********************
+    ** 通用模组管理菜单界面
+    ***********************/
+    // 主要选项
+    // 注释
+    "config.section.main": "主要选项",
 
-    "config.enable-key-binds.name": "Enable key binds",
-    "config.enable-key-binds.desc": "Whether you can use the key bindings to open the menus. If false, the menus can only be accessed through the in-game Clothing Catalogue and Customization Mirror. Default true.",
+    "config.enable-key-binds.name": "启用按键绑定",
+    "config.enable-key-binds.desc": "是否使用快捷按键打开菜单. 如果设置为'false', 那么只能通过游戏中的'服装目录'或者'定制魔镜'访问菜单. 默认设置为'true'.",
 
-    "config.always-allow-tailoring.name": "Always allow tailoring",
-    "config.always-allow-tailoring.desc": "Whether the tailoring UI is available before you've unlocked tailoring in the base game. Default false.",
+    "config.always-allow-tailoring.name": "始终允许定制",
+    "config.always-allow-tailoring.desc": "在游戏解锁缝纫机之前, 玩家是否可以访问相关界面. 默认设置为'false'.",
 
-    // controls
-    // TODO
-    "config.section.controls": "Controls",
+    // 控制选项
+    // 注释
+    "config.section.controls": "控制选项",
 
-    "config.clothing-catalogue-key.name": "Clothing Catalogue Key",
-    "config.clothing-catalogue-key.desc": "The key bind which opens the clothing catalogue UI.",
+    "config.clothing-catalogue-key.name": "服装目录快捷键",
+    "config.clothing-catalogue-key.desc": "打开服装目录界面的绑定热键.",
 
-    "config.customize-key.name": "Customize Key",
-    "config.customize-key.desc": "The key bind which opens the character customization UI.",
+    "config.customize-key.name": "自定义快捷键",
+    "config.customize-key.desc": "打开玩家角色自定义界面的绑定热键.",
 
-    "config.dye-key.name": "Dye Key",
-    "config.dye-key.desc": "The key bind which opens the dye pot UI.",
+    "config.dye-key.name": "染色快捷键",
+    "config.dye-key.desc": "打开染色界面的绑定热键.",
 
-    "config.tailor-key.name": "Tailor Key",
-    "config.tailor-key.desc": "The key bind which opens the tailoring UI."
+    "config.tailor-key.name": "裁缝快捷键",
+    "config.tailor-key.desc": "打开裁缝界面的绑定热键."
 }
