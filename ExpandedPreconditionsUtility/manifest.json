@@ -1,7 +1,7 @@
 ﻿{
     "Name": "Expanded Preconditions Utility",
     "Author": "Cherry",
-    "Version": "1.1.0",
+    "Version": "%ProjectVersion%",
     "Description": "A condition checking system designed for use by other mods, in the format of event preconditions",
     "UniqueID": "Cherry.ExpandedPreconditionsUtility",
     "EntryDll": "ExpandedPreconditionsUtility.dll",

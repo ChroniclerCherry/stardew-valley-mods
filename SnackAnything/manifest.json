@@ -1,7 +1,7 @@
 ﻿{
     "Name": "Snack Anything",
     "Author": "Cherry",
-    "Version": "1.1.1",
+    "Version": "%ProjectVersion%",
     "Description": "Snack (almost) Anything",
     "UniqueID": "Cherry.SnackAnything",
     "EntryDll": "SnackAnything.dll",

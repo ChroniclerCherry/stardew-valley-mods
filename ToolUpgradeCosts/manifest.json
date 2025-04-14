@@ -1,7 +1,7 @@
 ﻿{
     "Name": "Tool Upgrade Costs",
     "Author": "Cherry",
-    "Version": "1.0.2",
+    "Version": "%ProjectVersion%",
     "Description": "Allows the player to customize the cost of tool upgrades.",
     "UniqueID": "Cherry.ToolUpgradeCosts",
     "EntryDll": "ToolUpgradeCosts.dll",

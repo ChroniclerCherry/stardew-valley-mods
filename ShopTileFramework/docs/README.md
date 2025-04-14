@@ -297,7 +297,7 @@ And the manifest:
 {
   "Name": "A store mod",
   "Author": "your name",
-  "Version": "1.0.0",
+  "Version": "%ProjectVersion%",
   "Description": "One or two sentences about the mod.",
   "UniqueID": "YourName.YourProjectName",
   "UpdateKeys": [],

@@ -1,7 +1,7 @@
 ﻿{
     "Name": "Catalogues Anywhere",
     "Author": "Cherry",
-    "Version": "1.1.0",
+    "Version": "%ProjectVersion%",
     "Description": "Access Furniture and Wallpaper Catalogues anytime, anywhere",
     "UniqueID": "Cherry.CataloguesAnywhere",
     "EntryDll": "CataloguesAnywhere.dll",
