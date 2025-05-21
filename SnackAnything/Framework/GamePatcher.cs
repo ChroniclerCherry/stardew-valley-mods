@@ -13,10 +13,10 @@ internal static class GamePatcher
     ** Fields
     *********/
     /// <summary>Encapsulates monitoring and logging.</summary>
-    private static IMonitor Monitor;
+    private static IMonitor Monitor = null!; // set in Apply
 
     /// <summary>Get the mod config.</summary>
-    private static Func<ModConfig> Config;
+    private static Func<ModConfig> Config = null!; // set in Apply
 
 
     /*********
@@ -120,7 +120,7 @@ internal static class GamePatcher
     /// <summary>Make the item snackable if needed.</summary>
     /// <param name="obj">The object to change.</param>
     /// <param name="previousEdibility">The object's previous edibility, or <c>null</c> if it didn't change.</param>
-    private static void TryReplaceEdibility(SObject obj, out int? previousEdibility)
+    private static void TryReplaceEdibility(SObject? obj, out int? previousEdibility)
     {
         if (obj?.Edibility < 0 && (obj.Type != "Arch" || Config().YummyArtefacts))
         {
@@ -134,7 +134,7 @@ internal static class GamePatcher
     /// <summary>Restore the object's original edibility if applicable.</summary>
     /// <param name="obj">The object to change.</param>
     /// <param name="originalEdibility">The object's previous edibility, or <c>null</c> it wasn't changed.</param>
-    private static void TryRestoreEdibility(SObject obj, int? originalEdibility)
+    private static void TryRestoreEdibility(SObject? obj, int? originalEdibility)
     {
         if (obj != null && originalEdibility != null)
             obj.Edibility = originalEdibility.Value;

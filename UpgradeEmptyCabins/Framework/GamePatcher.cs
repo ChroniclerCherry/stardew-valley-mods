@@ -16,7 +16,7 @@ internal static class GamePatcher
     ** Fields
     *********/
     /// <summary>Encapsulates monitoring and logging.</summary>
-    private static IMonitor Monitor;
+    private static IMonitor Monitor = null!; // set in Apply
 
 
     /*********
@@ -46,7 +46,7 @@ internal static class GamePatcher
     /*********
     ** Private methods
     *********/
-    private static void After_BedFurniture_CanModifyBed(BedFurniture __instance, Farmer who, ref bool __result)
+    private static void After_BedFurniture_CanModifyBed(BedFurniture __instance, Farmer? who, ref bool __result)
     {
         try
         {

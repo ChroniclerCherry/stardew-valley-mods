@@ -12,7 +12,7 @@ public class ShopTileFrameworkApi : IShopTileFrameworkApi
     public bool OpenItemShop(string shopName)
     {
         //opens up the shop of ShopName in-game
-        ShopManager.ItemShops.TryGetValue(shopName, out ItemShop shop);
+        ShopManager.ItemShops.TryGetValue(shopName, out ItemShop? shop);
         if (shop == null)
         {
             return false;

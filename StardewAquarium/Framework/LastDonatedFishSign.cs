@@ -45,7 +45,7 @@ internal sealed class LastDonatedFishSign
     *********/
     /// <summary>Pick a random fish when the museum is complete.</summary>
     /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
-    private void GameLoop_DayStarted(object sender, DayStartedEventArgs e)
+    private void GameLoop_DayStarted(object? sender, DayStartedEventArgs e)
     {
         if (!Context.IsMainPlayer || !Game1.MasterPlayer.mailReceived.Contains("AquariumCompleted"))
             return;
@@ -55,7 +55,7 @@ internal sealed class LastDonatedFishSign
 
     /// <summary>Updates the fishing sign when players arrive at our location.</summary>
     /// <inheritdoc cref="IPlayerEvents.Warped" />
-    private void Player_Warped(object sender, WarpedEventArgs e)
+    private void Player_Warped(object? sender, WarpedEventArgs e)
     {
         if (Game1.getFarm().modData.TryGetValue(LastDonatedFishKey, out string qid))
             this.UpdateFishSign(qid, e.NewLocation);
@@ -66,7 +66,7 @@ internal sealed class LastDonatedFishSign
         if (!loc.TryGetMapPropertyAs($"{ContentPackHelper.ContentPackId}_LastDonatedFishSign", out Point signTile))
             return;
 
-        ParsedItemData parsedItem = ItemRegistry.GetData(fishId);
+        ParsedItemData? parsedItem = ItemRegistry.GetData(fishId);
         this.Monitor.Log($"Updating sign with {parsedItem?.QualifiedItemId}");
         if (parsedItem is null)
             return;
@@ -89,7 +89,7 @@ internal sealed class LastDonatedFishSign
         loc.temporarySprites.Add(sprite);
     }
 
-    private void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
+    private void GameLoop_SaveLoaded(object? sender, SaveLoadedEventArgs e)
     {
         if (Context.IsMainPlayer)
             this.MigrateLastDonatedFish();
@@ -102,7 +102,7 @@ internal sealed class LastDonatedFishSign
             return;
         }
 
-        string fish = Game1.MasterPlayer.mailReceived
+        string? fish = Game1.MasterPlayer.mailReceived
             .Where(flag => flag.StartsWith("AquariumLastDonated:"))
             .Select(flag => flag.Split(':')[1])
             .FirstOrDefault();

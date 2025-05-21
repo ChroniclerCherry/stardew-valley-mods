@@ -20,10 +20,10 @@ internal class ModEntry : Mod
     private bool IsArranging;
 
     /// <summary>The mod settings.</summary>
-    private ModConfig Config;
+    private ModConfig Config = null!; // set in Entry
 
-    private string FarmRearrangeId;
-    private string FarmRearrangeQualifiedId;
+    private string FarmRearrangeId = null!; // set in Entry
+    private string FarmRearrangeQualifiedId = null!; // set in Entry
 
 
     /*********
@@ -53,7 +53,7 @@ internal class ModEntry : Mod
     *********/
     /// <inheritdoc cref="IGameLoopEvents.DayEnding" />
     /// <remarks>This checks for friendship with robin at the end of the day.</remarks>
-    private void OnDayEnding(object sender, DayEndingEventArgs e)
+    private void OnDayEnding(object? sender, DayEndingEventArgs e)
     {
         //if friendship is higher enough, send the mail tomorrow
         if (Game1.player.getFriendshipLevelForNPC("Robin") >= this.Config.FriendshipPointsRequired)
@@ -64,7 +64,7 @@ internal class ModEntry : Mod
 
     /// <inheritdoc cref="IInputEvents.ButtonPressed" />
     /// <remarks>This checks if the farm rearranger was clicked, then opens the menu if applicable.</remarks>
-    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
+    private void OnButtonPressed(object? sender, ButtonPressedEventArgs e)
     {
         //ignore input if the player isnt free to move aka world not loaded,
         //they're in an event, a menu is up, etc
@@ -77,7 +77,7 @@ internal class ModEntry : Mod
 
         //check if the clicked tile contains a Farm Renderer
         Vector2 tile = this.Helper.Input.GetCursorPosition().Tile;
-        if (Game1.currentLocation.Objects.TryGetValue(tile, out Object obj) && obj.QualifiedItemId == this.FarmRearrangeQualifiedId)
+        if (Game1.currentLocation.Objects.TryGetValue(tile, out Object? obj) && obj.QualifiedItemId == this.FarmRearrangeQualifiedId)
         {
             if (Game1.currentLocation.Name == "Farm" || this.Config.CanArrangeOutsideFarm)
                 this.RearrangeFarm();
@@ -88,7 +88,7 @@ internal class ModEntry : Mod
 
     /// <inheritdoc cref="IGameLoopEvents.UpdateTicking" />
     /// <remarks>When move buildings is exited, by default it returns the player to Robin's house and the menu becomes the menu to choose buildings. This detects when that happens and returns the player to their original location and closes the menu.</remarks>
-    private void OnUpdateTicking(object sender, UpdateTickingEventArgs e)
+    private void OnUpdateTicking(object? sender, UpdateTickingEventArgs e)
     {
         if (this.IsArranging)
         {
@@ -103,7 +103,7 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IContentEvents.AssetRequested" />
-    private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+    private void OnAssetRequested(object? sender, AssetRequestedEventArgs e)
     {
         string modId = this.ModManifest.UniqueID;
 
@@ -132,7 +132,7 @@ internal class ModEntry : Mod
             {
                 var data = asset.AsDictionary<string, ShopData>().Data;
 
-                if (data.TryGetValue(Game1.shop_carpenter, out ShopData shop))
+                if (data.TryGetValue(Game1.shop_carpenter, out ShopData? shop))
                 {
                     shop.Items.Add(new ShopItemData
                     {

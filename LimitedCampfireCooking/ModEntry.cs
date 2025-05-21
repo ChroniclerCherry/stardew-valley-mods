@@ -16,12 +16,12 @@ internal class ModEntry : Mod
     ** Fields
     *********/
     /// <summary>The mod settings.</summary>
-    private ModConfig Config;
+    private ModConfig Config = null!; // set in Entry
 
-    private ICustomCraftingStationsApi CustomCraftingStations;
+    private ICustomCraftingStationsApi? CustomCraftingStations;
 
-    private Dictionary<string, string> AllCookingRecipes;
-    private Dictionary<string, string> LimitedCookingRecipes;
+    private Dictionary<string, string>? AllCookingRecipes;
+    private Dictionary<string, string>? LimitedCookingRecipes;
 
 
     /*********
@@ -41,7 +41,7 @@ internal class ModEntry : Mod
     ** Private methods
     *********/
     /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
-    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+    private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
     {
         this.CustomCraftingStations = this.Helper.ModRegistry.GetApi<ICustomCraftingStationsApi>("Cherry.CustomCraftingStations");
         if (this.CustomCraftingStations != null)
@@ -49,7 +49,7 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
-    private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+    private void OnSaveLoaded(object? sender, SaveLoadedEventArgs e)
     {
         this.AllCookingRecipes = CraftingRecipe.cookingRecipes;
         this.LimitedCookingRecipes = this.AllCookingRecipes;
@@ -66,7 +66,7 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IInputEvents.ButtonPressed" />
-    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
+    private void OnButtonPressed(object? sender, ButtonPressedEventArgs e)
     {
         if (Context.IsWorldReady &&
             Game1.currentLocation != null &&
@@ -85,7 +85,7 @@ internal class ModEntry : Mod
             GameLocation loc = Game1.currentLocation;
 
             Vector2 tile = this.Helper.Input.GetCursorPosition().GrabTile;
-            loc.Objects.TryGetValue(tile, out Object obj);
+            loc.Objects.TryGetValue(tile, out Object? obj);
 
             if (obj is { Name: "Campfire", IsOn: true })
             {

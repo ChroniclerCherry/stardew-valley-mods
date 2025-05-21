@@ -31,7 +31,7 @@ internal class StopManager
     private readonly Func<IConditionsChecker> ConditionsApi;
 
     /// <summary>The defined boat and train stops, including both boat and train stops.</summary>
-    private List<StopModel> Stops;
+    private List<StopModel>? Stops;
 
 
     /*********
@@ -67,7 +67,7 @@ internal class StopManager
 
         foreach (StopModel stop in this.Stops)
         {
-            if (stop?.IsBoat != isBoat || stop.TargetMapName == Game1.currentLocation.Name || Game1.getLocationFromName(stop.TargetMapName) is null)
+            if (stop.IsBoat != isBoat || stop.TargetMapName == Game1.currentLocation.Name || Game1.getLocationFromName(stop.TargetMapName) is null)
                 continue;
 
             if (stop.Conditions?.Length > 0 && this.HasExpandedPreconditionsUtility && !this.ConditionsApi().CheckConditions(stop.Conditions))
@@ -96,17 +96,11 @@ internal class StopManager
             }
 
             ContentPack cp = pack.ModContent.Load<ContentPack>("TrainStops.json");
-            if (cp.TrainStops != null)
-            {
-                for (int i = 0; i < cp.TrainStops.Count; i++)
-                    this.LoadStop(pack, cp.TrainStops[i], false, i);
-            }
+            for (int i = 0; i < cp.TrainStops.Count; i++)
+                this.LoadStop(pack, cp.TrainStops[i], false, i);
 
-            if (cp.BoatStops != null)
-            {
-                for (int i = 0; i < cp.BoatStops.Count; i++)
-                    this.LoadStop(pack, cp.BoatStops[i], true, i);
-            }
+            for (int i = 0; i < cp.BoatStops.Count; i++)
+                this.LoadStop(pack, cp.BoatStops[i], true, i);
         }
     }
 
@@ -128,7 +122,7 @@ internal class StopManager
     /// <param name="conditions">The Expanded Preconditions Utility conditions.</param>
     /// <param name="fromModName">The name of the mod for which the conditions are being parsed.</param>
     /// <returns>Returns the input <paramref name="conditions" /> for chaining.</returns>
-    public string[] ValidateExpandedPreconditionsInstalledIfNeeded(string[] conditions, string fromModName)
+    public string[]? ValidateExpandedPreconditionsInstalledIfNeeded(string[]? conditions, string fromModName)
     {
         if (!this.HasExpandedPreconditionsUtility)
             this.Monitor.LogOnce($"The '{fromModName}' mod adds destinations with Expanded Preconditions Utility conditions, but you don't have Expanded Preconditions Utility installed. The destinations will default to always visible.", LogLevel.Warn);

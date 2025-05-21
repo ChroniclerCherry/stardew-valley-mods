@@ -1,4 +1,7 @@
 ﻿# Release notes
+## Upcoming release
+- Fixed errors when the `config.json` has invalid values.
+
 ## 1.0.4
 Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
 

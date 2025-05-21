@@ -19,22 +19,22 @@ internal class ModEntry : Mod
     ** Fields
     *********/
     /// <summary>The mod settings.</summary>
-    private ModConfig Config;
+    private ModConfig Config = null!; // set in Entry
 
     /// <summary>Whether the Central Station mod is installed.</summary>
     /// <remarks>When Central Station is installed, Train Station provides its stops but defers to Central Station to display the destination menu.</remarks>
     private bool HasCentralStation;
 
     /// <summary>The Expanded Preconditions Utility API, if available.</summary>
-    private IConditionsChecker ConditionsApi;
+    private IConditionsChecker? ConditionsApi;
 
     /// <summary>Manages the available boat and train stops.</summary>
-    private StopManager StopManager;
+    private StopManager StopManager = null!; // set in Entry
 
     private readonly int TicketStationTopTile = 1032;
     private readonly int TicketStationBottomTile = 1057;
-    private string DestinationMessage;
-    private ICue Cue;
+    private string? DestinationMessage;
+    private ICue? Cue;
 
 
     /*********
@@ -45,7 +45,13 @@ internal class ModEntry : Mod
     {
         I18n.Init(helper.Translation);
         this.Config = helper.ReadConfig<ModConfig>();
-        this.StopManager = new(this.ModManifest.UniqueID, () => this.Config, helper.ModRegistry.IsLoaded("Cherry.ExpandedPreconditionsUtility"), () => this.ConditionsApi, this.Monitor);
+        this.StopManager = new(
+            this.ModManifest.UniqueID,
+            () => this.Config,
+            helper.ModRegistry.IsLoaded("Cherry.ExpandedPreconditionsUtility"),
+            () => this.ConditionsApi ?? throw new InvalidOperationException("Can't check conditions before the condition checker has been initialized."),
+            this.Monitor
+        );
         this.HasCentralStation = helper.ModRegistry.IsLoaded("Pathoschild.CentralStation");
 
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
@@ -80,7 +86,7 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IPlayerEvents.Warped" />
-    private void OnWarped(object sender, WarpedEventArgs e)
+    private void OnWarped(object? sender, WarpedEventArgs e)
     {
         if (e.NewLocation.Name != "Railroad")
             return;
@@ -91,7 +97,7 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
-    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+    private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
     {
         // load Expanded Preconditions Utility
         this.ConditionsApi = this.Helper.ModRegistry.GetApi<IConditionsChecker>("Cherry.ExpandedPreconditionsUtility");
@@ -106,7 +112,7 @@ internal class ModEntry : Mod
     ** Save loaded
     ****/
     /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
-    private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+    private void OnSaveLoaded(object? sender, SaveLoadedEventArgs e)
     {
         this.StopManager.ResetData();
         this.DrawInTicketStation();
@@ -136,7 +142,7 @@ internal class ModEntry : Mod
     ** Input detection
     ****/
     /// <inheritdoc cref="IInputEvents.ButtonPressed" />
-    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
+    private void OnButtonPressed(object? sender, ButtonPressedEventArgs e)
     {
         if (this.HasCentralStation)
             return; // Central Station will show its own menu including Train Station's stops
@@ -210,7 +216,7 @@ internal class ModEntry : Mod
         }
 
         // get stop
-        StopModel stop = stops.FirstOrDefault(s => s.Id == stopId);
+        StopModel? stop = stops.FirstOrDefault(s => s.Id == stopId);
         if (stop is null)
             return;
 

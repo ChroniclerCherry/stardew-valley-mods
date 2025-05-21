@@ -16,7 +16,7 @@ internal class ModEntry : Mod
     ** Fields
     *********/
     /// <summary>The mod settings.</summary>
-    private ModConfig Config;
+    private ModConfig Config = null!; // set in Entry
 
     /// <summary>The unqualified item ID for the Hay Bale item.</summary>
     private const string HayBaleId = "45";
@@ -53,7 +53,7 @@ internal class ModEntry : Mod
      ** Private methods
      *********/
     /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
-    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+    private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
     {
         this.AddGenericModConfigMenu(
             new GenericModConfigMenuIntegrationForHayBaysAsSilos(),
@@ -63,7 +63,7 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IInputEvents.ButtonPressed" />
-    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
+    private void OnButtonPressed(object? sender, ButtonPressedEventArgs e)
     {
         // handle click on hay bale
         if (Context.CanPlayerMove && (e.Button.IsActionButton() || e.Button.IsUseToolButton()))
@@ -105,7 +105,7 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IContentEvents.AssetRequested" />
-    private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+    private void OnAssetRequested(object? sender, AssetRequestedEventArgs e)
     {
         // edit hay bale text
         if (e.NameWithoutLocale.IsEquivalentTo("Strings/BigCraftables"))
@@ -139,13 +139,13 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IGameLoopEvents.TimeChanged" />
-    private void GameLoopOnTimeChanged(object sender, TimeChangedEventArgs e)
+    private void GameLoopOnTimeChanged(object? sender, TimeChangedEventArgs e)
     {
         this.HayBalesByLocation.Clear();
     }
 
     /// <inheritdoc cref="IWorldEvents.ObjectListChanged" />
-    private void OnObjectListChanged(object sender, ObjectListChangedEventArgs e)
+    private void OnObjectListChanged(object? sender, ObjectListChangedEventArgs e)
     {
         string locationKey = e.Location.NameOrUniqueName;
 
@@ -155,9 +155,12 @@ internal class ModEntry : Mod
 
     /// <summary>Get the number of hay bales currently placed in a given location.</summary>
     /// <param name="location">The location to check.</param>
-    private int CountHayBalesIn(GameLocation location)
+    private int CountHayBalesIn(GameLocation? location)
     {
-        string locationKey = location?.NameOrUniqueName;
+        if (location is null)
+            return 0;
+
+        string? locationKey = location.NameOrUniqueName;
         if (locationKey is null)
             return 0;
 

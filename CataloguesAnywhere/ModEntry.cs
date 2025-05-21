@@ -12,7 +12,7 @@ internal class ModEntry : Mod
     ** Fields
     *********/
     /// <summary>The mod settings.</summary>
-    private ModConfig Config;
+    private ModConfig Config = null!; // set in Entry
 
 
     /*********
@@ -31,7 +31,7 @@ internal class ModEntry : Mod
     ** Private methods
     *********/
     /// <inheritdoc cref="IInputEvents.ButtonsChanged" />
-    private void OnButtonsChanged(object sender, ButtonsChangedEventArgs e)
+    private void OnButtonsChanged(object? sender, ButtonsChangedEventArgs e)
     {
         if (!Context.CanPlayerMove || !this.Config.Enabled)
             return;

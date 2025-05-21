@@ -10,7 +10,7 @@ internal static class TileActions
     /*********
     ** Fields
     *********/
-    private static IMonitor Monitor;
+    private static IMonitor Monitor = null!; // set in Init
 
 
     /*********

@@ -1,3 +1,5 @@
+#nullable disable
+
 using ShopTileFramework.Framework.Apis;
 using ShopTileFramework.Framework.Shop;
 using StardewModdingAPI;

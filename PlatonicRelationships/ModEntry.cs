@@ -12,10 +12,10 @@ internal class ModEntry : Mod
     ** Fields
     *********/
     /// <summary>The mod settings.</summary>
-    private ModConfig Config;
+    private ModConfig Config = null!; // set in Entry
 
     /// <summary>Adjusts event data to disable vanilla 10-heart events for NPCs the player isn't dating.</summary>
-    private EventEditor EventEditor;
+    private EventEditor? EventEditor;
 
 
     /*********
@@ -42,9 +42,9 @@ internal class ModEntry : Mod
     ** Private methods
     *********/
     /// <inheritdoc cref="IContentEvents.AssetRequested" />
-    private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+    private void OnAssetRequested(object? sender, AssetRequestedEventArgs e)
     {
-        this.EventEditor.OnAssetRequested(e);
+        this.EventEditor?.OnAssetRequested(e);
     }
 
     /// <summary>Load the mod data from the <c>assets/data.json</c> file.</summary>
@@ -53,13 +53,9 @@ internal class ModEntry : Mod
         const string filePath = "assets/data.json";
         try
         {
-            DataModel data = this.Helper.Data.ReadJsonFile<DataModel>(filePath);
+            DataModel? data = this.Helper.Data.ReadJsonFile<DataModel>(filePath);
             if (data is not null)
-            {
-                data.RomanticEvents ??= new();
-                data.RomanticTriggerActions ??= new();
                 return data;
-            }
 
             this.Monitor.Log($"The '{filePath}' file is missing or empty, so Platonic Relationships may not work correctly. You can try reinstalling the mod to reset the file.");
         }

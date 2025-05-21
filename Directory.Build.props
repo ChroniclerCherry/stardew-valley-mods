@@ -8,8 +8,11 @@
 
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ModZipPath>$(SolutionDir)\_releases</ModZipPath>
   </PropertyGroup>
+
+  <!-- import common code -->
+  <Import Project="Common\Common.projitems" Label="Shared" />
 </Project>

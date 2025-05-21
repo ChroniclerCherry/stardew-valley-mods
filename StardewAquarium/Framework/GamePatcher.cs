@@ -14,13 +14,13 @@ internal class GamePatcher
     ** Fields
     *********/
     /// <summary>Encapsulates monitoring and logging.</summary>
-    private static IMonitor Monitor;
+    private static IMonitor Monitor = null!; // set in Apply
 
     /// <summary>Simplifies access to inaccessible code.</summary>
-    private static IReflectionHelper Reflection;
+    private static IReflectionHelper Reflection = null!; // set in Apply
 
     /// <summary>Provides translations stored in the mod's <c>i18n</c> folder.</summary>
-    private static ITranslationHelper Translation;
+    private static ITranslationHelper Translation = null!; // set in Apply
 
 
     /*********

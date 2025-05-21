@@ -15,10 +15,10 @@ internal static class GamePatcher
     ** Fields
     *********/
     /// <summary>Encapsulates monitoring and logging.</summary>
-    private static IMonitor Monitor;
+    private static IMonitor Monitor = null!; // set in Apply
 
     /// <summary>Get the mod config.</summary>
-    private static Func<ModConfig> Config;
+    private static Func<ModConfig> Config = null!; // set in Apply
 
 
     /*********
@@ -45,7 +45,7 @@ internal static class GamePatcher
     /*********
     ** Private methods
     *********/
-    private static void After_ShopBuilder_GetShopStock(string shopId, ref Dictionary<ISalable, ItemStockInformation> __result)
+    private static void After_ShopBuilder_GetShopStock(string shopId, ref Dictionary<ISalable, ItemStockInformation?> __result)
     {
         try
         {
@@ -54,8 +54,8 @@ internal static class GamePatcher
 
             var config = Config();
 
-            Dictionary<ISalable, ItemStockInformation> editedStock = new Dictionary<ISalable, ItemStockInformation>();
-            foreach ((ISalable item, ItemStockInformation stockInfo) in __result)
+            Dictionary<ISalable, ItemStockInformation?> editedStock = [];
+            foreach ((ISalable item, ItemStockInformation? stockInfo) in __result)
             {
                 if (item is Tool tool && Enum.IsDefined(typeof(UpgradeMaterials), tool.UpgradeLevel) && stockInfo is not null)
                 {

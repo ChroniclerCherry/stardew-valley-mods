@@ -16,28 +16,27 @@ internal class ConditionChecker
     private readonly IModHelper Helper;
     private readonly IMonitor Monitor;
     private readonly bool VerboseLogging;
-    private readonly string UniqueId;
+    private readonly string? UniqueId;
 
-
-    /*********
-    ** Accessors
-    *********/
     /// <summary>
     /// This is the vanilla method used to check preconditions
     /// Borrowing it to gain quick access to all vanilla preconditions
     /// </summary>
-    public Func<string, bool> VanillaPreconditionsMethod { get; private set; }
+    private readonly Func<string, bool> VanillaPreconditionsMethod;
 
 
     /*********
     ** Public methods
     *********/
-    public ConditionChecker(IModHelper helper, IMonitor monitor, bool verbose = false, string uniqueId = null)
+    public ConditionChecker(IModHelper helper, IMonitor monitor, bool verbose = false, string? uniqueId = null)
     {
         this.Helper = helper;
         this.Monitor = monitor;
         this.VerboseLogging = verbose;
         this.UniqueId = uniqueId;
+
+        //using the farm because it should be available for every player at any point in the game. Current location sometimes doesn't exist for farmhands
+        this.VanillaPreconditionsMethod = condition => Game1.getFarm().checkEventPrecondition(condition) != "-1";
     }
 
 
@@ -50,14 +49,11 @@ internal class ConditionChecker
     /// The method returns true if any of the strings are true
     /// </summary>
     /// <returns>true if all conditions matches, otherwise false</returns>
-    internal bool CheckConditions(string[] conditions)
+    internal bool CheckConditions(string[]? conditions)
     {
         //if no conditions are supplied, then conditions are always met
         if (conditions == null)
             return true;
-
-        //using the farm because it should be available for every player at any point in the game. Current location sometimes doesn't exist for farmhands
-        this.VanillaPreconditionsMethod = condition => Game1.getFarm().checkEventPrecondition(condition) != "-1";
 
         //if someone somehow marked this fake ID as seen, unmark it so condition checking will actually work
         if (Game1.player.eventsSeen.Remove("-6529"))

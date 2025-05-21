@@ -1,20 +1,29 @@
 using System;
 using System.Collections.Generic;
+using StardewModdingAPI;
 
 namespace MultiplayerModChecker.Framework;
 
 internal class MultiplayerReportData
 {
-    public string FarmhandName { get; set; }
-    public DateTime TimeConnected { get; set; }
-    public long FarmhandId { get; set; }
+    public long FarmhandId { get; }
+    public string FarmhandName { get; }
+    public DateTime TimeConnected { get; }
 
-    public SmapiGameVersionDifference SmapiGameGameVersions { get; set; } = new SmapiGameVersionDifference();
+    public SmapiGameVersionDifference SmapiGameGameVersions { get; }
 
-    internal List<ModVersions> Mods { get; set; } = new List<ModVersions>();
+    internal List<ModVersions> Mods { get; } = [];
 
-    public List<string> MissingOnHost { get; set; } = new List<string>();
-    public List<string> MissingOnFarmhand { get; set; } = new List<string>();
+    public List<string> MissingOnHost { get; } = [];
+    public List<string> MissingOnFarmhand { get; } = [];
 
-    public List<string> VersionMismatch { get; set; } = new List<string>();
+    public List<string> VersionMismatch { get; } = [];
+
+    public MultiplayerReportData(long farmhandId, string farmhandName, DateTime timeConnected, ISemanticVersion hostApiVersion, ISemanticVersion? farmhandApiVersion)
+    {
+        this.FarmhandId = farmhandId;
+        this.FarmhandName = farmhandName;
+        this.TimeConnected = timeConnected;
+        this.SmapiGameGameVersions = new SmapiGameVersionDifference(hostApiVersion, farmhandApiVersion);
+    }
 }

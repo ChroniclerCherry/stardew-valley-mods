@@ -13,7 +13,7 @@ internal static class AssetEditor
     /*********
     ** Fields
     *********/
-    private static IMonitor Monitor;
+    private static IMonitor Monitor = null!; // set in Init
 
 
     /*********
@@ -37,14 +37,13 @@ internal static class AssetEditor
     *********/
     /// <inheritdoc cref="IContentEvents.AssetRequested" />
     [EventPriority(EventPriority.Low)] // let mods add their locations first
-    private static void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+    private static void OnAssetRequested(object? sender, AssetRequestedEventArgs e)
     {
         if (e.NameWithoutLocale.IsEquivalentTo("Data/Locations"))
             e.Edit(EditDataLocations);
     }
 
     /// <summary>Set up Legendary Bait fish entries, and copy the beach data into the aquarium exterior location.</summary>
-    /// <param name="asset"></param>
     private static void EditDataLocations(IAssetData asset)
     {
         IDictionary<string, LocationData> data = asset.AsDictionary<string, LocationData>().Data;
@@ -70,12 +69,12 @@ internal static class AssetEditor
         }
 
         // copy beach data into aquarium exterior
-        if (!data.TryGetValue(ContentPackHelper.ExteriorLocationName, out LocationData museumData))
+        if (!data.TryGetValue(ContentPackHelper.ExteriorLocationName, out LocationData? museumData))
         {
             if (Game1.gameMode != Game1.titleScreenGameMode)
                 Monitor.Log($"Could not find location data for '{ContentPackHelper.ExteriorLocationName}'. Is Stardew Aquarium installed correctly?", LogLevel.Warn);
         }
-        else if (!data.TryGetValue("Beach", out LocationData beachData))
+        else if (!data.TryGetValue("Beach", out LocationData? beachData))
             Monitor.Log("Beach data seems missing, cannot copy.", LogLevel.Warn);
         else
         {

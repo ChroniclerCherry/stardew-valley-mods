@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace ShopTileFramework.Framework.Data;
 
 internal abstract class ItemStockModel

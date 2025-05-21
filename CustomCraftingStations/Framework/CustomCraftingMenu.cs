@@ -11,7 +11,7 @@ internal class CustomCraftingMenu : CraftingPage
     ** Fields
     *********/
     /// <summary>The custom recipe names to show.</summary>
-    private readonly List<string> Recipes;
+    private readonly List<string>? Recipes; // nullable because it can be accessed from the base constructor before it's set
 
 
     /*********
@@ -30,6 +30,6 @@ internal class CustomCraftingMenu : CraftingPage
     {
         return
             this.Recipes?.ToList()
-            ?? base.GetRecipesToDisplay(); // not initialized yet
+            ?? base.GetRecipesToDisplay();
     }
 }

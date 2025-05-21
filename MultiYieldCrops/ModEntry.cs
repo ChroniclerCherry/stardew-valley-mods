@@ -16,7 +16,7 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    private Dictionary<string, List<Rule>> AllHarvestRules;
+    private readonly Dictionary<string, List<Rule>> AllHarvestRules = [];
 
 
     /*********
@@ -39,7 +39,7 @@ internal class ModEntry : Mod
     /// <param name="cropName">The crop name that was harvested.</param>
     /// <param name="fertilizer">The fertilizer on the harvested tile.</param>
     /// <param name="junimo">The Junimo who harvested the tile, if applicable.</param>
-    private void SpawnHarvest(Vector2 tileLocation, string cropName, int fertilizer, JunimoHarvester junimo = null)
+    private void SpawnHarvest(Vector2 tileLocation, string cropName, int fertilizer, JunimoHarvester? junimo = null)
     {
         if (!this.AllHarvestRules.ContainsKey(cropName))
             return;
@@ -48,7 +48,7 @@ internal class ModEntry : Mod
 
         foreach (Rule data in this.AllHarvestRules[cropName])
         {
-            foreach (Item item in this.SpawnItems(data, fertilizer))
+            foreach (Item? item in this.SpawnItems(data, fertilizer))
             {
                 if (item == null)
                     continue;
@@ -64,10 +64,10 @@ internal class ModEntry : Mod
         }
     }
 
-    private IEnumerable<Item> SpawnItems(Rule data, int fertilizerQualityLevel)
+    private IEnumerable<Item?> SpawnItems(Rule data, int fertilizerQualityLevel)
     {
         int quality = fertilizerQualityLevel;
-        string itemId = this.GetIdByName(data.ItemName, data.ExtraYieldItemType);
+        string? itemId = this.GetIdByName(data.ItemName, data.ExtraYieldItemType);
         Point tile = Game1.player.TilePoint;
 
         //stole this code from the game to calculate crop quality
@@ -104,8 +104,11 @@ internal class ModEntry : Mod
     /// <param name="name">The item name.</param>
     /// <param name="itemType">The item type, matching a key recognized by <see cref="GetItemDataDefinitionFromType"/>.</param>
     /// <returns>Returns the item's qualified item ID, or <c>null</c> if not found.</returns>
-    private string GetIdByName(string name, string itemType)
+    private string? GetIdByName(string? name, string itemType)
     {
+        if (name is null)
+            return null;
+
         // there's multiple stone items and 390 is the one that works
         if (itemType == "Object" && name == "Stone")
             return ItemRegistry.type_object + "390";
@@ -162,13 +165,13 @@ internal class ModEntry : Mod
 
     private void InitializeHarvestRules()
     {
-        this.AllHarvestRules = new Dictionary<string, List<Rule>>();
+        this.AllHarvestRules.Clear();
         try
         {
             ContentModel data = this.Helper.ReadConfig<ContentModel>();
-            if (data.Harvests != null)
+            if (data.Harvests.Count > 0)
             {
-                this.LoadContentPack(data);
+                this.LoadContentPack(null, data);
             }
         }
         catch (Exception ex)
@@ -184,19 +187,22 @@ internal class ModEntry : Mod
                 continue;
             }
 
-            this.LoadContentPack(pack.ReadJsonFile<ContentModel>("HarvestRules.json"));
+            this.LoadContentPack(pack, pack.ReadJsonFile<ContentModel>("HarvestRules.json") ?? new ContentModel());
 
         }
     }
 
-    private void LoadContentPack(ContentModel data)
+    private void LoadContentPack(IContentPack? pack, ContentModel data)
     {
-        if (data == null)
-            return;
-
-        foreach (CropHarvestRules harvests in data.Harvests)
+        foreach (CropHarvestRules harvest in data.Harvests)
         {
-            this.LoadCropHarvestRulesFor(harvests.CropName, harvests.HarvestRules);
+            if (string.IsNullOrWhiteSpace(harvest.CropName))
+            {
+                this.Monitor.Log($"Skipped harvest rule from {(pack != null ? $"'{pack.Manifest.Name}'" : "config.json")} because the {nameof(harvest.CropName)} field is empty.");
+                continue;
+            }
+
+            this.LoadCropHarvestRulesFor(harvest.CropName, harvest.HarvestRules);
         }
     }
 
@@ -204,7 +210,7 @@ internal class ModEntry : Mod
     {
         foreach (Rule rule in harvestRules)
         {
-            if (rule.DisableWithMods != null)
+            if (rule.DisableWithMods.Length > 0)
             {
                 bool skipRule = false;
                 foreach (string mod in rule.DisableWithMods)
@@ -223,14 +229,9 @@ internal class ModEntry : Mod
 
 
             if (this.AllHarvestRules.ContainsKey(cropName))
-            {
                 this.AllHarvestRules[cropName].Add(rule);
-            }
             else
-            {
-                this.AllHarvestRules[cropName] = new List<Rule>();
-                this.AllHarvestRules[cropName].Add(rule);
-            }
+                this.AllHarvestRules[cropName] = [rule];
         }
     }
 }

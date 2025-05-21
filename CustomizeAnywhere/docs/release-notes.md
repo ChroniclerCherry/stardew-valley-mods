@@ -2,6 +2,7 @@
 
 # Release notes
 ## Upcoming release
+- Fixed errors when the `config.json` has invalid values.
 - Improved translations. Thanks to BlackRosePetals (updated Chinese)!
 
 ## 1.4.0

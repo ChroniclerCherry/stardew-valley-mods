@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace ShopTileFramework.Framework.Apis;
 
 public interface IConditionsApi

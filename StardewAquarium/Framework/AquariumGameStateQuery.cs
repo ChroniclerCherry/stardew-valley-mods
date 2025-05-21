@@ -51,7 +51,7 @@ internal static class AquariumGameStateQuery
 
         return GameStateQuery.Helpers.WithPlayer(context.Player, playerKey, target =>
         {
-            SObject bait = (target?.CurrentTool as FishingRod)?.GetBait();
+            SObject? bait = (target?.CurrentTool as FishingRod)?.GetBait();
 
             if (bait is not null)
             {

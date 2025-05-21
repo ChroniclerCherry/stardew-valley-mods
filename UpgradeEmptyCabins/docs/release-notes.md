@@ -1,4 +1,7 @@
 ﻿# Release notes
+## Upcoming release
+- Internal changes to simplify maintenance.
+
 ## 1.2.1
 Released 25 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
 

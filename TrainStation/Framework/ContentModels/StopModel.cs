@@ -10,23 +10,23 @@ internal class StopModel : IStopModel
     ** Private fields
     *********/
     /// <summary>The default display name to return if no translation is found, or <c>null</c> for a generic 'no translation' message.</summary>
-    private string DisplayNameDefault { get; init; }
+    private string? DisplayNameDefault { get; init; }
 
     /// <summary>The display name translations for each language.</summary>
-    private Dictionary<string, string> DisplayNameTranslations { get; init; }
+    private Dictionary<string, string>? DisplayNameTranslations { get; init; }
 
 
     /*********
     ** Accessors
     *********/
     /// <inheritdoc />
-    public string Id { get; init; }
+    public string Id { get; init; } = ""; // set on initialization
 
     /// <summary>The localized display name.</summary>
     string IStopModel.DisplayName => this.GetDisplayName();
 
     /// <inheritdoc />
-    public string TargetMapName { get; init; }
+    public string? TargetMapName { get; init; }
 
     /// <inheritdoc />
     public int TargetX { get; init; }
@@ -44,7 +44,7 @@ internal class StopModel : IStopModel
     public bool IsBoat { get; init; }
 
     /// <inheritdoc />
-    public string[] Conditions { get; init; }
+    public string[]? Conditions { get; init; }
 
 
     /*********
@@ -99,7 +99,7 @@ internal class StopModel : IStopModel
     /// <param name="isBoat"><inheritdoc cref="IsBoat" path="/summary" /></param>
     /// <param name="displayNameTranslations"><inheritdoc cref="DisplayNameTranslations" path="/summary" /></param>
     /// <param name="displayNameDefault"><inheritdoc cref="DisplayNameDefault" path="/summary" /></param>
-    public static StopModel FromData(string id, string targetMapName, int targetX, int targetY, int facingDirectionAfterWarp, int cost, string[] conditions, bool isBoat, Dictionary<string, string> displayNameTranslations, string displayNameDefault)
+    public static StopModel FromData(string id, string? targetMapName, int targetX, int targetY, int facingDirectionAfterWarp, int cost, string[]? conditions, bool isBoat, Dictionary<string, string>? displayNameTranslations, string? displayNameDefault)
     {
         return new StopModel
         {

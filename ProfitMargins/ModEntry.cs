@@ -12,7 +12,7 @@ internal class ModEntry : Mod
     ** Fields
     *********/
     /// <summary>The mod settings.</summary>
-    private ModConfig Config;
+    private ModConfig Config = null!; // set in Entry
 
     private float OriginalDifficulty;
 
@@ -33,7 +33,7 @@ internal class ModEntry : Mod
     ** Private methods
     *********/
     /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
-    private void OnDayStarted(object sender, DayStartedEventArgs e)
+    private void OnDayStarted(object? sender, DayStartedEventArgs e)
     {
         if (this.CheckContext())
         {
@@ -43,7 +43,7 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IGameLoopEvents.Saving" />
-    private void OnSaving(object sender, SavingEventArgs e)
+    private void OnSaving(object? sender, SavingEventArgs e)
     {
         if (this.CheckContext())
         {

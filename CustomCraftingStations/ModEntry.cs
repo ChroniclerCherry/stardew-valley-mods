@@ -22,15 +22,19 @@ internal class ModEntry : Mod
     ** Fields
     *********/
     /// <summary>Manages content loaded from Custom Crafting Stations content packs.</summary>
-    private ContentManager ContentManager;
+    private ContentManager ContentManager = null!; // set in Entry
 
     private bool OpenedNonCustomMenu;
 
     /// <summary>The mod settings.</summary>
-    private ModConfig Config;
+    private ModConfig Config = null!; // set in Entry
 
-    private Type CookingSkillMenu;
+    private Type? CookingSkillMenu;
 
+
+    /*********
+    ** Accessors
+    *********/
     public static bool MenuOverride = true;
 
 
@@ -48,6 +52,8 @@ internal class ModEntry : Mod
 
         I18n.Init(helper.Translation);
         this.Config = helper.ReadConfig<ModConfig>();
+
+        this.ContentManager = new ContentManager(this.Monitor);
 
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
 
@@ -69,13 +75,13 @@ internal class ModEntry : Mod
     ** Private methods
     *********/
     /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
-    private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+    private void OnSaveLoaded(object? sender, SaveLoadedEventArgs e)
     {
-        this.ContentManager = new ContentManager(this.Helper.ContentPacks.GetOwned(), this.Monitor);
+        this.ContentManager.ResetAndRegisterContentPacks(this.Helper.ContentPacks.GetOwned());
     }
 
     /// <inheritdoc cref="IDisplayEvents.RenderingActiveMenu" />
-    private void OnRenderingActiveMenu(object sender, RenderingActiveMenuEventArgs e)
+    private void OnRenderingActiveMenu(object? sender, RenderingActiveMenuEventArgs e)
     {
         if (!Context.IsWorldReady || this.OpenedNonCustomMenu || !MenuOverride)
             return;
@@ -84,7 +90,7 @@ internal class ModEntry : Mod
 
         IClickableMenu activeMenu = Game1.activeClickableMenu;
 
-        IClickableMenu instance = activeMenu switch
+        IClickableMenu? instance = activeMenu switch
         {
             CraftingPage => activeMenu,
             GameMenu gameMenu => gameMenu.pages[GameMenu.craftingTab],
@@ -98,7 +104,7 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IDisplayEvents.MenuChanged" />
-    private void OnMenuChanged(object sender, MenuChangedEventArgs e)
+    private void OnMenuChanged(object? sender, MenuChangedEventArgs e)
     {
         if (e.OldMenu is (null or CustomCraftingMenu or CraftingPage or GameMenu) || e.OldMenu.GetType() == this.CookingSkillMenu)
         {
@@ -109,7 +115,7 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
-    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+    private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
     {
         this.CookingSkillMenu = Type.GetType("CookingSkill.NewCraftingPage, CookingSkill");
 
@@ -121,7 +127,7 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IInputEvents.ButtonPressed" />
-    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
+    private void OnButtonPressed(object? sender, ButtonPressedEventArgs e)
     {
         if (!Context.CanPlayerMove || !e.Button.IsActionButton())
             return;
@@ -132,9 +138,9 @@ internal class ModEntry : Mod
         int tileY = (int)grabTile.Y;
 
         // check object stations
-        if (Game1.currentLocation.Objects.TryGetValue(grabTile, out SObject obj) && obj.bigCraftable.Value)
+        if (Game1.currentLocation.Objects.TryGetValue(grabTile, out SObject? obj) && obj.bigCraftable.Value)
         {
-            if (this.ContentManager.CraftableCraftingStations.TryGetValue(obj.Name, out CraftingStationConfig config))
+            if (this.ContentManager.CraftableCraftingStations.TryGetValue(obj.Name, out CraftingStationConfig? config))
             {
                 this.OpenCraftingMenu(config, e.Cursor.GrabTile);
                 this.Helper.Input.Suppress(e.Button);
@@ -145,7 +151,7 @@ internal class ModEntry : Mod
         // check tile property stations
         if (Game1.currentLocation.doesTileHaveProperty(tileX, tileY, "Action", "Buildings")?.Split(' ', 2) is ["CraftingStation", not null] property)
         {
-            if (this.ContentManager.TileCraftingStations.TryGetValue(property[1], out CraftingStationConfig config))
+            if (this.ContentManager.TileCraftingStations.TryGetValue(property[1], out CraftingStationConfig? config))
             {
                 this.OpenCraftingMenu(config, e.Cursor.GrabTile);
                 this.Helper.Input.Suppress(e.Button);
@@ -195,7 +201,7 @@ internal class ModEntry : Mod
         if (this.Config.GlobalCraftFromChest)
         {
             if (!this.Config.CraftFromFridgeWhenInHouse) // so we don't add this twice
-                chests.Add((Game1.getLocationFromName("FarmHouse") as FarmHouse)?.fridge.Value.Items);
+                chests.Add(Game1.RequireLocation<FarmHouse>("FarmHouse").fridge.Value.Items);
 
             foreach (GameLocation location in locations)
             {
@@ -218,7 +224,8 @@ internal class ModEntry : Mod
                     for (int y = -radius; y < radius; y++)
                     {
                         Vector2 tile = new(grabTile.X + x, grabTile.Y + y);
-                        if (!location.objects.ContainsKey(tile)) continue;
+                        if (!location.objects.ContainsKey(tile))
+                            continue;
 
                         if (location.objects[tile] is Chest chest)
                             chests.Add(chest.Items);
