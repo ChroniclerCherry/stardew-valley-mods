@@ -1,7 +1,9 @@
 ﻿# Release notes
 ## Upcoming release
 - You can now open the starter gift box in any empty cabin.
+- You can now upgrade cabins placed outside the farm too.
 - Removed the `remove_seed_box` console command (since you can open them directly now).
+- Fixed being able to start an upgrade while Robin is busy on a building outside the farm.
 - Internal changes to simplify maintenance.
 
 ## 1.2.1

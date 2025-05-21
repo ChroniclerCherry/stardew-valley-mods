@@ -26,10 +26,13 @@ internal static class ModUtility
     /// <summary>Get all empty cabins in the save.</summary>
     public static IEnumerable<(Building building, Cabin indoors)> GetEmptyCabins()
     {
-        foreach (Building building in Game1.getFarm().buildings)
+        foreach (GameLocation location in Game1.locations)
         {
-            if (building.isCabin && building.GetIndoors() is Cabin { IsOwnerActivated: false } indoors)
-                yield return (building, indoors);
+            foreach (Building building in location.buildings)
+            {
+                if (building.isCabin && building.GetIndoors() is Cabin { IsOwnerActivated: false } indoors)
+                    yield return (building, indoors);
+            }
         }
     }
 
@@ -41,6 +44,8 @@ internal static class ModUtility
             ? "Stone Cabin"
             : cabin.skinId.Value;
 
-        return $"{cabinName} at tile position {cabin.tileX.Value + 2} {cabin.tileY.Value + 1}"; // show tile position of door
+        GameLocation parentLocation = cabin.GetParentLocation();
+
+        return $"{cabinName} at {parentLocation.DisplayName} tile position {cabin.tileX.Value + 2} {cabin.tileY.Value + 1}"; // show tile position of door
     }
 }

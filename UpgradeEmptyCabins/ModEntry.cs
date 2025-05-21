@@ -81,7 +81,7 @@ internal class ModEntry : Mod
     /// <summary>Show the UI to choose a cabin to upgrade.</summary>
     private void AskForUpgrade()
     {
-        if (Game1.getFarm().isThereABuildingUnderConstruction())
+        if (Game1.netWorldState.Value.GetBuilderData(Game1.builder_robin) != null)
         {
             Game1.drawObjectDialogue(I18n.Robin_Busy());
             return;
