@@ -7,13 +7,5 @@
     "robin.hu2_materials": "Upgrade dell'Asilo Nido: 65.000 ge 100 pezzi di legno duro",
     "robin.hu3_materials": "Aggiornamento dell Scantinato: 100.000 g",
     "robin.busy": "Robin sta attualmente lavorando su un altro edificio. Torna più tardi.",
-    "menu.cancel_option": "Non importa.",
-
-
-    /*********
-    ** Generic Mod Config Menu UI
-    *********/
-    // TODO
-    "config.instant-build.name": "Build instantly",
-    "config.instant-build.desc": "Whether cabin upgrades are applied instantly."
+    "menu.cancel_option": "Non importa."
 }

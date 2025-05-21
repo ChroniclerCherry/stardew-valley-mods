@@ -7,13 +7,5 @@
     "robin.hu2_materials": "아이방 업그레이드: 65,000 골드, 단단한 나무 100개",
     "robin.hu3_materials": "지하실 업그레이드 : 100,000 골드",
     "robin.busy": "로빈은 현재 다른 건물에서 일하고 있습니다. 나중에 다시 오세요.",
-    "menu.cancel_option": "그만하기.",
-
-
-    /*********
-    ** Generic Mod Config Menu UI
-    *********/
-    // TODO
-    "config.instant-build.name": "Build instantly",
-    "config.instant-build.desc": "Whether cabin upgrades are applied instantly."
+    "menu.cancel_option": "그만하기."
 }
