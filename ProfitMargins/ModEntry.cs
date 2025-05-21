@@ -1,3 +1,4 @@
+using ChroniclerCherry.Common.Integrations.GenericModConfigMenu;
 using ProfitMargins.Framework;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -23,7 +24,10 @@ internal class ModEntry : Mod
     /// <inheritdoc />
     public override void Entry(IModHelper helper)
     {
+        I18n.Init(helper.Translation);
         this.Config = helper.ReadConfig<ModConfig>();
+
+        helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
         helper.Events.GameLoop.DayStarted += this.OnDayStarted;
         helper.Events.GameLoop.Saving += this.OnSaving;
     }
@@ -32,6 +36,21 @@ internal class ModEntry : Mod
     /*********
     ** Private methods
     *********/
+    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
+    private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
+    {
+        this.AddGenericModConfigMenu(
+            new GenericModConfigMenuIntegrationForProfitMargins(),
+            get: () => this.Config,
+            set: config =>
+            {
+                this.Config = config;
+                if (Context.IsWorldReady && this.CheckContext())
+                    Game1.player.difficultyModifier = config.ProfitMargin;
+            }
+        );
+    }
+
     /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
     private void OnDayStarted(object? sender, DayStartedEventArgs e)
     {

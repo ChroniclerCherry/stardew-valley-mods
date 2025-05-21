@@ -1,0 +1,10 @@
+﻿{
+    /*********
+    ** Generic Mod Config Menu UI
+    *********/
+    "config.enable-in-multiplayer.name": "Enable in multiplayer",
+    "config.enable-in-multiplayer.desc": "Whether to change profit margins when hosting a multiplayer server. If false, it only applies in single-player.",
+
+    "config.profit-margin.name": "Profit margins",
+    "config.profit-margin.desc": "The percentage profit margins as a decimal value, where 1 (i.e. 100%) is the default value. For example, setting this to 0.5 will set 50% profit margins (more difficult), while 2 will set 200% profit margins (easier)."
+}
