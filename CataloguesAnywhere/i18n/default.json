@@ -1,0 +1,13 @@
+﻿{
+    /*********
+    ** Generic Mod Config Menu UI
+    *********/
+    "config.enabled.name": "Enabled",
+    "config.enabled.desc": "Whether the mod should be enabled",
+
+    "config.furniture-key.name": "Open furniture catalogue key",
+    "config.furniture-key.desc": "The key bindings which open the furniture catalogue.",
+
+    "config.wallpaper-key.name": "Open wallpaper catalogue key",
+    "config.wallpaper-key.desc": "The key bindings which open the wallpaper catalogue."
+}

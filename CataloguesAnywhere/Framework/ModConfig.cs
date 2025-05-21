@@ -6,14 +6,19 @@ using StardewModdingAPI.Utilities;
 
 namespace CataloguesAnywhere.Framework;
 
+/// <summary>The mod settings model.</summary>
 internal class ModConfig
 {
     /*********
     ** Accessors
     *********/
+    /// <summary>Whether the mod should be enabled.</summary>
     public bool Enabled { get; set; } = true;
 
+    /// <summary>The key bindings which open the furniture catalogue.</summary>
     public KeybindList FurnitureKey { get; set; } = KeybindList.ForSingle(SButton.LeftControl, SButton.D1);
+
+    /// <summary>The key bindings which open the wallpaper catalogue.</summary>
     public KeybindList WallpaperKey { get; set; } = KeybindList.ForSingle(SButton.LeftControl, SButton.D2);
 
 

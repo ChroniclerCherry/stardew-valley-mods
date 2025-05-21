@@ -1,5 +1,6 @@
 ﻿# Release notes
 ## Upcoming release
+- Added in-game config UI through [Generic Mod Config Menu](https://www.nexusmods.com/stardewvalley/mods/5098).
 - Fixed errors when the `config.json` has invalid values.
 
 ## 1.1.0
