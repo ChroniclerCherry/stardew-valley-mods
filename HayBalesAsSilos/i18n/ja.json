@@ -1,0 +1,20 @@
+﻿{
+    /*********
+    ** Item
+    *********/
+    "DisplayName": "干し草俵",
+    "Description": "既存のサイロの容量を{{capacity}}増やす。牧場内に置いた場合のみ有効。",
+
+
+    /*********
+    ** Generic Mod Config Menu UI
+    *********/
+    "config.require-constructed-silo.name": "サイロが必要",
+    "config.require-constructed-silo.desc": "干し草俵を使うために、牧場に最低でも一つのサイロが建設されている必要があるかどうか",
+
+    "config.hay-per-bale.name": "貯蔵量",
+    "config.hay-per-bale.desc": "一つの干し草俵に蓄えられるほし草の量",
+
+    "config.purchase-price.name": "購入金額",
+    "config.purchase-price.desc": "干し草俵の金額"
+}
