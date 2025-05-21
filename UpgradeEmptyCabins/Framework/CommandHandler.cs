@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Locations;
-using StardewValley.Objects;
-using Object = StardewValley.Object;
 
 namespace UpgradeEmptyCabins.Framework
 {
@@ -76,18 +73,6 @@ namespace UpgradeEmptyCabins.Framework
             );
 
             // specific cabins
-            commandHelper.Add(
-                "remove_seed_box",
-                """
-                Remove the seed box from an empty cabin.
-
-                Usage:
-                   remove_seed_box <cabin number>
-
-                Enter `list_cabins` to see a list of cabin numbers.
-                """,
-                this.HandleRemoveSeedBox
-            );
             commandHelper.Add(
                 "renovate_cabin",
                 """
@@ -215,35 +200,6 @@ namespace UpgradeEmptyCabins.Framework
         /****
         ** Specific cabin commands
         ****/
-        /// <summary>Handle the <c>remove_seed_box</c> console command.</summary>
-        /// <param name="commandName">The command name.</param>
-        /// <param name="args">The command arguments.</param>
-        private void HandleRemoveSeedBox(string commandName, string[] args)
-        {
-            // read args
-            if (!this.AssertSaveLoaded(out string? error) || !this.TryGetCabinFromArg(args, 0, out Building? cabin, out Cabin? indoors, out error))
-            {
-                this.LogCommandError(commandName, error);
-                return;
-            }
-
-            // remove seed box
-            bool removed = false;
-            foreach ((Vector2 tile, Object obj) in indoors.Objects.Pairs)
-            {
-                if (obj is not Chest chest || !chest.giftbox.Value || chest.bigCraftable.Value)
-                {
-                    continue;
-                }
-
-                indoors.Objects.Remove(tile);
-                removed = true;
-                this.Monitor.Log($"Seed box removed from {ModUtility.GetCabinDescription(cabin)}.", LogLevel.Info);
-            }
-            if (!removed)
-                this.Monitor.Log($"No seed box found in {ModUtility.GetCabinDescription(cabin)}.", LogLevel.Info);
-        }
-
         /// <summary>Handle the <c>renovate_cabin</c> console command.</summary>
         /// <param name="commandName">The command name.</param>
         /// <param name="args">The command arguments.</param>

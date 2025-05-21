@@ -1,5 +1,7 @@
 ﻿# Release notes
 ## Upcoming release
+- You can now open the starter gift box in any empty cabin.
+- Removed the `remove_seed_box` console command (since you can open them directly now).
 - Internal changes to simplify maintenance.
 
 ## 1.2.1
