@@ -1,3 +1,4 @@
+using ChroniclerCherry.Common.Integrations.GenericModConfigMenu;
 using FarmRearranger.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -42,8 +43,9 @@ internal class ModEntry : Mod
 
         // hook events
         helper.Events.Content.AssetRequested += this.OnAssetRequested;
-        helper.Events.GameLoop.UpdateTicking += this.OnUpdateTicking;
+        helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
         helper.Events.GameLoop.DayEnding += this.OnDayEnding;
+        helper.Events.GameLoop.UpdateTicking += this.OnUpdateTicking;
         helper.Events.Input.ButtonPressed += this.OnButtonPressed;
     }
 
@@ -51,6 +53,20 @@ internal class ModEntry : Mod
     /*********
     ** Private methods
     *********/
+    /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
+    private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
+    {
+        this.AddGenericModConfigMenu(
+            new GenericModConfigMenuIntegrationForFarmRearranger(),
+            get: () => this.Config,
+            set: config =>
+            {
+                this.Config = config;
+                this.Helper.GameContent.InvalidateCache("Data/BigCraftables");
+                this.Helper.GameContent.InvalidateCache("Data/Shops");
+            });
+    }
+
     /// <inheritdoc cref="IGameLoopEvents.DayEnding" />
     /// <remarks>This checks for friendship with robin at the end of the day.</remarks>
     private void OnDayEnding(object? sender, DayEndingEventArgs e)

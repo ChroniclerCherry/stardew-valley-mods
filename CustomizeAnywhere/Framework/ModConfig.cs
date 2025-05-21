@@ -6,7 +6,7 @@ using StardewModdingAPI.Utilities;
 
 namespace CustomizeAnywhere.Framework;
 
-/// <summary>The mod settings.</summary>
+/// <summary>The mod settings model.</summary>
 internal class ModConfig
 {
     /*********
