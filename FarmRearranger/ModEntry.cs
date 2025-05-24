@@ -18,6 +18,9 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
+    /// <summary>The mail ID for the farm rearranger intro letter.</summary>
+    private const string MailId = "FarmRearrangerMail";
+
     private bool IsArranging;
 
     /// <summary>The mod settings.</summary>
@@ -44,7 +47,7 @@ internal class ModEntry : Mod
         // hook events
         helper.Events.Content.AssetRequested += this.OnAssetRequested;
         helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
-        helper.Events.GameLoop.DayEnding += this.OnDayEnding;
+        helper.Events.GameLoop.DayStarted += this.OnDayStarted;
         helper.Events.GameLoop.UpdateTicking += this.OnUpdateTicking;
         helper.Events.Input.ButtonPressed += this.OnButtonPressed;
     }
@@ -67,15 +70,13 @@ internal class ModEntry : Mod
             });
     }
 
-    /// <inheritdoc cref="IGameLoopEvents.DayEnding" />
-    /// <remarks>This checks for friendship with robin at the end of the day.</remarks>
-    private void OnDayEnding(object? sender, DayEndingEventArgs e)
+    /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
+    /// <remarks>This checks for friendship with robin at the start of the day.</remarks>
+    private void OnDayStarted(object? sender, DayStartedEventArgs e)
     {
-        //if friendship is higher enough, send the mail tomorrow
+        // if friendship is higher enough, add the letter to the mailbox
         if (Game1.player.getFriendshipLevelForNPC("Robin") >= this.Config.FriendshipPointsRequired)
-        {
-            Game1.addMailForTomorrow("FarmRearrangerMail");
-        }
+            Game1.addMail(MailId);
     }
 
     /// <inheritdoc cref="IInputEvents.ButtonPressed" />
@@ -155,7 +156,7 @@ internal class ModEntry : Mod
                         Id = this.FarmRearrangeId,
                         ItemId = this.FarmRearrangeId,
                         Price = this.Config.Price,
-                        Condition = "PLAYER_HAS_MAIL Current FarmRearrangerMail Received"
+                        Condition = $"PLAYER_HAS_MAIL Current {MailId} Received"
                     });
                 }
             });
@@ -167,7 +168,7 @@ internal class ModEntry : Mod
             e.Edit(asset =>
             {
                 var data = asset.AsDictionary<string, string>().Data;
-                data["FarmRearrangerMail"] = I18n.RobinLetter();
+                data[MailId] = I18n.RobinLetter();
             });
         }
 

@@ -1,6 +1,7 @@
 ﻿# Release notes
 ## Upcoming release
 - Added in-game config UI through [Generic Mod Config Menu](https://www.nexusmods.com/stardewvalley/mods/5098).
+- The letter is now sent at the start of the day instead of overnight, so you get it immediately if you already meet the requirements.
 - Internal changes to simplify maintenance.
 
 ## 1.1.1
