@@ -57,14 +57,17 @@ internal static class GamePatcher
             Dictionary<ISalable, ItemStockInformation?> editedStock = [];
             foreach ((ISalable item, ItemStockInformation? stockInfo) in __result)
             {
-                if (item is Tool tool && Enum.IsDefined(typeof(UpgradeMaterials), tool.UpgradeLevel) && stockInfo is not null)
+                if (item is not Tool tool || stockInfo is null)
+                    continue;
+
+                if (Utility.TryParseEnum(tool.UpgradeLevel.ToString(), out UpgradeMaterials upgradeLevel) && config.UpgradeCosts.TryGetValue(upgradeLevel, out Upgrade? upgradeCosts))
                 {
                     UpgradeMaterials upgradeLevel = (UpgradeMaterials)tool.UpgradeLevel;
 
                     editedStock[tool] = new ItemStockInformation(
-                        price: config.UpgradeCosts[upgradeLevel].Cost,
-                        tradeItemCount: config.UpgradeCosts[upgradeLevel].MaterialStack,
-                        tradeItem: config.UpgradeCosts[upgradeLevel].MaterialId,
+                        price: upgradeCosts.Cost,
+                        tradeItemCount: upgradeCosts.MaterialStack,
+                        tradeItem: upgradeCosts.MaterialId,
                         stock: stockInfo.Stock,
                         stockMode: stockInfo.LimitedStockMode,
                         itemToSyncStack: stockInfo.ItemToSyncStack,

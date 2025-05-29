@@ -1,6 +1,7 @@
 ﻿# Release notes
 ## Upcoming release
-- Fixed errors when the `config.json` has invalid values.
+- Fixed error if you remove an upgrade level from `config.json`.
+- Fixed error when the `config.json` has null values.
 
 ## 1.0.2
 Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
