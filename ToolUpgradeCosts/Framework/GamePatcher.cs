@@ -5,6 +5,7 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.GameData.Shops;
 using StardewValley.Internal;
+using StardewValley.Tools;
 
 namespace ToolUpgradeCosts.Framework;
 
@@ -62,10 +63,12 @@ internal static class GamePatcher
 
                 if (Utility.TryParseEnum(tool.UpgradeLevel.ToString(), out UpgradeMaterials upgradeLevel) && config.UpgradeCosts.TryGetValue(upgradeLevel, out Upgrade? upgradeCosts))
                 {
-                    UpgradeMaterials upgradeLevel = (UpgradeMaterials)tool.UpgradeLevel;
+                    int price = config.TrashCanHalfPrice && tool is GenericTool && tool.ItemId.EndsWith("TrashCan")
+                        ? upgradeCosts.Cost / 2
+                        : upgradeCosts.Cost;
 
                     editedStock[tool] = new ItemStockInformation(
-                        price: upgradeCosts.Cost,
+                        price: price,
                         tradeItemCount: upgradeCosts.MaterialStack,
                         tradeItem: upgradeCosts.MaterialId,
                         stock: stockInfo.Stock,

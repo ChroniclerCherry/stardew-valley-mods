@@ -1,5 +1,6 @@
 ﻿# Release notes
 ## Upcoming release
+- The gold price for upgrading a trash can is now half the price of other tools, to match the base game. This can be disabled via the `TrashCanHalfPrice` option.
 - Fixed error if you remove an upgrade level from `config.json`.
 - Fixed error when the `config.json` has null values.
 

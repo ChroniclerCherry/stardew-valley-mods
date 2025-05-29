@@ -35,6 +35,9 @@ internal class ModConfig
         }
     };
 
+    /// <summary>Whether to halve the price of a trash can upgrade.</summary>
+    public bool TrashCanHalfPrice { get; set; } = true;
+
 
     /*********
     ** Private methods
