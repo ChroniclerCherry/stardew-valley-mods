@@ -88,7 +88,7 @@ internal class ItemStock : ItemStockModel
             return null;
         }
 
-        this.ItemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
+        this.ItemPriceAndStock = [];
         this.Builder.SetItemPriceAndStock(this.ItemPriceAndStock);
 
         double pricemultiplier = 1;

@@ -38,7 +38,7 @@ internal class StopManager
     ** Accessors
     *********/
     /// <summary>The stops registered by Train Station packs or through the API.</summary>
-    public List<StopModel> CustomStops { get; } = new();
+    public List<StopModel> CustomStops { get; } = [];
 
 
     /*********

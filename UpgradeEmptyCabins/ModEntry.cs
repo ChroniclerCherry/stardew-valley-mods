@@ -87,7 +87,7 @@ internal class ModEntry : Mod
             return;
         }
 
-        List<Response> cabinNames = new List<Response>();
+        List<Response> cabinNames = [];
         foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
         {
             string? upgradeString = indoors.upgradeLevel switch

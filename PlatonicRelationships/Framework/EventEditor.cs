@@ -84,7 +84,7 @@ internal class EventEditor
         {
             IAssetName assetName = parseAssetName(rawAssetName);
 
-            Dictionary<string, string> events = new();
+            Dictionary<string, string> events = [];
             foreach ((string eventId, string npcName) in rawEvents)
                 events.Add(eventId, npcName);
 

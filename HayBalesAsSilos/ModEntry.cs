@@ -26,7 +26,7 @@ internal class ModEntry : Mod
 
     /// <summary>The cached number of hay bales in each location.</summary>
     /// <remarks>Most code should use <see cref="CountHayBalesIn"/> instead.</remarks>
-    private readonly Dictionary<string, int> HayBalesByLocation = new();
+    private readonly Dictionary<string, int> HayBalesByLocation = [];
 
 
     /*********

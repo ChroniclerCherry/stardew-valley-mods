@@ -15,8 +15,8 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    private readonly List<MultiplayerReportData> RawReports = new List<MultiplayerReportData>();
-    private readonly List<string> Reports = new List<string>();
+    private readonly List<MultiplayerReportData> RawReports = [];
+    private readonly List<string> Reports = [];
 
     /// <summary>The mod settings.</summary>
     private ModConfig Config = null!; // set in Entry
@@ -97,7 +97,7 @@ internal class ModEntry : Mod
 
     private void GenerateReport(MultiplayerReportData reportData)
     {
-        Dictionary<string, LogLevel> report = new Dictionary<string, LogLevel>();
+        Dictionary<string, LogLevel> report = [];
 
         if (!reportData.SmapiGameGameVersions.FarmhandHasSmapi)
         {
@@ -134,7 +134,7 @@ internal class ModEntry : Mod
         if (reportData.VersionMismatch.Count > 0)
             report.Add(I18n.ModMismatch_Version(modList: string.Join(",", reportData.VersionMismatch)), LogLevel.Warn);
 
-        this.Helper.Multiplayer.SendMessage(report, "MultiplayerReport", new[] { this.ModManifest.UniqueID }, new[] { reportData.FarmhandId });
+        this.Helper.Multiplayer.SendMessage(report, "MultiplayerReport", [this.ModManifest.UniqueID], [reportData.FarmhandId]);
         this.Helper.Data.WriteJsonFile("LatestMultiplayerModReport-Host.json", this.RawReports);
         this.PublishReport(reportData, report);
     }

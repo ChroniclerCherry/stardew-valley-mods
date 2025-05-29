@@ -127,19 +127,19 @@ internal class DresserAndMirror
                 // add dresser shop
                 data[this.DresserShopId] = new ShopData
                 {
-                    Owners = new()
-                    {
+                    Owners =
+                    [
                         new ShopOwnerData
                         {
                             Id = "Default",
                             Name = "AnyOrNone",
                             Portrait = "",
-                            Dialogues = new()
+                            Dialogues = []
                         }
-                    },
+                    ],
 
-                    Items = new()
-                    {
+                    Items =
+                    [
                         new ShopItemData
                         {
                             Id = "Shirts",
@@ -158,7 +158,7 @@ internal class DresserAndMirror
                             ItemId = "ALL_ITEMS (H)",
                             Price = 0
                         }
-                    }
+                    ]
                 };
             });
         }

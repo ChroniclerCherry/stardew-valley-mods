@@ -70,7 +70,7 @@ internal class ItemPriceAndStockManager
     /// </summary>
     public void Update()
     {
-        this.ItemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
+        this.ItemPriceAndStock = [];
         ModEntry.StaticMonitor.Log($"Updating {this.ShopName}");
 
         foreach (ItemStock stock in this.ItemStocks)

@@ -24,7 +24,7 @@ internal class AnimalShop : AnimalShopModel
     /*********
     ** Accessors
     *********/
-    internal static List<string> ExcludeFromMarnie = new List<string>();
+    internal static List<string> ExcludeFromMarnie = [];
 
 
     /*********
@@ -69,7 +69,7 @@ internal class AnimalShop : AnimalShopModel
         //BFAV patches this anyways so it'll automatically work if installed
         this.AllAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock(Game1.getFarm());
 
-        this.ShopAnimalStock = new List<Object>();
+        this.ShopAnimalStock = [];
         foreach (Object animal in this.AllAnimalsStock)
         {
             if (this.AnimalStock.Contains(animal.Name))

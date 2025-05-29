@@ -36,7 +36,7 @@ internal static class GamePatcher
         Harmony harmony = new(modId);
 
         harmony.Patch(
-            AccessTools.Method(typeof(ShopBuilder), nameof(ShopBuilder.GetShopStock), new[] { typeof(string), typeof(ShopData) }),
+            AccessTools.Method(typeof(ShopBuilder), nameof(ShopBuilder.GetShopStock), [typeof(string), typeof(ShopData)]),
             postfix: new HarmonyMethod(typeof(GamePatcher), nameof(After_ShopBuilder_GetShopStock))
         );
     }

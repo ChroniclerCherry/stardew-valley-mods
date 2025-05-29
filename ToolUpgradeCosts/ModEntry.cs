@@ -15,10 +15,10 @@ internal class ModEntry : Mod
     *********/
     private readonly Dictionary<UpgradeMaterials, string> DefaultMaterials = new()
     {
-        {UpgradeMaterials.Copper, "334"},
-        {UpgradeMaterials.Steel, "335"},
-        {UpgradeMaterials.Gold, "336"},
-        {UpgradeMaterials.Iridium, "337"}
+        [UpgradeMaterials.Copper] = "334",
+        [UpgradeMaterials.Steel] = "335",
+        [UpgradeMaterials.Gold] = "336",
+        [UpgradeMaterials.Iridium] = "337"
     };
 
     /// <summary>The mod settings.</summary>

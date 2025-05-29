@@ -18,26 +18,26 @@ namespace CustomCraftingStations.Framework
         private readonly IMonitor Monitor;
 
         /// <summary>The cooking recipes which should only appear in a crafting station, not the default crafting menu.</summary>
-        private readonly HashSet<string> ExclusiveCookingRecipes = new();
+        private readonly HashSet<string> ExclusiveCookingRecipes = [];
 
         /// <summary>The crafting recipes which should only appear in a crafting station, not the default crafting menu.</summary>
-        private readonly HashSet<string> ExclusiveCraftingRecipes = new();
+        private readonly HashSet<string> ExclusiveCraftingRecipes = [];
 
 
         /*********
         ** Accessors
         *********/
         /// <summary>The crafting stations for tiles with the <c>Action CraftingStation {id}</c> tile property, indexed by ID.</summary>
-        public Dictionary<string, CraftingStationConfig> TileCraftingStations { get; } = new();
+        public Dictionary<string, CraftingStationConfig> TileCraftingStations { get; } = [];
 
         /// <summary>The crafting stations for placed big-craftable-type items.</summary>
-        public Dictionary<string, CraftingStationConfig> CraftableCraftingStations { get; } = new();
+        public Dictionary<string, CraftingStationConfig> CraftableCraftingStations { get; } = [];
 
         /// <summary>The cooking recipes to show in the default crafting menus.</summary>
-        public HashSet<string> DefaultCookingRecipes { get; } = new();
+        public HashSet<string> DefaultCookingRecipes { get; } = [];
 
         /// <summary>The crafting recipes to show in the default crafting menus.</summary>
-        public HashSet<string> DefaultCraftingRecipes { get; } = new();
+        public HashSet<string> DefaultCraftingRecipes { get; } = [];
 
 
         /*********

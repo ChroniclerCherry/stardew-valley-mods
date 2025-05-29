@@ -175,7 +175,7 @@ internal class ModEntry : Mod
 
     private List<Response> GetResponses(StopModel[] stops)
     {
-        List<Response> responses = new List<Response>();
+        List<Response> responses = [];
 
         foreach (StopModel stop in stops)
         {

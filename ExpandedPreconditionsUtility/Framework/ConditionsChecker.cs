@@ -41,6 +41,6 @@ public class ConditionsChecker : IConditionsChecker
         if (this.ConditionChecker is null)
             throw new ArgumentException($"{nameof(this.Initialize)} must be called before {nameof(CheckConditions)}.");
 
-        return this.ConditionChecker.CheckConditions(new[] { conditions });
+        return this.ConditionChecker.CheckConditions([conditions]);
     }
 }

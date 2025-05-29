@@ -19,7 +19,8 @@ internal class ShopManager
     /*********
     ** Fields
     *********/
-    private static readonly string[] VanillaShopNames = {
+    private static readonly string[] VanillaShopNames =
+    [
         "PierreShop",
         "JojaShop",
         "RobinShop",
@@ -36,15 +37,15 @@ internal class ShopManager
         "QiShop",
         "WillyShop",
         "HatMouse"
-    };
+    ];
 
 
     /*********
     ** Accessors
     *********/
-    public static Dictionary<string, ItemShop> ItemShops = new Dictionary<string, ItemShop>();
-    public static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
-    public static Dictionary<string, VanillaShop> VanillaShops = new Dictionary<string, VanillaShop>();
+    public static Dictionary<string, ItemShop> ItemShops = [];
+    public static Dictionary<string, AnimalShop> AnimalShops = [];
+    public static Dictionary<string, VanillaShop> VanillaShops = [];
 
 
     /*********

@@ -60,7 +60,7 @@ internal class ConsoleCommands
     *********/
     private void ConditionCheck(string arg1, string[] arg2)
     {
-        string[] condition = { string.Join(" ", arg2) };
+        string[] condition = [string.Join(" ", arg2)];
         ModEntry.StaticMonitor.Log($"Expression resolved as: {ApiManager.Conditions.CheckConditions(condition)}", LogLevel.Info);
     }
 

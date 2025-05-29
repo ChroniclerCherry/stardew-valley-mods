@@ -20,7 +20,7 @@ internal class AquariumCollectionMenu : IClickableMenu
     *********/
     private string HoverText = "";
 
-    private readonly List<List<ClickableTextureComponent>> Collections = new List<List<ClickableTextureComponent>>();
+    private readonly List<List<ClickableTextureComponent>> Collections = [];
     private readonly ClickableTextureComponent BackButton;
     private readonly ClickableTextureComponent ForwardButton;
 

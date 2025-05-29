@@ -22,12 +22,12 @@ internal class VanillaShop : VanillaShopModel
     *********/
     public void Initialize()
     {
-        this.StockManagers = new List<ItemPriceAndStockManager>();
+        this.StockManagers = [];
     }
 
     public void UpdateItemPriceAndStock()
     {
-        this.ItemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
+        this.ItemPriceAndStock = [];
         ModEntry.StaticMonitor.Log($"Generating stock for {this.ShopName}", LogLevel.Debug);
         foreach (ItemPriceAndStockManager manager in this.StockManagers)
         {

@@ -179,7 +179,7 @@ internal class ModEntry : Mod
         IReflectedMethod layoutRecipes = this.Helper.Reflection.GetMethod(instance, "layoutRecipes");
 
         var pagesOfCraftingRecipes = this.Helper.Reflection.GetField<List<Dictionary<ClickableTextureComponent, CraftingRecipe>>>(instance, "pagesOfCraftingRecipes");
-        pagesOfCraftingRecipes.SetValue(new List<Dictionary<ClickableTextureComponent, CraftingRecipe>>());
+        pagesOfCraftingRecipes.SetValue([]);
 
         List<string> knownRecipes = isCooking
             ? this.ContentManager.DefaultCookingRecipes.ToList()
@@ -190,7 +190,7 @@ internal class ModEntry : Mod
 
     private List<IInventory> GetChests(Vector2 grabTile)
     {
-        List<IInventory> chests = new List<IInventory>();
+        List<IInventory> chests = [];
         IEnumerable<GameLocation> locations = Context.IsMainPlayer ? Game1.locations : this.Helper.Multiplayer.GetActiveLocations();
 
         // get fridge
