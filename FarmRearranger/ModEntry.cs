@@ -92,8 +92,11 @@ internal class ModEntry : Mod
         if (!e.Button.IsActionButton())
             return;
 
-        //check if the clicked tile contains a Farm Renderer
-        Vector2 tile = this.Helper.Input.GetCursorPosition().Tile;
+        // check if the clicked tile contains a Farm Rearranger
+        bool hasCursor = Constants.TargetPlatform != GamePlatform.Android && Game1.wasMouseVisibleThisFrame; // note: only reliable when a menu isn't open
+        Vector2 tile = hasCursor
+            ? this.Helper.Input.GetCursorPosition().Tile
+            : this.GetFacingTile(Game1.player);
         if (Game1.currentLocation.Objects.TryGetValue(tile, out Object? obj) && obj.QualifiedItemId == this.FarmRearrangeQualifiedId)
         {
             if (Game1.currentLocation.Name == "Farm" || this.Config.CanArrangeOutsideFarm)
@@ -207,5 +210,19 @@ internal class ModEntry : Mod
 
         menu.onFarm = true;
         menu.Action = CarpenterMenu.CarpentryAction.Move;
+    }
+
+    /// <summary>Get the tile the player is facing.</summary>
+    /// <param name="player">The player to check.</param>
+    private Vector2 GetFacingTile(Farmer player)
+    {
+        Vector2 tile = player.Tile;
+        return player.FacingDirection switch
+        {
+            Game1.up => tile + new Vector2(0, -1),
+            Game1.right => tile + new Vector2(1, 0),
+            Game1.left => tile + new Vector2(-1, 0),
+            _ => tile + new Vector2(0, 1)
+        };
     }
 }

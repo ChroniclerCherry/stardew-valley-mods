@@ -2,7 +2,7 @@
 ## Upcoming release
 - Added in-game config UI through [Generic Mod Config Menu](https://www.nexusmods.com/stardewvalley/mods/5098).
 - The letter is now sent at the start of the day instead of overnight, so you get it immediately if you already meet the requirements.
-- Internal changes to simplify maintenance.
+- Fixed unable to activate farm rearranger when using a controller.
 
 ## 1.1.1
 Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
