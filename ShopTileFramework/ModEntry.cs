@@ -105,9 +105,9 @@ internal class ModEntry : Mod
     private void OnMenuChanged(object sender, MenuChangedEventArgs e)
     {
         //this block fixes marnie's portrait popping up after purchasing an animal
-        if (e.OldMenu is PurchaseAnimalsMenu && e.NewMenu is DialogueBox && SourceLocation != null)
+        if (e.OldMenu is PurchaseAnimalsMenu && e.NewMenu is DialogueBox dialogueBox && SourceLocation != null)
         {
-            string animalPurchaseMessage = ((DialogueBox)e.NewMenu).getCurrentString();
+            string animalPurchaseMessage = dialogueBox.getCurrentString();
 
             //go away marnie we don't want you
             Game1.exitActiveMenu();

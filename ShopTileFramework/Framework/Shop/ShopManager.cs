@@ -181,14 +181,12 @@ internal class ShopManager
         {
             foreach (AnimalShop animalShopPack in data.AnimalShops)
             {
-                if (AnimalShops.ContainsKey(animalShopPack.ShopName))
+                if (!AnimalShops.TryAdd(animalShopPack.ShopName, animalShopPack))
                 {
                     ModEntry.StaticMonitor.Log($"{contentPack.Manifest.Name} is trying to add an AnimalShop \"{animalShopPack.ShopName}\"," +
                         $" but a shop of this name has already been added. " +
                         $"It will not be added.", LogLevel.Warn);
-                    continue;
                 }
-                AnimalShops.Add(animalShopPack.ShopName, animalShopPack);
             }
         }
 

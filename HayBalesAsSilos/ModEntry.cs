@@ -126,7 +126,7 @@ internal class ModEntry : Mod
             {
                 var data = asset.AsDictionary<string, ShopData>().Data;
 
-                if (data.TryGetValue(Game1.shop_animalSupplies, out ShopData shop))
+                if (data.TryGetValue(Game1.shop_animalSupplies, out ShopData? shop))
                 {
                     foreach (ShopItemData item in shop.Items)
                     {

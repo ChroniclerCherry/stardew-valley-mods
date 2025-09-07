@@ -17,7 +17,6 @@ internal class DresserAndMirror
     *********/
     private readonly IModHelper Helper;
 
-    private readonly string ModId;
     private readonly string DresserShopId;
 
     private readonly string CatalogueId;
@@ -32,7 +31,6 @@ internal class DresserAndMirror
     *********/
     public DresserAndMirror(IModHelper helper, string modId)
     {
-        this.ModId = modId;
         this.DresserShopId = $"{modId}_Dresser";
         this.CatalogueId = $"{modId}_Catalogue";
         this.MirrorId = $"{modId}_Mirror";

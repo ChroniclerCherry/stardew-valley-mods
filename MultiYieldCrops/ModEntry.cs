@@ -228,8 +228,8 @@ internal class ModEntry : Mod
             }
 
 
-            if (this.AllHarvestRules.ContainsKey(cropName))
-                this.AllHarvestRules[cropName].Add(rule);
+            if (this.AllHarvestRules.TryGetValue(cropName, out List<Rule>? harvestRule))
+                harvestRule.Add(rule);
             else
                 this.AllHarvestRules[cropName] = [rule];
         }

@@ -185,12 +185,12 @@ internal sealed class ModEntry : Mod
 
         // Confirm there is water tiles in the 3x2 area the dolphin spawns in
         Vector2[] tiles = [
-            new Vector2(0, 0),
-            new Vector2(1, 0),
-            new Vector2(2, 0),
-            new Vector2(0, 1),
-            new Vector2(1, 1),
-            new Vector2(2, 1)
+            new(0, 0),
+            new(1, 0),
+            new(2, 0),
+            new(0, 1),
+            new(1, 1),
+            new(2, 1)
         ];
         foreach (Vector2 tile in tiles)
         {

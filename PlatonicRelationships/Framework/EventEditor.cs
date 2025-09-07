@@ -58,7 +58,7 @@ internal class EventEditor
         {
             e.Edit(asset =>
             {
-                var data = (List<TriggerActionData>)asset.Data;
+                var data = (List<TriggerActionData?>)asset.Data;
 
                 foreach (TriggerActionData? action in data)
                 {
