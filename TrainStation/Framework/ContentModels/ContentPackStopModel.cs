@@ -7,10 +7,10 @@ namespace TrainStation.Framework.ContentModels;
 internal class ContentPackStopModel
 {
     /// <summary>The display name translations for each language.</summary>
-    public Dictionary<string, string> LocalizedDisplayName { get; set; }
+    public Dictionary<string, string>? LocalizedDisplayName { get; set; }
 
     /// <summary>The internal name of the location to which the player should warp when they select this stop.</summary>
-    public string TargetMapName { get; set; }
+    public string? TargetMapName { get; set; }
 
     /// <summary>The tile X position to which the player should warp when they select this stop.</summary>
     public int TargetX { get; set; }
@@ -25,5 +25,5 @@ internal class ContentPackStopModel
     public int FacingDirectionAfterWarp { get; set; } = Game1.down;
 
     /// <summary>If set, the Expanded Precondition Utility conditions which indicate whether this stop should appear in the menu at a given time.</summary>
-    public string[] Conditions { get; set; }
+    public string[]? Conditions { get; set; }
 }

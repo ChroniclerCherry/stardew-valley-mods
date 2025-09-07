@@ -1,6 +1,6 @@
 namespace CustomCraftingStations.Framework;
 
-/// <summary>The mod settings.</summary>
+/// <summary>The mod settings model.</summary>
 internal class ModConfig
 {
     /// <summary>Whether crafting will pull ingredients from all chests everywhere. This overrides <see cref="CraftingFromChestsRadius" /> if true.</summary>

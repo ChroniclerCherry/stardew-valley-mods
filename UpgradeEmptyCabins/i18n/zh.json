@@ -7,12 +7,5 @@
     "robin.hu2_materials": "婴儿房升级: 50,000g 和 150 硬木",
     "robin.hu3_materials": "酒窖升级: 100,000g",
     "robin.busy": "罗宾现在在另一处建筑里工作.晚点再来吧.",
-    "menu.cancel_option": "算了.",
-
-
-    /*********
-    ** Generic Mod Config Menu UI (通用模组管理菜单界面)
-    *********/
-    "config.instant-build.name": "立即构建",
-    "config.instant-build.desc": "联机小屋升级是否立即生效."
+    "menu.cancel_option": "算了."
 }

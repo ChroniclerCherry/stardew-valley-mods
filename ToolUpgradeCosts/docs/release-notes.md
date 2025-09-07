@@ -1,4 +1,12 @@
 ﻿# Release notes
+## 1.0.3
+Released 07 September 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
+- The gold price for upgrading a trash can is now half the price of other tools, to match the base game. This can be disabled via the `TrashCanHalfPrice` option.
+- Fixed error if you remove an upgrade level from `config.json`.
+- Fixed error when the `config.json` has null values.
+- Internal changes to simplify maintenance.
+
 ## 1.0.2
 Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
 

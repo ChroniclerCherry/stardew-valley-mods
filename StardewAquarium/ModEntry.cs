@@ -25,7 +25,7 @@ internal sealed class ModEntry : Mod
     ** Fields
     *********/
     /// <summary>The mod settings.</summary>
-    private ModConfig Config = null!;
+    private ModConfig Config = null!; // set in Entry
 
     /// <summary>The chance that a dolphin Easter egg appears in the player's current location.</summary>
     private readonly PerScreen<float> DolphinChance = new();
@@ -61,8 +61,6 @@ internal sealed class ModEntry : Mod
             helper.Events.Display.MenuChanged += this.AndroidPlsHaveMercyOnMe;
         }
 
-        _ = new ReturnTrain(helper, this.Monitor);
-
         this.Config = helper.ReadConfig<ModConfig>();
 
 #if !DEBUG
@@ -85,7 +83,7 @@ internal sealed class ModEntry : Mod
     ** Private methods
     *********/
     /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
-    private void OnDayStarted(object sender, DayStartedEventArgs e)
+    private void OnDayStarted(object? sender, DayStartedEventArgs e)
     {
         // stats are not reliable in multiplayer
         // thus, we set a flag when the stat WOULD be set instead.
@@ -117,8 +115,6 @@ internal sealed class ModEntry : Mod
     }
 
     /// <summary>Fill the inventory with un-donated fish.</summary>
-    /// <param name="command"></param>
-    /// <param name="args"></param>
     private void SpawnMissingFish(string command, string[] args)
     {
         if (!Context.IsWorldReady)
@@ -140,7 +136,7 @@ internal sealed class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IInputEvents.ButtonsChanged" />
-    private void OnButtonsChanged(object sender, ButtonsChangedEventArgs e)
+    private void OnButtonsChanged(object? sender, ButtonsChangedEventArgs e)
     {
         if (!Context.CanPlayerMove)
             return;
@@ -150,7 +146,7 @@ internal sealed class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IPlayerEvents.Warped" />
-    private void OnWarped(object sender, WarpedEventArgs e)
+    private void OnWarped(object? sender, WarpedEventArgs e)
     {
         if (!e.IsLocalPlayer)
             return;
@@ -170,7 +166,7 @@ internal sealed class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IGameLoopEvents.UpdateTicked" />
-    private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
+    private void OnUpdateTicked(object? sender, UpdateTickedEventArgs e)
     {
         if (Game1.isTimePaused) return;
 
@@ -189,12 +185,12 @@ internal sealed class ModEntry : Mod
 
         // Confirm there is water tiles in the 3x2 area the dolphin spawns in
         Vector2[] tiles = [
-            new Vector2(0, 0),
-            new Vector2(1, 0),
-            new Vector2(2, 0),
-            new Vector2(0, 1),
-            new Vector2(1, 1),
-            new Vector2(2, 1)
+            new(0, 0),
+            new(1, 0),
+            new(2, 0),
+            new(0, 1),
+            new(1, 1),
+            new(2, 1)
         ];
         foreach (Vector2 tile in tiles)
         {
@@ -207,7 +203,7 @@ internal sealed class ModEntry : Mod
         loc.temporarySprites.Add(new DolphinAnimatedSprite(position, this.Helper.GameContent.Load<Texture2D>($"Mods/{ContentPackHelper.ContentPackId}/Dolphin")));
     }
 
-    private void AndroidPlsHaveMercyOnMe(object sender, MenuChangedEventArgs e)
+    private void AndroidPlsHaveMercyOnMe(object? sender, MenuChangedEventArgs e)
     {
         //don't ask me what the heck is going on here but its the only way to get it to work
         if (e.OldMenu is not DonateFishMenuAndroid androidMenu)
@@ -225,12 +221,12 @@ internal sealed class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
-    private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+    private void OnSaveLoaded(object? sender, SaveLoadedEventArgs e)
     {
         if (!Context.IsMainPlayer)
         {
-            IMultiplayerPeer mainPlayer = this.Helper.Multiplayer.GetConnectedPlayer(Game1.MasterPlayer.UniqueMultiplayerID);
-            IMultiplayerPeerMod mainPlayerMod = mainPlayer?.GetMod(this.ModManifest.UniqueID);
+            IMultiplayerPeer? mainPlayer = this.Helper.Multiplayer.GetConnectedPlayer(Game1.MasterPlayer.UniqueMultiplayerID);
+            IMultiplayerPeerMod? mainPlayerMod = mainPlayer?.GetMod(this.ModManifest.UniqueID);
             if (mainPlayerMod is null)
             {
                 this.Monitor.Log("Host seems to be missing Stardew Aquarium. Certain features may not work as advertised.", LogLevel.Error);
@@ -276,7 +272,7 @@ internal sealed class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
-    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+    private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
     {
         AquariumGameStateQuery.Init();
     }

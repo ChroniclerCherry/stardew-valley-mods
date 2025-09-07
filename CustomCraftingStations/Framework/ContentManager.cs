@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using StardewModdingAPI;
@@ -17,44 +18,51 @@ namespace CustomCraftingStations.Framework
         private readonly IMonitor Monitor;
 
         /// <summary>The cooking recipes which should only appear in a crafting station, not the default crafting menu.</summary>
-        private readonly HashSet<string> ExclusiveCookingRecipes = new();
+        private readonly HashSet<string> ExclusiveCookingRecipes = [];
 
         /// <summary>The crafting recipes which should only appear in a crafting station, not the default crafting menu.</summary>
-        private readonly HashSet<string> ExclusiveCraftingRecipes = new();
+        private readonly HashSet<string> ExclusiveCraftingRecipes = [];
 
 
         /*********
         ** Accessors
         *********/
         /// <summary>The crafting stations for tiles with the <c>Action CraftingStation {id}</c> tile property, indexed by ID.</summary>
-        public Dictionary<string, CraftingStationConfig> TileCraftingStations { get; } = new();
+        public Dictionary<string, CraftingStationConfig> TileCraftingStations { get; } = [];
 
         /// <summary>The crafting stations for placed big-craftable-type items.</summary>
-        public Dictionary<string, CraftingStationConfig> CraftableCraftingStations { get; } = new();
+        public Dictionary<string, CraftingStationConfig> CraftableCraftingStations { get; } = [];
 
         /// <summary>The cooking recipes to show in the default crafting menus.</summary>
-        public HashSet<string> DefaultCookingRecipes { get; } = new();
+        public HashSet<string> DefaultCookingRecipes { get; } = [];
 
         /// <summary>The crafting recipes to show in the default crafting menus.</summary>
-        public HashSet<string> DefaultCraftingRecipes { get; } = new();
+        public HashSet<string> DefaultCraftingRecipes { get; } = [];
 
 
         /*********
         ** Public methods
         *********/
-        public ContentManager(IEnumerable<IContentPack> contentPacks, IMonitor monitor)
+        /// <summary>Construct an instance.</summary>
+        /// <param name="monitor"><inheritdoc cref="Monitor" path="/summary"/></param>
+        public ContentManager(IMonitor monitor)
         {
             this.Monitor = monitor;
-
-            this.RegisterContentPacks(contentPacks);
         }
 
-
-        /*********
-        ** Private methods
-        *********/
-        private void RegisterContentPacks(IEnumerable<IContentPack> contentPacks)
+        /// <summary>Reset and register the given content packs.</summary>
+        public void ResetAndRegisterContentPacks(IEnumerable<IContentPack> contentPacks)
         {
+            // reset
+            this.ExclusiveCookingRecipes.Clear();
+            this.ExclusiveCraftingRecipes.Clear();
+
+            this.TileCraftingStations.Clear();
+            this.CraftableCraftingStations.Clear();
+
+            this.DefaultCookingRecipes.Clear();
+            this.DefaultCraftingRecipes.Clear();
+
             // register content packs
             foreach (IContentPack pack in contentPacks)
             {
@@ -83,25 +91,31 @@ namespace CustomCraftingStations.Framework
             }
         }
 
+
+        /*********
+        ** Private methods
+        *********/
         /// <summary>Register the crafting stations added by a content pack.</summary>
         /// <param name="contentPack">The content pack registering crafting stations.</param>
         /// <param name="craftingStations">The crafting stations to register.</param>
-        private void RegisterCraftingStations(IContentPack contentPack, List<CraftingStationConfig> craftingStations)
+        private void RegisterCraftingStations(IContentPack contentPack, CraftingStationConfig[] craftingStations)
         {
-            if (craftingStations == null)
-                return;
-
             foreach (CraftingStationConfig station in craftingStations)
             {
-                string stationName = !string.IsNullOrWhiteSpace(station.BigCraftable)
+                string? stationName = !string.IsNullOrWhiteSpace(station.BigCraftable)
                     ? station.BigCraftable
                     : station.TileData;
 
                 // validate
+                if (string.IsNullOrWhiteSpace(stationName))
+                {
+                    this.Monitor.Log($"Content pack '{contentPack.Manifest.Name}' has a station with neither {nameof(station.BigCraftable)} nor {nameof(station.TileData)} set, so it has no effect.", LogLevel.Warn);
+                    continue;
+                }
                 this.PreprocessContentPackRecipeKeys(contentPack, stationName, station.CraftingRecipes, CraftingRecipe.craftingRecipes, "crafting");
                 this.PreprocessContentPackRecipeKeys(contentPack, stationName, station.CookingRecipes, CraftingRecipe.cookingRecipes, "cooking");
                 if (station.CookingRecipes.Count > 0 && station.CraftingRecipes.Count > 0)
-                    this.Monitor.Log($"Content pack '{contentPack.Manifest.Name}' has station '{stationName}' with both cooking and crafting recipes; each station can only provide one recipe type.");
+                    this.Monitor.Log($"Content pack '{contentPack.Manifest.Name}' has station '{stationName}' with both cooking and crafting recipes; each station can only provide one recipe type.", LogLevel.Warn);
 
                 // track exclusive recipes
                 if (station.ExclusiveRecipes)
@@ -114,7 +128,7 @@ namespace CustomCraftingStations.Framework
                 if (station.TileData != null)
                 {
                     if (this.TileCraftingStations.Keys.Contains(station.TileData))
-                        this.Monitor.Log($"Multiple mods are trying to use the Tiledata {station.TileData}; Only one will be applied.", LogLevel.Error);
+                        this.Monitor.Log($"Multiple mods are trying to use the {nameof(station.TileData)} {station.TileData}; Only one will be applied.", LogLevel.Error);
                     else
                         this.TileCraftingStations.Add(station.TileData, station);
                 }
@@ -122,7 +136,7 @@ namespace CustomCraftingStations.Framework
                 if (station.BigCraftable != null)
                 {
                     if (this.CraftableCraftingStations.Keys.Contains(station.BigCraftable))
-                        this.Monitor.Log($"Multiple mods are trying to use the BigCraftable {station.BigCraftable}; Only one will be applied.", LogLevel.Error);
+                        this.Monitor.Log($"Multiple mods are trying to use the {nameof(station.BigCraftable)} {station.BigCraftable}; Only one will be applied.", LogLevel.Error);
                     else
                         this.CraftableCraftingStations.Add(station.BigCraftable, station);
                 }
@@ -141,7 +155,7 @@ namespace CustomCraftingStations.Framework
             {
                 string key = stationRecipes[i];
 
-                if (this.TryResolveRecipeKey(contentPack, stationName, gameRecipes, type, key, out string foundKey))
+                if (this.TryResolveRecipeKey(contentPack, stationName, gameRecipes, type, key, out string? foundKey))
                     stationRecipes[i] = foundKey;
                 else
                 {
@@ -159,7 +173,7 @@ namespace CustomCraftingStations.Framework
         /// <param name="key">The recipe key from the content pack.</param>
         /// <param name="foundKey">The equivalent key in <c>Data/CookingRecipes</c> or <c>Data/CraftingRecipes</c>, if resolved successfully.</param>
         /// <returns>Returns whether the key was resolved successfully.</returns>
-        private bool TryResolveRecipeKey(IContentPack contentPack, string stationName, Dictionary<string, string> recipes, string type, string key, out string foundKey)
+        private bool TryResolveRecipeKey(IContentPack contentPack, string stationName, Dictionary<string, string> recipes, string type, string key, [NotNullWhen(true)] out string? foundKey)
         {
             // exact match
             if (recipes.ContainsKey(key))
@@ -173,7 +187,7 @@ namespace CustomCraftingStations.Framework
             {
                 string suffix = "_" + Regex.Replace(key, "[/&@#$%*{}\\[\\]\\s\\\\]", "_").Trim(); // based on FixIdJA in the Json Assets code: https://github.com/spacechase0/StardewValleyMods/blob/develop/JsonAssets/Mod.cs#L44
 
-                string match = null;
+                string? match = null;
                 foreach (string gameKey in recipes.Keys)
                 {
                     if (gameKey.EndsWith(suffix))

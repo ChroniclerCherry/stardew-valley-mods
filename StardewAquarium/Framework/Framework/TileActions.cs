@@ -10,7 +10,7 @@ internal static class TileActions
     /*********
     ** Fields
     *********/
-    private static IMonitor Monitor;
+    private static IMonitor Monitor = null!; // set in Init
 
 
     /*********
@@ -57,8 +57,8 @@ internal static class TileActions
         }
 
         Response[] options = [
-            new Response("OptionYes", ContentPackHelper.LoadString("OptionYes")),
-            new Response("OptionNo", ContentPackHelper.LoadString("OptionNo"))
+            new("OptionYes", ContentPackHelper.LoadString("OptionYes")),
+            new("OptionNo", ContentPackHelper.LoadString("OptionNo"))
         ];
 
         Game1.currentLocation.createQuestionDialogue(ContentPackHelper.LoadString("DonationQuestion"), options, HandleResponse);

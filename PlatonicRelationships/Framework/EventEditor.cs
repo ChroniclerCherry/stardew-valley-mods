@@ -37,7 +37,7 @@ internal class EventEditor
     public void OnAssetRequested(AssetRequestedEventArgs e)
     {
         // events
-        if (this.RomanticEvents.TryGetValue(e.NameWithoutLocale, out Dictionary<string, string> events))
+        if (this.RomanticEvents.TryGetValue(e.NameWithoutLocale, out Dictionary<string, string>? events))
         {
             // TODO: add kill contexts for platonic versions of event ("/k <event id>")
 
@@ -47,7 +47,7 @@ internal class EventEditor
 
                 foreach ((string eventId, string npcName) in events)
                 {
-                    if (data.Remove(eventId, out string script))
+                    if (data.Remove(eventId, out string? script))
                         data[this.EditEventId(eventId, npcName)] = script;
                 }
             });
@@ -58,11 +58,11 @@ internal class EventEditor
         {
             e.Edit(asset =>
             {
-                var data = (List<TriggerActionData>)asset.Data;
+                var data = (List<TriggerActionData?>)asset.Data;
 
-                foreach (TriggerActionData action in data)
+                foreach (TriggerActionData? action in data)
                 {
-                    if (action?.Id is not null && this.RomanticTriggerActions.TryGetValue(action.Id, out string npcName))
+                    if (action?.Id is not null && this.RomanticTriggerActions.TryGetValue(action.Id, out string? npcName))
                         action.Condition = this.EditConditions(action.Condition, npcName);
                 }
             });
@@ -84,7 +84,7 @@ internal class EventEditor
         {
             IAssetName assetName = parseAssetName(rawAssetName);
 
-            Dictionary<string, string> events = new();
+            Dictionary<string, string> events = [];
             foreach ((string eventId, string npcName) in rawEvents)
                 events.Add(eventId, npcName);
 

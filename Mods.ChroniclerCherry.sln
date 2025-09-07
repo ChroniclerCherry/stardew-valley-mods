@@ -138,11 +138,24 @@ Global
 		SolutionGuid = {E0F41F45-94BD-4BE2-A9D4-55D9F437464D}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Common\Common.projitems*{077516ad-1a70-4cdc-90e3-be4f1d78d60b}*SharedItemsImports = 5
 		Common\Common.projitems*{15f86daa-1648-494f-9fb9-67532a1ed38c}*SharedItemsImports = 5
 		Common\Common.projitems*{1bddc0c7-cf26-47fd-b6eb-bf945b0862b9}*SharedItemsImports = 13
 		Common\Common.projitems*{1c8c8299-8421-429e-b02a-e00c1a36d800}*SharedItemsImports = 5
+		Common\Common.projitems*{2118638d-2409-4a80-ba53-6aef6e8d0948}*SharedItemsImports = 5
+		Common\Common.projitems*{6c975cbf-9099-47db-a036-2952257421ed}*SharedItemsImports = 5
+		Common\Common.projitems*{6d2beb21-d1f3-4abf-b6fe-c39bafb88f76}*SharedItemsImports = 5
 		Common\Common.projitems*{8d64fa42-508d-4388-ba81-7e31c8baa040}*SharedItemsImports = 5
+		Common\Common.projitems*{99ea84ed-3d3c-41f0-9492-4336cc39e0c1}*SharedItemsImports = 5
 		Common\Common.projitems*{9f11d9c1-e5a3-4e03-a003-8dc6931c80cb}*SharedItemsImports = 5
+		Common\Common.projitems*{b29e2493-f766-4240-a6a8-e95ba6cbbc55}*SharedItemsImports = 5
+		Common\Common.projitems*{c0b22919-f3b2-487f-ae9b-d68714dee4b0}*SharedItemsImports = 5
+		Common\Common.projitems*{c9c09191-99ac-4574-bd9c-b023898b94b0}*SharedItemsImports = 5
+		Common\Common.projitems*{d1162412-90f0-4980-b654-c75759de1b62}*SharedItemsImports = 5
+		Common\Common.projitems*{d34ec4d9-e11c-468e-9a6b-29db77467590}*SharedItemsImports = 5
+		Common\Common.projitems*{d903d510-c920-4883-8137-baf903fb4f72}*SharedItemsImports = 5
+		Common\Common.projitems*{de8174e0-c4b2-49af-9584-17932a1f545b}*SharedItemsImports = 5
+		Common\Common.projitems*{f1bf5124-965f-4ed8-af2c-33283fd92eb0}*SharedItemsImports = 5
 		Common\Common.projitems*{fb3f45e3-7185-4100-8ee0-2128bcf5c9e1}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

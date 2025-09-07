@@ -15,11 +15,11 @@ internal class ModEntry : Mod
     /*********
     ** Fields
     *********/
-    private readonly List<MultiplayerReportData> RawReports = new List<MultiplayerReportData>();
-    private readonly List<string> Reports = new List<string>();
+    private readonly List<MultiplayerReportData> RawReports = [];
+    private readonly List<string> Reports = [];
 
     /// <summary>The mod settings.</summary>
-    private ModConfig Config;
+    private ModConfig Config = null!; // set in Entry
 
 
     /*********
@@ -30,9 +30,10 @@ internal class ModEntry : Mod
     {
         I18n.Init(helper.Translation);
 
+        this.Config = helper.ReadConfig<ModConfig>();
+
         helper.Events.Multiplayer.PeerContextReceived += this.OnPeerContextReceived;
         helper.Events.Multiplayer.ModMessageReceived += this.OnModMessageReceived;
-        this.Config = helper.ReadConfig<ModConfig>();
     }
 
 
@@ -40,61 +41,42 @@ internal class ModEntry : Mod
     ** Private methods
     *********/
     /// <inheritdoc cref="IMultiplayerEvents.PeerContextReceived" />
-    private void OnPeerContextReceived(object sender, PeerContextReceivedEventArgs e)
+    private void OnPeerContextReceived(object? sender, PeerContextReceivedEventArgs e)
     {
-        if (!Context.IsMainPlayer) return;
+        if (!Context.IsMainPlayer)
+            return;
 
-        MultiplayerReportData report = new();
-        report.TimeConnected = DateTime.Now;
+        long farmhandId = e.Peer.PlayerID;
+        string farmhandName =
+            Game1.getAllFarmers().FirstOrDefault(f => f.UniqueMultiplayerID == e.Peer.PlayerID)?.Name
+            ?? I18n.UnnamedFarmhand();
 
-        report.SmapiGameGameVersions.FarmhandHasSmapi = e.Peer.HasSmapi;
 
-        report.FarmhandId = e.Peer.PlayerID;
-        report.FarmhandName = Game1
-            .getAllFarmers()
-            .FirstOrDefault(f => f.UniqueMultiplayerID == e.Peer.PlayerID)
-            ?.Name;
-
-        if (string.IsNullOrEmpty(report.FarmhandName))
-        {
-            report.FarmhandName = I18n.UnnamedFarmhand();
-        }
+        var report = new MultiplayerReportData(farmhandId, farmhandName, DateTime.Now, Constants.ApiVersion, e.Peer.ApiVersion);
 
         if (e.Peer.HasSmapi)
         {
-            report.SmapiGameGameVersions.HostSmapiVersion = Constants.ApiVersion;
-            report.SmapiGameGameVersions.FarmhandSmapiVersion = e.Peer.ApiVersion;
-
             var hostMods = this.Helper.ModRegistry.GetAll().Select(m => m.Manifest.UniqueID);
             var farmHandMods = e.Peer.Mods.Select(m => m.ID);
             var allMods = hostMods.Union(farmHandMods).Distinct();
 
-            foreach (string mod in allMods)
+            foreach (string modId in allMods)
             {
-                if (this.Config.IgnoredMods.Contains(mod)) continue;
+                if (this.Config.IgnoredMods.Contains(modId))
+                    continue;
 
-                ModVersions modVersionData = new ModVersions();
+                IModInfo? hostMod = this.Helper.ModRegistry.Get(modId);
+                IMultiplayerPeerMod? farmhandMod = e.Peer.GetMod(modId);
 
-                IModInfo hostMod = this.Helper.ModRegistry.Get(mod);
+                string? modName = null;
                 if (hostMod != null)
-                {
-                    modVersionData.DoesHostHave = true;
-                    modVersionData.HostModVersion = hostMod.Manifest.Version;
-                }
+                    modName = hostMod.Manifest.Name;
+                else if (farmhandMod != null)
+                    modName = farmhandMod.Name;
 
-
-                IMultiplayerPeerMod farmhandMod = e.Peer.GetMod(mod);
-                if (farmhandMod != null)
-                {
-                    modVersionData.DoesFarmhandHave = true;
-                    modVersionData.FarmhandModVersion = farmhandMod.Version;
-                }
-
-                if (hostMod != null) modVersionData.ModName = hostMod.Manifest.Name;
-                else if (farmhandMod != null) modVersionData.ModName = farmhandMod.Name;
-
-                modVersionData.ModUniqueId = mod;
-                report.Mods.Add(modVersionData);
+                report.Mods.Add(
+                    new ModVersions(modId, modName ?? modId, hostMod?.Manifest.Version, farmhandMod?.Version)
+                );
             }
         }
 
@@ -103,17 +85,19 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IMultiplayerEvents.ModMessageReceived" />
-    private void OnModMessageReceived(object sender, ModMessageReceivedEventArgs e)
+    private void OnModMessageReceived(object? sender, ModMessageReceivedEventArgs e)
     {
-        if (e.FromModID != this.ModManifest.UniqueID && e.Type != "MultiplayerReport") return;
-        var reportData = e.ReadAs<Dictionary<string, LogLevel>>();
+        if (e.FromModID != this.ModManifest.UniqueID && e.Type != "MultiplayerReport")
+            return;
+
+        Dictionary<string, LogLevel> reportData = e.ReadAs<Dictionary<string, LogLevel>>();
 
         this.PublishReport(null, reportData);
     }
 
     private void GenerateReport(MultiplayerReportData reportData)
     {
-        Dictionary<string, LogLevel> report = new Dictionary<string, LogLevel>();
+        Dictionary<string, LogLevel> report = [];
 
         if (!reportData.SmapiGameGameVersions.FarmhandHasSmapi)
         {
@@ -150,12 +134,12 @@ internal class ModEntry : Mod
         if (reportData.VersionMismatch.Count > 0)
             report.Add(I18n.ModMismatch_Version(modList: string.Join(",", reportData.VersionMismatch)), LogLevel.Warn);
 
-        this.Helper.Multiplayer.SendMessage(report, "MultiplayerReport", new[] { this.ModManifest.UniqueID }, new[] { reportData.FarmhandId });
+        this.Helper.Multiplayer.SendMessage(report, "MultiplayerReport", [this.ModManifest.UniqueID], [reportData.FarmhandId]);
         this.Helper.Data.WriteJsonFile("LatestMultiplayerModReport-Host.json", this.RawReports);
         this.PublishReport(reportData, report);
     }
 
-    private void PublishReport(MultiplayerReportData reportData, Dictionary<string, LogLevel> report)
+    private void PublishReport(MultiplayerReportData? reportData, Dictionary<string, LogLevel> report)
     {
         if (report.Count > 0)
         {

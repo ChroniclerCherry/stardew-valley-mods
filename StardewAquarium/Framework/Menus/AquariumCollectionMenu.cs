@@ -20,7 +20,7 @@ internal class AquariumCollectionMenu : IClickableMenu
     *********/
     private string HoverText = "";
 
-    private readonly List<List<ClickableTextureComponent>> Collections = new List<List<ClickableTextureComponent>>();
+    private readonly List<List<ClickableTextureComponent>> Collections = [];
     private readonly ClickableTextureComponent BackButton;
     private readonly ClickableTextureComponent ForwardButton;
 
@@ -142,7 +142,7 @@ internal class AquariumCollectionMenu : IClickableMenu
 
     public override void receiveLeftClick(int x, int y, bool playSound = true)
     {
-        base.receiveLeftClick(x, y);
+        base.receiveLeftClick(x, y, playSound);
 
         if (this.CurrentPage > 0 && this.BackButton.containsPoint(x, y))
         {

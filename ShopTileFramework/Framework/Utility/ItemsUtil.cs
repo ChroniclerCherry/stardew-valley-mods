@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.Collections.Generic;
 using System.Linq;
 using ShopTileFramework.Framework.Apis;
@@ -17,9 +19,9 @@ internal static class ItemsUtil
     /*********
     ** Fields
     *********/
-    private static List<string> PacksToRemove = new List<string>();
-    private static List<string> RecipePacksToRemove = new List<string>();
-    private static List<string> ItemsToRemove = new List<string>();
+    private static List<string> PacksToRemove = [];
+    private static List<string> RecipePacksToRemove = [];
+    private static List<string> ItemsToRemove = [];
 
 
     /*********

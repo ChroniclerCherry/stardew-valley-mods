@@ -12,7 +12,7 @@ internal class ModEntry : Mod
     ** Fields
     *********/
     /// <summary>The conditions checker.</summary>
-    private ConditionsChecker ConditionsChecker;
+    private ConditionsChecker ConditionsChecker = null!; // set in Entry
 
 
     /*********

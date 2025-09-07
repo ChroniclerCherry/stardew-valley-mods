@@ -5,6 +5,7 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.GameData.Shops;
 using StardewValley.Internal;
+using StardewValley.Tools;
 
 namespace ToolUpgradeCosts.Framework;
 
@@ -15,10 +16,10 @@ internal static class GamePatcher
     ** Fields
     *********/
     /// <summary>Encapsulates monitoring and logging.</summary>
-    private static IMonitor Monitor;
+    private static IMonitor Monitor = null!; // set in Apply
 
     /// <summary>Get the mod config.</summary>
-    private static Func<ModConfig> Config;
+    private static Func<ModConfig> Config = null!; // set in Apply
 
 
     /*********
@@ -36,7 +37,7 @@ internal static class GamePatcher
         Harmony harmony = new(modId);
 
         harmony.Patch(
-            AccessTools.Method(typeof(ShopBuilder), nameof(ShopBuilder.GetShopStock), new[] { typeof(string), typeof(ShopData) }),
+            AccessTools.Method(typeof(ShopBuilder), nameof(ShopBuilder.GetShopStock), [typeof(string), typeof(ShopData)]),
             postfix: new HarmonyMethod(typeof(GamePatcher), nameof(After_ShopBuilder_GetShopStock))
         );
     }
@@ -45,7 +46,7 @@ internal static class GamePatcher
     /*********
     ** Private methods
     *********/
-    private static void After_ShopBuilder_GetShopStock(string shopId, ref Dictionary<ISalable, ItemStockInformation> __result)
+    private static void After_ShopBuilder_GetShopStock(string shopId, ref Dictionary<ISalable, ItemStockInformation?> __result)
     {
         try
         {
@@ -54,17 +55,22 @@ internal static class GamePatcher
 
             var config = Config();
 
-            Dictionary<ISalable, ItemStockInformation> editedStock = new Dictionary<ISalable, ItemStockInformation>();
-            foreach ((ISalable item, ItemStockInformation stockInfo) in __result)
+            Dictionary<ISalable, ItemStockInformation?> editedStock = [];
+            foreach ((ISalable item, ItemStockInformation? stockInfo) in __result)
             {
-                if (item is Tool tool && Enum.IsDefined(typeof(UpgradeMaterials), tool.UpgradeLevel) && stockInfo is not null)
+                if (item is not Tool tool || stockInfo is null)
+                    continue;
+
+                if (Utility.TryParseEnum(tool.UpgradeLevel.ToString(), out UpgradeMaterials upgradeLevel) && config.UpgradeCosts.TryGetValue(upgradeLevel, out Upgrade? upgradeCosts))
                 {
-                    UpgradeMaterials upgradeLevel = (UpgradeMaterials)tool.UpgradeLevel;
+                    int price = config.TrashCanHalfPrice && tool is GenericTool && tool.ItemId.EndsWith("TrashCan")
+                        ? upgradeCosts.Cost / 2
+                        : upgradeCosts.Cost;
 
                     editedStock[tool] = new ItemStockInformation(
-                        price: config.UpgradeCosts[upgradeLevel].Cost,
-                        tradeItemCount: config.UpgradeCosts[upgradeLevel].MaterialStack,
-                        tradeItem: config.UpgradeCosts[upgradeLevel].MaterialId,
+                        price: price,
+                        tradeItemCount: upgradeCosts.MaterialStack,
+                        tradeItem: upgradeCosts.MaterialId,
                         stock: stockInfo.Stock,
                         stockMode: stockInfo.LimitedStockMode,
                         itemToSyncStack: stockInfo.ItemToSyncStack,

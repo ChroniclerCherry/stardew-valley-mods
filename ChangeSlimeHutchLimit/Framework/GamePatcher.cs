@@ -12,10 +12,10 @@ internal static class GamePatcher
     ** Fields
     *********/
     /// <summary>Encapsulates monitoring and logging.</summary>
-    private static IMonitor Monitor;
+    private static IMonitor Monitor = null!; // set in Apply
 
     /// <summary>Get the mod config.</summary>
-    private static Func<ModConfig> Config;
+    private static Func<ModConfig> Config = null!; // set in Apply
 
 
     /*********

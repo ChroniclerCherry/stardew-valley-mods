@@ -16,7 +16,7 @@ internal static class GamePatcher
     ** Fields
     *********/
     /// <summary>Encapsulates monitoring and logging.</summary>
-    private static IMonitor Monitor;
+    private static IMonitor Monitor = null!; // set in Apply
 
 
     /*********
@@ -40,13 +40,19 @@ internal static class GamePatcher
             AccessTools.Method(typeof(CarpenterMenu), nameof(CarpenterMenu.HasPermissionsToPaint)),
             postfix: new HarmonyMethod(typeof(GamePatcher), nameof(After_CarpenterMenu_HasPermissionToPaint))
         );
+
+        harmony.Patch(
+            AccessTools.Method(typeof(Chest), nameof(Chest.dumpContents)),
+            prefix: new HarmonyMethod(typeof(GamePatcher), nameof(Before_Chest_DumpContents)),
+            postfix: new HarmonyMethod(typeof(GamePatcher), nameof(After_Chest_DumpContents))
+        );
     }
 
 
     /*********
     ** Private methods
     *********/
-    private static void After_BedFurniture_CanModifyBed(BedFurniture __instance, Farmer who, ref bool __result)
+    private static void After_BedFurniture_CanModifyBed(Farmer? who, ref bool __result)
     {
         try
         {
@@ -75,6 +81,38 @@ internal static class GamePatcher
         catch (Exception ex)
         {
             Monitor.Log($"Failed in {nameof(After_CarpenterMenu_HasPermissionToPaint)}:\n{ex}", LogLevel.Error);
+        }
+    }
+
+    private static void Before_Chest_DumpContents(Chest __instance, out bool __state)
+    {
+        __state = false; // whether we changed the gift box
+
+        try
+        {
+            if (__instance.giftbox.Value && __instance.giftboxIsStarterGift.Value && __instance.Location is Cabin { IsOwnerActivated: false })
+            {
+                // let player open box, and disable starting quest
+                __instance.giftboxIsStarterGift.Value = false;
+                __state = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Monitor.Log($"Failed in {nameof(Before_Chest_DumpContents)} patch:\n{ex}", LogLevel.Error);
+        }
+    }
+
+    private static void After_Chest_DumpContents(Chest __instance, bool __state)
+    {
+        try
+        {
+            if (__state)
+                __instance.giftboxIsStarterGift.Value = true;
+        }
+        catch (Exception ex)
+        {
+            Monitor.Log($"Failed in {nameof(After_Chest_DumpContents)} patch:\n{ex}", LogLevel.Error);
         }
     }
 }

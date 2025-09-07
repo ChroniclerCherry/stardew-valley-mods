@@ -12,13 +12,13 @@ internal class GamePatcher
     ** Public methods
     *********/
     /// <summary>Encapsulates monitoring and logging.</summary>
-    private static IMonitor Monitor;
+    private static IMonitor Monitor = null!; // set in Apply
 
     /// <summary>Get the mod config.</summary>
-    private static Func<ModConfig> Config;
+    private static Func<ModConfig> Config = null!; // set in Apply
 
     /// <summary>Get the number of hay bales currently placed in a given location.</summary>
-    private static Func<GameLocation, int> CountHayBalesIn;
+    private static Func<GameLocation, int> CountHayBalesIn = null!; // set in Apply
 
 
     /*********

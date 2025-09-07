@@ -15,13 +15,13 @@ internal static class GamePatcher
     ** Fields
     *********/
     /// <summary>Encapsulates monitoring and logging</summary>
-    private static IMonitor Monitor;
+    private static IMonitor Monitor = null!; // set in Apply
 
     /// <summary>Apply the custom rules when a crop is harvested.</summary>
-    private static SpawnHarvestDelegate SpawnHarvest;
+    private static SpawnHarvestDelegate SpawnHarvest = null!; // set in Apply
 
     /// <inheritdoc cref="ModEntry.SpawnHarvest" />
-    public delegate void SpawnHarvestDelegate(Vector2 tileLocation, string cropName, int fertilizer, JunimoHarvester junimo = null);
+    public delegate void SpawnHarvestDelegate(Vector2 tileLocation, string cropName, int fertilizer, JunimoHarvester? junimo = null);
 
 
     /*********
@@ -61,7 +61,7 @@ internal static class GamePatcher
         }
     }
 
-    public static void After_Crop_Harvest(int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester, Crop __instance, bool __state, ref bool __result)
+    public static void After_Crop_Harvest(int xTile, int yTile, HoeDirt soil, JunimoHarvester? junimoHarvester, Crop __instance, bool __state, ref bool __result)
     {
         try
         {

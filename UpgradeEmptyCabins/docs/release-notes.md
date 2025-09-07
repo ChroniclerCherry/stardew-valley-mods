@@ -1,4 +1,14 @@
 ﻿# Release notes
+## 1.3.0
+Released 07 September 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
+- You can now open the starter gift box in any empty cabin.
+- You can now upgrade cabins placed outside the farm too.
+- Removed the `remove_seed_box` console command (since you can open them directly now).
+- Removed config menu UI (the mod no longer has any options you need to set).
+- Fixed being able to start an upgrade while Robin is busy on a building outside the farm.
+- Internal changes to simplify maintenance.
+
 ## 1.2.1
 Released 25 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
 

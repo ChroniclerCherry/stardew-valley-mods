@@ -1,3 +1,4 @@
+using System;
 using StardewModdingAPI;
 
 namespace ExpandedPreconditionsUtility.Framework;
@@ -7,7 +8,7 @@ public class ConditionsChecker : IConditionsChecker
     /*********
     ** Fields
     *********/
-    private ConditionChecker ConditionChecker;
+    private ConditionChecker? ConditionChecker;
 
     private readonly IModHelper Helper;
     private readonly IMonitor Monitor;
@@ -29,11 +30,17 @@ public class ConditionsChecker : IConditionsChecker
 
     public bool CheckConditions(string[] conditions)
     {
+        if (this.ConditionChecker is null)
+            throw new ArgumentException($"{nameof(this.Initialize)} must be called before {nameof(CheckConditions)}.");
+
         return this.ConditionChecker.CheckConditions(conditions);
     }
 
     public bool CheckConditions(string conditions)
     {
-        return this.ConditionChecker.CheckConditions(new[] { conditions });
+        if (this.ConditionChecker is null)
+            throw new ArgumentException($"{nameof(this.Initialize)} must be called before {nameof(CheckConditions)}.");
+
+        return this.ConditionChecker.CheckConditions([conditions]);
     }
 }

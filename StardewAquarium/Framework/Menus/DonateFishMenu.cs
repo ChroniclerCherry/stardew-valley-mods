@@ -31,7 +31,7 @@ internal class DonateFishMenu : InventoryMenu
 
     public override void receiveLeftClick(int x, int y, bool playSound = true)
     {
-        Item item = this.getItemAt(x, y);
+        Item? item = this.getItemAt(x, y);
         if (!Utils.IsUnDonatedFish(item))
             return;
 

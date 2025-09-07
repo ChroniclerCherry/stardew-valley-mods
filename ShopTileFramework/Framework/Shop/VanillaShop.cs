@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.Collections.Generic;
 using ShopTileFramework.Framework.Data;
 using ShopTileFramework.Framework.ItemPriceAndStock;
@@ -20,12 +22,12 @@ internal class VanillaShop : VanillaShopModel
     *********/
     public void Initialize()
     {
-        this.StockManagers = new List<ItemPriceAndStockManager>();
+        this.StockManagers = [];
     }
 
     public void UpdateItemPriceAndStock()
     {
-        this.ItemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
+        this.ItemPriceAndStock = [];
         ModEntry.StaticMonitor.Log($"Generating stock for {this.ShopName}", LogLevel.Debug);
         foreach (ItemPriceAndStockManager manager in this.StockManagers)
         {

@@ -1,13 +1,14 @@
 namespace FarmRearranger.Framework;
 
+/// <summary>The mod settings model.</summary>
 internal class ModConfig
 {
-    //players can set the farm rearranger to work anywhere, just with a warning that it could behave oddly
+    /// <summary>Whether the player can use the farm rearranger outside the farm.</summary>
     public bool CanArrangeOutsideFarm { get; set; } = false;
 
-    //the price farm rearranger is sold for
+    /// <summary>The cost to buy the farm rearranger.</summary>
     public int Price { get; set; } = 25000;
 
-    //the friendship points before robin sends the letter
+    /// <summary>The minimum friendship points with Robin required before she begins selling the farm rearranger.</summary>
     public int FriendshipPointsRequired { get; set; } = 2000;
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using StardewValley;
 
 namespace StardewAquarium.Framework;
@@ -45,6 +46,7 @@ internal sealed class AquariumMessage
     /*********
     ** Private methods
     *********/
+    [MemberNotNull(nameof(ResponsePages))]
     private void BuildResponse(List<string> fishes)
     {
         this.ResponsePages = [];
@@ -53,7 +55,7 @@ internal sealed class AquariumMessage
 
         for (int index = 0; index < fishes.Count; index++)
         {
-            if (!Utils.FishDisplayNames.TryGetValue(fishes[index], out string translated))
+            if (!Utils.FishDisplayNames.TryGetValue(fishes[index], out string? translated))
             {
                 continue;
             }
@@ -75,6 +77,9 @@ internal sealed class AquariumMessage
 
     private void DisplayFishInfo(Farmer who, string whichAnswer)
     {
+        if (this.ResponsePages is null)
+            throw new InvalidOperationException("Can't handle aquarium message response before it's been initialized."); // should never happen
+
         switch (whichAnswer)
         {
             case "Exit":

@@ -1,3 +1,5 @@
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +36,7 @@ internal static class GamePatcher
         Harmony harmony = new(modId);
 
         harmony.Patch(
-            original: AccessTools.Method(typeof(ShopBuilder), nameof(ShopBuilder.GetShopStock), new[] { typeof(string), typeof(ShopData) }),
+            original: AccessTools.Method(typeof(ShopBuilder), nameof(ShopBuilder.GetShopStock), [typeof(string), typeof(ShopData)]),
             postfix: new HarmonyMethod(typeof(GamePatcher), nameof(GamePatcher.After_ShopBuilder_GetShopStock))
         );
     }
@@ -83,9 +85,10 @@ internal static class GamePatcher
     {
         ModEntry.JustOpenedVanilla = true;
 
-        if (!ShopManager.VanillaShops.ContainsKey(shopName)) return;
+        if (!ShopManager.VanillaShops.TryGetValue(shopName, out VanillaShop shop))
+            return;
 
-        var customStock = ShopManager.VanillaShops[shopName].ItemPriceAndStock;
+        var customStock = shop.ItemPriceAndStock;
         ItemsUtil.RemoveSoldOutItems(customStock);
         if (ShopManager.VanillaShops[shopName].ReplaceInsteadOfAdd)
         {
@@ -99,14 +102,9 @@ internal static class GamePatcher
                     return;
             }
 
-            if (ShopManager.VanillaShops[shopName].AddStockAboveVanilla)
-            {
-                __result = customStock.Concat(__result).ToDictionary(x => x.Key, x => x.Value);
-            }
-            else
-            {
-                __result = __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
-            }
+            __result = ShopManager.VanillaShops[shopName].AddStockAboveVanilla
+                ? customStock.Concat(__result).ToDictionary(x => x.Key, x => x.Value)
+                : __result.Concat(customStock).ToDictionary(x => x.Key, x => x.Value);
         }
     }
 }

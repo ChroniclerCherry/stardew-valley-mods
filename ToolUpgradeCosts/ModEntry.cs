@@ -15,14 +15,14 @@ internal class ModEntry : Mod
     *********/
     private readonly Dictionary<UpgradeMaterials, string> DefaultMaterials = new()
     {
-        {UpgradeMaterials.Copper, "334"},
-        {UpgradeMaterials.Steel, "335"},
-        {UpgradeMaterials.Gold, "336"},
-        {UpgradeMaterials.Iridium, "337"}
+        [UpgradeMaterials.Copper] = "334",
+        [UpgradeMaterials.Steel] = "335",
+        [UpgradeMaterials.Gold] = "336",
+        [UpgradeMaterials.Iridium] = "337"
     };
 
     /// <summary>The mod settings.</summary>
-    private ModConfig Config;
+    private ModConfig Config = null!; // set in Entry
 
 
     /*********
@@ -42,11 +42,11 @@ internal class ModEntry : Mod
     ** Private methods
     *********/
     /// <inheritdoc cref="IGameLoopEvents.SaveLoaded" />
-    private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+    private void OnSaveLoaded(object? sender, SaveLoadedEventArgs e)
     {
         foreach (KeyValuePair<UpgradeMaterials, Upgrade> upgrade in this.Config.UpgradeCosts)
         {
-            string name = upgrade.Value.MaterialName;
+            string? name = upgrade.Value.MaterialName;
 
             string id = Game1.objectData.FirstOrDefault(kvp => kvp.Value.Name == name).Key;
             if (id is null)

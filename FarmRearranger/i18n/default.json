@@ -1,7 +1,27 @@
 ﻿{
+    /*********
+    ** In-game text
+    *********/
+    // mail
     "RobinLetter": "Hey there @! ^Maru and I have been working on a new project, and we thought maybe you could get some use out of it. ^It's called a 'Rearranger': a handy set of blueprints you can use to change the layout of your farm buildings by yourself without having to call me in! ^I've added them to my shop, so feel free to come by and pick one up whenever you like. Take care! ^^-Robin[#]Rearranger Notice",
+
+    // UI
     "CantBuildOffFarm": "You can only rearrange your buildings from your farm.",
 
+    // item
     "FarmRearranger_Name": "Farm Rearranger",
-    "FarmRearranger_Description": "Lets you move your farm buildings around."
+    "FarmRearranger_Description": "Lets you move your farm buildings around.",
+
+
+    /*********
+    ** Generic Mod Config Menu UI
+    *********/
+    "config.can-arrange-outside-farm.name": "Can rearrange outside farm",
+    "config.can-arrange-outside-farm.desc": "Whether you can use the farm rearranger outside the farm. This may have strange effects.",
+
+    "config.price.name": "Purchase price",
+    "config.price.desc": "The cost to buy the farm rearranger.",
+
+    "config.friendship-points-required.name": "Robin friendship required",
+    "config.friendship-points-required.desc": "The minimum number of friendship points with Robin needed before she begins selling the farm rearranger. Each heart is 250 points."
 }

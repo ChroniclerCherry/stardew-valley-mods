@@ -1,3 +1,5 @@
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +19,8 @@ internal class ShopManager
     /*********
     ** Fields
     *********/
-    private static readonly string[] VanillaShopNames = {
+    private static readonly string[] VanillaShopNames =
+    [
         "PierreShop",
         "JojaShop",
         "RobinShop",
@@ -34,15 +37,15 @@ internal class ShopManager
         "QiShop",
         "WillyShop",
         "HatMouse"
-    };
+    ];
 
 
     /*********
     ** Accessors
     *********/
-    public static Dictionary<string, ItemShop> ItemShops = new Dictionary<string, ItemShop>();
-    public static Dictionary<string, AnimalShop> AnimalShops = new Dictionary<string, AnimalShop>();
-    public static Dictionary<string, VanillaShop> VanillaShops = new Dictionary<string, VanillaShop>();
+    public static Dictionary<string, ItemShop> ItemShops = [];
+    public static Dictionary<string, AnimalShop> AnimalShops = [];
+    public static Dictionary<string, VanillaShop> VanillaShops = [];
 
 
     /*********
@@ -178,14 +181,12 @@ internal class ShopManager
         {
             foreach (AnimalShop animalShopPack in data.AnimalShops)
             {
-                if (AnimalShops.ContainsKey(animalShopPack.ShopName))
+                if (!AnimalShops.TryAdd(animalShopPack.ShopName, animalShopPack))
                 {
                     ModEntry.StaticMonitor.Log($"{contentPack.Manifest.Name} is trying to add an AnimalShop \"{animalShopPack.ShopName}\"," +
                         $" but a shop of this name has already been added. " +
                         $"It will not be added.", LogLevel.Warn);
-                    continue;
                 }
-                AnimalShops.Add(animalShopPack.ShopName, animalShopPack);
             }
         }
 

@@ -28,9 +28,9 @@ internal static class CrabPotHandler
     /*********
     ** Private methods
     *********/
-    /// <summary>Updates crab pots</summary>
     /// <inheritdoc cref="IGameLoopEvents.DayStarted" />
-    private static void OnDayStart(object sender, DayStartedEventArgs e)
+    /// <remarks>Updates crab pots.</remarks>
+    private static void OnDayStart(object? sender, DayStartedEventArgs e)
     {
         GameLocation loc = Game1.getLocationFromName(ContentPackHelper.ExteriorLocationName);
         if (loc is null)

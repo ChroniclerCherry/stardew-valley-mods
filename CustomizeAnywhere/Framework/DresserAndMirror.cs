@@ -17,7 +17,6 @@ internal class DresserAndMirror
     *********/
     private readonly IModHelper Helper;
 
-    private readonly string ModId;
     private readonly string DresserShopId;
 
     private readonly string CatalogueId;
@@ -32,7 +31,6 @@ internal class DresserAndMirror
     *********/
     public DresserAndMirror(IModHelper helper, string modId)
     {
-        this.ModId = modId;
         this.DresserShopId = $"{modId}_Dresser";
         this.CatalogueId = $"{modId}_Catalogue";
         this.MirrorId = $"{modId}_Mirror";
@@ -60,7 +58,7 @@ internal class DresserAndMirror
     /*********
     ** Private methods
     *********/
-    private void OnAssetRequested(object sender, AssetRequestedEventArgs e)
+    private void OnAssetRequested(object? sender, AssetRequestedEventArgs e)
     {
         // add objects
         if (e.NameWithoutLocale.IsEquivalentTo("Data/BigCraftables"))
@@ -106,7 +104,7 @@ internal class DresserAndMirror
                 var data = asset.AsDictionary<string, ShopData>().Data;
 
                 // add catalogue + mirror recipes
-                if (data.TryGetValue(Game1.shop_carpenter, out ShopData shop))
+                if (data.TryGetValue(Game1.shop_carpenter, out ShopData? shop))
                 {
                     shop.Items.Add(new ShopItemData
                     {
@@ -127,19 +125,19 @@ internal class DresserAndMirror
                 // add dresser shop
                 data[this.DresserShopId] = new ShopData
                 {
-                    Owners = new()
-                    {
+                    Owners =
+                    [
                         new ShopOwnerData
                         {
                             Id = "Default",
                             Name = "AnyOrNone",
                             Portrait = "",
-                            Dialogues = new()
+                            Dialogues = []
                         }
-                    },
+                    ],
 
-                    Items = new()
-                    {
+                    Items =
+                    [
                         new ShopItemData
                         {
                             Id = "Shirts",
@@ -158,7 +156,7 @@ internal class DresserAndMirror
                             ItemId = "ALL_ITEMS (H)",
                             Price = 0
                         }
-                    }
+                    ]
                 };
             });
         }
@@ -185,14 +183,14 @@ internal class DresserAndMirror
         }
     }
 
-    private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
+    private void Input_ButtonPressed(object? sender, ButtonPressedEventArgs e)
     {
         if (Context.IsWorldReady && Game1.currentLocation != null && Game1.activeClickableMenu == null && e.Button.IsActionButton())
         {
             GameLocation loc = Game1.currentLocation;
 
             Vector2 tile = this.Helper.Input.GetCursorPosition().GrabTile;
-            if (loc.Objects.TryGetValue(tile, out Object obj))
+            if (loc.Objects.TryGetValue(tile, out Object? obj))
             {
                 if (obj.QualifiedItemId == this.CatalogueQualifiedId)
                 {

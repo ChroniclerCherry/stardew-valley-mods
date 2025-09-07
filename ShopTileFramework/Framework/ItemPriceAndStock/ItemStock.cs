@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.Collections.Generic;
 using System.Linq;
 using ShopTileFramework.Framework.Apis;
@@ -18,7 +20,6 @@ internal class ItemStock : ItemStockModel
     ** Fields
     *********/
     private Dictionary<double, string[]> PriceMultiplierWhen;
-    private Dictionary<double, string[]> _priceMultiplierWhen;
     private ItemBuilder Builder;
     private Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock;
 
@@ -62,7 +63,6 @@ internal class ItemStock : ItemStockModel
         {
             this.StockPrice = price;
         }
-        this._priceMultiplierWhen = priceMultiplierWhen;
 
         if (this.IsRecipe)
             this.Stock = 1;
@@ -86,13 +86,13 @@ internal class ItemStock : ItemStockModel
             return null;
         }
 
-        this.ItemPriceAndStock = new Dictionary<ISalable, ItemStockInformation>();
+        this.ItemPriceAndStock = [];
         this.Builder.SetItemPriceAndStock(this.ItemPriceAndStock);
 
         double pricemultiplier = 1;
-        if (this._priceMultiplierWhen != null)
+        if (this.PriceMultiplierWhen != null)
         {
-            foreach (KeyValuePair<double, string[]> kvp in this._priceMultiplierWhen)
+            foreach (KeyValuePair<double, string[]> kvp in this.PriceMultiplierWhen)
             {
                 if (ApiManager.Conditions.CheckConditions(kvp.Value))
                 {

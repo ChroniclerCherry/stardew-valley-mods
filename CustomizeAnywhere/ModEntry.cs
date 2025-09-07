@@ -14,9 +14,9 @@ internal class ModEntry : Mod
     ** Fields
     *********/
     /// <summary>The mod settings.</summary>
-    private ModConfig Config;
+    private ModConfig Config = null!; // set in Entry
 
-    private DresserAndMirror DresserAndMirror;
+    private DresserAndMirror DresserAndMirror = null!; // set in Entry
 
 
     /*********
@@ -40,7 +40,7 @@ internal class ModEntry : Mod
     ** Private methods
     *********/
     /// <inheritdoc cref="IGameLoopEvents.GameLaunched" />
-    private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
+    private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
     {
         this.AddGenericModConfigMenu(
             new GenericModConfigMenuIntegrationForCustomizeAnywhere(),
@@ -50,7 +50,7 @@ internal class ModEntry : Mod
     }
 
     /// <inheritdoc cref="IInputEvents.ButtonsChanged" />
-    private void OnButtonsChanged(object sender, ButtonsChangedEventArgs e)
+    private void OnButtonsChanged(object? sender, ButtonsChangedEventArgs e)
     {
         // ignore if player isn't free to move or direct access is turned off in the config
         if (!Context.CanPlayerMove || !this.Config.CanAccessMenusAnywhere)

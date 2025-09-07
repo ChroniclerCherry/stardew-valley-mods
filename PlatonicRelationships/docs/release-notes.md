@@ -1,4 +1,9 @@
 ﻿# Release notes
+## 1.5.1
+Released 07 September 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
+- Internal changes to simplify maintenance.
+
 ## 1.5.0
 Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
 

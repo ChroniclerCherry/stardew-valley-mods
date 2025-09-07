@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Netcode;
 using StardewModdingAPI;
@@ -21,12 +22,12 @@ internal static class Utils
     private const string DonateFishMessageType = "DonateFish";
     private const string AquariumPrefix = "AquariumDonated:";
 
-    private static IModHelper Helper;
-    private static IMonitor Monitor;
-    private static IManifest Manifest;
+    private static IModHelper Helper = null!; // set in Initialize
+    private static IMonitor Monitor = null!; // set in Initialize
+    private static IManifest Manifest = null!; // set in Initialize
 
     private static NetStringHashSet MasterPlayerMail => Game1.MasterPlayer.mailReceived;
-    private static LastDonatedFishSign FishSign;
+    private static LastDonatedFishSign FishSign = null!; // set in Initialize
 
 
     /*********
@@ -60,7 +61,7 @@ internal static class Utils
         FishSign = new LastDonatedFishSign(helper.Events, monitor);
     }
 
-    public static bool IsUnDonatedFish(Item i)
+    public static bool IsUnDonatedFish([NotNullWhen(true)] Item? i)
     {
         if (i?.Category != -4)
             return false;
@@ -83,7 +84,7 @@ internal static class Utils
         if (name is null)
             return false;
 
-        if (InternalNameToDonationName.TryGetValue(name, out string donationName))
+        if (InternalNameToDonationName.TryGetValue(name, out string? donationName))
         {
             return !MasterPlayerMail.Contains($"{AquariumPrefix}{donationName}");
         }
@@ -140,7 +141,7 @@ internal static class Utils
 
     public static IEnumerable<string> GetUndonatedFishInInventory()
     {
-        foreach (Item item in Game1.player.Items)
+        foreach (Item? item in Game1.player.Items)
         {
             if (IsUnDonatedFish(item))
                 yield return item.ItemId;
@@ -181,7 +182,7 @@ internal static class Utils
         if (Game1.player.achievements.Contains(ContentPackHelper.AchievementId))
             return;
 
-        string achievementName = Game1.achievements.GetValueOrDefault(ContentPackHelper.AchievementId)?.Split('^')[0];
+        string? achievementName = Game1.achievements.GetValueOrDefault(ContentPackHelper.AchievementId)?.Split('^')[0];
 
         Game1.addHUDMessage(HUDMessage.ForAchievement(achievementName));
         Game1.playSound("achievement");
@@ -198,7 +199,7 @@ internal static class Utils
     /*********
     ** Private fields
     *********/
-    private static void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
+    private static void GameLoop_SaveLoaded(object? sender, SaveLoadedEventArgs e)
     {
         //clear these dictionaries
         InternalNameToDonationName.Clear();
@@ -219,14 +220,14 @@ internal static class Utils
         Game1.player.stats.Set(StatsKey, GetNumDonatedFish());
     }
 
-    private static void AddCompletionFlag(object sender, SavingEventArgs e)
+    private static void AddCompletionFlag(object? sender, SavingEventArgs e)
     {
         //adding this at the end of the day so that the event won't trigger until the next day
         MasterPlayerMail.Add("AquariumCompleted");
         Helper.Events.GameLoop.Saving -= AddCompletionFlag;
     }
 
-    private static void Multiplayer_ModMessageReceived(object sender, ModMessageReceivedEventArgs e)
+    private static void Multiplayer_ModMessageReceived(object? sender, ModMessageReceivedEventArgs e)
     {
         if (e.FromModID != Manifest.UniqueID)
             return;

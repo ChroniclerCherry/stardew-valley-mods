@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Locations;
-using StardewValley.Objects;
-using Object = StardewValley.Object;
 
 namespace UpgradeEmptyCabins.Framework
 {
@@ -77,18 +74,6 @@ namespace UpgradeEmptyCabins.Framework
 
             // specific cabins
             commandHelper.Add(
-                "remove_seed_box",
-                """
-                Remove the seed box from an empty cabin.
-
-                Usage:
-                   remove_seed_box <cabin number>
-
-                Enter `list_cabins` to see a list of cabin numbers.
-                """,
-                this.HandleRemoveSeedBox
-            );
-            commandHelper.Add(
                 "renovate_cabin",
                 """
                 Remove cribs and add all extra rooms in an empty cabin.
@@ -138,7 +123,7 @@ namespace UpgradeEmptyCabins.Framework
         /// <param name="args">The command arguments.</param>
         private void HandleUpgradeCabins(string commandName, string[] args)
         {
-            if (!this.AssertSaveLoaded(out string error))
+            if (!this.AssertSaveLoaded(out string? error))
             {
                 this.LogCommandError(commandName, error);
                 return;
@@ -152,7 +137,7 @@ namespace UpgradeEmptyCabins.Framework
         /// <param name="args">The command arguments.</param>
         private void HandleListCabins(string commandName, string[] args)
         {
-            if (!this.AssertSaveLoaded(out string error))
+            if (!this.AssertSaveLoaded(out string? error))
             {
                 this.LogCommandError(commandName, error);
                 return;
@@ -203,7 +188,7 @@ namespace UpgradeEmptyCabins.Framework
         /// <param name="args">The command arguments.</param>
         private void HandleListRenovations(string commandName, string[] args)
         {
-            if (!this.AssertSaveLoaded(out string error))
+            if (!this.AssertSaveLoaded(out string? error))
             {
                 this.LogCommandError(commandName, error);
                 return;
@@ -215,42 +200,13 @@ namespace UpgradeEmptyCabins.Framework
         /****
         ** Specific cabin commands
         ****/
-        /// <summary>Handle the <c>remove_seed_box</c> console command.</summary>
-        /// <param name="commandName">The command name.</param>
-        /// <param name="args">The command arguments.</param>
-        private void HandleRemoveSeedBox(string commandName, string[] args)
-        {
-            // read args
-            if (!this.AssertSaveLoaded(out string error) || !this.TryGetCabinFromArg(args, 0, out Building cabin, out Cabin indoors, out error))
-            {
-                this.LogCommandError(commandName, error);
-                return;
-            }
-
-            // remove seed box
-            bool removed = false;
-            foreach ((Vector2 tile, Object obj) in indoors.Objects.Pairs)
-            {
-                if (obj is not Chest chest || !chest.giftbox.Value || chest.bigCraftable.Value)
-                {
-                    continue;
-                }
-
-                indoors.Objects.Remove(tile);
-                removed = true;
-                this.Monitor.Log($"Seed box removed from {ModUtility.GetCabinDescription(cabin)}.", LogLevel.Info);
-            }
-            if (!removed)
-                this.Monitor.Log($"No seed box found in {ModUtility.GetCabinDescription(cabin)}.", LogLevel.Info);
-        }
-
         /// <summary>Handle the <c>renovate_cabin</c> console command.</summary>
         /// <param name="commandName">The command name.</param>
         /// <param name="args">The command arguments.</param>
         private void HandleRenovateCabin(string commandName, string[] args)
         {
             // read args
-            if (!this.AssertSaveLoaded(out string error) || !this.TryGetCabinFromArg(args, 0, out Building cabin, out Cabin indoors, out error))
+            if (!this.AssertSaveLoaded(out string? error) || !this.TryGetCabinFromArg(args, 0, out Building? cabin, out Cabin? indoors, out error))
             {
                 this.LogCommandError(commandName, error);
                 return;
@@ -296,7 +252,7 @@ namespace UpgradeEmptyCabins.Framework
         private void HandleSetCribStyle(string commandName, string[] args)
         {
             // read args
-            if (!this.AssertSaveLoaded(out string error) || !this.TryGetCabinFromArg(args, 0, out Building cabin, out Cabin indoors, out error) || !ArgUtility.TryGetInt(args, 1, out int cribStyle, out error))
+            if (!this.AssertSaveLoaded(out string? error) || !this.TryGetCabinFromArg(args, 0, out Building? cabin, out Cabin? indoors, out error) || !ArgUtility.TryGetInt(args, 1, out int cribStyle, out error))
             {
                 this.LogCommandError(commandName, error);
                 return;
@@ -313,7 +269,7 @@ namespace UpgradeEmptyCabins.Framework
         private void HandleToggleRenovation(string commandName, string[] args)
         {
             // read args
-            if (!this.AssertSaveLoaded(out string error) || !this.TryGetCabinFromArg(args, 0, out Building cabin, out Cabin indoors, out error) || !ArgUtility.TryGet(args, 1, out string renovationId, out error, allowBlank: false))
+            if (!this.AssertSaveLoaded(out string? error) || !this.TryGetCabinFromArg(args, 0, out Building? cabin, out Cabin? indoors, out error) || !ArgUtility.TryGet(args, 1, out string renovationId, out error, allowBlank: false))
             {
                 this.LogCommandError(commandName, error);
                 return;
@@ -389,7 +345,7 @@ namespace UpgradeEmptyCabins.Framework
         /// <summary>Assert that a save was loaded before running the current command.</summary>
         /// <param name="error">An error indicating a save must be loaded, if applicable.</param>
         /// <returns>Returns whether a save is loaded.</returns>
-        private bool AssertSaveLoaded(out string error)
+        private bool AssertSaveLoaded([NotNullWhen(false)] out string? error)
         {
             if (!Context.IsWorldReady)
             {
@@ -408,7 +364,7 @@ namespace UpgradeEmptyCabins.Framework
         /// <param name="indoors">The cabin interior, if found.</param>
         /// <param name="error">The error message if the cabin could not be found.</param>
         /// <returns>Returns whether a cabin was successfully matched.</returns>
-        private bool TryGetCabinFromArg(string[] args, int index, out Building cabin, out Cabin indoors, out string error)
+        private bool TryGetCabinFromArg(string[] args, int index, [NotNullWhen(true)] out Building? cabin, [NotNullWhen(true)] out Cabin? indoors, [NotNullWhen(false)] out string? error)
         {
             if (!ArgUtility.TryGetInt(args, index, out int cabinNumber, out error))
             {

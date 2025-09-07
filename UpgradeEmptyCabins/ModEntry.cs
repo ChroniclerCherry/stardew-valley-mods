@@ -4,6 +4,7 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Buildings;
+using StardewValley.GameData.Buildings;
 using StardewValley.Locations;
 using StardewValley.TokenizableStrings;
 using UpgradeEmptyCabins.Framework;
@@ -17,7 +18,7 @@ internal class ModEntry : Mod
     ** Fields
     *********/
     /// <summary>Handles console commands registered by the mod.</summary>
-    private CommandHandler CommandHandler;
+    private CommandHandler CommandHandler = null!; // set in Entry
 
 
     /*********
@@ -41,7 +42,7 @@ internal class ModEntry : Mod
     ** Private methods
     *********/
     /// <inheritdoc cref="IInputEvents.ButtonPressed" />
-    private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
+    private void OnButtonPressed(object? sender, ButtonPressedEventArgs e)
     {
         if (!Context.CanPlayerMove)
             return;
@@ -80,16 +81,16 @@ internal class ModEntry : Mod
     /// <summary>Show the UI to choose a cabin to upgrade.</summary>
     private void AskForUpgrade()
     {
-        if (Game1.getFarm().isThereABuildingUnderConstruction())
+        if (Game1.netWorldState.Value.GetBuilderData(Game1.builder_robin) != null)
         {
             Game1.drawObjectDialogue(I18n.Robin_Busy());
             return;
         }
 
-        List<Response> cabinNames = new List<Response>();
+        List<Response> cabinNames = [];
         foreach ((Building cabin, Cabin indoors) in ModUtility.GetEmptyCabins())
         {
-            string upgradeString = indoors.upgradeLevel switch
+            string? upgradeString = indoors.upgradeLevel switch
             {
                 0 => I18n.Robin_Hu1Materials(),
                 1 => I18n.Robin_Hu2Materials(),
@@ -120,7 +121,7 @@ internal class ModEntry : Mod
     /// <summary>Handle the player accepting a cabin upgrade.</summary>
     /// <param name="cabin">The cabin to upgrade.</param>
     /// <remarks>Derived from <see cref="GameLocation.houseUpgradeAccept"/>, modified to work for cabins not owned by the current player and build instantly (since the game doesn't track upgrades for non-active players).</remarks>
-    private void OnSelectedHouseUpgrade(Building cabin)
+    private void OnSelectedHouseUpgrade(Building? cabin)
     {
         Game1.activeClickableMenu = null;
         Game1.player.canMove = true;
@@ -132,7 +133,15 @@ internal class ModEntry : Mod
 
         NPC robin = Game1.RequireCharacter("Robin");
         Cabin indoors = (Cabin)cabin.indoors.Value;
-        string displayName = TokenParser.ParseText(cabin.GetData()?.Name);
+        BuildingData? cabinData = cabin.GetData();
+
+        if (cabinData is null)
+        {
+            Game1.playSound("smallSelect");
+            return;
+        }
+
+        string displayName = TokenParser.ParseText(cabinData.Name);
 
         switch (indoors.upgradeLevel)
         {

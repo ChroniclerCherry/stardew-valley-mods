@@ -12,7 +12,7 @@ public interface IStopModel
     string DisplayName { get; }
 
     /// <summary>The internal name of the location to which the player should warp when they select this stop.</summary>
-    string TargetMapName { get; }
+    string? TargetMapName { get; }
 
     /// <summary>The tile X position to which the player should warp when they select this stop.</summary>
     int TargetX { get; }
@@ -30,5 +30,5 @@ public interface IStopModel
     bool IsBoat { get; }
 
     /// <summary>If set, the Expanded Precondition Utility conditions which indicate whether this stop should appear in the menu at a given time.</summary>
-    string[] Conditions { get; }
+    string[]? Conditions { get; }
 }

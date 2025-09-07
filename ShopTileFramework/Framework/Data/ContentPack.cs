@@ -1,3 +1,5 @@
+#nullable disable
+
 using ShopTileFramework.Framework.Shop;
 
 namespace ShopTileFramework.Framework.Data;
