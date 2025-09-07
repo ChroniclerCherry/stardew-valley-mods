@@ -1,10 +1,13 @@
 ﻿# Release notes
-## Upcoming release
-- The letter is now sent at the start of the day instead of overnight, so you get it immediately if you already meet the requirements.
+## 1.2.0
+Released 07 September 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
 - Added in-game config UI through [Generic Mod Config Menu](https://www.nexusmods.com/stardewvalley/mods/5098).
 - Added support for split-screen mode.
-- Added failsafes to avoid the player getting stuck in invisible mode.
+- Added failsafes to avoid getting stuck in invisible mode.
+- The letter is now sent at the start of the day instead of overnight, so you get it immediately if you already meet the requirements.
 - Fixed unable to activate farm rearranger when using a controller.
+- Internal changes to simplify maintenance.
 
 ## 1.1.1
 Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.

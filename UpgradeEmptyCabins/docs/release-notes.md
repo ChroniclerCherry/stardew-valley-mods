@@ -1,8 +1,11 @@
 ﻿# Release notes
-## Upcoming release
+## 1.3.0
+Released 07 September 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
 - You can now open the starter gift box in any empty cabin.
 - You can now upgrade cabins placed outside the farm too.
 - Removed the `remove_seed_box` console command (since you can open them directly now).
+- Removed config menu UI (the mod no longer has any options you need to set).
 - Fixed being able to start an upgrade while Robin is busy on a building outside the farm.
 - Internal changes to simplify maintenance.
 
@@ -19,6 +22,7 @@ Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
 - You can now move beds in any empty cabin.
 - You can now change the appearance of any empty cabin through Robin's menu.
 - Robin's cabin upgrade menu now shows a more detailed description of each cabin, to make it easier to choose the one you want.
+- The config menu UI text is now translatable.
 - Fixed support for the new 1.6 upgrade costs and renovations (thanks to XTFOX!).
 - Fixed broken dialogue in 1.6 when you don't have enough wood.
 - Fixed broken dialogue in 1.6 when upgrading a cabin (thanks to XTFOX!).
@@ -30,7 +34,6 @@ Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
   - Added `list_cabins` and `list_renovations` commands (thanks to XTFOX!).
   - `renovate_cabin` now adds all renovations, including removing walls (thanks to XTFOX!).
   - Removed `remove_cabin_beds` (no longer needed since you can now remove them normally).
-- Removed config menu UI (the mod no longer has any options you need to set).
 
 ## 1.1.0
 Released 19 March 2024 for SMAPI 4.0.0 or later. Updated by Pathoschild.

@@ -1,7 +1,10 @@
 ﻿# Release notes
-## Upcoming release
+## 1.2.0
+Released 07 September 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
 - Added in-game config UI through [Generic Mod Config Menu](https://www.nexusmods.com/stardewvalley/mods/5098).
 - Fixed errors when the `config.json` has invalid values.
+- Internal changes to simplify maintenance.
 
 ## 1.1.0
 Released 21 January 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
