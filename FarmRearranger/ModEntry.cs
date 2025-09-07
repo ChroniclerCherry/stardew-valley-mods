@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.GameData.BigCraftables;
 using StardewValley.GameData.Shops;
@@ -21,13 +22,17 @@ internal class ModEntry : Mod
     /// <summary>The mail ID for the farm rearranger intro letter.</summary>
     private const string MailId = "FarmRearrangerMail";
 
-    private bool IsArranging;
+    /// <summary>The unqualified item ID for the Farm Rearranger item.</summary>
+    private const string FarmRearrangeId = "cel10e.Cherry.FarmRearranger_FarmRearranger";
+
+    /// <summary>The qualified item ID for the Farm Rearranger item.</summary>
+    private const string FarmRearrangeQualifiedId = ItemRegistry.type_bigCraftable + FarmRearrangeId;
 
     /// <summary>The mod settings.</summary>
     private ModConfig Config = null!; // set in Entry
 
-    private string FarmRearrangeId = null!; // set in Entry
-    private string FarmRearrangeQualifiedId = null!; // set in Entry
+    /// <summary>Whether we're currently showing the move-buildings UI.</summary>
+    private readonly PerScreen<bool> IsArranging = new();
 
 
     /*********
@@ -38,8 +43,6 @@ internal class ModEntry : Mod
     {
         // init
         I18n.Init(helper.Translation);
-        this.FarmRearrangeId = this.ModManifest.UniqueID + "_FarmRearranger";
-        this.FarmRearrangeQualifiedId = ItemRegistry.type_bigCraftable + this.FarmRearrangeId;
 
         // read config
         this.Config = helper.ReadConfig<ModConfig>();
@@ -96,7 +99,7 @@ internal class ModEntry : Mod
         Vector2 tile = hasCursor
             ? this.Helper.Input.GetCursorPosition().Tile
             : this.GetFacingTile(Game1.player);
-        if (Game1.currentLocation.Objects.TryGetValue(tile, out Object? obj) && obj.QualifiedItemId == this.FarmRearrangeQualifiedId && !this.IsArranging)
+        if (Game1.currentLocation.Objects.TryGetValue(tile, out Object? obj) && obj.QualifiedItemId == FarmRearrangeQualifiedId && !this.IsArranging.Value)
         {
             if (Game1.currentLocation.Name == "Farm" || this.Config.CanArrangeOutsideFarm)
                 this.StartRearranging();
@@ -109,7 +112,7 @@ internal class ModEntry : Mod
     /// <remarks>When move buildings is exited, by default it returns the player to Robin's house and the menu becomes the menu to choose buildings. This detects when that happens and returns the player to their original location and closes the menu.</remarks>
     private void OnUpdateTicking(object? sender, UpdateTickingEventArgs e)
     {
-        if (this.IsArranging)
+        if (this.IsArranging.Value)
         {
             if (Game1.activeClickableMenu is not CarpenterMenu { onFarm: true })
                 this.StopRearranging();
@@ -128,11 +131,11 @@ internal class ModEntry : Mod
             {
                 var data = asset.AsDictionary<string, BigCraftableData>().Data;
 
-                data[this.FarmRearrangeId] = new BigCraftableData
+                data[FarmRearrangeId] = new BigCraftableData
                 {
-                    Name = this.FarmRearrangeId,
-                    DisplayName = TokenStringBuilder.LocalizedText($"Strings\\BigCraftables:{this.FarmRearrangeId}_Name"),
-                    Description = TokenStringBuilder.LocalizedText($"Strings\\BigCraftables:{this.FarmRearrangeId}_Description"),
+                    Name = FarmRearrangeId,
+                    DisplayName = TokenStringBuilder.LocalizedText($"Strings\\BigCraftables:{FarmRearrangeId}_Name"),
+                    Description = TokenStringBuilder.LocalizedText($"Strings\\BigCraftables:{FarmRearrangeId}_Description"),
                     Price = 1,
                     Texture = $"LooseSprites/{modId}"
                 };
@@ -150,8 +153,8 @@ internal class ModEntry : Mod
                 {
                     shop.Items.Add(new ShopItemData
                     {
-                        Id = this.FarmRearrangeId,
-                        ItemId = this.FarmRearrangeId,
+                        Id = FarmRearrangeId,
+                        ItemId = FarmRearrangeId,
                         Price = this.Config.Price,
                         Condition = $"PLAYER_HAS_MAIL Current {MailId} Received"
                     });
@@ -180,8 +183,8 @@ internal class ModEntry : Mod
             {
                 var data = asset.AsDictionary<string, string>().Data;
 
-                data[$"{this.FarmRearrangeId}_Name"] = I18n.FarmRearrangerName();
-                data[$"{this.FarmRearrangeId}_Description"] = I18n.FarmRearrangerDescription();
+                data[$"{FarmRearrangeId}_Name"] = I18n.FarmRearrangerName();
+                data[$"{FarmRearrangeId}_Description"] = I18n.FarmRearrangerDescription();
             });
         }
     }
@@ -191,7 +194,7 @@ internal class ModEntry : Mod
     {
         //our boolean to keep track that we are currently in a Farm rearranger menu
         //so we don't mess with any other vanilla warps to robin's house
-        this.IsArranging = true;
+        this.IsArranging.Value = true;
 
         //open the carpenter menu then do everything that is normally done
         //when the move buildings option is clicked
@@ -207,7 +210,7 @@ internal class ModEntry : Mod
     /// <summary>Reset the game to the normal mode.</summary>
     private void StopRearranging()
     {
-        this.IsArranging = false;
+        this.IsArranging.Value = false;
 
         if (Game1.activeClickableMenu is CarpenterMenu)
             Game1.exitActiveMenu();
