@@ -1,7 +1,8 @@
 ﻿# Release notes
 ## Upcoming release
-- Added in-game config UI through [Generic Mod Config Menu](https://www.nexusmods.com/stardewvalley/mods/5098).
 - The letter is now sent at the start of the day instead of overnight, so you get it immediately if you already meet the requirements.
+- Added in-game config UI through [Generic Mod Config Menu](https://www.nexusmods.com/stardewvalley/mods/5098).
+- Added failsafes to avoid the player getting stuck in invisible mode.
 - Fixed unable to activate farm rearranger when using a controller.
 
 ## 1.1.1

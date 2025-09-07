@@ -83,12 +83,11 @@ internal class ModEntry : Mod
     /// <remarks>This checks if the farm rearranger was clicked, then opens the menu if applicable.</remarks>
     private void OnButtonPressed(object? sender, ButtonPressedEventArgs e)
     {
-        //ignore input if the player isnt free to move aka world not loaded,
-        //they're in an event, a menu is up, etc
-        if (!Context.CanPlayerMove)
+        // ignore input if world not loaded, they're in an event, a menu is up, etc
+        if (!Context.CanPlayerMove || Game1.locationRequest is not null)
             return;
 
-        //action button works for right click on mouse and action button for controllers
+        // action button works for right-click on mouse and action button for controllers
         if (!e.Button.IsActionButton())
             return;
 
@@ -97,10 +96,10 @@ internal class ModEntry : Mod
         Vector2 tile = hasCursor
             ? this.Helper.Input.GetCursorPosition().Tile
             : this.GetFacingTile(Game1.player);
-        if (Game1.currentLocation.Objects.TryGetValue(tile, out Object? obj) && obj.QualifiedItemId == this.FarmRearrangeQualifiedId)
+        if (Game1.currentLocation.Objects.TryGetValue(tile, out Object? obj) && obj.QualifiedItemId == this.FarmRearrangeQualifiedId && !this.IsArranging)
         {
             if (Game1.currentLocation.Name == "Farm" || this.Config.CanArrangeOutsideFarm)
-                this.RearrangeFarm();
+                this.StartRearranging();
             else
                 Game1.activeClickableMenu = new DialogueBox(I18n.CantBuildOffFarm());
         }
@@ -112,13 +111,8 @@ internal class ModEntry : Mod
     {
         if (this.IsArranging)
         {
-            if (Game1.activeClickableMenu is not CarpenterMenu menu)
-                this.IsArranging = false;
-            else if (!menu.onFarm)
-            {
-                this.IsArranging = false;
-                Game1.exitActiveMenu();
-            }
+            if (Game1.activeClickableMenu is not CarpenterMenu { onFarm: true })
+                this.StopRearranging();
         }
     }
 
@@ -192,10 +186,8 @@ internal class ModEntry : Mod
         }
     }
 
-    /// <summary>
-    /// Brings up the menu to move the building
-    /// </summary>
-    private void RearrangeFarm()
+    /// <summary>Switch the game to the move-building UI.</summary>
+    private void StartRearranging()
     {
         //our boolean to keep track that we are currently in a Farm rearranger menu
         //so we don't mess with any other vanilla warps to robin's house
@@ -210,6 +202,28 @@ internal class ModEntry : Mod
 
         menu.onFarm = true;
         menu.Action = CarpenterMenu.CarpentryAction.Move;
+    }
+
+    /// <summary>Reset the game to the normal mode.</summary>
+    private void StopRearranging()
+    {
+        this.IsArranging = false;
+
+        if (Game1.activeClickableMenu is CarpenterMenu)
+            Game1.exitActiveMenu();
+
+        if (Game1.locationRequest != null)
+            Game1.locationRequest.OnWarp += ResetPlayer;
+
+        ResetPlayer();
+
+        void ResetPlayer()
+        {
+            Game1.player.viewingLocation.Value = null;
+            Game1.displayHUD = true;
+            Game1.viewportFreeze = false;
+            Game1.displayFarmer = true;
+        }
     }
 
     /// <summary>Get the tile the player is facing.</summary>
