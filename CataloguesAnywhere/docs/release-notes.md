@@ -1,4 +1,8 @@
 ﻿# Release notes
+## Upcoming release
+- Added themed furniture catalogues in Stardew Valley 1.6+.
+- Added support for opening custom catalogue/shop IDs.
+
 ## 1.2.0
 Released 07 September 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
 
