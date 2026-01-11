@@ -6,7 +6,7 @@
     "RobinLetter": "Ehilà @! ^Maru e io abbiamo lavorato su un nuovo progetto e abbiamo pensato che forse avresti potuto usarlo. ^Si chiama 'Rearranger': un pratico set di progetti che puoi usare per cambiare da solo il layout dei tuoi edifici agricoli senza dovermi chiamare! ^Li ho aggiunti al mio negozio, quindi sentiti libero di venire a prenderne uno quando vuoi. A dopo! ^^-Robin[#]Avviso Rearranger",
 
     // UI
-    "CantBuildOffFarm": "Puoi riorganizzare i tuoi edifici solo dalla tua fattoria.",
+    "NoBuildingsToMove": "No buildings to move in this location.", // TODO
 
     // item
     // TODO
@@ -18,9 +18,6 @@
     ** Generic Mod Config Menu UI
     *********/
     // TODO
-    "config.can-arrange-outside-farm.name": "Can rearrange outside farm",
-    "config.can-arrange-outside-farm.desc": "Whether you can use the farm rearranger outside the farm. This may have strange effects.",
-
     "config.price.name": "Purchase price",
     "config.price.desc": "The cost to buy the farm rearranger.",
 

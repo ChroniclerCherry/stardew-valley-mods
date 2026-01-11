@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using ChroniclerCherry.Common;
@@ -15,11 +17,18 @@ internal class ModConfig
     /// <summary>Whether the mod should be enabled.</summary>
     public bool Enabled { get; set; } = true;
 
-    /// <summary>The key bindings which open the furniture catalogue.</summary>
-    public KeybindList FurnitureKey { get; set; } = KeybindList.ForSingle(SButton.LeftControl, SButton.D1);
+    /// <summary>The key binds which open each shop ID.</summary>
+    public Dictionary<string, KeybindList> Catalogues = new(StringComparer.OrdinalIgnoreCase)
+    {
+        [ShopIds.WallpaperCatalogueId] = KeybindList.ForSingle(SButton.LeftControl, SButton.D1),
 
-    /// <summary>The key bindings which open the wallpaper catalogue.</summary>
-    public KeybindList WallpaperKey { get; set; } = KeybindList.ForSingle(SButton.LeftControl, SButton.D2);
+        [ShopIds.FurnitureCatalogueId] = KeybindList.ForSingle(SButton.LeftControl, SButton.D2),
+        [ShopIds.JojaFurnitureCatalogueId] = KeybindList.ForSingle(SButton.LeftControl, SButton.D3),
+        [ShopIds.JunimoFurnitureCatalogueId] = KeybindList.ForSingle(SButton.LeftControl, SButton.D4),
+        [ShopIds.RetroFurnitureCatalogueId] = KeybindList.ForSingle(SButton.LeftControl, SButton.D5),
+        [ShopIds.TrashFurnitureCatalogueId] = KeybindList.ForSingle(SButton.LeftControl, SButton.D6),
+        [ShopIds.WizardFurnitureCatalogueId] = KeybindList.ForSingle(SButton.LeftControl, SButton.D7)
+    };
 
 
     /*********
@@ -33,7 +42,6 @@ internal class ModConfig
     [SuppressMessage("ReSharper", "UnusedParameter.Local", Justification = SuppressReasons.UsedViaReflection)]
     private void OnDeserializedMethod(StreamingContext context)
     {
-        this.FurnitureKey ??= new KeybindList();
-        this.WallpaperKey ??= new KeybindList();
+        this.Catalogues = new Dictionary<string, KeybindList>(this.Catalogues ?? [], StringComparer.OrdinalIgnoreCase);
     }
 }

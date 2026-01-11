@@ -2,12 +2,46 @@
     /*********
     ** Generic Mod Config Menu UI
     *********/
+    /****
+    ** General settings
+    ****/
+    "config.sections.general-options": "General options",
+
     "config.enabled.name": "Enabled",
     "config.enabled.desc": "Whether the mod should be enabled",
 
-    "config.furniture-key.name": "Open furniture catalogue key",
-    "config.furniture-key.desc": "The key bindings which open the furniture catalogue.",
+    /****
+    ** Default keybinds
+    ****/
+    "config.sections.default-keybinds": "Default keybinds",
 
-    "config.wallpaper-key.name": "Open wallpaper catalogue key",
-    "config.wallpaper-key.desc": "The key bindings which open the wallpaper catalogue."
+    "config.furniture-key.name": "Furniture catalogue (default)",
+    "config.furniture-key.desc": "The key bindings which open the default furniture catalogue.",
+
+    "config.joja-furniture-key.name": "Furniture catalogue (Joja)",
+    "config.joja-furniture-key.desc": "The key bindings which open the Joja furniture catalogue.",
+
+    "config.junimo-furniture-key.name": "Furniture catalogue (Junimo)",
+    "config.junimo-furniture-key.desc": "The key bindings which open the Junimo furniture catalogue.",
+
+    "config.retro-furniture-key.name": "Furniture catalogue (retro)",
+    "config.retro-furniture-key.desc": "The key bindings which open the retro furniture catalogue.",
+
+    "config.trash-furniture-key.name": "Furniture catalogue (trash)",
+    "config.trash-furniture-key.desc": "The key bindings which open the trash furniture catalogue.",
+
+    "config.wizard-furniture-key.name": "Furniture catalogue (Wizard)",
+    "config.wizard-furniture-key.desc": "The key bindings which open the Wizard furniture catalogue.",
+
+    "config.wallpaper-key.name": "Wallpaper catalogue",
+    "config.wallpaper-key.desc": "The key bindings which open the wallpaper catalogue.",
+
+    /****
+    ** Custom keybinds
+    ****/
+    "config.sections.custom-keybinds": "Custom keybinds",
+    "config.no-custom-keys": "You can add custom shop/catalogue IDs by editing the config.json file directly.",
+
+    "config.custom-key.name": "Custom '{{shopId}}' shop",
+    "config.custom-key.desc": "The key binding which opens a custom shop with the '{{shopId}}' ID. This appears because you probably edited config.json directly."
 }

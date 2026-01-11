@@ -6,7 +6,7 @@
     "RobinLetter": "Olá @! ^Maru e eu estamos trabalhando em um novo projeto, e pensamos que talvez você pudesse aproveitá-lo. ^Ele é chamado de 'Reorganizador': um conjunto prático de plantas que você pode usar para alterar o layout de seus edifícios agrícolas sem precisar me chamar! ^Adicionei-os à minha loja, então fique à vontade para ir buscar um quando quiser. Até mais! ^^-Robin[#]Aviso de Reorganizador",
 
     // UI
-    "CantBuildOffFarm": "Você só pode reorganizar seus edifícios na sua fazenda.",
+    "NoBuildingsToMove": "No buildings to move in this location.", // TODO
 
     // item
     // TODO
@@ -18,9 +18,6 @@
     ** Generic Mod Config Menu UI
     *********/
     // TODO
-    "config.can-arrange-outside-farm.name": "Can rearrange outside farm",
-    "config.can-arrange-outside-farm.desc": "Whether you can use the farm rearranger outside the farm. This may have strange effects.",
-
     "config.price.name": "Purchase price",
     "config.price.desc": "The cost to buy the farm rearranger.",
 

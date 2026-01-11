@@ -1,0 +1,30 @@
+<Solution>
+  <Folder Name="/.root/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="CataloguesAnywhere/CataloguesAnywhere.csproj" />
+  <Project Path="ChangeSlimeHutchLimit/ChangeSlimeHutchLimit.csproj" />
+  <Project Path="Common/.Common.shproj" />
+  <Project Path="CustomCraftingStations/CustomCraftingStations.csproj" />
+  <Project Path="CustomizeAnywhere/CustomizeAnywhere.csproj" />
+  <Project Path="ExpandedPreconditionsUtility/ExpandedPreconditionsUtility.csproj" />
+  <Project Path="FarmRearranger/FarmRearranger.csproj" />
+  <Project Path="HayBalesAsSilos/HayBalesAsSilos.csproj" />
+  <Project Path="LimitedCampfireCooking/LimitedCampfireCooking.csproj" />
+  <Project Path="MultiplayerModChecker/MultiplayerModChecker.csproj" />
+  <Project Path="MultiYieldCrops/MultiYieldCrops.csproj" />
+  <Project Path="PlatonicRelationships/PlatonicRelationships.csproj" />
+  <Project Path="ProfitMargins/ProfitMargins.csproj" />
+  <Project Path="ShopTileFramework/ShopTileFramework.csproj" />
+  <Project Path="SnackAnything/SnackAnything.csproj" />
+  <Project Path="StardewAquarium/StardewAquarium.csproj" />
+  <Project Path="ToolUpgradeCosts/ToolUpgradeCosts.csproj" />
+  <Project Path="TrainStation/TrainStation.csproj" />
+  <Project Path="UpgradeEmptyCabins/UpgradeEmptyCabins.csproj" />
+</Solution>

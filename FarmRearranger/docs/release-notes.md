@@ -1,4 +1,10 @@
 ﻿# Release notes
+## 1.3.0
+Released 11 January 2026 for SMAPI 4.1.10 or later. Updated by Pathoschild.
+
+- Farm rearrangers now work for any location which contains buildings (not just the main farm).
+- Farm rearrangers now work inside buildings and sublocations automatically. This removes the 'can rearrange outside farm' option.
+
 ## 1.2.0
 Released 07 September 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
 

@@ -90,21 +90,23 @@ internal class ModEntry : Mod
         if (!Context.CanPlayerMove || Game1.locationRequest is not null)
             return;
 
-        // action button works for right-click on mouse and action button for controllers
-        if (!e.Button.IsActionButton())
-            return;
-
-        // check if the clicked tile contains a Farm Rearranger
-        bool hasCursor = Constants.TargetPlatform != GamePlatform.Android && Game1.wasMouseVisibleThisFrame; // note: only reliable when a menu isn't open
-        Vector2 tile = hasCursor
-            ? this.Helper.Input.GetCursorPosition().Tile
-            : this.GetFacingTile(Game1.player);
-        if (Game1.currentLocation.Objects.TryGetValue(tile, out Object? obj) && obj.QualifiedItemId == FarmRearrangeQualifiedId && !this.IsArranging.Value)
+        // activated a Farm Rearranger
+        if (e.Button.IsActionButton() && !this.IsArranging.Value)
         {
-            if (Game1.currentLocation.Name == "Farm" || this.Config.CanArrangeOutsideFarm)
-                this.StartRearranging();
-            else
-                Game1.activeClickableMenu = new DialogueBox(I18n.CantBuildOffFarm());
+            bool hasCursor = Constants.TargetPlatform != GamePlatform.Android && Game1.wasMouseVisibleThisFrame; // note: only reliable when a menu isn't open
+            Vector2 tile = hasCursor
+                ? this.Helper.Input.GetCursorPosition().Tile
+                : this.GetFacingTile(Game1.player);
+
+            if (Game1.currentLocation.Objects.GetValueOrDefault(tile) is { QualifiedItemId: FarmRearrangeQualifiedId })
+            {
+                GameLocation? location = this.GetTargetLocation(Game1.currentLocation);
+
+                if (location != null)
+                    this.StartRearranging(location);
+                else
+                    Game1.activeClickableMenu = new DialogueBox(I18n.NoBuildingsToMove());
+            }
         }
     }
 
@@ -190,7 +192,8 @@ internal class ModEntry : Mod
     }
 
     /// <summary>Switch the game to the move-building UI.</summary>
-    private void StartRearranging()
+    /// <param name="targetLocation">The location whose buildings to manage.</param>
+    private void StartRearranging(GameLocation targetLocation)
     {
         //our boolean to keep track that we are currently in a Farm rearranger menu
         //so we don't mess with any other vanilla warps to robin's house
@@ -198,7 +201,8 @@ internal class ModEntry : Mod
 
         //open the carpenter menu then do everything that is normally done
         //when the move buildings option is clicked
-        CarpenterMenu menu = new(Game1.builder_robin);
+        CarpenterMenu menu = new(Game1.builder_robin, targetLocation);
+
         Game1.activeClickableMenu = menu;
         Game1.globalFadeToBlack(menu.setUpForBuildingPlacement);
         Game1.playSound("smallSelect");
@@ -241,5 +245,18 @@ internal class ModEntry : Mod
             Game1.left => tile + new Vector2(-1, 0),
             _ => tile + new Vector2(0, 1)
         };
+    }
+
+    /// <summary>Get the location whose buildings can be moved by a Farm Rearranger in a given location.</summary>
+    /// <param name="currentLocation">The location containing the Farm Rearranger.</param>
+    private GameLocation? GetTargetLocation(GameLocation currentLocation)
+    {
+        for (GameLocation location = currentLocation; location != null; location = location.GetParentLocation())
+        {
+            if (location.buildings.Count > 0 && location.IsActiveLocation())
+                return location;
+        }
+
+        return null;
     }
 }

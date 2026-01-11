@@ -14,12 +14,6 @@ internal class GenericModConfigMenuIntegrationForFarmRearranger : IGenericModCon
     {
         menu
             .Register()
-            .AddCheckbox(
-                name: I18n.Config_CanArrangeOutsideFarm_Name,
-                tooltip: I18n.Config_CanArrangeOutsideFarm_Desc,
-                get: config => config.CanArrangeOutsideFarm,
-                set: (config, value) => config.CanArrangeOutsideFarm = value
-            )
             .AddNumberField(
                 name: I18n.Config_Price_Name,
                 tooltip: I18n.Config_Price_Desc,
