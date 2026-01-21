@@ -22,6 +22,27 @@ internal class GenericModConfigMenuIntegrationForChangeSlimeHutchLimit : IGeneri
                 min: 20,
                 max: null,
                 interval: 5
+            )
+
+            .AddSectionTitle(
+                text: () => "Slime Ball Settings"
+            )
+            
+            .AddCheckbox(
+                name: () => "Enable Slime Ball Override",
+                tooltip: () => "Enable or disable the override for slime ball placement.",
+                get: config => config.EnableSlimeBallOverride,
+                set: (config, value) => config.EnableSlimeBallOverride = value
+            )
+
+            .AddNumberField(
+                name: () => "Max Daily Slime Balls",
+                tooltip: () => "Set the maximum number of slime balls that can spawn daily (set to 0 for unlimited).",
+                get: config => config.MaxDailySlimeBalls,
+                set: (config, value) => config.MaxDailySlimeBalls = (int)value,
+                min: 0,
+                max: 100,
+                interval: 5
             );
     }
 }
