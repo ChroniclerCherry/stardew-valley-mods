@@ -178,7 +178,7 @@ namespace UpgradeEmptyCabins.Framework
 
             summary
                 .AppendLine()
-                .AppendLine("You can use the cabin number in other commands, like `remove_seed_box 1` to remove it from the first cabin above.");
+                .AppendLine("You can use the cabin number in other commands, like `renovate_cabin 1` to remove it from the first cabin above.");
 
             this.Monitor.Log(summary.ToString(), LogLevel.Info);
         }

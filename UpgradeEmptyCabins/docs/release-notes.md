@@ -1,4 +1,7 @@
 ﻿# Release notes
+## Upcoming release
+- Fixed `list_cabins` still mentioning the deleted `remove_seed_box` command.
+
 ## 1.3.0
 Released 07 September 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
 
