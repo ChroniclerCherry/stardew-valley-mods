@@ -1,5 +1,3 @@
-#nullable disable
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +18,7 @@ internal static class GamePatcher
     ** Fields
     *********/
     /// <summary>Encapsulates monitoring and logging.</summary>
-    private static IMonitor Monitor;
+    private static IMonitor Monitor = null!; // set in Apply
 
 
     /*********
@@ -45,12 +43,12 @@ internal static class GamePatcher
     /*********
     ** Private methods
     *********/
-    private static void After_ShopBuilder_GetShopStock(string shopId, ref Dictionary<ISalable, ItemStockInformation> __result)
+    private static void After_ShopBuilder_GetShopStock(string? shopId, ref Dictionary<ISalable, ItemStockInformation> __result)
     {
         try
         {
             // get STF shop ID
-            string internalShopId = shopId switch
+            string? internalShopId = shopId switch
             {
                 Game1.shop_adventurersGuild => "MarlonShop",
                 Game1.shop_animalSupplies => "MarnieShop",
@@ -85,7 +83,7 @@ internal static class GamePatcher
     {
         ModEntry.JustOpenedVanilla = true;
 
-        if (!ShopManager.VanillaShops.TryGetValue(shopName, out VanillaShop shop))
+        if (!ShopManager.VanillaShops.TryGetValue(shopName, out VanillaShop? shop))
             return;
 
         var customStock = shop.ItemPriceAndStock;

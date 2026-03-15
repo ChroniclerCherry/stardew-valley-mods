@@ -1,5 +1,3 @@
-#nullable disable
-
 using System.Collections.Generic;
 using ShopTileFramework.Framework.Shop;
 using ShopTileFramework.Framework.Utility;
@@ -26,7 +24,7 @@ internal class ItemPriceAndStockManager
     /*********
     ** Accessors
     *********/
-    public Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock { get; set; }
+    public Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock { get; set; } = [];
 
 
     /*********

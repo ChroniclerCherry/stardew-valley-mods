@@ -1,5 +1,3 @@
-#nullable disable
-
 using System;
 using System.Collections.Generic;
 using ShopTileFramework.Framework.Utility;
@@ -18,7 +16,7 @@ internal class ItemBuilder
     /*********
     ** Fields
     *********/
-    private Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock;
+    private Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock = [];
     private readonly ItemStock ItemStock;
 
 
@@ -60,10 +58,6 @@ internal class ItemBuilder
         }
 
         Item item = this.CreateItem(itemId);
-        if (item == null)
-        {
-            return false;
-        }
 
         if (this.ItemStock.IsRecipe)
         {

@@ -2,6 +2,7 @@
 
 # Release notes
 ## Upcoming release
+- Internal changes to simplify maintenance.
 - Fixed typos in some text.
 
 ## 1.0.12

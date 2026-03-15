@@ -1,5 +1,3 @@
-#nullable disable
-
 using StardewModdingAPI;
 
 namespace ShopTileFramework.Framework.Apis;
@@ -13,8 +11,8 @@ internal class ApiManager
     /*********
     ** Accessors
     *********/
-    public static IJsonAssetsApi JsonAssets { get; private set; }
-    public static IConditionsApi Conditions { get; private set; }
+    public static IJsonAssetsApi? JsonAssets { get; private set; }
+    public static IConditionsApi? Conditions { get; private set; }
 
 
     /*********
