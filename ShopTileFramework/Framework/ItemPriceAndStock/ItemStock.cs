@@ -11,7 +11,7 @@ using StardewValley;
 namespace ShopTileFramework.Framework.ItemPriceAndStock;
 
 /// <summary>
-/// This class stores the data for each stock, with a stock being a list of items of the same itemtype
+/// This class stores the data for each stock, with a stock being a list of items of the same item type
 /// and sharing the same store parameters such as price
 /// </summary>
 internal class ItemStock : ItemStockModel
@@ -79,7 +79,7 @@ internal class ItemStock : ItemStockModel
         if (this.When != null && !ApiManager.Conditions.CheckConditions(this.When))
             return null; //did not pass conditions
 
-        if (!ItemsUtil.CheckItemType(this.ItemType)) //check that itemtype is valid
+        if (!ItemsUtil.CheckItemType(this.ItemType)) //check that item type is valid
         {
             ModEntry.StaticMonitor.Log($"\t\"{this.ItemType}\" is not a valid ItemType. No items from this stock will be added."
                 , LogLevel.Warn);
@@ -89,14 +89,14 @@ internal class ItemStock : ItemStockModel
         this.ItemPriceAndStock = [];
         this.Builder.SetItemPriceAndStock(this.ItemPriceAndStock);
 
-        double pricemultiplier = 1;
+        double priceMultiplier = 1;
         if (this.PriceMultiplierWhen != null)
         {
             foreach (KeyValuePair<double, string[]> kvp in this.PriceMultiplierWhen)
             {
                 if (ApiManager.Conditions.CheckConditions(kvp.Value))
                 {
-                    pricemultiplier = kvp.Key;
+                    priceMultiplier = kvp.Key;
                     break;
                 }
             }
@@ -104,20 +104,20 @@ internal class ItemStock : ItemStockModel
 
         if (this.ItemType != "Seed")
         {
-            this.AddById(pricemultiplier);
-            this.AddByName(pricemultiplier);
+            this.AddById(priceMultiplier);
+            this.AddByName(priceMultiplier);
         }
         else
         {
             if (this.ItemIds != null)
                 ModEntry.StaticMonitor.Log(
-                    "ItemType of \"Seed\" is a special itemtype used for parsing Seeds from JA Pack crops and trees and does not support input via ID. If adding seeds via ID, please use the ItemType \"Object\" instead to directly sell the seeds/saplings");
+                    "ItemType of \"Seed\" is a special item type used for parsing Seeds from JA Pack crops and trees and does not support input via ID. If adding seeds via ID, please use the ItemType \"Object\" instead to directly sell the seeds/saplings");
             if (this.ItemNames != null)
                 ModEntry.StaticMonitor.Log(
-                    "ItemType of \"Seed\" is a special itemtype used for parsing Seeds from JA Pack crops and trees and does not support input via Name. If adding seeds via Name, please use the ItemType \"Object\" instead to directly sell the seeds/saplings");
+                    "ItemType of \"Seed\" is a special item type used for parsing Seeds from JA Pack crops and trees and does not support input via Name. If adding seeds via Name, please use the ItemType \"Object\" instead to directly sell the seeds/saplings");
         }
 
-        this.AddByJaPack(pricemultiplier);
+        this.AddByJaPack(priceMultiplier);
 
         ItemsUtil.RandomizeStock(this.ItemPriceAndStock, this.MaxNumItemsSoldInItemStock);
         return this.ItemPriceAndStock;
@@ -130,35 +130,35 @@ internal class ItemStock : ItemStockModel
     /// <summary>
     /// Add all items listed in the ItemIDs section
     /// </summary>
-    private void AddById(double pricemultiplier)
+    private void AddById(double priceMultiplier)
     {
         if (this.ItemIds == null)
             return;
 
         foreach (string itemId in this.ItemIds)
         {
-            this.Builder.AddItemToStock(itemId, pricemultiplier);
+            this.Builder.AddItemToStock(itemId, priceMultiplier);
         }
     }
 
     /// <summary>
     /// Add all items listed in the ItemNames section
     /// </summary>
-    private void AddByName(double pricemultiplier)
+    private void AddByName(double priceMultiplier)
     {
         if (this.ItemNames == null)
             return;
 
         foreach (string itemName in this.ItemNames)
         {
-            this.Builder.AddItemToStock(itemName, pricemultiplier);
+            this.Builder.AddItemToStock(itemName, priceMultiplier);
         }
     }
 
     /// <summary>
     /// Add all items from the JA Packs listed in the JAPacks section
     /// </summary>
-    private void AddByJaPack(double pricemultiplier)
+    private void AddByJaPack(double priceMultiplier)
     {
         if (this.JaPacks == null)
             return;
@@ -183,7 +183,7 @@ internal class ItemStock : ItemStockModel
                         if (this.ExcludeFromJaPacks != null && this.ExcludeFromJaPacks.Contains(crop)) continue;
                         string id = ItemsUtil.GetSeedId(crop);
                         if (id is not null)
-                            this.Builder.AddItemToStock(id, pricemultiplier);
+                            this.Builder.AddItemToStock(id, priceMultiplier);
                     }
                 }
 
@@ -194,7 +194,7 @@ internal class ItemStock : ItemStockModel
                         if (this.ExcludeFromJaPacks != null && this.ExcludeFromJaPacks.Contains(tree)) continue;
                         string id = ItemsUtil.GetSaplingId(tree);
                         if (id is not null)
-                            this.Builder.AddItemToStock(id, pricemultiplier);
+                            this.Builder.AddItemToStock(id, priceMultiplier);
                     }
                 }
 
@@ -211,13 +211,13 @@ internal class ItemStock : ItemStockModel
             foreach (string itemName in packs)
             {
                 if (this.ExcludeFromJaPacks != null && this.ExcludeFromJaPacks.Contains(itemName)) continue;
-                this.Builder.AddItemToStock(itemName, pricemultiplier);
+                this.Builder.AddItemToStock(itemName, priceMultiplier);
             }
         }
     }
 
     /// <summary>
-    /// Depending on the itemtype, returns a list of the names of all items of that type in a JA pack
+    /// Depending on the item type, returns a list of the names of all items of that type in a JA pack
     /// </summary>
     /// <param name="jaPack">Unique ID of the pack</param>
     /// <returns>A list of all the names of the items of the right item type in that pack</returns>

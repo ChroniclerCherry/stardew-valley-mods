@@ -45,7 +45,7 @@ internal class ConditionChecker
     *********/
     /// <summary>
     /// Each string in the array can have multiple conditions separated by the character '/'
-    /// and each string is evaluated as true if all of the conditions are met
+    /// and each string is evaluated as true if all the conditions are met
     /// The method returns true if any of the strings are true
     /// </summary>
     /// <returns>true if all conditions matches, otherwise false</returns>
@@ -256,12 +256,12 @@ internal class ConditionChecker
     /// <summary>
     /// Checks that a given NPC is at the tile indexes
     /// </summary>
-    /// <param name="conditionParams">The condition string split by spaces, with the first parameter being the NPC 
+    /// <param name="conditionParams">The condition string split by spaces, with the first parameter being the NPC
     /// name and every two after that is the X and Y coordinates</param>
     /// <returns>true if the npc was found at the given tile, false if not</returns>
     private bool CheckNpcAt(string[] conditionParams)
     {
-        //the second parameter at index 1 is the name of an npc
+        //the second parameter at index 1 is the name of an NPC
         NPC npc = Game1.getCharacterFromName(conditionParams[1]);
 
         //after that the expected parameter are sets of x y coordinates
@@ -278,7 +278,7 @@ internal class ConditionChecker
     /// Returns true if Joja route was completed
     /// Borrowed code from Content Patcher
     /// </summary>
-    /// <returns>true if jojamart is complete, false if not</returns>
+    /// <returns>true if JojaMart is complete, false if not</returns>
     private bool CheckJojaMartComplete()
     {
         //I pretty much c&p'd this straight from CP, thanks Pathos
@@ -315,7 +315,7 @@ internal class ConditionChecker
     /// <returns>Return true if the player has at least the level given for every skill, otherwise returns false</returns>
     private bool CheckSkillLevel(string[] conditionParams)
     {
-        //each paramater is a pair of skill name and its level
+        //each parameter is a pair of skill name and its level
         for (int i = 1; i < conditionParams.Length; i += 2)
         {
             switch (conditionParams[i])

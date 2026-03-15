@@ -1,5 +1,3 @@
-#nullable disable
-
 using System;
 using System.Collections.Generic;
 using ShopTileFramework.Framework.Utility;
@@ -10,7 +8,7 @@ using Object = StardewValley.Object;
 namespace ShopTileFramework.Framework.ItemPriceAndStock;
 
 /// <summary>
-/// This class stores the global data for each itemstock, in order to generate and add items by ID or name
+/// This class stores the global data for each item stock, in order to generate and add items by ID or name
 /// to the stock
 /// </summary>
 internal class ItemBuilder
@@ -18,7 +16,7 @@ internal class ItemBuilder
     /*********
     ** Fields
     *********/
-    private Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock;
+    private Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock = [];
     private readonly ItemStock ItemStock;
 
 
@@ -54,16 +52,12 @@ internal class ItemBuilder
         if (ModEntry.VerboseLogging)
             ModEntry.StaticMonitor.Log($"Adding item ID {itemId} to {this.ItemStock.ShopName}", LogLevel.Debug);
 
-        if (this.ItemStock.ItemType == "Seed" && this.ItemStock.FilterSeedsBySeason)
+        if (this.ItemStock is { ItemType: "Seed", FilterSeedsBySeason: true })
         {
             if (!ItemsUtil.IsInSeasonCrop(itemId)) return false;
         }
 
         Item item = this.CreateItem(itemId);
-        if (item == null)
-        {
-            return false;
-        }
 
         if (this.ItemStock.IsRecipe)
         {

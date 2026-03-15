@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace ChroniclerCherry.Common;
 
 /// <summary>The common reason messages when suppressing static code analysis warnings.</summary>

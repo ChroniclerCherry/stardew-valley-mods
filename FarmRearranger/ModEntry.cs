@@ -196,7 +196,7 @@ internal class ModEntry : Mod
     private void StartRearranging(GameLocation targetLocation)
     {
         //our boolean to keep track that we are currently in a Farm rearranger menu
-        //so we don't mess with any other vanilla warps to robin's house
+        //so we don't mess with any other vanilla warps to Robin's house
         this.IsArranging.Value = true;
 
         //open the carpenter menu then do everything that is normally done

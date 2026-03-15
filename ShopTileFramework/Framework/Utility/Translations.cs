@@ -1,5 +1,3 @@
-#nullable disable
-
 using System.Collections.Generic;
 using StardewValley;
 
@@ -27,7 +25,7 @@ internal class Translations
     /// <param name="english">the english string</param>
     /// <param name="translations">each key is a language code with the value being the translated string</param>
     /// <returns>The string of the current language if available, english as a default</returns>
-    public static string Localize(string english, Dictionary<string, string> translations)
+    public static string Localize(string english, Dictionary<string, string>? translations)
     {
         if (SelectedLanguage == LocalizedContentManager.LanguageCode.en)
             return english;

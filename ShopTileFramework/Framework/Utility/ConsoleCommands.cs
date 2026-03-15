@@ -35,7 +35,7 @@ internal class ConsoleCommands
         );
 
         helper.ConsoleCommands.Add("reset_shop",
-            "Resets the stock of specified shop. Rechecks conditions and randomizations\n\n" +
+            "Resets the stock of specified shop. Rechecks conditions and randomization\n\n" +
             "Usage: reset_shop <ShopName>\n" +
             "-ShopName: the name of the shop to reset",
             this.ResetShopStock

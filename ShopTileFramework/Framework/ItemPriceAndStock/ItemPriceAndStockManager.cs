@@ -1,5 +1,3 @@
-#nullable disable
-
 using System.Collections.Generic;
 using ShopTileFramework.Framework.Shop;
 using ShopTileFramework.Framework.Utility;
@@ -26,14 +24,14 @@ internal class ItemPriceAndStockManager
     /*********
     ** Accessors
     *********/
-    public Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock { get; set; }
+    public Dictionary<ISalable, ItemStockInformation> ItemPriceAndStock { get; set; } = [];
 
 
     /*********
     ** Public methods
     *********/
     /// <summary>
-    /// Initializes the manager with the itemstocks, and how many items max this shop will contain
+    /// Initializes the manager with the item stocks, and how many items max this shop will contain
     /// </summary>
     /// <param name="data"></param>
     public ItemPriceAndStockManager(ItemShop data)

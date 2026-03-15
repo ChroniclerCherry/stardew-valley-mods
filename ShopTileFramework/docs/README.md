@@ -28,7 +28,7 @@ Shop Tile Framework (STF) is a tool for Modders of the game Stardew Valley, whic
 
 STF lets you fully customize what items are sold and how many, under what conditions etc, as well the currency used in the store: money, casino coins, festival score, and even items just like the vanilla desert trader.
 
-STF also allows you to create customized animal shops, with support for custom animals added through Better Farm Animal Varioety (BFAV) 
+STF also allows you to create customized animal shops, with support for custom animals added through Better Farm Animal Varioety (BFAV)
 
 Shops can be opened with a custom tile property of "Shop" or "AnimalShop" and a value of the ShopName defined in `shops.json`
 
@@ -109,7 +109,7 @@ ItemType | Source | Notes
 ------------ | ------------- | -------------
 "Object" | [`data/ObjectInformation.json`](https://stardewvalleywiki.com/Modding:Object_data) | Contains most objects in the game not covered by the other categories. Note: Rings will be created without errors using the Object category. however this creates an Object version of the rings and it will not be wearable.
 "Ring" | [`data/ObjectInformation.json`](https://stardewvalleywiki.com/Modding:Object_data) | While sharing the same data file as most objects, it requires a unique constructor and thus is separate
-"BigCraftable" | [`data/BigCraftablesInformation.json`](https://stardewvalleywiki.com/Modding:Big_Craftables_data) | 
+"BigCraftable" | [`data/BigCraftablesInformation.json`](https://stardewvalleywiki.com/Modding:Big_Craftables_data) |
 "Clothing" | `data/ClothingInformation.json` | This contains all shirts and pants
 "Hat" | [`data/hats.json`](https://stardewvalleywiki.com/Modding:Hat_data) |
 "Boot" | `data/Boots.json` |
@@ -160,27 +160,25 @@ You can check the opposite of any condition by putting a `!` in front of it. For
 When multiple fields are provided, the condition will work if _any_ of the strings return a true. Here's an example of a shop that has different opening hours based on season:
 ```js
 {
-  "Shops": [
-    {
-      "ShopName": "MyShop",
-      "ItemStocks": [
+    "Shops": [
         {
-          "ItemType": "Object",
-          "ItemNames": [
-            "Parsnip"
-          ]
+            "ShopName": "MyShop",
+            "ItemStocks": [
+                {
+                    "ItemType": "Object",
+                    "ItemNames": [
+                        "Parsnip"
+                    ]
+                }
+            ],
+            "When": [
+                "!z spring/t 600 1000",         // open if it's `During Spring` AND `The time is between 6AM to 10AM`
+                "f Linus 1000/w rainy/z spring" // OR opens if `Player has at least 1000 friendship points with Linus' AND 'It is rainy` AND `It's not Spring`,
+                "f Linus 2500"                  // OR opens if `Player has at least 2500 friendship points with Linus`
+            ],
+            "ClosedMessage": "This shop is closed."
         }
-      ],
-      "When": [
-        "!z spring/t 600 1000", //open if it's `During Spring` AND `The time is between 6AM to 10AM`
-        //OR
-        "f Linus 1000/w rainy/z spring" //opens if `Player has at least 1000 friendship points with Linus' AND 'It is rainy` AND `It's not Spring`,
-        //OR
-        "f Linus 2500" //opens if `Player has at least 2500 friendship points with Linus`
-      ],
-      "ClosedMessage": "This shop is closed."
-    }
-  ]
+    ]
 }
 ```
 #### Available Conditions
@@ -232,78 +230,78 @@ The below example still works but is outdated in that it's missing newer feature
 Example shops.json:
 ```js
 {
-  "Shops": [
-    {
-      "ShopName": "MyShop",
-      "StoreCurrency": "festivalScore", //uses festival score as the currency for the whole shop
-      "CategoriesToSellHere": [ //player can sell Forage and Vegetables to this store
-        -81, 
-        -75
-      ],
-      "PortraitPath": "assets/Portrait.png",
-      "Quote": "This is a store!", 
-      "ShopPrice": 80,
-      "MaxNumItemsSoldInStore": 30, //if all items total over 30, a random 30 will be picked each day
-      "ItemStocks": [
+    "Shops": [
         {
-          "ItemType": "Clothing",
-          "StockItemCurrency": "Parsnip", //This Itemstock charges Parsnips
-          "StockCurrencyStack": 5, //and it takes 5 parsnips each time
-          "StockPrice": 0, //This ItemStock doesn't charge any currency (festival score for this shop)
-          "JAPacks": [
-            "missy.shirtsja"
-          ],
-          "Stock": 4,
-          "MaxNumItemsSoldInItemStock": 5, //if there's more than 5 items total in this Item stock, a random 5 will be picked each day
-          "When": [ 
-            "f Haley 1500/z winter", //only sell this ItemStock if the player has 1500 friendship points/6 hearts and it's not winter
-            "f Emily 1500/z spring/z summer/z fall", //or if you have 1500 friendship points with Emily during the winter
-          ]
-        },
-        {
-          "ItemType": "Clothing",
-          "StockPrice": 500,
-          "ItemIDs": [
-            5,
-            10,
-            1015
-          ],
-          "ItemNames": [
-            "Prismatic Shirt",
-            "Prismatic Pants"
-          ],
-          "Stock": 4,
-          "MaxNumItemsSoldInItemStock": 5
+            "ShopName": "MyShop",
+            "StoreCurrency": "festivalScore", //uses festival score as the currency for the whole shop
+            "CategoriesToSellHere": [ //player can sell Forage and Vegetables to this store
+                -81,
+                -75
+            ],
+            "PortraitPath": "assets/Portrait.png",
+            "Quote": "This is a store!",
+            "ShopPrice": 80,
+            "MaxNumItemsSoldInStore": 30, //if all items total over 30, a random 30 will be picked each day
+            "ItemStocks": [
+                {
+                    "ItemType": "Clothing",
+                    "StockItemCurrency": "Parsnip", //This Itemstock charges Parsnips
+                    "StockCurrencyStack": 5, //and it takes 5 parsnips each time
+                    "StockPrice": 0, //This ItemStock doesn't charge any currency (festival score for this shop)
+                    "JAPacks": [
+                        "missy.shirtsja"
+                    ],
+                    "Stock": 4,
+                    "MaxNumItemsSoldInItemStock": 5, //if there's more than 5 items total in this Item stock, a random 5 will be picked each day
+                    "When": [
+                        "f Haley 1500/z winter", //only sell this ItemStock if the player has 1500 friendship points/6 hearts and it's not winter
+                        "f Emily 1500/z spring/z summer/z fall", //or if you have 1500 friendship points with Emily during the winter
+                    ]
+                },
+                {
+                    "ItemType": "Clothing",
+                    "StockPrice": 500,
+                    "ItemIDs": [
+                        5,
+                        10,
+                        1015
+                    ],
+                    "ItemNames": [
+                        "Prismatic Shirt",
+                        "Prismatic Pants"
+                    ],
+                    "Stock": 4,
+                    "MaxNumItemsSoldInItemStock": 5
+                }
+            ],
+            "When": [
+                "t 800 1800" // only open the store from 8AM to 6PM
+            ],
+            "ClosedMessage": "This store is open daily from 8AM to 6PM" //the message displayed if the store is closed
         }
-      ],
-      "When": [ //only open the store from 8AM to 6PM
-        "t 800 1800"
-      ],
-      "ClosedMessage": "This store is open daily from 8AM to 6PM" //the message displayed if the store is closed
-    }
-  ],
-"AnimalShops":[
-{
-	"ShopName":"MyAnimalShop",
-	"AnimalStock":["Chicken","Fennec Fox","Phoenix","Raccoon", "Quail", "Warthog"],
-	"ExcludeFromMarnies":["Chicken","Fennec Fox","Phoenix","Raccoon", "Quail", "Warthog"] //don't sell these animals at Marnie's anymore
-	},
-  ],
+    ],
+    "AnimalShops":[
+        {
+            "ShopName":"MyAnimalShop",
+            "AnimalStock":["Chicken","Fennec Fox","Phoenix","Raccoon", "Quail", "Warthog"],
+            "ExcludeFromMarnies":["Chicken","Fennec Fox","Phoenix","Raccoon", "Quail", "Warthog"] //don't sell these animals at Marnie's anymore
+        }
+    ]
 }
 ```
 
 And the manifest:
 ```json
 {
-  "Name": "A store mod",
-  "Author": "your name",
-  "Version": "%ProjectVersion%",
-  "Description": "One or two sentences about the mod.",
-  "UniqueID": "YourName.YourProjectName",
-  "UpdateKeys": [],
-  "ContentPackFor": {
-    "UniqueID": "Cherry.ShopTileFramework"
-  }
+    "Name": "A store mod",
+    "Author": "your name",
+    "Version": "%ProjectVersion%",
+    "Description": "One or two sentences about the mod.",
+    "UniqueID": "YourName.YourProjectName",
+    "UpdateKeys": [],
+    "ContentPackFor": {
+        "UniqueID": "Cherry.ShopTileFramework"
+    }
 }
 ```
 

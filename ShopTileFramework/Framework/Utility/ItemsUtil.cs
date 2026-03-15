@@ -34,7 +34,7 @@ internal static class ItemsUtil
     ** Public methods
     *********/
     /// <summary>
-    /// Loads up the onject information for all types, 
+    /// Loads up the object information for all types,
     /// done at the start of each save loaded so that JA info is up to date
     /// </summary>
     public static void UpdateObjectInfoSource()
@@ -117,9 +117,9 @@ internal static class ItemsUtil
     }
 
     /// <summary>
-    /// Checks if an itemtype is valid
+    /// Checks if an item type is valid
     /// </summary>
-    /// <param name="itemType">The name of the itemtype</param>
+    /// <param name="itemType">The name of the item type</param>
     /// <returns>True if it's a valid type, false if not</returns>
     public static bool CheckItemType(string itemType)
     {

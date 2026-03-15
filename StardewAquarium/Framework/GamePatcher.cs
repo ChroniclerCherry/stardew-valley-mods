@@ -87,7 +87,7 @@ internal class GamePatcher
                 return; // this shouldn't happen but /shrug
 
             if (!Utils.DonateFish(donatedFish))
-                return; // this also shouldnt happen
+                return; // this also shouldn't happen
 
             DonateFishMenuAndroid.Donated = true;
             Game1.player.removeItemFromInventory(donatedFish);

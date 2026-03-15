@@ -25,15 +25,15 @@ The stations themselves are specified in a `content.json` in the following forma
 
 ```js
 {
-	"CraftingStations": [
-	{
-		"BigCraftable": "BigCraftableName",
-		"TileData": "StationName",
-		"ExclusiveRecipes": true,
-		"CraftingRecipes": ["recipe1","recipe2"],
-		"CookingRecipes": ["recipe1","recipe2"]
-	},
-	]
+    "CraftingStations": [
+        {
+            "BigCraftable": "BigCraftableName",
+            "TileData": "StationName",
+            "ExclusiveRecipes": true,
+            "CraftingRecipes": ["recipe1","recipe2"],
+            "CookingRecipes": ["recipe1","recipe2"]
+        }
+    ]
 }
 ```
 

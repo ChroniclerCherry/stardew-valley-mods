@@ -1,5 +1,3 @@
-#nullable disable
-
 using Microsoft.Xna.Framework;
 using StardewValley;
 using StardewValley.Menus;
@@ -19,11 +17,11 @@ internal class TileUtility
     /// <summary>
     /// Returns the tile property found at the given parameters
     /// </summary>
-    /// <param name="map">an instance of the the map location</param>
+    /// <param name="map">an instance of the map location</param>
     /// <param name="layer">the name of the layer</param>
     /// <param name="tile">the coordinates of the tile</param>
     /// <returns>The tile property if there is one, null if there isn't</returns>
-    public static IPropertyCollection GetTileProperty(GameLocation map, string layer, Vector2 tile)
+    public static IPropertyCollection? GetTileProperty(GameLocation? map, string layer, Vector2 tile)
     {
         if (map == null)
             return null;

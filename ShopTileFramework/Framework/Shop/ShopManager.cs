@@ -86,7 +86,7 @@ internal class ShopManager
     }
 
     /// <summary>
-    /// Update all trans;ations for each shop when a save file is loaded
+    /// Update all translations for each shop when a save file is loaded
     /// </summary>
     public static void UpdateTranslations()
     {
@@ -129,7 +129,7 @@ internal class ShopManager
     }
 
     /// <summary>
-    /// Updates the stock for all itemshops at the start of each day
+    /// Updates the stock for all item shops at the start of each day
     /// and updates their portraits too to match the current season
     /// </summary>
     internal static void UpdateStock()
