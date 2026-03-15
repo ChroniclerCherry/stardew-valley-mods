@@ -52,7 +52,7 @@ internal class ItemBuilder
         if (ModEntry.VerboseLogging)
             ModEntry.StaticMonitor.Log($"Adding item ID {itemId} to {this.ItemStock.ShopName}", LogLevel.Debug);
 
-        if (this.ItemStock.ItemType == "Seed" && this.ItemStock.FilterSeedsBySeason)
+        if (this.ItemStock is { ItemType: "Seed", FilterSeedsBySeason: true })
         {
             if (!ItemsUtil.IsInSeasonCrop(itemId)) return false;
         }
