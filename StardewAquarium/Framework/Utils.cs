@@ -34,7 +34,7 @@ internal static class Utils
     ** Accessors
     *********/
     /// <summary>
-    /// Maps the InternalName of the fish to its internalname without spaces, eg. Rainbow Trout to RainbowTrout
+    /// Maps the InternalName of the fish to its internal name without spaces, e.g. Rainbow Trout to RainbowTrout
     /// </summary>
     public static Dictionary<string, string> InternalNameToDonationName { get; } = [];
 

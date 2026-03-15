@@ -31,9 +31,9 @@ internal class DonateFishMenuAndroid : ShopMenu
         Donated = PufferchickDonated = false;
 
         /*
-         *why do i have a whole custom class for something that gets immediately replaced by a vanilla one by smapi? bc screw u
-         * ( initial concept was to keep harmony targeting and menu detection clean without using an NPC name but like, idk anymore lmao )
-         * I'll come back and readdress this someday probably, when I have more sanity to spend. I'm all out atm
+         * Why do I have a whole custom class for something that gets immediately replaced by a vanilla one by SMAPI? bc screw u.
+         * (The initial concept was to keep harmony targeting and menu detection clean without using an NPC name but like, I don't know anymore lmao.)
+         * I'll come back and readdress this someday probably, when I have more sanity to spend. I'm all out atm.
         */
 
         List<string> fishes = Utils.GetUndonatedFishInInventory().Distinct().ToList();

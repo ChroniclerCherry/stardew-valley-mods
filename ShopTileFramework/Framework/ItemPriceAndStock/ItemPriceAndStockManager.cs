@@ -33,7 +33,7 @@ internal class ItemPriceAndStockManager
     ** Public methods
     *********/
     /// <summary>
-    /// Initializes the manager with the itemstocks, and how many items max this shop will contain
+    /// Initializes the manager with the item stocks, and how many items max this shop will contain
     /// </summary>
     /// <param name="data"></param>
     public ItemPriceAndStockManager(ItemShop data)

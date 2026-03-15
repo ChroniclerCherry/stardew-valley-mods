@@ -171,7 +171,7 @@ internal sealed class ModEntry : Mod
         if (Game1.isTimePaused) return;
 
         // very rarely show dolphin
-        //This is derived from East Scarpe's sea monster code.
+        //This is derived from East Scarp's sea monster code.
         if (Game1.eventUp || !Game1.random.NextBool(this.DolphinChance.Value))
             return;
 
@@ -205,10 +205,10 @@ internal sealed class ModEntry : Mod
 
     private void AndroidPlsHaveMercyOnMe(object? sender, MenuChangedEventArgs e)
     {
-        //don't ask me what the heck is going on here but its the only way to get it to work
+        // don't ask me what the heck is going on here, but it's the only way to get it to work
         if (e.OldMenu is not DonateFishMenuAndroid androidMenu)
             return;
-        //80% sure this is a DonateFishMenuAndroid but it won't work if i check for that but the harmony patch seems to work on it so idk
+        // 80% sure this is a DonateFishMenuAndroid; it won't work if I check for that, but the harmony patch seems to work on it, so I don't know.
         if (e.NewMenu is not ShopMenu menu)
             return;
 

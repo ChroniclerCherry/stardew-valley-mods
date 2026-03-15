@@ -1,6 +1,9 @@
 ﻿[← back to readme](README.md)
 
 # Release notes
+## Upcoming release
+- Fixed typos in some text.
+
 ## 1.0.12
 Released 07 September 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
 

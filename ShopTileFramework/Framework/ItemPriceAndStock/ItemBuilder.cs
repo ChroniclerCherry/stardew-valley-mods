@@ -10,7 +10,7 @@ using Object = StardewValley.Object;
 namespace ShopTileFramework.Framework.ItemPriceAndStock;
 
 /// <summary>
-/// This class stores the global data for each itemstock, in order to generate and add items by ID or name
+/// This class stores the global data for each item stock, in order to generate and add items by ID or name
 /// to the stock
 /// </summary>
 internal class ItemBuilder

@@ -66,7 +66,7 @@ internal class AnimalShop : AnimalShopModel
     /// </summary>
     private void UpdateShopAnimalStock()
     {
-        //BFAV patches this anyways so it'll automatically work if installed
+        // BFAV patches this anyway, so it'll automatically work if installed
         this.AllAnimalsStock = StardewValley.Utility.getPurchaseAnimalStock(Game1.getFarm());
 
         this.ShopAnimalStock = [];

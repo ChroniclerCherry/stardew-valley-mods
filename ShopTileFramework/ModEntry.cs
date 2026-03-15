@@ -133,8 +133,8 @@ internal class ModEntry : Mod
             Game1.activeClickableMenu = new PurchaseAnimalsMenu(newAnimalStock);
         }
 
-        //idk why some menus have a habit of warping the player a tile to the left ocassionally
-        //so im just gonna warp them back to their original location eh
+        // I don't know why some menus have a habit of warping the player a tile to the left occasionally,
+        // so let's just warp them back to their original location.
         if (e.NewMenu == null && PlayerPos != Vector2.Zero)
         {
             Game1.player.position.Set(PlayerPos);
@@ -169,7 +169,7 @@ internal class ModEntry : Mod
 
     private void OnJsonAssetsAddedItemsToShop(object sender, EventArgs e)
     {
-        //make sure we only remove all objects if we camew from a vanilla store
+        //make sure we only remove all objects if we came from a vanilla store
         //this stops us from removing all packs from custom TMXL or STF stores
         if (!JustOpenedVanilla)
             return;
@@ -201,7 +201,8 @@ internal class ModEntry : Mod
         //and lets me return them to their original location
         SourceLocation = null;
         PlayerPos = Vector2.Zero;
-        //checks if i've changed marnie's stock already after opening her menu
+
+        // checks if Marnie's stock was already changed after opening her menu
         this.ChangedMarnieStock = false;
 
         if (Constants.TargetPlatform == GamePlatform.Android)
@@ -242,7 +243,7 @@ internal class ModEntry : Mod
             this.Monitor.Log($"Shop Property value is: {shopProperty}");
         if (shopProperty != null) //There was a `Shop` property so attempt to open shop
         {
-            //check if the property is for a vanilla shop, and gets the shopmenu for that shop if it exists
+            //check if the property is for a vanilla shop, and gets the shop menu for that shop if it exists
             if (TileUtility.TryOpenVanillaShop(shopProperty, out bool warpingShop))
             {
                 if (warpingShop)
