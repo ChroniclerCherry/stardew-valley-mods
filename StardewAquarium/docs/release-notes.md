@@ -1,4 +1,7 @@
 ﻿# Release notes
+## Upcoming release
+- Fixed museum exterior not having beach fish as intended.
+
 ## 2.3.1
 Released 07 September 2025 for SMAPI 4.1.10 or later. Updated by Pathoschild.
 

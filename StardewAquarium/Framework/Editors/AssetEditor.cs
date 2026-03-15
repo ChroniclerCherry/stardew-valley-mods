@@ -86,11 +86,11 @@ internal static class AssetEditor
                 museumData.FishAreas ??= [];
                 foreach ((string key, FishAreaData? fishArea) in beachData.FishAreas)
                 {
-                    if (beachData is null)
+                    if (fishArea is null)
                         continue;
 
-                    beachData.FishAreas ??= [];
-                    beachData.FishAreas.TryAdd(key, fishArea);
+                    museumData.FishAreas ??= [];
+                    museumData.FishAreas.TryAdd(key, fishArea);
                 }
             }
 
