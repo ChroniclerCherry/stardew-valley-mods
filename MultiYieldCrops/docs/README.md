@@ -22,28 +22,25 @@ Feel free to copy this to use as a base
 
 ```js
 {
-  "Harvests": [
-
-  //Start of block for each crop. You can have as many of these as you want
-    {
-      "CropName": "Parsnip", //the crop to add more items to when harvesting
-      "HarvestRules": [
-
-      //Start of block for each extra item spawned by this crop. You can have as many of these as you want
+    "Harvests": [
+        // Start of block for each crop. You can have as many of these as you want
         {
-          "ItemName": "Sea Cucumber", //The name of the item to spawn
+            "CropName": "Parsnip", //the crop to add more items to when harvesting
+            "HarvestRules": [
+                //Start of block for each extra item spawned by this crop. You can have as many of these as you want
+                {
+                    "ItemName": "Sea Cucumber", // The name of the item to spawn
 
-          //the below are all optional and can be left out
-          "ExtraYieldItemType": "Object", //Defaults to Object. Scroll down for more available types
-          "minHarvest": 1, //Defaults to 1. Minimum number of items to be spawned. Use negative numbers to decrease the chance of the item spawning at all
-          "maxHarvest": 1, //Defaults to 1. Maximum number of items to be spawned. maxHarvestIncreasePerFarmingLevel is added to this
-          "maxHarvestIncreasePerFarmingLevel": 0, //A decimal number. I suggest keeping this low. A value of 1 means an extra 10 crops per harvest at max level
-          "disableWithMods": [ "mod1.example", "mod2.example"] //this rule will be ignored if any of the listed mods' unique IDs are installed
-        }, //End of block for each extra item spawned by this crop. 
-      ]
-    }, //End of block for each crop
-
-  ]
+                    // the below are all optional and can be left out
+                    "ExtraYieldItemType": "Object", //Defaults to Object. Scroll down for more available types
+                    "minHarvest": 1, //Defaults to 1. Minimum number of items to be spawned. Use negative numbers to decrease the chance of the item spawning at all
+                    "maxHarvest": 1, //Defaults to 1. Maximum number of items to be spawned. maxHarvestIncreasePerFarmingLevel is added to this
+                    "maxHarvestIncreasePerFarmingLevel": 0, //A decimal number. I suggest keeping this low. A value of 1 means an extra 10 crops per harvest at max level
+                    "disableWithMods": [ "mod1.example", "mod2.example"] //this rule will be ignored if any of the listed mods' unique IDs are installed
+                } //End of block for each extra item spawned by this crop.
+            ]
+        }, //End of block for each crop
+    ]
 }
 
 ```
@@ -59,7 +56,7 @@ ExtraYieldItemType | Source | Notes
 ------------ | ------------- | -------------
 "Object" | [`data/ObjectInformation.json`](https://stardewvalleywiki.com/Modding:Object_data) | Contains most objects in the game not covered by the other categories. Note: Rings will be created without errors using the Object category. however this creates an Object version of the rings and it will not be wearable.
 "Ring" | [`data/ObjectInformation.json`](https://stardewvalleywiki.com/Modding:Object_data) | While sharing the same data file as most objects, it requires a unique constructor and thus is separate
-"BigCraftable" | [`data/BigCraftablesInformation.json`](https://stardewvalleywiki.com/Modding:Big_Craftables_data) | 
+"BigCraftable" | [`data/BigCraftablesInformation.json`](https://stardewvalleywiki.com/Modding:Big_Craftables_data) |
 "Clothing" | `data/ClothingInformation.json` | This contains all shirts and pants
 "Hat" | [`data/hats.json`](https://stardewvalleywiki.com/Modding:Hat_data) |
 "Boot" | `data/Boots.json` |
@@ -94,7 +91,7 @@ The quality is calculated the same way as the game's crops. For each harvest, th
     double lowerQualityChance = Math.Min(0.75, highQualityChance * 2.0);
 ```
 
-Then for each item spawned from that harvest, if the item rolls a random number higher than highQualityChance, it will be gold star. If it fails, it will roll against lowerQualityChance for a chance to be silver. If it fails both, then it will be regular quality. 
+Then for each item spawned from that harvest, if the item rolls a random number higher than highQualityChance, it will be gold star. If it fails, it will roll against lowerQualityChance for a chance to be silver. If it fails both, then it will be regular quality.
 
 ## See also
 * [Release notes](release-notes.md)

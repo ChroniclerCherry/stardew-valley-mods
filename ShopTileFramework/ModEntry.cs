@@ -121,7 +121,7 @@ internal class ModEntry : Mod
         if (e.NewMenu is PurchaseAnimalsMenu && SourceLocation == null &&
             !this.ChangedMarnieStock && AnimalShop.ExcludeFromMarnie.Count > 0)
         {
-            //close the current menu to open our own	
+            //close the current menu to open our own
             Game1.exitActiveMenu();
             List<SObject> allAnimalsStock = Utility.getPurchaseAnimalStock(Game1.getFarm());
             this.ChangedMarnieStock = true;

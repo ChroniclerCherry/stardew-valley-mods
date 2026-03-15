@@ -1,18 +1,18 @@
 ﻿# Synchronized randomness
- 
+
  SeededRandom is an available condition that can be useful for synchronizing randomness across different stocks, shops, for extended time periods, but can be quite complex.
- 
+
  The structure of the condition looks like this:
- 
+
  `SeededRandom <i:offset> <i:timeInterval/s:timeInterval> <f:random lower bounds> <f: random upper bounds>`
- 
+
  Broken down:
  Parameter | Type | Description
  ---------|--------|--------
  offset | integer | Can be any number-- two conditions both using this number and the same timeInterval will receive the same random roll
  timeInterval | integer or a string | How long a seeded random roll lasts in days. This also supports entering certain strings as a shortcut.
  random lower/upper bounds | decimal number | This is the range the random number needs to be in to return a true
- 
+
  *Essentially what happens is this:*
 The offset + the time interval returns a random number between 0 and 1. This number will always be the same for each time interval.
 
@@ -28,7 +28,7 @@ On the first 7 days, the random number results in an 0.3. It will stay 0.3 for t
 On the second week, the random number produced becomes 0.8, and stays for the entire week. The previous conditions would then become false for the entire week, as 0.8 is not between 0 and 0.5
 
 On the same save file, an offset of 30 might produce 0.4 the first week and then 0.1 the second.
- 
+
 ##### timeInterval strings
 
 There's strings to provide a more readable shortcut for most use cases. If you want a different interval, for example every 3 days, then you'll be entering the timeInterval as an integer instead

@@ -256,7 +256,7 @@ internal class ConditionChecker
     /// <summary>
     /// Checks that a given NPC is at the tile indexes
     /// </summary>
-    /// <param name="conditionParams">The condition string split by spaces, with the first parameter being the NPC 
+    /// <param name="conditionParams">The condition string split by spaces, with the first parameter being the NPC
     /// name and every two after that is the X and Y coordinates</param>
     /// <returns>true if the npc was found at the given tile, false if not</returns>
     private bool CheckNpcAt(string[] conditionParams)

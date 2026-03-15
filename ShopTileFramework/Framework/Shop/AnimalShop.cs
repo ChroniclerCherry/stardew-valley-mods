@@ -61,7 +61,7 @@ internal class AnimalShop : AnimalShopModel
     ** Private methods
     *********/
     /// <summary>
-    /// Updates the stock by grabbing the current data from getPurchaseAnimalStock and taking the info 
+    /// Updates the stock by grabbing the current data from getPurchaseAnimalStock and taking the info
     /// for the animals that will be sold in this store
     /// </summary>
     private void UpdateShopAnimalStock()

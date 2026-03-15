@@ -65,7 +65,7 @@ namespace UpgradeEmptyCabins.Framework
                 "list_renovations",
                 """
                 List the renovation names that can be used with the `toggle_renovate` command.
-                
+
                 Usage:
                     list_renovations
                 """,

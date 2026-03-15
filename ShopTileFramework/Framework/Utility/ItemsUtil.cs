@@ -34,7 +34,7 @@ internal static class ItemsUtil
     ** Public methods
     *********/
     /// <summary>
-    /// Loads up the object information for all types, 
+    /// Loads up the object information for all types,
     /// done at the start of each save loaded so that JA info is up to date
     /// </summary>
     public static void UpdateObjectInfoSource()
