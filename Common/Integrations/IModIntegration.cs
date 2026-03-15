@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace ChroniclerCherry.Common.Integrations;
 
 //
